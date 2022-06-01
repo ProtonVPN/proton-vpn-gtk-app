@@ -25,10 +25,6 @@ class LoginWindow(Gtk.ApplicationWindow):
 
         self._controller = controller
 
-        # widgets
-        self._grid = None
-        self._login_button = None
-
         self._init_ui()
 
     def _init_ui(self):
@@ -38,33 +34,49 @@ class LoginWindow(Gtk.ApplicationWindow):
 
         self.set_border_width(10)
 
+        self._stack = Gtk.Stack()
+        self.add(self._stack)
+
         # Setting up the grid in which the elements are to be positioned
-        self._grid = Gtk.Grid()
-        self._grid.set_column_homogeneous(True)
-        self._grid.set_row_homogeneous(True)
-        self._grid.set_row_spacing(10)
-        self.add(self._grid)
+        self._login_form = Gtk.Grid()
+        self._login_form.set_column_homogeneous(True)
+        # self._login_form.set_row_homogeneous(True)
+        self._login_form.set_row_spacing(10)
+        self._stack.add_named(self._login_form, "login_form")
 
         self._username_entry = Gtk.Entry()
-        self._grid.attach(self._username_entry, 0, 0, 1, 1)
+        # self._username_entry.
+        self._login_form.attach(self._username_entry, 0, 0, 1, 1)
 
         self._password_entry = Gtk.Entry()
         self._password_entry.set_visibility(False)
-        self._grid.attach_next_to(self._password_entry, self._username_entry, Gtk.PositionType.BOTTOM, 1, 1)
+        self._login_form.attach_next_to(self._password_entry, self._username_entry, Gtk.PositionType.BOTTOM, 1, 1)
 
         # Add login button
         self._login_button = Gtk.Button(label="Login")
         self._login_button.connect("clicked", self._on_login_button_clicked)
-        self._grid.attach_next_to(self._login_button, self._password_entry, Gtk.PositionType.BOTTOM, 1, 1)
+        self._login_form.attach_next_to(self._login_button, self._password_entry, Gtk.PositionType.BOTTOM, 1, 1)
+
+        self._2fa_form = Gtk.Grid()
+        self._2fa_form.set_column_homogeneous(True)
+        # self._2fa_form.set_row_homogeneous(True)
+        self._2fa_form.set_row_spacing(10)
+        self._stack.add_named(self._2fa_form, "2fa_form")
 
         self._2fa_code_entry = Gtk.Entry()
-        self._2fa_code_entry.hide()
-        self._grid.attach_next_to(self._2fa_code_entry, self._login_button, Gtk.PositionType.BOTTOM, 1, 1)
+        self._2fa_form.attach(self._2fa_code_entry, 0, 0, 1, 1)
 
         # Add 2FA code submission button
         self._2fa_submission_button = Gtk.Button(label="Submit 2FA code")
         self._2fa_submission_button.connect("clicked", self._on_2fa_submission_button_clicked)
-        self._grid.attach_next_to(self._2fa_submission_button, self._2fa_code_entry, Gtk.PositionType.BOTTOM, 1, 1)
+        self._2fa_form.attach_next_to(self._2fa_submission_button, self._2fa_code_entry, Gtk.PositionType.BOTTOM, 1, 1)
+
+        self._main = Gtk.VBox()
+        self._stack.add_named(self._main, "main")
+
+        logged_in_label = Gtk.Label(f"Logged in.")
+        self._main.add(logged_in_label)
+
 
     def _on_login_button_clicked(self, _):
         future = self._controller.submit_login_credentials(
@@ -76,10 +88,12 @@ class LoginWindow(Gtk.ApplicationWindow):
         result = future.result()
         if result.success:
             print("User logged in.")
+            self._stack.set_visible_child(self._main)
         elif not result.authenticated:
             print("Wrong password.")
         elif result.twofa_required:
             print("Two factor auth required.")
+            self._stack.set_visible_child(self._2fa_form)
 
     def _on_2fa_submission_button_clicked(self, _):
         future = self._controller.submit_2fa_code(self._2fa_code_entry.get_text())
@@ -89,6 +103,7 @@ class LoginWindow(Gtk.ApplicationWindow):
         result = future.result()
         if result.success:
             print("User logged in.")
+            self._stack.set_visible_child(self._main)
         elif result.twofa_required:
             print("Wrong 2FA code")
 

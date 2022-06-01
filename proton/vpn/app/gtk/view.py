@@ -86,6 +86,9 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._connect_button = Gtk.Button(label="Connect")
         self._connect_button.connect("clicked", self._on_connect_button_clicked)
         self._main.add(self._connect_button)
+        self._disconnect_button = Gtk.Button(label="Disconnect")
+        self._disconnect_button.connect("clicked", self._on_disconnect_button_clicked)
+        self._main.add(self._disconnect_button)
 
     def _on_login_button_clicked(self, _):
         future = self._controller.login(self._username_entry.get_text(), self._password_entry.get_text())
@@ -150,6 +153,19 @@ class LoginWindow(Gtk.ApplicationWindow):
             logger.exception("Error during connect.")
             return
         logger.info("Connected.")
+
+    def _on_disconnect_button_clicked(self, _):
+        logger.info("Disconnecting...")
+        future = self._controller.disconnect()
+        future.add_done_callback(self._on_disconnect_result)
+
+    def _on_disconnect_result(self, future: Future):
+        try:
+            future.result()
+        except Exception:
+            logger.exception("Error during disconnect.")
+            return
+        logger.info("Disconnected.")
 
     def _on_exit(self, *_):
         Gtk.main_quit()

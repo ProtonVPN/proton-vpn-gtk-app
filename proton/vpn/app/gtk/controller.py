@@ -35,3 +35,6 @@ class Controller:
 
     def connect(self):
         return self._thread_pool.submit(self._api.connect, protocol="openvpn-udp", servername="NL#3")
+
+    def disconnect(self):
+        return self._thread_pool.submit(self._api.disconnect)

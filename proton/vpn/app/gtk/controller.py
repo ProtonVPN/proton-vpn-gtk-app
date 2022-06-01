@@ -32,3 +32,6 @@ class Controller:
 
     def logout(self):
         return self._thread_pool.submit(self._api.logout)
+
+    def connect(self):
+        return self._thread_pool.submit(self._api.connect, protocol="openvpn-udp", servername="NL#3")

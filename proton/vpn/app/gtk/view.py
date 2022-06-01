@@ -40,9 +40,8 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._stack = Gtk.Stack()
         self.add(self._stack)
 
-        self._login_form = Gtk.Grid()
-        self._login_form.set_row_spacing(10)
-        self._login_form.set_column_spacing(10)
+        # Login form
+        self._login_form = Gtk.Grid(row_spacing=10, column_spacing=10)
         self._stack.add_named(self._login_form, "login_form")
 
         username_label = Gtk.Label("Username:")
@@ -62,9 +61,8 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._login_button.connect("clicked", self._on_login_button_clicked)
         self._login_form.attach_next_to(self._login_button, self._password_entry, Gtk.PositionType.BOTTOM, 1, 1)
 
-        self._2fa_form = Gtk.Grid()
-        self._2fa_form.set_row_spacing(10)
-        self._2fa_form.set_column_spacing(10)
+        # 2FA form
+        self._2fa_form = Gtk.Grid(row_spacing=10, column_spacing=10)
         self._stack.add_named(self._2fa_form, "2fa_form")
 
         twofa_code_label = Gtk.Label("2FA code:")
@@ -76,13 +74,18 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._2fa_submission_button.connect("clicked", self._on_2fa_submission_button_clicked)
         self._2fa_form.attach_next_to(self._2fa_submission_button, self._2fa_code_entry, Gtk.PositionType.BOTTOM, 1, 1)
 
-        self._main = Gtk.Grid()
+        # Main UI
+        self._main = Gtk.Grid(row_spacing=10, column_spacing=10)
         self._main.set_column_homogeneous(True)
+        self._main.set_orientation(Gtk.Orientation.VERTICAL)
         self._stack.add_named(self._main, "main")
 
         self._logout_button = Gtk.Button(label="Logout")
         self._logout_button.connect("clicked", self._on_logout_button_clicked)
         self._main.add(self._logout_button)
+        self._connect_button = Gtk.Button(label="Connect")
+        self._connect_button.connect("clicked", self._on_connect_button_clicked)
+        self._main.add(self._connect_button)
 
     def _on_login_button_clicked(self, _):
         future = self._controller.login(self._username_entry.get_text(), self._password_entry.get_text())
@@ -134,6 +137,19 @@ class LoginWindow(Gtk.ApplicationWindow):
 
         logger.info("User logged out.")
         self._stack.set_visible_child(self._login_form)
+
+    def _on_connect_button_clicked(self, _):
+        logger.info("Connecting...")
+        future = self._controller.connect()
+        future.add_done_callback(self._on_connect_result)
+
+    def _on_connect_result(self, future: Future):
+        try:
+            future.result()
+        except Exception:
+            logger.exception("Error during connect.")
+            return
+        logger.info("Connected.")
 
     def _on_exit(self, *_):
         Gtk.main_quit()

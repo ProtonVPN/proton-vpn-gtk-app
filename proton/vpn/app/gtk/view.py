@@ -57,6 +57,15 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._login_button.connect("clicked", self._on_login_button_clicked)
         self._grid.attach_next_to(self._login_button, self._password_entry, Gtk.PositionType.BOTTOM, 1, 1)
 
+        self._2fa_code_entry = Gtk.Entry()
+        self._2fa_code_entry.hide()
+        self._grid.attach_next_to(self._2fa_code_entry, self._login_button, Gtk.PositionType.BOTTOM, 1, 1)
+
+        # Add 2FA code submission button
+        self._2fa_submission_button = Gtk.Button(label="Submit 2FA code")
+        self._2fa_submission_button.connect("clicked", self._on_2fa_submission_button_clicked)
+        self._grid.attach_next_to(self._2fa_submission_button, self._2fa_code_entry, Gtk.PositionType.BOTTOM, 1, 1)
+
     def _on_login_button_clicked(self, _):
         future = self._controller.submit_login_credentials(
             self._username_entry.get_text(), self._password_entry.get_text()
@@ -71,6 +80,17 @@ class LoginWindow(Gtk.ApplicationWindow):
             print("Wrong password.")
         elif result.twofa_required:
             print("Two factor auth required.")
+
+    def _on_2fa_submission_button_clicked(self, _):
+        future = self._controller.submit_2fa_code(self._2fa_code_entry.get_text())
+        future.add_done_callback(self._on_2fa_submission_result)
+
+    def _on_2fa_submission_result(self, future: Future[LoginResult]):
+        result = future.result()
+        if result.success:
+            print("User logged in.")
+        elif result.twofa_required:
+            print("Wrong 2FA code")
 
     def _on_exit(self, *_):
         Gtk.main_quit()

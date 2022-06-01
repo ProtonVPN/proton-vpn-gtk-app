@@ -24,7 +24,7 @@ class Controller:
             username, password
         )
 
-    def submit_twofa_code(self, code: str) -> Future[LoginResult]:
+    def submit_2fa_code(self, code: str) -> Future[LoginResult]:
         return self._thread_pool.submit(
             self._model.submit_2fa_code,
             code

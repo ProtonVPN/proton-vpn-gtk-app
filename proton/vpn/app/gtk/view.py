@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from concurrent.futures import Future
 
 import gi
@@ -7,6 +8,8 @@ gi.require_version("Gtk", "3.0")  # noqa: GTK-specific requirement
 from gi.repository import Gtk
 
 from proton.vpn.core_api.session import LoginResult
+
+logger = logging.getLogger(__name__)
 
 
 class View:
@@ -21,7 +24,7 @@ class View:
 
 class LoginWindow(Gtk.ApplicationWindow):
     def __init__(self, controller: "Controller"):
-        super().__init__(title="Proton VPN - Login")
+        super().__init__(title="Proton VPN")
 
         self._controller = controller
 
@@ -37,62 +40,68 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._stack = Gtk.Stack()
         self.add(self._stack)
 
-        # Setting up the grid in which the elements are to be positioned
         self._login_form = Gtk.Grid()
-        self._login_form.set_column_homogeneous(True)
-        # self._login_form.set_row_homogeneous(True)
         self._login_form.set_row_spacing(10)
+        self._login_form.set_column_spacing(10)
         self._stack.add_named(self._login_form, "login_form")
 
+        username_label = Gtk.Label("Username:")
+        self._login_form.attach(username_label, 0, 0, 1, 1)
         self._username_entry = Gtk.Entry()
-        # self._username_entry.
-        self._login_form.attach(self._username_entry, 0, 0, 1, 1)
+        self._username_entry.set_width_chars(40)
+        self._login_form.attach_next_to(self._username_entry, username_label, Gtk.PositionType.RIGHT, 2, 1)
 
+        password_label = Gtk.Label("Password:")
+        self._login_form.attach_next_to(password_label, username_label, Gtk.PositionType.BOTTOM, 1, 1)
         self._password_entry = Gtk.Entry()
+        self._password_entry.set_width_chars(40)
         self._password_entry.set_visibility(False)
-        self._login_form.attach_next_to(self._password_entry, self._username_entry, Gtk.PositionType.BOTTOM, 1, 1)
+        self._login_form.attach_next_to(self._password_entry, self._username_entry, Gtk.PositionType.BOTTOM, 2, 1)
 
-        # Add login button
         self._login_button = Gtk.Button(label="Login")
         self._login_button.connect("clicked", self._on_login_button_clicked)
         self._login_form.attach_next_to(self._login_button, self._password_entry, Gtk.PositionType.BOTTOM, 1, 1)
 
         self._2fa_form = Gtk.Grid()
-        self._2fa_form.set_column_homogeneous(True)
-        # self._2fa_form.set_row_homogeneous(True)
         self._2fa_form.set_row_spacing(10)
+        self._2fa_form.set_column_spacing(10)
         self._stack.add_named(self._2fa_form, "2fa_form")
 
+        twofa_code_label = Gtk.Label("2FA code:")
+        self._2fa_form.attach(twofa_code_label, 0, 0, 1, 1)
         self._2fa_code_entry = Gtk.Entry()
-        self._2fa_form.attach(self._2fa_code_entry, 0, 0, 1, 1)
-
-        # Add 2FA code submission button
+        self._2fa_code_entry.set_width_chars(40)
+        self._2fa_form.attach_next_to(self._2fa_code_entry, twofa_code_label, Gtk.PositionType.RIGHT, 2, 1)
         self._2fa_submission_button = Gtk.Button(label="Submit 2FA code")
         self._2fa_submission_button.connect("clicked", self._on_2fa_submission_button_clicked)
         self._2fa_form.attach_next_to(self._2fa_submission_button, self._2fa_code_entry, Gtk.PositionType.BOTTOM, 1, 1)
 
-        self._main = Gtk.VBox()
+        self._main = Gtk.Grid()
+        self._main.set_column_homogeneous(True)
         self._stack.add_named(self._main, "main")
 
-        logged_in_label = Gtk.Label(f"Logged in.")
-        self._main.add(logged_in_label)
-
+        self._logout_button = Gtk.Button(label="Logout")
+        self._logout_button.connect("clicked", self._on_logout_button_clicked)
+        self._main.add(self._logout_button)
 
     def _on_login_button_clicked(self, _):
-        future = self._controller.submit_login_credentials(
-            self._username_entry.get_text(), self._password_entry.get_text()
-        )
+        future = self._controller.login(self._username_entry.get_text(), self._password_entry.get_text())
         future.add_done_callback(self._on_login_result)
 
     def _on_login_result(self, future: Future[LoginResult]):
-        result = future.result()
+        try:
+            result = future.result()
+        except Exception:
+            logger.exception("Error during login.")
+            return
+
         if result.success:
-            print("User logged in.")
+            logger.info("User logged in.")
             self._stack.set_visible_child(self._main)
         elif not result.authenticated:
-            print("Wrong password.")
+            logger.error("Wrong password.")
         elif result.twofa_required:
-            print("Two factor auth required.")
+            logger.info("Two factor auth required.")
             self._stack.set_visible_child(self._2fa_form)
 
     def _on_2fa_submission_button_clicked(self, _):
@@ -100,12 +109,31 @@ class LoginWindow(Gtk.ApplicationWindow):
         future.add_done_callback(self._on_2fa_submission_result)
 
     def _on_2fa_submission_result(self, future: Future[LoginResult]):
-        result = future.result()
+        try:
+            result = future.result()
+        except Exception:
+            logger.exception("Error during 2FA.")
+            return
+
         if result.success:
-            print("User logged in.")
+            logger.info("User logged in.")
             self._stack.set_visible_child(self._main)
         elif result.twofa_required:
-            print("Wrong 2FA code")
+            logger.warning("Wrong 2FA code.")
+
+    def _on_logout_button_clicked(self, _):
+        future = self._controller.logout()
+        future.add_done_callback(self._on_logout_result)
+
+    def _on_logout_result(self, future: Future):
+        try:
+            future.result()
+        except Exception:
+            logger.exception("Error during logout.")
+            return
+
+        logger.info("User logged out.")
+        self._stack.set_visible_child(self._login_form)
 
     def _on_exit(self, *_):
         Gtk.main_quit()

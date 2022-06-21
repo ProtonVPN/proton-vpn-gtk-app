@@ -1,0 +1,13 @@
+include:
+  - project: 'ProtonVPN/Linux/new-client/integration/ci-libraries'
+    ref: develop
+    file: 'gitlab-ci-build-publish-debian.yml'
+  - project: 'ProtonVPN/Linux/new-client/integration/ci-libraries'
+    ref: develop
+    file: 'gitlab-ci-build-publish-pypi.yml'
+  - project: 'ProtonVPN/Linux/new-client/integration/ci-libraries'
+    ref: develop
+    file: 'gitlab-ci-unit-tests-debian.yml'
+  - project: 'ProtonVPN/Linux/new-client/integration/ci-libraries'
+    ref: develop
+    file: 'gitlab-ci-stages.yml'

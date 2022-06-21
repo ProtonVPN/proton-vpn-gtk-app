@@ -1,0 +1,9 @@
+.debhelper
+debhelper-build-stamp
+files
+python3-proton-vpn-cli.debhelper.log
+python3-proton-vpn-cli.postinst.debhelper
+python3-proton-vpn-cli.postrm.debhelper
+python3-proton-vpn-cli.prerm.debhelper
+python3-proton-vpn-cli.substvars
+python3-proton-vpn-cli

@@ -1,16 +1,11 @@
 from __future__ import annotations
 
 import logging
-from concurrent.futures import Future
-
-from gi.repository import GObject
 
 from proton.vpn.app.gtk.widgets.login import LoginWidget
-
-import gi
-
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 
+import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # noqa: E402
 

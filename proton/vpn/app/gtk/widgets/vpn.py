@@ -32,7 +32,6 @@ class VPNWidget(Gtk.Grid):
         self._main_spinner = Gtk.Spinner()
         self.add(self._main_spinner)
 
-
     @GObject.Signal(name="user-logged-out")
     def user_logged_out(self):
         pass

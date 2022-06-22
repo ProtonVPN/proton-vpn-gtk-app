@@ -10,6 +10,7 @@ from proton.vpn.app.gtk.view import View
 
 
 class Controller:
+    """The C in the MVC pattern."""
     def __init__(self, thread_pool_executor: ThreadPoolExecutor):
         self._thread_pool = thread_pool_executor
         self._api = ProtonVPNAPI()
@@ -37,15 +38,19 @@ class Controller:
 
     def connect(self):
         def _connect():
-            server = self._api.servers.get_server_with_features(servername="NL#3")
+            server = self._api.servers.get_server_with_features(
+                servername="NL#3"
+            )
             self._api.connection.connect(server, protocol="openvpn-udp")
-            self._connection_subscriber.wait_for_state(ConnectionStateEnum.CONNECTED, timeout=10)
-
+            self._connection_subscriber.wait_for_state(
+                ConnectionStateEnum.CONNECTED, timeout=10
+            )
         return self._thread_pool.submit(_connect)
 
     def disconnect(self):
         def _disconnect():
             self._api.connection.disconnect()
-            self._connection_subscriber.wait_for_state(ConnectionStateEnum.DISCONNECTED, timeout=5)
-
+            self._connection_subscriber.wait_for_state(
+                ConnectionStateEnum.DISCONNECTED, timeout=5
+            )
         return self._thread_pool.submit(_disconnect)

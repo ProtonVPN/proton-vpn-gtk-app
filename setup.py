@@ -9,9 +9,21 @@ setup(
     author="Proton Technologies",
     author_email="contact@protonmail.com",
     url="https://github.com/ProtonVPN/proton-vpn-gtk-app",
-    install_requires=["proton-vpn-api-core", "proton-vpn-network-manager-openvpn"],
+    install_requires=[
+        "proton-vpn-api-core",
+        "proton-vpn-network-manager-openvpn",
+        "pygobject",
+        "pycairo",
+    ],
     extras_require={
-        "development": ["pygobject", "pycairo", "pygobject-stubs", "pytest", "pytest-coverage", "flake8"]
+        "development": [
+            "pygobject-stubs",
+            "pytest",
+            "pytest-cov",
+            "flake8",
+            "pylint",
+            "mypy",
+        ]
     },
     packages=find_namespace_packages(include=['proton.vpn.app.gtk']),
     include_package_data=True,

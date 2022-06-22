@@ -3,17 +3,18 @@ from __future__ import annotations
 import logging
 from concurrent.futures import Future
 
-import gi
-gi.require_version("Gtk", "3.0")  # noqa: GTK-specific requirement
-from gi.repository import Gtk
-
 from proton.vpn.core_api.session import LoginResult
+
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
 
 class View:
-    def __init__(self, controller: "Controller"):
+    """The V in the MVC pattern."""
+    def __init__(self, controller):
         self._controller = controller
         self._login_window = LoginWindow(controller=self._controller)
 
@@ -23,7 +24,8 @@ class View:
 
 
 class LoginWindow(Gtk.ApplicationWindow):
-    def __init__(self, controller: "Controller"):
+    """Main window."""
+    def __init__(self, controller):
         super().__init__(title="Proton VPN")
 
         self._controller = controller
@@ -48,22 +50,30 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._login_form.attach(username_label, 0, 0, 1, 1)
         self._username_entry = Gtk.Entry()
         self._username_entry.set_width_chars(40)
-        self._login_form.attach_next_to(self._username_entry, username_label, Gtk.PositionType.RIGHT, 2, 1)
+        self._login_form.attach_next_to(
+            self._username_entry, username_label, Gtk.PositionType.RIGHT, 2, 1)
 
         password_label = Gtk.Label("Password:")
-        self._login_form.attach_next_to(password_label, username_label, Gtk.PositionType.BOTTOM, 1, 1)
+        self._login_form.attach_next_to(
+            password_label, username_label, Gtk.PositionType.BOTTOM, 1, 1)
         self._password_entry = Gtk.Entry()
         self._password_entry.set_width_chars(40)
         self._password_entry.set_visibility(False)
-        self._login_form.attach_next_to(self._password_entry, self._username_entry, Gtk.PositionType.BOTTOM, 2, 1)
-
+        self._login_form.attach_next_to(
+            self._password_entry, self._username_entry,
+            Gtk.PositionType.BOTTOM, 2, 1
+        )
         self._login_button = Gtk.Button(label="Login")
         self._login_button.connect("clicked", self._on_login_button_clicked)
-        self._login_form.attach_next_to(self._login_button, self._password_entry, Gtk.PositionType.BOTTOM, 1, 1)
-
+        self._login_form.attach_next_to(
+            self._login_button, self._password_entry,
+            Gtk.PositionType.BOTTOM, 1, 1
+        )
         self._login_spinner = Gtk.Spinner()
-        self._login_form.attach_next_to(self._login_spinner, self._login_button, Gtk.PositionType.BOTTOM, 1, 1)
-
+        self._login_form.attach_next_to(
+            self._login_spinner, self._login_button,
+            Gtk.PositionType.BOTTOM, 1, 1
+        )
         # 2FA form
         self._2fa_form = Gtk.Grid(row_spacing=10, column_spacing=10)
         self._stack.add_named(self._2fa_form, "2fa_form")
@@ -72,16 +82,22 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._2fa_form.attach(twofa_code_label, 0, 0, 1, 1)
         self._2fa_code_entry = Gtk.Entry()
         self._2fa_code_entry.set_width_chars(40)
-        self._2fa_form.attach_next_to(self._2fa_code_entry, twofa_code_label, Gtk.PositionType.RIGHT, 2, 1)
+        self._2fa_form.attach_next_to(
+            self._2fa_code_entry, twofa_code_label,
+            Gtk.PositionType.RIGHT, 2, 1)
 
         self._2fa_submission_button = Gtk.Button(label="Submit 2FA code")
-        self._2fa_submission_button.connect("clicked", self._on_2fa_submission_button_clicked)
-        self._2fa_form.attach_next_to(self._2fa_submission_button, self._2fa_code_entry, Gtk.PositionType.BOTTOM, 1, 1)
+        self._2fa_submission_button.connect(
+            "clicked", self._on_2fa_submission_button_clicked)
+        self._2fa_form.attach_next_to(
+            self._2fa_submission_button, self._2fa_code_entry,
+            Gtk.PositionType.BOTTOM, 1, 1)
 
         self._2fa_spinner = Gtk.Spinner()
-        self._2fa_form.attach_next_to(self._2fa_spinner, self._2fa_submission_button, Gtk.PositionType.BOTTOM, 1, 1)
-
-
+        self._2fa_form.attach_next_to(
+            self._2fa_spinner, self._2fa_submission_button,
+            Gtk.PositionType.BOTTOM, 1, 1
+        )
         # Main UI
         self._main = Gtk.Grid(row_spacing=10, column_spacing=10)
         self._main.set_column_homogeneous(True)
@@ -92,17 +108,20 @@ class LoginWindow(Gtk.ApplicationWindow):
         self._logout_button.connect("clicked", self._on_logout_button_clicked)
         self._main.add(self._logout_button)
         self._connect_button = Gtk.Button(label="Connect")
-        self._connect_button.connect("clicked", self._on_connect_button_clicked)
+        self._connect_button.connect(
+            "clicked", self._on_connect_button_clicked)
         self._main.add(self._connect_button)
         self._disconnect_button = Gtk.Button(label="Disconnect")
-        self._disconnect_button.connect("clicked", self._on_disconnect_button_clicked)
+        self._disconnect_button.connect(
+            "clicked", self._on_disconnect_button_clicked)
         self._main.add(self._disconnect_button)
         self._main_spinner = Gtk.Spinner()
         self._main.add(self._main_spinner)
 
     def _on_login_button_clicked(self, _):
         self._login_spinner.start()
-        future = self._controller.login(self._username_entry.get_text(), self._password_entry.get_text())
+        future = self._controller.login(
+            self._username_entry.get_text(), self._password_entry.get_text())
         future.add_done_callback(self._on_login_result)
 
     def _on_login_result(self, future: Future[LoginResult]):
@@ -125,7 +144,9 @@ class LoginWindow(Gtk.ApplicationWindow):
 
     def _on_2fa_submission_button_clicked(self, _):
         self._2fa_spinner.start()
-        future = self._controller.submit_2fa_code(self._2fa_code_entry.get_text())
+        future = self._controller.submit_2fa_code(
+            self._2fa_code_entry.get_text()
+        )
         future.add_done_callback(self._on_2fa_submission_result)
 
     def _on_2fa_submission_result(self, future: Future[LoginResult]):

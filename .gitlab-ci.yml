@@ -10,4 +10,7 @@ include:
     file: 'gitlab-ci-unit-tests-debian.yml'
   - project: 'ProtonVPN/Linux/new-client/integration/ci-libraries'
     ref: develop
+    file: 'gitlab-ci-lint.yml'
+  - project: 'ProtonVPN/Linux/new-client/integration/ci-libraries'
+    ref: develop
     file: 'gitlab-ci-stages.yml'

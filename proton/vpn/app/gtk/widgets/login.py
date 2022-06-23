@@ -17,6 +17,7 @@ class LoginWidget(Gtk.Bin):
     def __init__(self, controller: Controller):
         super().__init__()
         self._controller = controller
+        self._active_form = None
 
         self._stack = Gtk.Stack()
         self.add(self._stack)
@@ -44,9 +45,6 @@ class LoginWidget(Gtk.Bin):
             self._login_button, self._password_entry,
             Gtk.PositionType.BOTTOM, 1, 1
         )
-        # The focus is set on the button because otherwise is set on the
-        # username entry and the placeholder is not shown.
-        self._login_button.grab_focus()
         # Pressing enter on the password entry triggers the clicked event
         # on the login button
         self._password_entry.connect(
@@ -69,9 +67,6 @@ class LoginWidget(Gtk.Bin):
         self._2fa_form.attach_next_to(
             self._2fa_submission_button, self._2fa_code_entry,
             Gtk.PositionType.BOTTOM, 1, 1)
-        # The focus is set on the button because otherwise is set on the
-        # 2FA code entry and the placeholder is not shown.
-        self._2fa_submission_button.grab_focus()
         # Pressing enter on the password entry triggers the clicked event
         # on the login button
         self._2fa_code_entry.connect(
@@ -83,6 +78,8 @@ class LoginWidget(Gtk.Bin):
             Gtk.PositionType.BOTTOM, 1, 1
         )
 
+        self.reset()
+
     @GObject.Signal(name="user-logged-in")
     def user_logged_in(self):
         pass
@@ -91,8 +88,14 @@ class LoginWidget(Gtk.Bin):
         self._username_entry.set_text("")
         self._password_entry.set_text("")
         self._2fa_code_entry.set_text("")
+        # Avoid that the focus is on the text entry fields because when that's
+        # the case, the text entry placeholder is not shown.
         self._login_button.grab_focus()
-        self._stack.set_visible_child(self._login_form)
+        self._activate_form(self._login_form)
+
+    def _activate_form(self, form):
+        self._active_form = form
+        self._stack.set_visible_child(form)
 
     def _on_login_button_clicked(self, _):
         self._login_spinner.start()
@@ -116,7 +119,7 @@ class LoginWidget(Gtk.Bin):
             logger.error("Wrong password.")
         elif result.twofa_required:
             logger.info("Two factor auth required.")
-            self._stack.set_visible_child(self._2fa_form)
+            self._activate_form(self._2fa_form)
 
     def _on_2fa_submission_button_clicked(self, _):
         self._2fa_spinner.start()

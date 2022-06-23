@@ -2,13 +2,10 @@ from __future__ import annotations
 
 import logging
 
+from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login import LoginWidget
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
-
-import gi
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

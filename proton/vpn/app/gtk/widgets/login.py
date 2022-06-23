@@ -1,15 +1,13 @@
 import logging
 from concurrent.futures import Future
 
-from proton.vpn.core_api.session import LoginResult
-
 from gi.repository import GObject
 
-from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.core_api.session import LoginResult
 
-import gi
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk  # noqa: E402
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk import Gtk
+
 
 logger = logging.getLogger(__name__)
 

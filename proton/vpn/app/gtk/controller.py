@@ -6,20 +6,14 @@ from proton.vpn.core_api import ProtonVPNAPI
 from proton.vpn.core_api.session import LoginResult
 from proton.vpn.core_api.connection import Subscriber
 
-from proton.vpn.app.gtk.view import View
-
 
 class Controller:
     """The C in the MVC pattern."""
     def __init__(self, thread_pool_executor: ThreadPoolExecutor):
         self._thread_pool = thread_pool_executor
         self._api = ProtonVPNAPI()
-        self._view = View(controller=self)
         self._connection_subscriber = Subscriber()
         self._api.connection.register(self._connection_subscriber)
-
-    def run(self):
-        return self._view.run()
 
     def login(self, username: str, password: str) -> Future[LoginResult]:
         return self._thread_pool.submit(

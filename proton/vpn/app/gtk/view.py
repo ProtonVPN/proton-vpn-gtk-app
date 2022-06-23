@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 
+from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login import LoginWidget
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class View:
     """The V in the MVC pattern."""
-    def __init__(self, controller):
+    def __init__(self, controller: Controller):
         self._controller = controller
         self.main_window = MainWindow(controller=self._controller)
 
@@ -25,7 +26,7 @@ class View:
 
 class MainWindow(Gtk.ApplicationWindow):
     """Main window."""
-    def __init__(self, controller):
+    def __init__(self, controller: Controller):
         super().__init__(title="Proton VPN")
 
         self._controller = controller

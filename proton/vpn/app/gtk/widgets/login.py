@@ -4,6 +4,9 @@ from concurrent.futures import Future
 from proton.vpn.core_api.session import LoginResult
 
 from gi.repository import GObject
+
+from proton.vpn.app.gtk.controller import Controller
+
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # noqa: E402
@@ -13,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class LoginWidget(Gtk.Bin):
     """Widget used to authenticate the user."""
-    def __init__(self, controller):
+    def __init__(self, controller: Controller):
         super().__init__()
         self._controller = controller
 

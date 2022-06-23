@@ -2,6 +2,9 @@ import logging
 from concurrent.futures import Future
 
 from gi.repository import GObject
+
+from proton.vpn.app.gtk.controller import Controller
+
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # noqa: E402
@@ -11,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class VPNWidget(Gtk.Grid):
     """Exposes the ProtonVPN product functionality to the user."""
-    def __init__(self, controller):
+    def __init__(self, controller: Controller):
         super().__init__(row_spacing=10, column_spacing=10)
         self._controller = controller
 

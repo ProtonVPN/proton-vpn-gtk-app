@@ -10,17 +10,6 @@ from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 logger = logging.getLogger(__name__)
 
 
-class View:
-    """The V in the MVC pattern."""
-    def __init__(self, controller: Controller):
-        self._controller = controller
-        self.main_window = MainWindow(controller=self._controller)
-
-    def run(self):
-        self.main_window.show_all()
-        return Gtk.main()
-
-
 class MainWindow(Gtk.ApplicationWindow):
     """Main window."""
     def __init__(self, controller: Controller):
@@ -28,7 +17,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._controller = controller
 
-        self.connect("destroy", Gtk.main_quit)
         self.set_size_request(400, 150)
         self.set_border_width(10)
         self.set_resizable(False)

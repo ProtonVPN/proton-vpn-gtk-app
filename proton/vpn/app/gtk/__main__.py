@@ -8,7 +8,7 @@ from proton.vpn.app.gtk.app import App
 def main():
     logging.basicConfig(level=logging.INFO)
     with ThreadPoolExecutor() as thread_pool_executor:
-        sys.exit(App(thread_pool_executor).run())
+        sys.exit(App(thread_pool_executor).run(sys.argv))
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ from concurrent.futures import Future
 
 from gi.repository import GObject
 
+from proton.session.exceptions import ProtonError
 from proton.vpn.core_api.session import LoginResult
 
 from proton.vpn.app.gtk.controller import Controller
@@ -20,8 +21,21 @@ class LoginWidget(Gtk.Bin):
         self._controller = controller
         self._active_form = None
 
+        self._grid = Gtk.Grid()
+        self._grid.set_column_homogeneous(True)
+        self.add(self._grid)
+
+        self._error = Gtk.Label(label="")
+        self._error.set_margin_bottom(10)
+        self._error.set_font_options()
+        self._error.set_visible(False)
+
+        self._grid.add(self._error)
         self._stack = Gtk.Stack()
-        self.add(self._stack)
+        self._grid.attach_next_to(
+            self._stack, self._error,
+            Gtk.PositionType.BOTTOM, 1, 1
+        )
 
         self._login_form = Gtk.Grid(row_spacing=10, column_spacing=10)
         self._stack.add_named(self._login_form, "login_form")
@@ -47,7 +61,7 @@ class LoginWidget(Gtk.Bin):
             Gtk.PositionType.BOTTOM, 1, 1
         )
         # Pressing enter on the password entry triggers the clicked event
-        # on the login button
+        # on the login button.
         self._password_entry.connect(
             "activate", lambda _: self._login_button.clicked())
 
@@ -69,7 +83,7 @@ class LoginWidget(Gtk.Bin):
             self._2fa_submission_button, self._2fa_code_entry,
             Gtk.PositionType.BOTTOM, 1, 1)
         # Pressing enter on the password entry triggers the clicked event
-        # on the login button
+        # on the login button.
         self._2fa_code_entry.connect(
             "activate", lambda _: self._2fa_submission_button.clicked())
 
@@ -88,6 +102,7 @@ class LoginWidget(Gtk.Bin):
 
     def reset(self):
         """Resets the state of the login/2fa forms."""
+        self.error_message = ""
         self.username = ""
         self.password = ""
         self.two_factor_auth_code = ""
@@ -138,6 +153,16 @@ class LoginWidget(Gtk.Bin):
         """Returns True if the 2FA form is active and False otherwise."""
         return self._active_form == self._2fa_form
 
+    @property
+    def error_message(self):
+        """Returns the current error message."""
+        return self._error.get_text()
+
+    @error_message.setter
+    def error_message(self, message: str):
+        """Sets an error message and shows it to the user."""
+        self._error.set_text(message)
+
     def _activate_form(self, form):
         self._active_form = form
         self._stack.set_visible_child(form)
@@ -150,8 +175,13 @@ class LoginWidget(Gtk.Bin):
     def _on_login_result(self, future: Future[LoginResult]):
         try:
             result = future.result()
-        except Exception:
-            logger.exception("Error during login.")
+        except ValueError as e:
+            self.error_message = "Invalid username."
+            logger.debug(e)
+            return
+        except ProtonError:
+            self.error_message = "Please check your internet connection."
+            logger.exception("Proton API error during login.")
             return
         finally:
             self._login_spinner.stop()
@@ -159,8 +189,10 @@ class LoginWidget(Gtk.Bin):
         if result.success:
             logger.info("User logged in.")
             self.emit("user-logged-in")
+            self.error_message = ""
         elif not result.authenticated:
-            logger.error("Wrong password.")
+            self.error_message = "Wrong password."
+            logger.debug("Wrong password.")
         elif result.twofa_required:
             logger.info("Two factor auth required.")
             self._activate_form(self._2fa_form)
@@ -175,14 +207,19 @@ class LoginWidget(Gtk.Bin):
     def _on_2fa_submission_result(self, future: Future[LoginResult]):
         try:
             result = future.result()
-        except Exception:
+        except ProtonError:
+            self.error_message = "Please check your internet connection."
             logger.exception("Error during 2FA.")
             return
         finally:
             self._2fa_spinner.stop()
 
         if result.success:
-            logger.info("User logged in.")
             self.emit("user-logged-in")
+        elif not result.authenticated:
+            self.error_message = "Session expired. Please login again."
+            self._activate_form(self._login_form)
+            logger.debug("Login credentials expired. Please login again.")
         elif result.twofa_required:
-            logger.warning("Wrong 2FA code.")
+            self.error_message = "Wrong 2FA code."
+            logger.debug("Wrong 2FA code.")

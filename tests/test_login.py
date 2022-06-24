@@ -64,9 +64,6 @@ def test_login_widget_asks_for_2fa_when_required(
         controller_mocking_2fa_required
 ):
     login_widget = LoginWidget(controller_mocking_2fa_required)
-
-    login_widget.username = "username"
-    login_widget.password = "password"
     login_widget.submit_login()
 
     process_gtk_events()
@@ -103,3 +100,102 @@ def test_login_widget_signals_user_is_logged_in_after_successful_2fa(
         "2fa-code"
     )
     user_logged_in_callback.assert_called_once()
+
+
+@pytest.fixture
+def controller_mocking_invalid_username():
+    controller_mock = Mock()
+
+    login_result_future = Future()
+    login_result_future.set_exception(
+        ValueError("Invalid username")
+    )
+    controller_mock.login.return_value = login_result_future
+
+    return controller_mock
+
+
+def test_login_widget_shows_error_when_submitting_an_invalid_username(
+        controller_mocking_invalid_username
+):
+    login_widget = LoginWidget(controller_mocking_invalid_username)
+    login_widget.submit_login()
+
+    process_gtk_events()
+
+    assert login_widget.error_message == "Invalid username."
+
+
+@pytest.fixture
+def controller_mocking_invalid_credentials():
+    controller_mock = Mock()
+
+    login_result_future = Future()
+    login_result_future.set_result(
+        LoginResult(success=False, authenticated=False, twofa_required=False)
+    )
+    controller_mock.login.return_value = login_result_future
+
+    return controller_mock
+
+
+def test_login_widget_shows_error_when_submitting_wrong_credentials(
+    controller_mocking_invalid_credentials
+):
+    login_widget = LoginWidget(controller_mocking_invalid_credentials)
+    login_widget.submit_login()
+
+    process_gtk_events()
+
+    assert login_widget.error_message == "Wrong password."
+
+
+@pytest.fixture
+def controller_mocking_wrong_2fa_code():
+    controller_mock = Mock()
+
+    login_result_future = Future()
+    login_result_future.set_result(
+        LoginResult(success=False, authenticated=True, twofa_required=True)
+    )
+    controller_mock.submit_2fa_code.return_value = login_result_future
+
+    return controller_mock
+
+
+def test_login_widget_shows_error_when_submitting_wrong_2fa_code(
+        controller_mocking_wrong_2fa_code
+):
+    login_widget = LoginWidget(controller_mocking_wrong_2fa_code)
+    login_widget.submit_two_factor_auth()
+
+    process_gtk_events()
+
+    assert login_widget.error_message == "Wrong 2FA code."
+
+
+@pytest.fixture
+def controller_mocking_expired_session_when_submitting_2fa_code():
+    controller_mock = Mock()
+
+    login_result_future = Future()
+    login_result_future.set_result(
+        # authenticated is False because the session expired
+        LoginResult(success=False, authenticated=False, twofa_required=True)
+    )
+    controller_mock.submit_2fa_code.return_value = login_result_future
+
+    return controller_mock
+
+
+def test_login_widget_shows_error_when_submitting_wrong_2fa_code(
+        controller_mocking_expired_session_when_submitting_2fa_code
+):
+    login_widget = LoginWidget(
+        controller_mocking_expired_session_when_submitting_2fa_code
+    )
+    login_widget.submit_two_factor_auth()
+
+    process_gtk_events()
+
+    assert login_widget.error_message == "Session expired. Please login again."

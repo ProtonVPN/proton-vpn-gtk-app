@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class LoginWidget(Gtk.Bin):
     """Widget used to authenticate the user."""
+
     def __init__(self, controller: Controller):
         super().__init__()
         self._controller = controller
@@ -82,16 +83,60 @@ class LoginWidget(Gtk.Bin):
 
     @GObject.Signal(name="user-logged-in")
     def user_logged_in(self):
+        """Signal emitted after a successful login."""
         pass
 
     def reset(self):
-        self._username_entry.set_text("")
-        self._password_entry.set_text("")
-        self._2fa_code_entry.set_text("")
+        """Resets the state of the login/2fa forms."""
+        self.username = ""
+        self.password = ""
+        self.two_factor_auth_code = ""
         # Avoid that the focus is on the text entry fields because when that's
         # the case, the text entry placeholder is not shown.
         self._login_button.grab_focus()
         self._activate_form(self._login_form)
+
+    @property
+    def username(self):
+        """Returns the username introduced in the login form."""
+        return self._username_entry.get_text()
+
+    @username.setter
+    def username(self, username: str):
+        """Sets the username in the login form."""
+        self._username_entry.set_text(username)
+
+    @property
+    def password(self):
+        """Returns the password introduced in the login form."""
+        return self._password_entry.get_text()
+
+    @password.setter
+    def password(self, password: str):
+        """Sets the password in the login form."""
+        self._password_entry.set_text(password)
+
+    def submit_login(self):
+        """Submits the login form."""
+        self._login_button.clicked()
+
+    @property
+    def two_factor_auth_code(self):
+        """Returns the code introduced in the 2FA form."""
+        return self._2fa_code_entry.get_text()
+
+    @two_factor_auth_code.setter
+    def two_factor_auth_code(self, code: str):
+        """Sets the code in the 2FA form."""
+        self._2fa_code_entry.set_text(code)
+
+    def submit_two_factor_auth(self):
+        """Submits the 2FA form."""
+        self._2fa_submission_button.clicked()
+
+    def is_two_factor_auth_active(self):
+        """Returns True if the 2FA form is active and False otherwise."""
+        return self._active_form == self._2fa_form
 
     def _activate_form(self, form):
         self._active_form = form
@@ -99,8 +144,7 @@ class LoginWidget(Gtk.Bin):
 
     def _on_login_button_clicked(self, _):
         self._login_spinner.start()
-        future = self._controller.login(
-            self._username_entry.get_text(), self._password_entry.get_text())
+        future = self._controller.login(self.username, self.password)
         future.add_done_callback(self._on_login_result)
 
     def _on_login_result(self, future: Future[LoginResult]):
@@ -124,7 +168,7 @@ class LoginWidget(Gtk.Bin):
     def _on_2fa_submission_button_clicked(self, _):
         self._2fa_spinner.start()
         future = self._controller.submit_2fa_code(
-            self._2fa_code_entry.get_text()
+            self.two_factor_auth_code
         )
         future.add_done_callback(self._on_2fa_submission_result)
 

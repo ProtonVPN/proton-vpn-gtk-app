@@ -36,5 +36,4 @@ class MainWindow(Gtk.ApplicationWindow):
         self._stack.set_visible_child(self.vpn_widget)
 
     def on_user_logged_out(self, _):
-        self.login_widget.reset()
         self._stack.set_visible_child(self.login_widget)

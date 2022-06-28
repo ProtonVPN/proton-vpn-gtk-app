@@ -16,8 +16,9 @@ def app(context):
         context.app_thread = Thread(target=context.app.run)
         context.app_thread.start()
         yield context.app
-        context.app.quit()
+        context.app.window.close()
+        context.app_thread.join()
 
 
-def before_all(context):
+def before_scenario(context, scenario):
     use_fixture(app, context)

@@ -24,6 +24,7 @@ setup(
             "pylint",
             "mypy",
             "behave",
+            "pyotp",
         ]
     },
     packages=find_namespace_packages(include=['proton.vpn.app.gtk']),

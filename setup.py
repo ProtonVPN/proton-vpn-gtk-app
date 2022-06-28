@@ -23,6 +23,7 @@ setup(
             "flake8",
             "pylint",
             "mypy",
+            "behave",
         ]
     },
     packages=find_namespace_packages(include=['proton.vpn.app.gtk']),

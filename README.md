@@ -40,10 +40,26 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Tests
+### Unit Tests
 
 You can run the tests with:
 
 ```shell
 pytest
+```
+
+### Integration tests
+
+You can run the integration tests with:
+
+```shell
+behave tests/features
+```
+
+On headless systems, it's possible to run the integration tests using `Xvfb`
+(virtual framebuffer X server). On Debian-based distributions, you just have
+to install the `xvfb` package. After that, you can run the integration tests with:
+
+```shell
+xvfb-run -a behave tests/features
 ```

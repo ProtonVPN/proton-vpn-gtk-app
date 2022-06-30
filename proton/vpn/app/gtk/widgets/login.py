@@ -44,8 +44,6 @@ class LoginWidget(Gtk.Bin):
             lambda _: self._on_session_expired_during_2fa()
         )
 
-        self.reset()
-
     def _on_user_authenticated(self, two_factor_auth_required: bool):
         if not two_factor_auth_required:
             self._signal_user_logged_in()
@@ -65,11 +63,11 @@ class LoginWidget(Gtk.Bin):
 
     def _signal_user_logged_in(self):
         self.emit("user-logged-in")
-        self.reset()
 
     def activate_form(self, form):
         self.active_form = form
         self._stack.set_visible_child(form)
+        form.reset()
 
     def reset(self):
         self.activate_form(self.login_form)

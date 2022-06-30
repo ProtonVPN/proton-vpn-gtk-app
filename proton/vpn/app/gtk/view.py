@@ -37,3 +37,4 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_user_logged_out(self, _):
         self._stack.set_visible_child(self.login_widget)
+        self.login_widget.reset()

@@ -38,7 +38,7 @@ class VPNWidget(Gtk.Grid):
         pass
 
     def _on_logout_button_clicked(self, _):
-        logger.info("Disconnecting...")
+        logger.info("Logging out...")
         self._main_spinner.start()
         future = self._controller.logout()
         future.add_done_callback(self._on_logout_result)

@@ -3,3 +3,4 @@ venv
 .idea
 *.pyc
 *.egg-info/
+.coverage

@@ -3,7 +3,7 @@ from concurrent.futures import Future
 
 from gi.repository import GObject
 
-from proton.session.exceptions import ProtonError
+from proton.session.exceptions import ProtonError, ProtonAPINotReachable
 from proton.vpn.core_api.session import LoginResult
 
 from proton.vpn.app.gtk.controller import Controller
@@ -128,11 +128,17 @@ class LoginForm(Gtk.Grid):
         except ValueError as e:
             self.error_message = "Invalid username."
             logger.debug(e)
+            self.emit("login-error")
             return
-        except ProtonError:
+        except ProtonAPINotReachable:
             self.error_message = "Please check your internet connection."
             logger.exception("Proton API error during login.")
+            self.emit("login-error")
             return
+        except ProtonError:
+            self.error_message = "An unexpected error occurred. " \
+                                 "Please try later."
+            logger.exception("Unexpected Protonerror during login")
         finally:
             self._login_spinner.stop()
 
@@ -140,6 +146,7 @@ class LoginForm(Gtk.Grid):
             self._signal_user_authenticated(result.twofa_required)
         else:
             self.error_message = "Wrong credentials."
+            self.emit("login-error")
             logger.debug(self.error_message)
 
     def _signal_user_authenticated(self, two_factor_auth_required: bool):
@@ -152,6 +159,11 @@ class LoginForm(Gtk.Grid):
         Signal emitted after the user successfully authenticates.
         :param two_factor_auth_required: whether 2FA is required or not.
         """
+        pass
+
+    @GObject.Signal(name="login-error")
+    def login_error(self):
+        """Signal emitted when a login error occurred."""
         pass
 
     def reset(self):

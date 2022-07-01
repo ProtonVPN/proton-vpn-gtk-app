@@ -1,3 +1,5 @@
+[![Coverage](https://gitlab.protontech.ch/ProtonVPN/linux/new-client/proton-vpn-gtk-app/badges/develop/coverage.svg?job=unit-tests-debian-11)](https://protonvpn.gitlab-pages.protontech.ch/linux/new-client/proton-vpn-gtk-app/coverage/)
+
 # Proton VPN GTK app
 
 This is our Proton VPN GTK app for Linux!

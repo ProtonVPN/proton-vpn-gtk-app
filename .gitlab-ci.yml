@@ -2,11 +2,3 @@ include:
  - project: 'ProtonVPN/Linux/new-client/integration/ci-libraries'
    ref: develop
    file: 'develop-pipeline.yml'
-
-integration-tests-debian-11:
-  rules:
-    - when: never
-
-integration-tests-fedora-36:
-  rules:
-    - when: never

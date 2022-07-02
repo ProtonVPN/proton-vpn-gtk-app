@@ -3,7 +3,7 @@ from concurrent.futures import Future
 from unittest.mock import Mock
 
 import pytest
-from proton.vpn.core_api.session import LoginResult
+from proton.vpn.session.dataclasses import LoginResult
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.login import LoginWidget, LoginForm, TwoFactorAuthForm

@@ -4,7 +4,7 @@ from concurrent.futures import Future
 from gi.repository import GObject
 
 from proton.session.exceptions import ProtonError, ProtonAPINotReachable
-from proton.vpn.core_api.session import LoginResult
+from proton.vpn.session.dataclasses import LoginResult
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk

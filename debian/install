@@ -1,0 +1,2 @@
+rpmbuild/SOURCES/proton-vpn.desktop usr/share/applications/
+rpmbuild/SOURCES/proton-vpn-logo.png usr/share/icons/hicolor/scalable/apps

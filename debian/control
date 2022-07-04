@@ -2,11 +2,11 @@ Source: proton-vpn-gtk-app
 Section: python
 Priority: optional
 Maintainer: Proton Technologies AG <opensource@proton.me>
-Build-Depends: debhelper (>= 9), dh-python, python3-all, python3-setuptools, python3-gi, python3-gi-cairo, gir1.2-gtk-3.0, python3-proton-vpn-api-core, python3-proton-vpn-network-manager-openvpn
+Build-Depends: debhelper (>= 9), dh-python, python3-all, python3-setuptools, python3-gi, python3-gi-cairo, gir1.2-gtk-3.0, python3-proton-vpn-api-core, python3-proton-vpn-network-manager-openvpn, python3-proton-keyring-linux-secretservice
 Standards-Version: 4.1.1
 X-Python3-Version: >= 3.2
 
 Package: python3-proton-vpn-gtk-app
 Architecture: all
-Depends: ${python3:Depends}, ${misc:Depends}, python3-gi, python3-gi-cairo, gir1.2-gtk-3.0, python3-proton-vpn-api-core, python3-proton-vpn-network-manager-openvpn
+Depends: ${python3:Depends}, ${misc:Depends}, python3-gi, python3-gi-cairo, gir1.2-gtk-3.0, python3-proton-vpn-api-core, python3-proton-vpn-network-manager-openvpn, python3-proton-keyring-linux-secretservice
 Description: Proton VPN App

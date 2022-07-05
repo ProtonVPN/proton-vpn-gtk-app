@@ -32,6 +32,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self._stack.add_named(self.vpn_widget, "vpn_widget")
         self.vpn_widget.connect("user-logged-out", self.on_user_logged_out)
 
+    def display_vpn_widget(self):
+        self._stack.set_visible_child(self.vpn_widget)
+
+    def display_login_widget(self):
+        self._stack.set_visible_child(self.login_widget)
+
     def on_user_logged_in(self, _):
         self._stack.set_visible_child(self.vpn_widget)
 

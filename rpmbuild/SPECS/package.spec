@@ -25,13 +25,13 @@ BuildRequires: desktop-file-utils
 BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
-BuildRequires: python3-protonvpn-core-api
+BuildRequires: python3-proton-vpn-api-core
 BuildRequires: python3-proton-vpn-network-manager-openvpn
 BuildRequires: python3-proton-keyring-linux-secretservice
 
 Requires: gtk3
 Requires: python3-gobject
-Requires: python3-protonvpn-core-api
+Requires: python3-proton-vpn-api-core
 Requires: python3-proton-vpn-network-manager-openvpn
 Requires: python3-proton-keyring-linux-secretservice
 

@@ -1,7 +1,8 @@
+import os
 import logging
 from concurrent.futures import Future
 
-from gi.repository import GObject
+from gi.repository import GObject, GdkPixbuf
 
 from proton.session.exceptions import ProtonError, ProtonAPINotReachable
 from proton.vpn.session.dataclasses import LoginResult
@@ -79,6 +80,7 @@ class LoginForm(Gtk.Grid):
         self._controller = controller
 
         self.set_column_homogeneous(True)
+        self._setup_icons()
 
         self._error = Gtk.Label(label="")
         self.add(self._error)
@@ -111,6 +113,19 @@ class LoginForm(Gtk.Grid):
         self.attach_next_to(
             self._login_spinner, self._login_button,
             Gtk.PositionType.BOTTOM, 1, 1
+        )
+
+        # Set password visibility
+        self._password_entry.set_icon_from_pixbuf(
+            Gtk.EntryIconPosition.SECONDARY,
+            self._show_pixbuff
+        )
+        self._password_entry.set_icon_activatable(
+            Gtk.EntryIconPosition.SECONDARY,
+            True
+        )
+        self._password_entry.connect(
+            "icon-press", self.on_change_password_visibility
         )
 
         self.reset()
@@ -206,6 +221,41 @@ class LoginForm(Gtk.Grid):
     def submit_login(self):
         """Submits the login form."""
         self._login_button.clicked()
+
+    def on_change_password_visibility(
+        self, gtk_entry_object, gtk_icon_object, gtk_event
+    ):
+        is_text_visible = gtk_entry_object.get_visibility()
+        gtk_entry_object.set_visibility(not is_text_visible)
+        self._password_entry.set_icon_from_pixbuf(
+            Gtk.EntryIconPosition.SECONDARY,
+            self._show_pixbuff
+            if is_text_visible
+            else self._hide_pixbuff
+        )
+
+    def _setup_icons(self):
+        eye_dirpath = os.path.dirname(os.path.abspath(__file__)).split("/")
+        eye_dirpath.pop()
+        eye_dirpath.append("assets")
+        eye_dirpath.append("icons")
+        eye_dirpath.append("eye")
+        eye_dirpath = "/".join(eye_dirpath)
+        hide_fp = os.path.join(eye_dirpath, "hide.svg")
+        show_fp = os.path.join(eye_dirpath, "show.svg")
+
+        self._hide_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename=hide_fp,
+            width=18,
+            height=18,
+            preserve_aspect_ratio=True
+        )
+        self._show_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename=show_fp,
+            width=18,
+            height=18,
+            preserve_aspect_ratio=True
+        )
 
 
 class TwoFactorAuthForm(Gtk.Grid):

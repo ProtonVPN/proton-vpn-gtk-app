@@ -1,7 +1,7 @@
 import logging
 from concurrent.futures import Future
 
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
@@ -41,14 +41,13 @@ class VPNWidget(Gtk.Grid):
         logger.info("Logging out...")
         self._main_spinner.start()
         future = self._controller.logout()
-        future.add_done_callback(self._on_logout_result)
+        future.add_done_callback(
+            lambda future: GLib.idle_add(self._on_logout_result, future)
+        )
 
     def _on_logout_result(self, future: Future):
         try:
             future.result()
-        except Exception:
-            logger.exception("Error during logout.")
-            return
         finally:
             self._main_spinner.stop()
 
@@ -59,14 +58,13 @@ class VPNWidget(Gtk.Grid):
         logger.info("Connecting...")
         self._main_spinner.start()
         future = self._controller.connect()
-        future.add_done_callback(self._on_connect_result)
+        future.add_done_callback(
+            lambda future: GLib.idle_add(self._on_connect_result, future)
+        )
 
     def _on_connect_result(self, future: Future):
         try:
             future.result()
-        except Exception:
-            logger.exception("Error during connect.")
-            return
         finally:
             self._main_spinner.stop()
         logger.info("Connected.")
@@ -75,14 +73,13 @@ class VPNWidget(Gtk.Grid):
         logger.info("Disconnecting...")
         self._main_spinner.start()
         future = self._controller.disconnect()
-        future.add_done_callback(self._on_disconnect_result)
+        future.add_done_callback(
+            lambda future: GLib.idle_add(self._on_disconnect_result, future)
+        )
 
     def _on_disconnect_result(self, future: Future):
         try:
             future.result()
-        except Exception:
-            logger.exception("Error during disconnect.")
-            return
         finally:
             self._main_spinner.stop()
         logger.info("Disconnected.")

@@ -32,21 +32,21 @@ def step_impl(context):
 
 @when("the correct username and password are introduced in the login form")
 def step_impl(context):
-    login_form = context.app.window.login_widget.login_form
+    login_form = context.app.window.main_widget.login_widget.login_form
     login_form.username = context.username
     login_form.password = context.password
 
 
 @when("the wrong password is introduced")
 def step_impl(context):
-    login_form = context.app.window.login_widget.login_form
+    login_form = context.app.window.main_widget.login_widget.login_form
     login_form.username = context.username
     login_form.password = "wrong password"
 
 
 @when("the login form is submitted")
 def step_impl(context):
-    login_widget = context.app.window.login_widget
+    login_widget = context.app.window.main_widget.login_widget
     login_form = login_widget.login_form
 
     # Notify when the user is authenticated.
@@ -99,7 +99,7 @@ def step_impl(context):
 
     assert context.two_factor_auth_required
 
-    two_factor_auth_form = context.app.window.login_widget.two_factor_auth_form
+    two_factor_auth_form = context.app.window.main_widget.login_widget.two_factor_auth_form
     two_factor_auth_form.two_factor_auth_code = pyotp.TOTP(
         context.two_factor_auth_shared_secret
     ).now()
@@ -112,5 +112,5 @@ def step_impl(context, error_message):
 
     assert context.login_error_occurred
 
-    login_form = context.app.window.login_widget.login_form
+    login_form = context.app.window.main_widget.login_widget.login_form
     assert error_message == login_form.error_message

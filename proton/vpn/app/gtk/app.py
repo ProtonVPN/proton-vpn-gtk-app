@@ -1,8 +1,15 @@
+import logging
+import sys
+import threading
 from concurrent.futures import ThreadPoolExecutor
+
+from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.view import MainWindow
+
+logger = logging.getLogger(__name__)
 
 
 class App(Gtk.Application):
@@ -27,6 +34,7 @@ class App(Gtk.Application):
             thread_pool_executor=thread_pool_executor
         )
         self.window = None
+        self.exception_handler = AppExceptionHandler()
 
     def do_activate(self):
         """
@@ -38,6 +46,57 @@ class App(Gtk.Application):
             # Windows are associated with the application like this.
             # When the last one is closed, the application shuts down.
             self.add_window(self.window)
+            self.exception_handler._application_window = self.window
 
         self.window.show_all()
         self.window.present()
+
+    @property
+    def error_dialog(self):
+        return self.exception_handler.error_dialog
+
+
+class AppExceptionHandler:
+    """Handles exceptions before they bubble all the way up."""
+
+    def __init__(self, application_window: Gtk.ApplicationWindow = None):
+        self._application_window = application_window
+        self.error_dialog = None
+
+        # Handle exceptions bubbling up in the main thread.
+        sys.excepthook = self.handle_errors
+
+        # Handle exceptions bubbling up in threads started with Thread.run().
+        # Notice that an exception raised from a thread managed by a
+        # ThreadPoolExecutor won't bubble up, as the executor won't allow it.
+        # In this case, make sure that you call Future.result() on the future
+        # returned by ThreadPoolExecutor.submit() in the main thread
+        # (e.g. using GLib.idle_add())
+        threading.excepthook = lambda args: self.handle_errors(args.exc_type, args.exc_value, args.exc_traceback)
+
+    def handle_errors(self, exc_type, exc_value, exc_traceback):
+        if issubclass(exc_type, ProtonAPINotReachable):
+            error_message = "Our servers are not reachable. Please check your internet connection."
+        elif isinstance(exc_value, ProtonAPIError) and exc_value.error:
+            error_message = exc_value.error
+        elif issubclass(exc_type, Exception):
+            error_message = "We're sorry, an unexpected error occurred. " \
+                            "Please try later."
+        else:
+            raise exc_value if exc_value else exc_type
+
+        logger.error("Unexpected error.", exc_info=(exc_type, exc_value, exc_traceback))
+        self._show_error_dialog(error_message)
+
+    def _show_error_dialog(self, secondary_text, primary_text="Something went wrong"):
+        self.error_dialog = Gtk.MessageDialog(
+            transient_for=self._application_window,
+            flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
+            message_type=Gtk.MessageType.ERROR,
+            buttons=Gtk.ButtonsType.OK,
+            text=primary_text,
+        )
+        self.error_dialog.format_secondary_text(secondary_text)
+        self.error_dialog.run()
+        self.error_dialog.destroy()
+        self.error_dialog = None

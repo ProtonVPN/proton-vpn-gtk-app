@@ -19,6 +19,13 @@ def app(context):
         context.app_thread.start()
         window_added_event.wait(timeout=2)
         yield context.app
+
+        if context.app.error_dialog:
+            dialog_closed_event = Event()
+            context.app.error_dialog.connect("destroy-event", lambda *_: dialog_closed_event.set())
+            context.app.error_dialog.close()
+            dialog_closed_event.wait(timeout=1)
+
         context.app.window.close()
         context.app_thread.join()
 

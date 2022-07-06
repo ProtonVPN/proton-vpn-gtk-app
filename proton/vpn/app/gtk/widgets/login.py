@@ -2,9 +2,8 @@ import os
 import logging
 from concurrent.futures import Future
 
-from gi.repository import GObject, GdkPixbuf
+from gi.repository import GObject, GdkPixbuf, GLib
 
-from proton.session.exceptions import ProtonError, ProtonAPINotReachable
 from proton.vpn.session.dataclasses import LoginResult
 
 from proton.vpn.app.gtk.controller import Controller
@@ -133,7 +132,9 @@ class LoginForm(Gtk.Grid):
     def _on_login_button_clicked(self, _):
         self._login_spinner.start()
         future = self._controller.login(self.username, self.password)
-        future.add_done_callback(self._on_login_result)
+        future.add_done_callback(
+            lambda future: GLib.idle_add(self._on_login_result, future)
+        )
 
     def _on_login_result(self, future: Future[LoginResult]):
         try:
@@ -143,15 +144,6 @@ class LoginForm(Gtk.Grid):
             logger.debug(e)
             self.emit("login-error")
             return
-        except ProtonAPINotReachable:
-            self.error_message = "Please check your internet connection."
-            logger.exception("Proton API error during login.")
-            self.emit("login-error")
-            return
-        except ProtonError:
-            self.error_message = "An unexpected error occurred. " \
-                                 "Please try later."
-            logger.exception("Unexpected Protonerror during login")
         finally:
             self._login_spinner.stop()
 
@@ -299,15 +291,13 @@ class TwoFactorAuthForm(Gtk.Grid):
         future = self._controller.submit_2fa_code(
             self.two_factor_auth_code
         )
-        future.add_done_callback(self._on_2fa_submission_result)
+        future.add_done_callback(
+            lambda future: GLib.idle_add(self._on_2fa_submission_result, future)
+        )
 
     def _on_2fa_submission_result(self, future: Future[LoginResult]):
         try:
             result = future.result()
-        except ProtonError:
-            self.error_message = "Please check your internet connection."
-            logger.exception("Error during 2FA.")
-            return
         finally:
             self._2fa_spinner.stop()
 

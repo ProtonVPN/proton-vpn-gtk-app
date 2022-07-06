@@ -4,8 +4,7 @@ import logging
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.login import LoginWidget
-from proton.vpn.app.gtk.widgets.vpn import VPNWidget
+from proton.vpn.app.gtk.widgets.main import MainWidget
 
 logger = logging.getLogger(__name__)
 
@@ -21,39 +20,5 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_border_width(10)
         self.set_resizable(False)
 
-        self._stack = Gtk.Stack()
-        self.add(self._stack)
-
-        self.login_widget = LoginWidget(controller)
-        self._stack.add_named(self.login_widget, "login_widget")
-        self.login_widget.connect("user-logged-in", self.on_user_logged_in)
-
-        self.vpn_widget = VPNWidget(controller)
-        self._stack.add_named(self.vpn_widget, "vpn_widget")
-        self.vpn_widget.connect("user-logged-out", self.on_user_logged_out)
-
-        self.connect("show", self.on_show)
-
-    def display_vpn_widget(self):
-        self._stack.set_visible_child(self.vpn_widget)
-
-    def display_login_widget(self):
-        self._stack.set_visible_child(self.login_widget)
-
-    def on_user_logged_in(self, _):
-        self._stack.set_visible_child(self.vpn_widget)
-
-    def on_user_logged_out(self, _):
-        self._stack.set_visible_child(self.login_widget)
-        self.login_widget.reset()
-
-    def on_show(self, _widget):
-        self.initialize_visible_widget()
-
-    def initialize_visible_widget(self):
-        # The widget should already be flagged to be shown
-        # when this method is called
-        if self._controller.display_login:
-            self.display_login_widget()
-        else:
-            self.display_vpn_widget()
+        self.main_widget = MainWidget(controller=controller)
+        self.add(self.main_widget)

@@ -32,6 +32,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self._stack.add_named(self.vpn_widget, "vpn_widget")
         self.vpn_widget.connect("user-logged-out", self.on_user_logged_out)
 
+        self.connect("show", self.on_show)
+
     def display_vpn_widget(self):
         self._stack.set_visible_child(self.vpn_widget)
 
@@ -44,3 +46,14 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_user_logged_out(self, _):
         self._stack.set_visible_child(self.login_widget)
         self.login_widget.reset()
+
+    def on_show(self, _widget):
+        self.initialize_visible_widget()
+
+    def initialize_visible_widget(self):
+        # The widget should already be flagged to be shown
+        # when this method is called
+        if self._controller.display_login:
+            self.display_login_widget()
+        else:
+            self.display_vpn_widget()

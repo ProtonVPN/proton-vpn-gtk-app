@@ -41,8 +41,3 @@ class App(Gtk.Application):
 
         self.window.show_all()
         self.window.present()
-
-        if self._controller.display_login:
-            self.window.display_login_widget()
-        else:
-            self.window.display_vpn_widget()

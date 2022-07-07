@@ -72,11 +72,14 @@ class AppExceptionHandler:
         # In this case, make sure that you call Future.result() on the future
         # returned by ThreadPoolExecutor.submit() in the main thread
         # (e.g. using GLib.idle_add())
-        threading.excepthook = lambda args: self.handle_errors(args.exc_type, args.exc_value, args.exc_traceback)
+        threading.excepthook = lambda args: self.handle_errors(
+            args.exc_type, args.exc_value, args.exc_traceback
+        )
 
     def handle_errors(self, exc_type, exc_value, exc_traceback):
         if issubclass(exc_type, ProtonAPINotReachable):
-            error_message = "Our servers are not reachable. Please check your internet connection."
+            error_message = "Our servers are not reachable. " \
+                            "Please check your internet connection."
         elif isinstance(exc_value, ProtonAPIError) and exc_value.error:
             error_message = exc_value.error
         elif issubclass(exc_type, Exception):
@@ -85,10 +88,15 @@ class AppExceptionHandler:
         else:
             raise exc_value if exc_value else exc_type
 
-        logger.error("Unexpected error.", exc_info=(exc_type, exc_value, exc_traceback))
+        logger.error(
+            "Unexpected error.",
+            exc_info=(exc_type, exc_value, exc_traceback)
+        )
         self._show_error_dialog(error_message)
 
-    def _show_error_dialog(self, secondary_text, primary_text="Something went wrong"):
+    def _show_error_dialog(
+            self, secondary_text, primary_text="Something went wrong"
+    ):
         self.error_dialog = Gtk.MessageDialog(
             transient_for=self._application_window,
             flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,

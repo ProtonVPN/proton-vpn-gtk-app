@@ -31,8 +31,8 @@ class Controller:
         return self._thread_pool.submit(self._api.logout)
 
     @property
-    def display_login(self) -> bool:
-        return not self._api.is_user_logged_in()
+    def user_logged_in(self) -> bool:
+        return self._api.is_user_logged_in()
 
     def connect(self):
         def _connect():

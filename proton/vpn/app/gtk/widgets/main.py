@@ -28,26 +28,28 @@ class MainWidget(Gtk.Bin):
 
         self.connect("show", self._on_show)
 
+    def initialize_visible_widget(self):
+        # The widget should already be flagged to be shown
+        # when this method is called.
+        if self._controller.user_logged_in:
+            self._display_vpn_widget()
+        else:
+            self._display_login_widget()
+
     def _display_vpn_widget(self):
+        self.active_widget = self.vpn_widget
         self._stack.set_visible_child(self.vpn_widget)
 
     def _display_login_widget(self):
+        self.active_widget = self.login_widget
         self._stack.set_visible_child(self.login_widget)
 
     def _on_user_logged_in(self, _):
-        self._stack.set_visible_child(self.vpn_widget)
+        self._display_vpn_widget()
 
     def _on_user_logged_out(self, _):
-        self._stack.set_visible_child(self.login_widget)
+        self._display_login_widget()
         self.login_widget.reset()
 
     def _on_show(self, _widget):
-        self._initialize_visible_widget()
-
-    def _initialize_visible_widget(self):
-        # The widget should already be flagged to be shown
-        # when this method is called.
-        if self._controller.display_login:
-            self._display_login_widget()
-        else:
-            self._display_vpn_widget()
+        self.initialize_visible_widget()

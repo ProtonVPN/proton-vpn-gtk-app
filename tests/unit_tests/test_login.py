@@ -40,7 +40,7 @@ def test_login_widget_asks_for_2fa_when_required():
 def test_login_widget_switches_back_to_login_form_if_session_expires_during_2fa():
     login_widget = LoginWidget(controller=Mock())
 
-    login_widget.activate_form(login_widget.two_factor_auth_form)
+    login_widget.display_form(login_widget.two_factor_auth_form)
     login_widget.two_factor_auth_form.emit("session-expired")
 
     assert login_widget.active_form == login_widget.login_form

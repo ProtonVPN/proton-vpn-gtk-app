@@ -13,20 +13,17 @@ from proton.vpn.app.gtk import Gtk
 logger = logging.getLogger(__name__)
 
 
-class LoginWidget(Gtk.Bin):
+class LoginWidget(Gtk.Stack):
     """Widget used to authenticate the user."""
     def __init__(self, controller: Controller):
         super().__init__()
         self._controller = controller
         self.active_form = None
 
-        self._stack = Gtk.Stack()
-        self.add(self._stack)
-
         self.login_form = LoginForm(controller)
-        self._stack.add_named(self.login_form, "login_form")
+        self.add_named(self.login_form, "login_form")
         self.two_factor_auth_form = TwoFactorAuthForm(controller)
-        self._stack.add_named(self.two_factor_auth_form, "2fa_form")
+        self.add_named(self.two_factor_auth_form, "2fa_form")
 
         self.login_form.connect(
             "user-authenticated",
@@ -48,13 +45,13 @@ class LoginWidget(Gtk.Bin):
         if not two_factor_auth_required:
             self._signal_user_logged_in()
         else:
-            self.activate_form(self.two_factor_auth_form)
+            self.display_form(self.two_factor_auth_form)
 
     def _on_two_factor_auth_successful(self):
         self._signal_user_logged_in()
 
     def _on_session_expired_during_2fa(self):
-        self.activate_form(self.login_form)
+        self.display_form(self.login_form)
 
     @GObject.Signal(name="user-logged-in")
     def user_logged_in(self):
@@ -64,13 +61,13 @@ class LoginWidget(Gtk.Bin):
     def _signal_user_logged_in(self):
         self.emit("user-logged-in")
 
-    def activate_form(self, form):
+    def display_form(self, form):
         self.active_form = form
-        self._stack.set_visible_child(form)
+        self.set_visible_child(form)
         form.reset()
 
     def reset(self):
-        self.activate_form(self.login_form)
+        self.display_form(self.login_form)
 
 
 class LoginForm(Gtk.Grid):

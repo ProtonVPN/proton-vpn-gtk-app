@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Union
+
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.login import LoginWidget
@@ -30,24 +32,21 @@ class MainWidget(Gtk.Stack):
     def initialize_visible_widget(self):
         # The widget should already be flagged to be shown
         # when this method is called.
-        if self._controller.user_logged_in:
-            self._display_vpn_widget()
-        else:
-            self._display_login_widget()
+        self._display_widget(
+            self.vpn_widget
+            if self._controller.user_logged_in else
+            self.login_widget
+        )
 
-    def _display_vpn_widget(self):
-        self.active_widget = self.vpn_widget
-        self.set_visible_child(self.vpn_widget)
-
-    def _display_login_widget(self):
-        self.active_widget = self.login_widget
-        self.set_visible_child(self.login_widget)
+    def _display_widget(self, widget: Union[LoginWidget, VPNWidget]):
+        self.active_widget = widget
+        self.set_visible_child(widget)
 
     def _on_user_logged_in(self, _login_widget: LoginWidget):
-        self._display_vpn_widget()
+        self._display_widget(self.vpn_widget)
 
     def _on_user_logged_out(self, _login_widget: LoginWidget):
-        self._display_login_widget()
+        self._display_widget(self.login_widget)
         self.login_widget.reset()
 
     def _on_show(self, _main_widget: MainWidget):

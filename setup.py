@@ -27,7 +27,7 @@ setup(
             "pyotp",
         ]
     },
-    packages=find_namespace_packages(include=['proton.vpn.app.gtk']),
+    packages=find_namespace_packages(include=['proton.vpn.app.gtk.*']),
     include_package_data=True,
     python_requires=">=3.8",
     license="GPLv3",

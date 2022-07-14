@@ -2,7 +2,8 @@ import os
 import threading
 
 from proton.sso import ProtonSSO
-
+import subprocess
+from keyring.backends import SecretService
 from behave import given, when, then
 import pyotp
 
@@ -95,6 +96,23 @@ def step_impl(context):
 def step_impl(context):
     login_form = context.app.window.main_widget.login_widget.login_form
     assert login_form.is_login_button_clickable is False
+@given("keyring is unlocked")
+def step_impl(context):
+    # Unlock keyring
+    start_keyring_process = subprocess.Popen("gnome-keyring-daemon --unlock", stdin=subprocess.PIPE, shell=True)
+    stdout, stderr = start_keyring_process.communicate(b"printf '\n'\n")
+    assert start_keyring_process.returncode == 0
+
+
+@then("the credentials are stored in the system's keyring.")
+def step_impl(context):
+    # Wait for the user-logged-in event.
+
+    user_logged_in = context.user_logged_in_event.wait(timeout=10)
+    assert user_logged_in
+
+    backend = SecretService.Keyring()
+    assert context.username in backend.get_password("Proton", "proton-sso-accounts")
 
 
 @given("a user with 2FA enabled")
@@ -127,3 +145,4 @@ def step_impl(context, error_message):
 
     login_form = context.app.window.main_widget.login_widget.login_form
     assert error_message == login_form.error_message
+

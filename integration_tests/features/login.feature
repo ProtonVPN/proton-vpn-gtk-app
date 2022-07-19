@@ -20,3 +20,8 @@ Feature: Login
     When the wrong password is introduced
     And the login form is submitted
     Then the user should be notified with the error message: "Wrong credentials."
+
+  Scenario: Username and password not provided.
+    Given the user is not logged in
+    When the login data is not provided
+    Then the user should not be able to submit the form.

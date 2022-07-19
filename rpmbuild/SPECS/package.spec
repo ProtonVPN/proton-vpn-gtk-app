@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.0.1
+%define version 0.0.2
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -63,5 +63,5 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Mon Jun 4 2022 Proton Technologies AG <opensource@proton.me> 0.0.1
+* Mon Jun 4 2022 Proton Technologies AG <opensource@proton.me> 0.0.2
 - First RPM release

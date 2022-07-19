@@ -96,14 +96,23 @@ class LoginForm(Gtk.Grid):
 
         self._login_button = Gtk.Button(label="Login")
         self._login_button.connect("clicked", self._on_login_button_clicked)
+        # By default the button should never be clickable, as username and
+        # password fields are empty and users need to actively provide an input
+        # to unlock the login button.
+        self._login_button.set_property("sensitive", False)
         self.attach_next_to(
             self._login_button, self._password_entry,
             Gtk.PositionType.BOTTOM, 1, 1
         )
-        # Pressing enter on the password entry triggers the clicked event
-        # on the login button.
+
+        # Listen to key entries so that the login button can be "unlocked"
+        # once username and password are provided.
         self._password_entry.connect(
-            "activate", lambda _: self._login_button.clicked())
+            "changed", self._on_entry_changed
+        )
+        self._username_entry.connect(
+            "changed", self._on_entry_changed
+        )
 
         self._login_spinner = Gtk.Spinner()
         self.attach_next_to(
@@ -150,6 +159,11 @@ class LoginForm(Gtk.Grid):
             self.error_message = "Wrong credentials."
             self.emit("login-error")
             logger.debug(self.error_message)
+
+    def _on_entry_changed(self, _):
+        is_username_provided = len(self.username.strip()) > 0
+        is_password_provided = len(self.password.strip()) > 0
+        self._login_button.set_property("sensitive", is_username_provided and is_password_provided)
 
     def _signal_user_authenticated(self, two_factor_auth_required: bool):
         self.emit("user-authenticated", two_factor_auth_required)
@@ -206,6 +220,10 @@ class LoginForm(Gtk.Grid):
     def error_message(self, message: str):
         """Sets an error message and shows it to the user."""
         self._error.set_text(message)
+
+    @property
+    def is_login_button_clickable(self):
+        return self._login_button.get_property("sensitive")
 
     def submit_login(self):
         """Submits the login form."""

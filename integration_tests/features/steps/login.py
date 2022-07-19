@@ -74,6 +74,13 @@ def step_impl(context):
     login_form.submit_login()
 
 
+@when("the login data is not provided")
+def step_impl(context):
+    login_form = context.app.window.main_widget.login_widget.login_form
+    login_form.username = ""
+    login_form.password = context.password
+
+
 @then("the user should be logged in.")
 def step_impl(context):
     # Wait for the user-logged-in event.
@@ -82,6 +89,12 @@ def step_impl(context):
 
     session = ProtonSSO().get_session(account_name=context.username)
     assert session.authenticated
+
+
+@then("the user should not be able to submit the form.")
+def step_impl(context):
+    login_form = context.app.window.main_widget.login_widget.login_form
+    assert login_form.is_login_button_clickable is False
 
 
 @given("a user with 2FA enabled")

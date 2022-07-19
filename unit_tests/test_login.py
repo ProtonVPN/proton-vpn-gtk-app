@@ -98,6 +98,8 @@ def test_login_form_shows_error_when_submitting_an_invalid_username(
         controller_mocking_invalid_username
 ):
     login_form = LoginForm(controller_mocking_invalid_username)
+    login_form.username = "MockInvalidUsername"
+    login_form.password = "MockPassword"
     login_form.submit_login()
 
     process_gtk_events()
@@ -122,6 +124,8 @@ def test_login_form_shows_error_when_submitting_wrong_credentials(
     controller_mocking_invalid_credentials
 ):
     login_form = LoginForm(controller_mocking_invalid_credentials)
+    login_form.username = "MockUser"
+    login_form.password = "MockPassword"
     login_form.submit_login()
 
     process_gtk_events()

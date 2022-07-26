@@ -81,6 +81,70 @@ def test_login_form_signals_when_the_user_is_authenticated(
     )
 
 
+def test_successfull_login_on_press_enter_on_username_field(
+        controller_mocking_successful_login
+):
+    login_form = LoginForm(controller_mocking_successful_login)
+    user_logged_in_callback = Mock()
+    login_form.connect("user-authenticated", user_logged_in_callback)
+
+    login_form.username = "username"
+    login_form.password = "password"
+    login_form.username_enter()
+
+    process_gtk_events()
+
+    controller_mocking_successful_login.login.assert_called_once()
+
+
+def test_successfull_login_on_press_enter_on_password_field(
+        controller_mocking_successful_login
+):
+    login_form = LoginForm(controller_mocking_successful_login)
+    user_logged_in_callback = Mock()
+    login_form.connect("user-authenticated", user_logged_in_callback)
+
+    login_form.username = "username"
+    login_form.password = "password"
+    login_form.password_enter()
+
+    process_gtk_events()
+
+    controller_mocking_successful_login.login.assert_called_once()
+
+
+def test_unsuccessfull_login_on_press_enter_on_username_field_with_missing_username(
+        controller_mocking_successful_login
+):
+    login_form = LoginForm(controller_mocking_successful_login)
+    user_logged_in_callback = Mock()
+    login_form.connect("user-authenticated", user_logged_in_callback)
+
+    login_form.username = ""
+    login_form.password = "password"
+    login_form.password_enter()
+
+    process_gtk_events()
+
+    controller_mocking_successful_login.login.assert_not_called()
+
+
+def test_unsuccessfull_login_on_press_enter_on_password_field_with_password_username(
+        controller_mocking_successful_login
+):
+    login_form = LoginForm(controller_mocking_successful_login)
+    user_logged_in_callback = Mock()
+    login_form.connect("user-authenticated", user_logged_in_callback)
+
+    login_form.username = "username"
+    login_form.password = ""
+    login_form.password_enter()
+
+    process_gtk_events()
+
+    controller_mocking_successful_login.login.assert_not_called()
+
+
 @pytest.fixture
 def controller_mocking_invalid_username():
     controller_mock = Mock()

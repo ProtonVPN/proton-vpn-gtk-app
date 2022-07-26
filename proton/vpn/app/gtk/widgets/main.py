@@ -38,16 +38,16 @@ class MainWidget(Gtk.Stack):
             self.login_widget
         )
 
-    def _display_widget(self, widget: Union[LoginWidget, VPNWidget]):
-        self.active_widget = widget
-        self.set_visible_child(widget)
-
     def _on_user_logged_in(self, _login_widget: LoginWidget):
         self._display_widget(self.vpn_widget)
 
     def _on_user_logged_out(self, _login_widget: LoginWidget):
         self._display_widget(self.login_widget)
         self.login_widget.reset()
+
+    def _display_widget(self, widget: Union[LoginWidget, VPNWidget]):
+        self.active_widget = widget
+        self.set_visible_child(widget)
 
     def _on_show(self, _main_widget: MainWidget):
         self.initialize_visible_widget()

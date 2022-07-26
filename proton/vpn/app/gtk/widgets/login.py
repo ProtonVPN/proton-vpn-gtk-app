@@ -114,6 +114,10 @@ class LoginForm(Gtk.Grid):
             "changed", self._on_entry_changed
         )
 
+        # Allows both entries to react to 'Enter' button
+        self._username_entry.connect("activate", self._on_press_enter)
+        self._password_entry.connect("activate", self._on_press_enter)
+
         self._login_spinner = Gtk.Spinner()
         self.attach_next_to(
             self._login_spinner, self._login_button,
@@ -134,6 +138,12 @@ class LoginForm(Gtk.Grid):
         )
 
         self.reset()
+
+    def _on_press_enter(self, _):
+        if not self._login_button.get_property("sensitive"):
+            return
+
+        self._login_button.clicked()
 
     def _on_login_button_clicked(self, _):
         self._login_spinner.start()
@@ -161,6 +171,7 @@ class LoginForm(Gtk.Grid):
             logger.debug(self.error_message)
 
     def _on_entry_changed(self, _):
+        """Toggles login button state based on username and password lengths."""
         is_username_provided = len(self.username.strip()) > 0
         is_password_provided = len(self.password.strip()) > 0
         self._login_button.set_property("sensitive", is_username_provided and is_password_provided)
@@ -223,15 +234,29 @@ class LoginForm(Gtk.Grid):
 
     @property
     def is_login_button_clickable(self):
+        """Check if the login button is clickable or not.
+        This property was made available mainly for testing purposes."""
         return self._login_button.get_property("sensitive")
 
     def submit_login(self):
-        """Submits the login form."""
+        """Submits the login form.
+        This property was made available mainly for testing purposes."""
         self._login_button.clicked()
+
+    def username_enter(self):
+        """Submits the login form from the username entry.
+        This property was made available mainly for testing purposes."""
+        self._username_entry.emit("activate")
+
+    def password_enter(self):
+        """Submits the login form from the password entry.
+        This property was made available mainly for testing purposes."""
+        self._password_entry.emit("activate")
 
     def on_change_password_visibility(
         self, gtk_entry_object, gtk_icon_object, gtk_event
     ):
+        """Changes password visibility, updating accordingly the icon."""
         is_text_visible = gtk_entry_object.get_visibility()
         gtk_entry_object.set_visibility(not is_text_visible)
         self._password_entry.set_icon_from_pixbuf(

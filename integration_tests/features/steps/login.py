@@ -96,6 +96,8 @@ def step_impl(context):
 def step_impl(context):
     login_form = context.app.window.main_widget.login_widget.login_form
     assert login_form.is_login_button_clickable is False
+
+
 @given("keyring is unlocked")
 def step_impl(context):
     # Unlock keyring

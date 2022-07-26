@@ -3,6 +3,8 @@ import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
+from gi.repository import GObject
+
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 
 from proton.vpn.app.gtk.controller import Controller
@@ -50,10 +52,16 @@ class App(Gtk.Application):
 
         self.window.show_all()
         self.window.present()
+        self.emit("app-ready")
 
     @property
     def error_dialog(self):
         return self.exception_handler.error_dialog
+
+    @GObject.Signal(name="app-ready")
+    def app_ready(self):
+        """Signal emitted when the app is ready for interaction."""
+        pass
 
 
 class AppExceptionHandler:

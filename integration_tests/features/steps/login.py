@@ -82,7 +82,7 @@ def step_impl(context):
     login_form.password = context.password
 
 
-@then("the user should be logged in.")
+@then("the user should be logged in")
 def step_impl(context):
     # Wait for the user-logged-in event.
     user_logged_in = context.user_logged_in_event.wait(timeout=10)
@@ -92,7 +92,7 @@ def step_impl(context):
     assert session.authenticated
 
 
-@then("the user should not be able to submit the form.")
+@then("the user should not be able to submit the form")
 def step_impl(context):
     login_form = context.app.window.main_widget.login_widget.login_form
     assert login_form.is_login_button_clickable is False
@@ -110,7 +110,7 @@ def step_impl(context):
     assert start_keyring_process.returncode == 0
 
 
-@then("the credentials are stored in the system's keyring.")
+@then("the credentials are stored in the system's keyring")
 def step_impl(context):
     # Wait for the user-logged-in event.
 

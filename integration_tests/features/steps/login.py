@@ -101,7 +101,11 @@ def step_impl(context):
 @given("keyring is unlocked")
 def step_impl(context):
     # Unlock keyring
-    start_keyring_process = subprocess.Popen("gnome-keyring-daemon --unlock", stdin=subprocess.PIPE, shell=True)
+    start_keyring_process = subprocess.Popen(
+        "gnome-keyring-daemon --unlock",
+        stdin=subprocess.PIPE,
+        shell=True
+    )
     stdout, stderr = start_keyring_process.communicate(b"printf '\n'\n")
     assert start_keyring_process.returncode == 0
 
@@ -147,4 +151,3 @@ def step_impl(context, error_message):
 
     login_form = context.app.window.main_widget.login_widget.login_form
     assert error_message == login_form.error_message
-

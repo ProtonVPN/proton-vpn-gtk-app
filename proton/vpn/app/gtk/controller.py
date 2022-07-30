@@ -3,7 +3,6 @@ from concurrent.futures import ThreadPoolExecutor
 
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.core_api import ProtonVPNAPI
-from proton.vpn.session.dataclasses import LoginResult
 from proton.vpn.core_api.connection import Subscriber
 
 
@@ -15,13 +14,13 @@ class Controller:
         self._connection_subscriber = Subscriber()
         self._api.connection.register(self._connection_subscriber)
 
-    def login(self, username: str, password: str) -> Future[LoginResult]:
+    def login(self, username: str, password: str) -> Future:
         return self._thread_pool.submit(
             self._api.login,
             username, password
         )
 
-    def submit_2fa_code(self, code: str) -> Future[LoginResult]:
+    def submit_2fa_code(self, code: str) -> Future:
         return self._thread_pool.submit(
             self._api.submit_2fa_code,
             code

@@ -4,8 +4,6 @@ from concurrent.futures import Future
 
 from gi.repository import GObject, GdkPixbuf, GLib
 
-from proton.vpn.session.dataclasses import LoginResult
-
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 
@@ -152,7 +150,7 @@ class LoginForm(Gtk.Grid):
             lambda future: GLib.idle_add(self._on_login_result, future)
         )
 
-    def _on_login_result(self, future: Future[LoginResult]):
+    def _on_login_result(self, future: Future):
         try:
             result = future.result()
         except ValueError as e:
@@ -335,7 +333,7 @@ class TwoFactorAuthForm(Gtk.Grid):
             lambda future: GLib.idle_add(self._on_2fa_submission_result, future)
         )
 
-    def _on_2fa_submission_result(self, future: Future[LoginResult]):
+    def _on_2fa_submission_result(self, future: Future):
         try:
             result = future.result()
         finally:

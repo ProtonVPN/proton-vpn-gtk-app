@@ -4,3 +4,4 @@ venv
 *.pyc
 *.egg-info/
 .coverage
+.python-version

@@ -51,3 +51,8 @@ class Controller:
                 ConnectionStateEnum.DISCONNECTED, timeout=5
             )
         return self._thread_pool.submit(_disconnect)
+
+    def does_current_connection_exists(self):
+        def _current_connection_exists():
+            return bool(self._api.connection.get_current_connection())
+        return self._thread_pool.submit(_current_connection_exists)

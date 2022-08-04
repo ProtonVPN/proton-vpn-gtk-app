@@ -32,17 +32,20 @@ class VPNWidget(Gtk.Grid):
         self.add(self._disconnect_button)
         self._main_spinner = Gtk.Spinner()
         self.add(self._main_spinner)
+        self.__vpn_disconnected_signal_id = None
 
     @GObject.Signal(name="user-logged-out")
     def user_logged_out(self):
         pass
 
+    @GObject.Signal(name="vpn-disconnected")
+    def vpn_disconnected(self):
+        pass
+
     def _on_logout_button_clicked(self, _):
-        logger.info("Logging out...")
-        self._main_spinner.start()
-        future = self._controller.logout()
+        future = self._controller.does_current_connection_exists()
         future.add_done_callback(
-            lambda future: GLib.idle_add(self._on_logout_result, future)
+            lambda future: GLib.idle_add(self._current_connection_result, future)
         )
 
     def _on_logout_result(self, future: Future):
@@ -62,6 +65,12 @@ class VPNWidget(Gtk.Grid):
             lambda future: GLib.idle_add(self._on_connect_result, future)
         )
 
+    def _current_connection_result(self, future):
+        if future.result():
+            self._show_disconnect_dialog()
+        else:
+            self._user_logout(None)
+
     def _on_connect_result(self, future: Future):
         try:
             future.result()
@@ -80,6 +89,48 @@ class VPNWidget(Gtk.Grid):
     def _on_disconnect_result(self, future: Future):
         try:
             future.result()
+            self.emit("vpn-disconnected")
         finally:
             self._main_spinner.stop()
         logger.info("Disconnected.")
+
+    def _user_logout(self, _):
+        if self.__vpn_disconnected_signal_id:
+            GObject.signal_handler_disconnect(self, self.__vpn_disconnected_signal_id)
+            self.__vpn_disconnected_signal_id = None
+
+        logger.info("Logging out...")
+        self._main_spinner.start()
+        future = self._controller.logout()
+        future.add_done_callback(
+            lambda future: GLib.idle_add(self._on_logout_result, future)
+        )
+
+    def _show_disconnect_dialog(self):
+        self._logout_dialog = Gtk.Dialog()
+        self._logout_dialog.set_title("Active connection found")
+        self._logout_dialog.set_default_size(500, 200)
+        self._logout_dialog.add_button("_Yes", Gtk.ResponseType.YES)
+        self._logout_dialog.add_button("_No", Gtk.ResponseType.NO)
+        self._logout_dialog.connect("response", self._on_show_disconnect_response)
+        label = Gtk.Label(label="Logging out of the application will disconnect the active vpn connection.\n\nDo you want to continue ?")
+        self._logout_dialog.vbox.add(label)
+        self._logout_dialog.show_all()
+
+    def _on_show_disconnect_response(self, dialog, response):
+        if response == Gtk.ResponseType.YES:
+            self.__vpn_disconnected_signal_id = self.connect("vpn-disconnected", self._user_logout)
+            self._disconnect_button.clicked()
+
+        self._logout_dialog.destroy()
+        self._logout_dialog = None
+
+    def logout_button_click(self):
+        """Simulates logout button click.
+        This property was made available mainly for testing purposes."""
+        self._logout_button.clicked()
+
+    def close_dialog(self, end_current_connection):
+        """Simulates interaction with logout dialog.
+        This property was made available mainly for testing purposes."""
+        self._logout_dialog.emit("response", Gtk.ResponseType.YES if end_current_connection else Gtk.ResponseType.NO)

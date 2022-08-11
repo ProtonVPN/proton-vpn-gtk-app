@@ -5,6 +5,7 @@ from gi.repository import GObject, GLib
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.core_api.exceptions import ActiveVPNConnectionFound
 
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ class VPNWidget(Gtk.Grid):
         self.set_column_homogeneous(True)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
+        self._logout_dialog = None
         self._logout_button = Gtk.Button(label="Logout")
         self._logout_button.connect("clicked", self._on_logout_button_clicked)
         self.add(self._logout_button)
@@ -42,20 +44,28 @@ class VPNWidget(Gtk.Grid):
     def vpn_disconnected(self):
         pass
 
-    def _on_logout_button_clicked(self, _):
-        future = self._controller.does_current_connection_exists()
+    def _on_logout_button_clicked(self, *_):
+        logger.info("Logging out...")
+        self._main_spinner.start()
+        future = self._controller.logout()
         future.add_done_callback(
-            lambda future: GLib.idle_add(self._current_connection_result, future)
+            lambda future: GLib.idle_add(self._on_logout_result, future)
         )
 
     def _on_logout_result(self, future: Future):
+        if self.__vpn_disconnected_signal_id:
+            GObject.signal_handler_disconnect(self, self.__vpn_disconnected_signal_id)
+            self.__vpn_disconnected_signal_id = None
+
         try:
             future.result()
+            logger.info("User logged out.")
+            self.emit("user-logged-out")
+        except ActiveVPNConnectionFound:
+            self._main_spinner.start()
+            self._show_disconnect_dialog()
         finally:
             self._main_spinner.stop()
-
-        logger.info("User logged out.")
-        self.emit("user-logged-out")
 
     def _on_connect_button_clicked(self, _):
         logger.info("Connecting...")
@@ -64,12 +74,6 @@ class VPNWidget(Gtk.Grid):
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_connect_result, future)
         )
-
-    def _current_connection_result(self, future):
-        if future.result():
-            self._show_disconnect_dialog()
-        else:
-            self._user_logout(None)
 
     def _on_connect_result(self, future: Future):
         try:
@@ -94,18 +98,6 @@ class VPNWidget(Gtk.Grid):
             self._main_spinner.stop()
         logger.info("Disconnected.")
 
-    def _user_logout(self, _):
-        if self.__vpn_disconnected_signal_id:
-            GObject.signal_handler_disconnect(self, self.__vpn_disconnected_signal_id)
-            self.__vpn_disconnected_signal_id = None
-
-        logger.info("Logging out...")
-        self._main_spinner.start()
-        future = self._controller.logout()
-        future.add_done_callback(
-            lambda future: GLib.idle_add(self._on_logout_result, future)
-        )
-
     def _show_disconnect_dialog(self):
         self._logout_dialog = Gtk.Dialog()
         self._logout_dialog.set_title("Active connection found")
@@ -122,7 +114,7 @@ class VPNWidget(Gtk.Grid):
 
     def _on_show_disconnect_response(self, dialog, response):
         if response == Gtk.ResponseType.YES:
-            self.__vpn_disconnected_signal_id = self.connect("vpn-disconnected", self._user_logout)
+            self.__vpn_disconnected_signal_id = self.connect("vpn-disconnected", self._on_logout_button_clicked)
             self._disconnect_button.clicked()
 
         self._logout_dialog.destroy()

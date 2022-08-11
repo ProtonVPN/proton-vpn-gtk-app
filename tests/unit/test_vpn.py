@@ -6,6 +6,7 @@ import pytest
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
+from proton.vpn.core_api.exceptions import ActiveVPNConnectionFound
 
 
 def process_gtk_events(delay=0):
@@ -18,13 +19,9 @@ def process_gtk_events(delay=0):
 def controller_mocking_successful_logout():
     controller_mock = Mock()
 
-    current_connection_future = Future()
-    current_connection_future.set_result(None)
-
     logout_future = Future()
     logout_future.set_result(None)
 
-    controller_mock.does_current_connection_exists.return_value = current_connection_future
     controller_mock.logout.return_value = logout_future
 
     return controller_mock
@@ -36,7 +33,6 @@ def test_successfull_logout(controller_mocking_successful_logout):
 
     process_gtk_events()
 
-    controller_mocking_successful_logout.does_current_connection_exists.assert_called_once()
     controller_mocking_successful_logout.logout.assert_called_once()
 
 
@@ -44,17 +40,16 @@ def test_successfull_logout(controller_mocking_successful_logout):
 def controller_mocking_successful_logout_with_current_connection():
     controller_mock = Mock()
 
-    current_connection_future = Future()
-    current_connection_future.set_result(True)
+    logout_future_raises_exception = Future()
+    logout_future_raises_exception.set_exception(ActiveVPNConnectionFound("test"))
 
-    logout_future = Future()
-    logout_future.set_result(None)
+    logout_future_success = Future()
+    logout_future_success.set_result(None)
 
     disconnect_future = Future()
     disconnect_future.set_result(None)
 
-    controller_mock.does_current_connection_exists.return_value = current_connection_future
-    controller_mock.logout.return_value = logout_future
+    controller_mock.logout.side_effect = [logout_future_raises_exception, logout_future_success]
     controller_mock.disconnect.return_value = disconnect_future
 
     return controller_mock
@@ -66,11 +61,11 @@ def test_successfull_logout_with_current_connection(controller_mocking_successfu
 
     process_gtk_events()
 
-    controller_mocking_successful_logout_with_current_connection.logout.assert_not_called()
+    controller_mocking_successful_logout_with_current_connection.logout.assert_called_once()
     assert vpn_widget._logout_dialog is not None
     vpn_widget.close_dialog(True)
 
     process_gtk_events()
 
     controller_mocking_successful_logout_with_current_connection.disconnect.assert_called_once()
-    controller_mocking_successful_logout_with_current_connection.logout.assert_called_once()
+    assert controller_mocking_successful_logout_with_current_connection.logout.call_count == 2

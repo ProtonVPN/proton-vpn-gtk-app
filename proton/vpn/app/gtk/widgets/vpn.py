@@ -113,7 +113,10 @@ class VPNWidget(Gtk.Grid):
         self._logout_dialog.add_button("_Yes", Gtk.ResponseType.YES)
         self._logout_dialog.add_button("_No", Gtk.ResponseType.NO)
         self._logout_dialog.connect("response", self._on_show_disconnect_response)
-        label = Gtk.Label(label="Logging out of the application will disconnect the active vpn connection.\n\nDo you want to continue ?")
+        label = Gtk.Label(
+            label="Logging out of the application will disconnect the active"
+                  " vpn connection.\n\nDo you want to continue ?"
+        )
         self._logout_dialog.vbox.add(label)
         self._logout_dialog.show_all()
 
@@ -133,4 +136,6 @@ class VPNWidget(Gtk.Grid):
     def close_dialog(self, end_current_connection):
         """Simulates interaction with logout dialog.
         This property was made available mainly for testing purposes."""
-        self._logout_dialog.emit("response", Gtk.ResponseType.YES if end_current_connection else Gtk.ResponseType.NO)
+        self._logout_dialog.emit(
+            "response",
+            Gtk.ResponseType.YES if end_current_connection else Gtk.ResponseType.NO)

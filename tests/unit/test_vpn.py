@@ -55,7 +55,7 @@ def controller_mocking_successful_logout_with_current_connection():
     return controller_mock
 
 
-def test_successfull_logout_with_current_connection(controller_mocking_successful_logout_with_current_connection):
+def test_successful_logout_with_current_connection(controller_mocking_successful_logout_with_current_connection):
     vpn_widget = VPNWidget(controller_mocking_successful_logout_with_current_connection)
     vpn_widget.logout_button_click()
 

@@ -5,7 +5,7 @@ from gi.repository import GObject, GLib
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.core_api.exceptions import ActiveVPNConnectionFound
+from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ class VPNWidget(Gtk.Grid):
             future.result()
             logger.info("User logged out.")
             self.emit("user-logged-out")
-        except ActiveVPNConnectionFound:
+        except VPNConnectionFoundAtLogout:
             self._main_spinner.start()
             self._show_disconnect_dialog()
         finally:

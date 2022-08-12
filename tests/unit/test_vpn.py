@@ -6,7 +6,7 @@ import pytest
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
-from proton.vpn.core_api.exceptions import ActiveVPNConnectionFound
+from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 
 
 def process_gtk_events(delay=0):
@@ -41,7 +41,7 @@ def controller_mocking_successful_logout_with_current_connection():
     controller_mock = Mock()
 
     logout_future_raises_exception = Future()
-    logout_future_raises_exception.set_exception(ActiveVPNConnectionFound("test"))
+    logout_future_raises_exception.set_exception(VPNConnectionFoundAtLogout("test"))
 
     logout_future_success = Future()
     logout_future_success.set_result(None)

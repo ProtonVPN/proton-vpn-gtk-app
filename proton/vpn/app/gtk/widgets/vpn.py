@@ -53,10 +53,6 @@ class VPNWidget(Gtk.Grid):
         )
 
     def _on_logout_result(self, future: Future):
-        if self.__vpn_disconnected_signal_id:
-            GObject.signal_handler_disconnect(self, self.__vpn_disconnected_signal_id)
-            self.__vpn_disconnected_signal_id = None
-
         try:
             future.result()
             logger.info("User logged out.")
@@ -114,7 +110,12 @@ class VPNWidget(Gtk.Grid):
 
     def _on_show_disconnect_response(self, dialog, response):
         if response == Gtk.ResponseType.YES:
-            self.__vpn_disconnected_signal_id = self.connect("vpn-disconnected", self._on_logout_button_clicked)
+            def disconnect_before_logout(_):
+                GObject.signal_handler_disconnect(self, self.__vpn_disconnected_signal_id)
+                self.__vpn_disconnected_signal_id = None
+                self._logout_button.clicked()
+
+            self.__vpn_disconnected_signal_id = self.connect("vpn-disconnected", disconnect_before_logout)
             self._disconnect_button.clicked()
 
         self._logout_dialog.destroy()

@@ -115,7 +115,10 @@ class VPNWidget(Gtk.Grid):
                 self.__vpn_disconnected_signal_id = None
                 self._logout_button.clicked()
 
-            self.__vpn_disconnected_signal_id = self.connect("vpn-disconnected", disconnect_before_logout)
+            self.__vpn_disconnected_signal_id = self.connect(
+                "vpn-disconnected",
+                disconnect_before_logout
+            )
             self._disconnect_button.clicked()
 
         self._logout_dialog.destroy()

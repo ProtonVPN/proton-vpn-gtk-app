@@ -98,7 +98,7 @@ def step_impl(context):
     assert login_form.is_login_button_clickable is False
 
 
-@then("the credentials are stored in the system's keyring")
+@then("the credentials should be stored in the system's keyring")
 def step_impl(context):
     # Wait for the user-logged-in event.
 

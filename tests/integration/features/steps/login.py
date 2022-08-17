@@ -98,18 +98,6 @@ def step_impl(context):
     assert login_form.is_login_button_clickable is False
 
 
-@given("keyring is unlocked")
-def step_impl(context):
-    # Unlock keyring
-    start_keyring_process = subprocess.Popen(
-        "gnome-keyring-daemon --unlock",
-        stdin=subprocess.PIPE,
-        shell=True
-    )
-    stdout, stderr = start_keyring_process.communicate(b"printf '\n'\n")
-    assert start_keyring_process.returncode == 0
-
-
 @then("the credentials are stored in the system's keyring")
 def step_impl(context):
     # Wait for the user-logged-in event.

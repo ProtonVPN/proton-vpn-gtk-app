@@ -11,20 +11,22 @@ setup(
     url="https://github.com/ProtonVPN/proton-vpn-gtk-app",
     install_requires=[
         "proton-vpn-api-core",
+        "proton-keyring-linux-secretservice",
         "proton-vpn-network-manager-openvpn",
         "pygobject",
         "pycairo",
     ],
     extras_require={
         "development": [
-            "pygobject-stubs",
+            "proton-core-internal",
+            "behave",
+            "pyotp",
             "pytest",
             "pytest-cov",
+            "pygobject-stubs",
             "flake8",
             "pylint",
             "mypy",
-            "behave",
-            "pyotp",
         ]
     },
     packages=find_namespace_packages(include=["proton.vpn.app.*"]),

@@ -49,4 +49,14 @@ def before_all(context):
 
 
 def before_scenario(context, scenario):
+    if "not_implemented" in scenario.effective_tags:
+        scenario.skip("Marked with @not_implemented")
+        return
+
     use_fixture(app, context)
+
+
+def before_feature(context, feature):
+    if "not_implemented" in feature.tags:
+        feature.skip("Marked with @not_implemented")
+        return

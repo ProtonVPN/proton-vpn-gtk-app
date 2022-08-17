@@ -55,7 +55,7 @@ pytest
 You can run the integration tests with:
 
 ```shell
-behave integration_tests/features
+behave tests/integration/features
 ```
 
 On headless systems, it's possible to run the integration tests using `Xvfb`

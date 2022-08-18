@@ -5,35 +5,39 @@ from gi.repository import GObject, GLib
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.widgets.servers import ServersWidget
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 
 
 logger = logging.getLogger(__name__)
 
 
-class VPNWidget(Gtk.Grid):
+class VPNWidget(Gtk.Box):
     """Exposes the ProtonVPN product functionality to the user."""
     def __init__(self, controller: Controller):
-        super().__init__(row_spacing=10, column_spacing=10)
+        super().__init__(spacing=10)
         self._controller = controller
 
-        self.set_column_homogeneous(True)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self._logout_dialog = None
         self._logout_button = Gtk.Button(label="Logout")
         self._logout_button.connect("clicked", self._on_logout_button_clicked)
-        self.add(self._logout_button)
+        self.pack_start(self._logout_button, expand=False, fill=False, padding=0)
         self._connect_button = Gtk.Button(label="Connect")
         self._connect_button.connect(
             "clicked", self._on_connect_button_clicked)
-        self.add(self._connect_button)
+        self.pack_start(self._connect_button, expand=False, fill=False, padding=0)
         self._disconnect_button = Gtk.Button(label="Disconnect")
         self._disconnect_button.connect(
             "clicked", self._on_disconnect_button_clicked)
-        self.add(self._disconnect_button)
+        self.pack_start(self._disconnect_button, expand=False, fill=False, padding=0)
         self._main_spinner = Gtk.Spinner()
-        self.add(self._main_spinner)
+        self.pack_start(self._main_spinner, expand=False, fill=False, padding=0)
+
+        self._servers = ServersWidget(controller)
+        self.pack_end(self._servers, expand=True, fill=True, padding=0)
+
         self.__vpn_disconnected_signal_id = None
 
     @GObject.Signal(name="user-logged-out")

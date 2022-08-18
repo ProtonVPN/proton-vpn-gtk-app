@@ -26,14 +26,14 @@ class Controller:
             code
         )
 
-    def logout(self):
+    def logout(self) -> Future:
         return self._thread_pool.submit(self._api.logout)
 
     @property
     def user_logged_in(self) -> bool:
         return self._api.is_user_logged_in()
 
-    def connect(self):
+    def connect(self) -> Future:
         def _connect():
             server = self._api.servers.get_server_with_features(
                 servername="NL#3"
@@ -44,7 +44,7 @@ class Controller:
             )
         return self._thread_pool.submit(_connect)
 
-    def disconnect(self):
+    def disconnect(self) -> Future:
         def _disconnect():
             self._api.connection.disconnect()
             self._connection_subscriber.wait_for_state(
@@ -52,7 +52,13 @@ class Controller:
             )
         return self._thread_pool.submit(_disconnect)
 
-    def does_current_connection_exists(self):
+    def does_current_connection_exists(self) -> Future:
         def _current_connection_exists():
             return bool(self._api.connection.get_current_connection())
         return self._thread_pool.submit(_current_connection_exists)
+
+    def get_server_list(self, force_refresh=False) -> Future:
+        return self._thread_pool.submit(
+            self._api.servers.get_server_list,
+            force_refresh=force_refresh
+        )

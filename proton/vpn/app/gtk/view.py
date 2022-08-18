@@ -16,7 +16,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._controller = controller
 
-        self.set_size_request(400, 150)
+        self.set_size_request(400, 600)
         self.set_border_width(10)
         self.set_resizable(False)
 

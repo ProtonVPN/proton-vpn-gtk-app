@@ -10,9 +10,17 @@ from proton.vpn.app.gtk import Gtk
 
 logger = logging.getLogger(__name__)
 
+ASSETS_DIR = Path(__file__).parent.parent.resolve() / "assets"
+
 
 class LoginWidget(Gtk.Stack):
-    """Widget used to authenticate the user."""
+    """Widget used to authenticate the user.
+
+    It inherits from Gtk.Stack and contains 2 widgets stacked on top of the
+    other: the LoginForm and the TwoFactorAuthForm. By default, the LoginForm
+    widget is shown. Once the user introduces the right username and password
+    (and 2FA is enabled) then the TwoFactorAuthForm widget is displayed instead.
+    """
     def __init__(self, controller: Controller):
         super().__init__()
         self._controller = controller
@@ -68,27 +76,96 @@ class LoginWidget(Gtk.Stack):
         self.display_form(self.login_form)
 
 
+class PasswordEntry(Gtk.Entry):
+    """Entry used to introduce the password in the login form.
+
+    On top of the inherited functionality from Gtk.Entry, an icon is shown
+    inside the text entry to show or hide the password.
+
+    By default, the text (password) introduced in the entry is not show.
+    Therefore, the icon to be able to show the text is displayed. Once this
+    icon is pressed, the text is revealed and the icon to hide the password
+    is shown instead.
+    """
+    def __init__(self):
+        super().__init__()
+        self.set_visibility(False)
+        # Load icon to hide the password.
+        eye_dirpath = ASSETS_DIR / "icons" / "eye"
+        hide_fp = str(eye_dirpath / "hide.svg")
+        self._hide_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename=hide_fp,
+            width=18,
+            height=18,
+            preserve_aspect_ratio=True
+        )
+        # Load icon to show the password.
+        show_fp = str(eye_dirpath / "show.svg")
+        self._show_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename=show_fp,
+            width=18,
+            height=18,
+            preserve_aspect_ratio=True
+        )
+        # By default, the password is not shown. Therefore, the icon to
+        # be able to show the password is shown.
+        self.set_icon_from_pixbuf(
+            Gtk.EntryIconPosition.SECONDARY,
+            self._show_pixbuff
+        )
+        self.set_icon_activatable(
+            Gtk.EntryIconPosition.SECONDARY,
+            True
+        )
+        self.connect(
+            "icon-press", self._on_change_password_visibility_icon_press
+        )
+
+    def _on_change_password_visibility_icon_press(
+            self, gtk_entry_object, gtk_icon_object, gtk_event
+    ):
+        """Changes password visibility, updating accordingly the icon."""
+        is_text_visible = gtk_entry_object.get_visibility()
+        gtk_entry_object.set_visibility(not is_text_visible)
+        self.set_icon_from_pixbuf(
+            Gtk.EntryIconPosition.SECONDARY,
+            self._show_pixbuff
+            if is_text_visible
+            else self._hide_pixbuff
+        )
+
+
 class LoginForm(Gtk.Box):
+    """It implements the login form. Once the user is authenticated, it
+    emits the `user-authenticated` signal.
+
+    Note that 2FA is not implemented by this widget. For that see
+    TwoFactorAuthForm.
+
+    """
     def __init__(self, controller: Controller):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self._controller = controller
-
-        self._setup_icons()
 
         self._error = Gtk.Label(label="")
         self.add(self._error)
 
         proton_vpn_logo = Gtk.Image()
-        proton_vpn_logo.set_from_pixbuf(self._proton_vpn_logo_pixbuf)
+        proton_vpn_logo_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename=str(ASSETS_DIR / "proton-vpn-logo.svg"),
+            width=400,
+            height=400,
+            preserve_aspect_ratio=True
+        )
+        proton_vpn_logo.set_from_pixbuf(proton_vpn_logo_pixbuf)
         self.pack_start(proton_vpn_logo, expand=True, fill=True, padding=0)
 
         self._username_entry = Gtk.Entry()
         self._username_entry.set_placeholder_text("Username")
         self.pack_start(self._username_entry, expand=False, fill=False, padding=0)
 
-        self._password_entry = Gtk.Entry()
+        self._password_entry = PasswordEntry()
         self._password_entry.set_placeholder_text("Password")
-        self._password_entry.set_visibility(False)
         self.pack_start(self._password_entry, expand=False, fill=False, padding=0)
 
         self._login_button = Gtk.Button(label="Login")
@@ -114,19 +191,6 @@ class LoginForm(Gtk.Box):
 
         self._login_spinner = Gtk.Spinner()
         self.pack_start(self._login_spinner, expand=False, fill=False, padding=0)
-
-        # Set password visibility
-        self._password_entry.set_icon_from_pixbuf(
-            Gtk.EntryIconPosition.SECONDARY,
-            self._show_pixbuff
-        )
-        self._password_entry.set_icon_activatable(
-            Gtk.EntryIconPosition.SECONDARY,
-            True
-        )
-        self._password_entry.connect(
-            "icon-press", self.on_change_password_visibility
-        )
 
         self.reset()
 
@@ -244,49 +308,12 @@ class LoginForm(Gtk.Box):
         This property was made available mainly for testing purposes."""
         self._password_entry.emit("activate")
 
-    def on_change_password_visibility(
-        self, gtk_entry_object, gtk_icon_object, gtk_event
-    ):
-        """Changes password visibility, updating accordingly the icon."""
-        is_text_visible = gtk_entry_object.get_visibility()
-        gtk_entry_object.set_visibility(not is_text_visible)
-        self._password_entry.set_icon_from_pixbuf(
-            Gtk.EntryIconPosition.SECONDARY,
-            self._show_pixbuff
-            if is_text_visible
-            else self._hide_pixbuff
-        )
-
-    def _setup_icons(self):
-        assets_dir = Path(__file__).parent.parent.resolve() / "assets"
-        eye_dirpath = assets_dir / "icons" / "eye"
-
-        hide_fp = str(eye_dirpath / "hide.svg")
-        self._hide_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=hide_fp,
-            width=18,
-            height=18,
-            preserve_aspect_ratio=True
-        )
-
-        show_fp = str(eye_dirpath / "show.svg")
-        self._show_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=show_fp,
-            width=18,
-            height=18,
-            preserve_aspect_ratio=True
-        )
-
-        proton_vpn_logo_fp = str(assets_dir / "proton-vpn-logo.svg")
-        self._proton_vpn_logo_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=proton_vpn_logo_fp,
-            width=400,
-            height=400,
-            preserve_aspect_ratio=True
-        )
-
 
 class TwoFactorAuthForm(Gtk.Grid):
+    """
+    Implements the UI for two-factor authentication. Once the right 2FA code
+    is provided, it emits the `two-factor-auth-successful` signal.
+    """
     def __init__(self, controller: Controller):
         super().__init__(row_spacing=10, column_spacing=10)
         self._controller = controller

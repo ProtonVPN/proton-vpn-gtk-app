@@ -135,6 +135,39 @@ class PasswordEntry(Gtk.Entry):
         )
 
 
+class ProtonVPNLogo(Gtk.Image):
+    """Proton VPN logo shown in the login widget."""
+    def __init__(self):
+        super().__init__()
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename=str(ASSETS_DIR / "proton-vpn-logo.svg"),
+            width=300,
+            height=300,
+            preserve_aspect_ratio=True
+        )
+        self.set_from_pixbuf(pixbuf)
+
+
+class LoginLinks(Gtk.Box):
+    """Links shown in the login widget."""
+    def __init__(self):
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=0, )
+        create_account_link = Gtk.LinkButton(
+            label="Create Account",
+            uri="https://account.protonvpn.com/signup"
+        )
+        self.pack_start(
+            create_account_link, expand=False, fill=False, padding=0
+        )
+        help_link = Gtk.LinkButton(
+            label="Need Help?",
+            uri="https://protonvpn.com/support"
+        )
+        self.pack_end(
+            help_link, expand=False, fill=False, padding=0
+        )
+
+
 class LoginForm(Gtk.Box):
     """It implements the login form. Once the user is authenticated, it
     emits the `user-authenticated` signal.
@@ -150,15 +183,8 @@ class LoginForm(Gtk.Box):
         self._error = Gtk.Label(label="")
         self.add(self._error)
 
-        proton_vpn_logo = Gtk.Image()
-        proton_vpn_logo_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=str(ASSETS_DIR / "proton-vpn-logo.svg"),
-            width=400,
-            height=400,
-            preserve_aspect_ratio=True
-        )
-        proton_vpn_logo.set_from_pixbuf(proton_vpn_logo_pixbuf)
-        self.pack_start(proton_vpn_logo, expand=True, fill=True, padding=0)
+        proton_vpn_logo = ProtonVPNLogo()
+        self.pack_start(proton_vpn_logo, expand=False, fill=True, padding=0)
 
         self._username_entry = Gtk.Entry()
         self._username_entry.set_placeholder_text("Username")
@@ -191,6 +217,8 @@ class LoginForm(Gtk.Box):
 
         self._login_spinner = Gtk.Spinner()
         self.pack_start(self._login_spinner, expand=False, fill=False, padding=0)
+
+        self.pack_end(LoginLinks(), expand=False, fill=False, padding=0)
 
         self.reset()
 
@@ -309,43 +337,43 @@ class LoginForm(Gtk.Box):
         self._password_entry.emit("activate")
 
 
-class TwoFactorAuthForm(Gtk.Grid):
+class TwoFactorAuthForm(Gtk.Box):
     """
     Implements the UI for two-factor authentication. Once the right 2FA code
     is provided, it emits the `two-factor-auth-successful` signal.
     """
     def __init__(self, controller: Controller):
-        super().__init__(row_spacing=10, column_spacing=10)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self._controller = controller
-
-        self.set_column_homogeneous(True)
 
         self._error = Gtk.Label(label="")
         self.add(self._error)
 
+        proton_vpn_logo = ProtonVPNLogo()
+        self.pack_start(proton_vpn_logo, expand=False, fill=True, padding=0)
+
         self._2fa_code_entry = Gtk.Entry()
         self._2fa_code_entry.set_placeholder_text("Insert your 2FA code here")
-        self.attach_next_to(
-            self._2fa_code_entry, self._error,
-            Gtk.PositionType.BOTTOM, 1, 1)
+        self.pack_start(
+            self._2fa_code_entry, expand=False, fill=False, padding=0
+        )
 
         self._2fa_submission_button = Gtk.Button(label="Submit 2FA code")
         self._2fa_submission_button.connect(
             "clicked", self._on_2fa_submission_button_clicked
         )
-        self.attach_next_to(
-            self._2fa_submission_button, self._2fa_code_entry,
-            Gtk.PositionType.BOTTOM, 1, 1)
+        self.pack_start(
+            self._2fa_submission_button, expand=False, fill=False, padding=0
+        )
         # Pressing enter on the password entry triggers the clicked event
         # on the login button.
         self._2fa_code_entry.connect(
             "activate", lambda _: self._2fa_submission_button.clicked())
 
         self._2fa_spinner = Gtk.Spinner()
-        self.attach_next_to(
-            self._2fa_spinner, self._2fa_submission_button,
-            Gtk.PositionType.BOTTOM, 1, 1
-        )
+        self.pack_start(self._2fa_spinner, expand=False, fill=False, padding=0)
+
+        self.pack_end(LoginLinks(), expand=False, fill=False, padding=0)
 
         self.reset()
 

@@ -1,5 +1,4 @@
 import logging
-import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Event
 
@@ -8,17 +7,6 @@ from behave import fixture, use_fixture
 from proton.vpn.app.gtk.app import App
 
 logging.basicConfig(level=logging.INFO)
-
-
-@fixture
-def gnome_keyring(context):
-    start_keyring_process = subprocess.Popen(
-        "gnome-keyring-daemon --unlock",
-        stdin=subprocess.PIPE, shell=True
-    )
-    start_keyring_process.communicate(b"printf '\n'\n")
-    assert start_keyring_process.returncode == 0
-
 
 @fixture
 def app(context):
@@ -42,10 +30,6 @@ def app(context):
 
         context.app.window.close()
         context.app_thread.join()
-
-
-def before_all(context):
-    use_fixture(gnome_keyring, context)
 
 
 def before_scenario(context, scenario):

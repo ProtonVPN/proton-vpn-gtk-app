@@ -2,7 +2,6 @@ import os
 import threading
 
 from proton.sso import ProtonSSO
-import subprocess
 from keyring.backends import SecretService
 from behave import given, when, then
 import pyotp

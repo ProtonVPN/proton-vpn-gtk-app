@@ -1,6 +1,6 @@
-import os
 import logging
 from concurrent.futures import Future
+from pathlib import Path
 
 from gi.repository import GObject, GdkPixbuf, GLib
 
@@ -68,29 +68,28 @@ class LoginWidget(Gtk.Stack):
         self.display_form(self.login_form)
 
 
-class LoginForm(Gtk.Grid):
+class LoginForm(Gtk.Box):
     def __init__(self, controller: Controller):
-        super().__init__(row_spacing=10, column_spacing=10)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self._controller = controller
 
-        self.set_column_homogeneous(True)
         self._setup_icons()
 
         self._error = Gtk.Label(label="")
         self.add(self._error)
 
+        proton_vpn_logo = Gtk.Image()
+        proton_vpn_logo.set_from_pixbuf(self._proton_vpn_logo_pixbuf)
+        self.pack_start(proton_vpn_logo, expand=True, fill=True, padding=0)
+
         self._username_entry = Gtk.Entry()
         self._username_entry.set_placeholder_text("Username")
-        self.attach_next_to(
-            self._username_entry, self._error,
-            Gtk.PositionType.BOTTOM, 1, 1)
+        self.pack_start(self._username_entry, expand=False, fill=False, padding=0)
 
         self._password_entry = Gtk.Entry()
         self._password_entry.set_placeholder_text("Password")
         self._password_entry.set_visibility(False)
-        self.attach_next_to(
-            self._password_entry, self._username_entry,
-            Gtk.PositionType.BOTTOM, 1, 1)
+        self.pack_start(self._password_entry, expand=False, fill=False, padding=0)
 
         self._login_button = Gtk.Button(label="Login")
         self._login_button.connect("clicked", self._on_login_button_clicked)
@@ -98,10 +97,7 @@ class LoginForm(Gtk.Grid):
         # password fields are empty and users need to actively provide an input
         # to unlock the login button.
         self._login_button.set_property("sensitive", False)
-        self.attach_next_to(
-            self._login_button, self._password_entry,
-            Gtk.PositionType.BOTTOM, 1, 1
-        )
+        self.pack_start(self._login_button, expand=False, fill=False, padding=0)
 
         # Listen to key entries so that the login button can be "unlocked"
         # once username and password are provided.
@@ -117,10 +113,7 @@ class LoginForm(Gtk.Grid):
         self._password_entry.connect("activate", self._on_press_enter)
 
         self._login_spinner = Gtk.Spinner()
-        self.attach_next_to(
-            self._login_spinner, self._login_button,
-            Gtk.PositionType.BOTTOM, 1, 1
-        )
+        self.pack_start(self._login_spinner, expand=False, fill=False, padding=0)
 
         # Set password visibility
         self._password_entry.set_icon_from_pixbuf(
@@ -265,25 +258,30 @@ class LoginForm(Gtk.Grid):
         )
 
     def _setup_icons(self):
-        eye_dirpath = os.path.dirname(os.path.abspath(__file__)).split("/")
-        eye_dirpath.pop()
-        eye_dirpath.append("assets")
-        eye_dirpath.append("icons")
-        eye_dirpath.append("eye")
-        eye_dirpath = "/".join(eye_dirpath)
-        hide_fp = os.path.join(eye_dirpath, "hide.svg")
-        show_fp = os.path.join(eye_dirpath, "show.svg")
+        assets_dir = Path(__file__).parent.parent.resolve() / "assets"
+        eye_dirpath = assets_dir / "icons" / "eye"
 
+        hide_fp = str(eye_dirpath / "hide.svg")
         self._hide_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
             filename=hide_fp,
             width=18,
             height=18,
             preserve_aspect_ratio=True
         )
+
+        show_fp = str(eye_dirpath / "show.svg")
         self._show_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
             filename=show_fp,
             width=18,
             height=18,
+            preserve_aspect_ratio=True
+        )
+
+        proton_vpn_logo_fp = str(assets_dir / "proton-vpn-logo.svg")
+        self._proton_vpn_logo_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename=proton_vpn_logo_fp,
+            width=400,
+            height=400,
             preserve_aspect_ratio=True
         )
 

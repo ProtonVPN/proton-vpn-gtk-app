@@ -35,8 +35,8 @@ class VPNWidget(Gtk.Box):
         self._main_spinner = Gtk.Spinner()
         self.pack_start(self._main_spinner, expand=False, fill=False, padding=0)
 
-        self._servers = ServersWidget(controller)
-        self.pack_end(self._servers, expand=True, fill=True, padding=0)
+        self.servers_widget = ServersWidget(controller)
+        self.pack_end(self.servers_widget, expand=True, fill=True, padding=0)
 
         self.__vpn_disconnected_signal_id = None
 

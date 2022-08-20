@@ -2,6 +2,7 @@ import logging
 import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from typing import Callable
 
 from gi.repository import GObject
 
@@ -37,6 +38,7 @@ class App(Gtk.Application):
         )
         self.window = None
         self.exception_handler = AppExceptionHandler()
+        self._signal_connect_queue = []
 
     def do_activate(self):
         """
@@ -45,6 +47,8 @@ class App(Gtk.Application):
         """
         if not self.window:
             self.window = MainWindow(self._controller)
+            # Process signal connection requests asap
+            self._process_signal_connect_queue()
             # Windows are associated with the application like this.
             # When the last one is closed, the application shuts down.
             self.add_window(self.window)
@@ -62,6 +66,73 @@ class App(Gtk.Application):
     def app_ready(self):
         """Signal emitted when the app is ready for interaction."""
         pass
+
+    def queue_signal_connect(self, signal_spec: str, callback: Callable):
+        """Queues a request to connect a callback to a signal.
+
+        This method should only be used by tests that need to connect a
+        callback to a widget signal before the app window, which contains
+        all app widgets, has been created.
+
+        Note that the window is not created in the Gtk.Application constructor
+        but when the app receives the ``activate`` signal. Fore more info:
+        https://wiki.gnome.org/HowDoI/GtkApplication
+
+        While testing, we might want to use this method to make sure that we
+        are able to connect our callback **before** the signal has already
+        fired. This method allows the app to queue a
+        request to connect a callback to one of the widgets' signals. The queued
+        request will be processed as soon as the app window (with all its
+        children widgets) have been created.
+
+        Usage example:
+        .. code-block:: python
+            with ThreadPoolExecutor() as thread_pool_executor:
+                app = App(thread_pool_executor)
+                app.queue_signal_connect(
+                    signal_spec="main_widget.vpn_widget.servers_widget::server-list-ready",
+                    callback=my_func
+                )
+                sys.exit(app.run(sys.argv))
+
+        The widget/signal the callback should be connected to is specified
+        with the ``signal_spec`` parameter, which should have the following
+        form: ``widget_attr.[widget_attr.]::signal-name``.
+
+        ``widget_attr`` refers to a widget attribute from the app window
+        which, in turn, can contain other widget attributes. The ``signal-name``
+        after the double colon is the name of the signal to attach the callback
+        to.
+
+        So in the example above, the resulting action once the app window is
+        created will be to run the following code:
+
+        .. code-block:: python
+            app.window.main_widget.vpn_widget.servers.connect(
+                "server-list-ready", my_func
+            )
+
+        :param signal_spec: signal specification.
+        :param callback: Callback to connect to the specified signal.
+        """
+        self._signal_connect_queue.append((signal_spec, callback))
+        if self.window:
+            # if the window already exist then the queue is processed instantly
+            self._process_queued_signal_callbacks()
+
+    def _process_signal_connect_queue(self):
+        """Processes all signal connection requests queued by calling
+        `queue_signal_connect`"""
+        for _ in range(len(self._signal_connect_queue)):
+            signal_spec, callback = self._signal_connect_queue.pop(0)
+            widget_path, signal_name = signal_spec.split("::")
+            obj = self.window
+            for widget_path_segment in widget_path.split("."):
+                obj = getattr(obj, widget_path_segment)
+
+            assert isinstance(obj, GObject.Object), \
+                f"{type(obj)} does not inherit from GObject.Object."
+            obj.connect(signal_name, callback)
 
 
 class AppExceptionHandler:

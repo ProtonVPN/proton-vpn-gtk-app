@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from concurrent.futures import Future
+from typing import List
 
 from gi.repository import GLib, GObject
 
@@ -35,7 +36,6 @@ class ServersWidget(Gtk.ScrolledWindow):
         super().__init__()
         self._controller = controller
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self._container.set_border_width(5)
         self.add(self._container)
         self._servers = []
 
@@ -44,6 +44,10 @@ class ServersWidget(Gtk.ScrolledWindow):
     @GObject.Signal(name="server-list-ready")
     def server_list_ready(self):
         pass
+
+    @property
+    def server_rows(self) -> List[ServerRow]:
+        return self._container.get_children()
 
     def _on_show(self, _servers_widget: ServersWidget):
         self._retrieve_servers()

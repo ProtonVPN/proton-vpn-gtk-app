@@ -1,4 +1,3 @@
-import os
 import threading
 
 from proton.sso import ProtonSSO
@@ -6,10 +5,8 @@ from keyring.backends import SecretService
 from behave import given, when, then
 import pyotp
 
-
-os.environ["PROTON_API_ENVIRONMENT"] = "atlas"
-VPNPLUS_USERNAME = "vpnplus"
-VPNPLUS_PASSWORD = "12341234"
+from tests.integration.features.environment import \
+    VPNPLUS_USERNAME, VPNPLUS_PASSWORD
 
 
 @given("a user without 2FA enabled")

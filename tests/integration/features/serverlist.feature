@@ -1,8 +1,6 @@
 Feature: Server List
 
-  Background:
+  Scenario: Server list initialization
     Given the user is logged in
-
-  Scenario:
-    Given the server list widget is ready
+    When the server list widget is initialized
     Then the server list should be displayed

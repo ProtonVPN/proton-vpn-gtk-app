@@ -1,4 +1,4 @@
-from behave import given, then
+from behave import given, when, then
 
 
 @given("the user is logged in")
@@ -6,7 +6,7 @@ def step_impl(context):
     assert context.api.is_user_logged_in()
 
 
-@given("the server list widget is ready")
+@when("the server list widget is initialized")
 def step_impl(context):
     server_list_ready = context.app_events["server-list-ready"].wait(timeout=10)
     assert server_list_ready

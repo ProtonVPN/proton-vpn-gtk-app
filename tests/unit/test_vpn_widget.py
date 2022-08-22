@@ -1,18 +1,12 @@
-import time
 from concurrent.futures import Future
 from unittest.mock import Mock
 
 import pytest
 
-from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 
-
-def process_gtk_events(delay=0):
-    time.sleep(delay)
-    while Gtk.events_pending():
-        Gtk.main_iteration_do(blocking=False)
+from tests.unit.utils import process_gtk_events
 
 
 @pytest.fixture
@@ -27,7 +21,7 @@ def controller_mocking_successful_logout():
     return controller_mock
 
 
-def test_successfull_logout(controller_mocking_successful_logout):
+def test_successful_logout(controller_mocking_successful_logout):
     vpn_widget = VPNWidget(controller_mocking_successful_logout)
     vpn_widget.logout_button_click()
 

@@ -1,18 +1,11 @@
-import time
 from concurrent.futures import Future
 from unittest.mock import Mock
 
 import pytest
 from proton.vpn.session.dataclasses import LoginResult
 
-from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.login import LoginWidget, LoginForm, TwoFactorAuthForm
-
-
-def process_gtk_events(delay=0):
-    time.sleep(delay)
-    while Gtk.events_pending():
-        Gtk.main_iteration_do(blocking=False)
+from tests.unit.utils import process_gtk_events
 
 
 def test_login_widget_signals_user_logged_in_when_user_is_authenticated_and_2fa_is_not_required():

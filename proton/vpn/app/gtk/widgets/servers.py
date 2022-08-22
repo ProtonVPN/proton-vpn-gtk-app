@@ -14,14 +14,14 @@ class ServerRow(Gtk.Box):
     def __init__(self, server: VPNServer):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self._server = server
+        self._server_label = Gtk.Label(label=server.name)
         self.pack_start(
-            Gtk.Label(label=server.name),
+            self._server_label,
             expand=False, fill=False, padding=10
         )
         if not server.enabled:
-            self.pack_start(
-                Gtk.Label(label="(Under maintenance)"),
-                expand=False, fill=False, padding=5
+            self._server_label.set_label(
+                f"{self._server_label.get_label()} (under maintenance)"
             )
         connect_button = Gtk.Button(label="Connect (WIP)")
         connect_button.set_sensitive(False)
@@ -29,6 +29,10 @@ class ServerRow(Gtk.Box):
             connect_button,
             expand=False, fill=False, padding=10
         )
+
+    @property
+    def server_label(self):
+        return self._server_label.get_label()
 
 
 class ServersWidget(Gtk.ScrolledWindow):
@@ -50,13 +54,14 @@ class ServersWidget(Gtk.ScrolledWindow):
         return self._container.get_children()
 
     def _on_show(self, _servers_widget: ServersWidget):
-        self._retrieve_servers()
+        self.retrieve_servers()
 
-    def _retrieve_servers(self):
+    def retrieve_servers(self) -> Future:
         future = self._controller.get_server_list()
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_servers_retrieved, future)
         )
+        return future
 
     def _on_servers_retrieved(self, future: Future):
         server_list = future.result()

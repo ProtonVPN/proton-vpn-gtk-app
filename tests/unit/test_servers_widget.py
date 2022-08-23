@@ -11,9 +11,22 @@ from tests.unit.utils import process_gtk_events
 def test_retrieve_servers():
     server_list = [
         LogicalServer(data={
-            "Name": "IS#1",
-            "Status": 0
-        })
+            "Name": "Random Name",
+            "Status": 1,
+            "Servers": [{"Status": 1}]
+
+        }),
+        LogicalServer(data={
+            "Name": "IS#10",
+            "Status": 1,
+            "Servers": [{"Status": 1}]
+
+        }),
+        LogicalServer(data={
+            "Name": "IS#9",
+            "Status": 1,
+            "Servers": [{"Status": 1}]
+        }),
     ]
     future_server_list = Future()
     future_server_list.set_result(server_list)
@@ -35,7 +48,10 @@ def test_retrieve_servers():
     server_list_ready = server_list_ready_event.wait(timeout=0)
     assert server_list_ready
 
-    assert len(servers_widget.server_rows) == 1
+    assert len(servers_widget.server_rows) == 3
+    assert servers_widget.server_rows[0].server_label == "IS#9"
+    assert servers_widget.server_rows[1].server_label == "IS#10"
+    assert servers_widget.server_rows[2].server_label == "Random Name"
 
 
 def test_server_row_displays_server_name():

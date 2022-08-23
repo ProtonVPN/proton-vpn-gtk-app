@@ -7,11 +7,11 @@ from gi.repository import GLib, GObject
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.servers import VPNServer
+from proton.vpn.servers.server_types import LogicalServer
 
 
 class ServerRow(Gtk.Box):
-    def __init__(self, server: VPNServer):
+    def __init__(self, server: LogicalServer):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self._server = server
         self._server_label = Gtk.Label(label=server.name)
@@ -65,11 +65,14 @@ class ServersWidget(Gtk.ScrolledWindow):
 
     def _on_servers_retrieved(self, future: Future):
         server_list = future.result()
-        self._servers = sorted(
-            server_list,
-            key=lambda server: f"{server.name.split('#')[0]}"
-                               f"{server.name.split('#')[1].zfill(5)}"
-        )
+
+        def sorting_key(server: LogicalServer):
+            if "#" not in server.name:
+                return server.name
+            else:
+                return f"{server.name.split('#')[0]}{server.name.split('#')[1].zfill(5)}"
+
+        self._servers = sorted(server_list, key=sorting_key)
         self._show_servers()
 
     def _show_servers(self):

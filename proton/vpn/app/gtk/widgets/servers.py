@@ -89,10 +89,17 @@ class ServersWidget(Gtk.ScrolledWindow):
         server_list = future.result()
 
         def sorting_key(server: LogicalServer):
-            if "#" not in server.name:
-                return server.name
+            server_name = server.name
+
+            if server_name is None:
+                server_name = ""
+            server_name = server_name.lower()
+
+            if "#" not in server_name:
+                return server_name.lower()
             else:
-                return f"{server.name.split('#')[0]}{server.name.split('#')[1].zfill(5)}"
+                return f"{server_name.split('#')[0]}" \
+                       f"{server_name.split('#')[1].zfill(5)}"
 
         self._servers = sorted(server_list, key=sorting_key)
         self._show_servers()

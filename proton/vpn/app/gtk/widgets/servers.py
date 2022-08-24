@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from concurrent.futures import Future
 from typing import List
 
@@ -8,6 +9,8 @@ from gi.repository import GLib, GObject
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.servers.server_types import LogicalServer
+
+logger = logging.getLogger(__name__)
 
 
 class ServerRow(Gtk.Box):
@@ -38,12 +41,16 @@ class ServerRow(Gtk.Box):
 class ServersWidget(Gtk.ScrolledWindow):
     def __init__(self, controller: Controller):
         super().__init__()
+        self.set_policy(
+            hscrollbar_policy=Gtk.PolicyType.NEVER,
+            vscrollbar_policy=Gtk.PolicyType.AUTOMATIC
+        )
         self._controller = controller
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(self._container)
         self._servers = []
 
-        self.connect("show", self._on_show)
+        self.connect("realize", self._on_realize)
 
     @GObject.Signal(name="server-list-ready")
     def server_list_ready(self):
@@ -53,11 +60,26 @@ class ServersWidget(Gtk.ScrolledWindow):
     def server_rows(self) -> List[ServerRow]:
         return self._container.get_children()
 
-    def _on_show(self, _servers_widget: ServersWidget):
+    def _on_realize(self, _servers_widget: ServersWidget):
         self.retrieve_servers()
 
+    def _reset_server_rows(self):
+        for row in self._container.get_children():
+            self._container.remove(row)
+            row.destroy()
+
+    def _show_loading(self):
+        self._reset_server_rows()
+        self._container.pack_start(
+            Gtk.Label(label="Loading..."),
+            expand=False, fill=False, padding=5
+        )
+        self._container.show_all()
+
     def retrieve_servers(self) -> Future:
-        future = self._controller.get_server_list()
+        logger.info("Retrieving servers...")
+        future = self._controller.get_server_list(force_refresh=True)
+        self._show_loading()
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_servers_retrieved, future)
         )
@@ -76,9 +98,11 @@ class ServersWidget(Gtk.ScrolledWindow):
         self._show_servers()
 
     def _show_servers(self):
+        self._reset_server_rows()
         for server in self._servers:
+            server = ServerRow(server=server)
             self._container.pack_start(
-                ServerRow(server=server),
+                server,
                 expand=False, fill=False, padding=5
             )
         self._container.show_all()

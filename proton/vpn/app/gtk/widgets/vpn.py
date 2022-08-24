@@ -24,7 +24,7 @@ class VPNWidget(Gtk.Box):
         self._logout_button = Gtk.Button(label="Logout")
         self._logout_button.connect("clicked", self._on_logout_button_clicked)
         self.pack_start(self._logout_button, expand=False, fill=False, padding=0)
-        self._connect_button = Gtk.Button(label="Connect")
+        self._connect_button = Gtk.Button(label="Quick Connect")
         self._connect_button.connect(
             "clicked", self._on_connect_button_clicked)
         self.pack_start(self._connect_button, expand=False, fill=False, padding=0)

@@ -41,7 +41,7 @@ def test_retrieve_servers():
         lambda _: server_list_ready_event.set()
     )
 
-    servers_widget.show()
+    servers_widget.retrieve_servers()
 
     process_gtk_events()
 
@@ -71,7 +71,7 @@ def test_server_row_displays_server_name():
     assert server_row.server_label == "IS#1"
 
 
-def test_server_row_signals_server_under_maintentance():
+def test_server_row_signals_server_under_maintenance():
     server = LogicalServer(data={
         "Name": "IS#1",
         "Status": 0

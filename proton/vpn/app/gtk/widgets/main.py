@@ -8,7 +8,7 @@ from proton.vpn.app.gtk.widgets.login import LoginWidget
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 
 
-class MainWidget(Gtk.Stack):
+class MainWidget(Gtk.Bin):
     """
     Main Proton VPN widget. It switches between the LoginWidget and the
     VPNWidget, depending on whether the user is logged in or not.
@@ -17,17 +17,24 @@ class MainWidget(Gtk.Stack):
     def __init__(self, controller: Controller):
         super().__init__()
         self._controller = controller
-        self.active_widget = None
 
         self.login_widget = LoginWidget(controller)
-        self.add_named(self.login_widget, "login_widget")
         self.login_widget.connect("user-logged-in", self._on_user_logged_in)
 
         self.vpn_widget = VPNWidget(controller)
-        self.add_named(self.vpn_widget, "vpn_widget")
         self.vpn_widget.connect("user-logged-out", self._on_user_logged_out)
 
         self.connect("show", self._on_show)
+
+    @property
+    def active_widget(self):
+        return self.get_child()
+
+    @active_widget.setter
+    def active_widget(self, widget: Union[LoginWidget, VPNWidget]):
+        if self.get_child():
+            self.remove(self.get_child())
+        self.add(widget)
 
     def initialize_visible_widget(self):
         # The widget should already be flagged to be shown
@@ -47,7 +54,7 @@ class MainWidget(Gtk.Stack):
 
     def _display_widget(self, widget: Union[LoginWidget, VPNWidget]):
         self.active_widget = widget
-        self.set_visible_child(widget)
+        self.active_widget.show_all()
 
     def _on_show(self, _main_widget: MainWidget):
         self.initialize_visible_widget()

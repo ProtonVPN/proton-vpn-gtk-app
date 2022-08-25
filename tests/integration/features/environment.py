@@ -37,12 +37,12 @@ def start_app(thread_pool_executor) -> (App, Thread, Dict):
     app_events["app-ready"] = app_ready_event
 
     # Register an event to be able to wait for the server list to be ready.
-    server_list_ready_event = Event()
+    server_list_updated_event = Event()
     app.queue_signal_connect(
-        "main_widget.vpn_widget.servers_widget::server-list-ready",
-        lambda *_: server_list_ready_event.set()
+        "main_widget.vpn_widget.servers_widget::server-list-updated",
+        lambda *_: server_list_updated_event.set()
     )
-    app_events["server-list-ready"] = server_list_ready_event
+    app_events["server-list-updated"] = server_list_updated_event
 
     # Start the app in a thread.
     app_thread = Thread(target=app.run)

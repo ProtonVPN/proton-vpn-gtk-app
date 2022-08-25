@@ -8,12 +8,11 @@ def step_impl(context):
 
 @when("the server list widget is initialized")
 def step_impl(context):
-    server_list_ready = context.app_events["server-list-ready"].wait(timeout=10)
-    assert server_list_ready
+    server_list_updated = context.app_events["server-list-updated"].wait(timeout=10)
+    assert server_list_updated
 
 
 @then("the server list should be displayed")
 def step_impl(context):
     servers_widget = context.app.window.main_widget.vpn_widget.servers_widget
     assert len(servers_widget.server_rows) > 0
-

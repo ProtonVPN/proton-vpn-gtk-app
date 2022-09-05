@@ -55,15 +55,16 @@ def start_app(thread_pool_executor) -> (App, Thread, Dict):
 
 
 def stop_app(app: App, app_thread: Thread):
-    if app.error_dialog:
+    for error_dialog in app.error_dialogs:
         # Close error dialog when something went wrong.
         dialog_closed_event = Event()
-        app.error_dialog.connect(
-            "destroy-event",
+        error_dialog.connect(
+            "response",
             lambda *_: dialog_closed_event.set()
         )
-        app.error_dialog.close()
-        dialog_closed_event.wait(timeout=1)
+        error_dialog.close()
+        dialog_closed = dialog_closed_event.wait(timeout=1)
+        assert dialog_closed, "Error dialog could not be closed."
 
     app.window.close()
     app_thread.join()

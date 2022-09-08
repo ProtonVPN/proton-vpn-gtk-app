@@ -1,3 +1,7 @@
+"""
+This module defines the VPN widget, which contains all the VPN functionality
+that is shown to the user.
+"""
 import logging
 from concurrent.futures import Future
 
@@ -12,8 +16,9 @@ from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 logger = logging.getLogger(__name__)
 
 
-class VPNWidget(Gtk.Box):
+class VPNWidget(Gtk.Box):  # pylint: disable=R0902
     """Exposes the ProtonVPN product functionality to the user."""
+
     def __init__(self, controller: Controller):
         super().__init__(spacing=10)
         self._controller = controller
@@ -42,11 +47,11 @@ class VPNWidget(Gtk.Box):
 
     @GObject.Signal(name="user-logged-out")
     def user_logged_out(self):
-        pass
+        """Signal emitted once the user has been logged out."""
 
     @GObject.Signal(name="vpn-disconnected")
     def vpn_disconnected(self):
-        pass
+        """Signal emitted after disconnection from a VPN server."""
 
     def _on_logout_button_clicked(self, *_):
         logger.info("Logging out...")
@@ -109,10 +114,10 @@ class VPNWidget(Gtk.Box):
             label="Logging out of the application will disconnect the active"
                   " vpn connection.\n\nDo you want to continue ?"
         )
-        self._logout_dialog.vbox.add(label)
+        self._logout_dialog.get_content_area().add(label)
         self._logout_dialog.show_all()
 
-    def _on_show_disconnect_response(self, dialog, response):
+    def _on_show_disconnect_response(self, _dialog, response):
         if response == Gtk.ResponseType.YES:
             def disconnect_before_logout(_):
                 GObject.signal_handler_disconnect(self, self.__vpn_disconnected_signal_id)
@@ -129,12 +134,12 @@ class VPNWidget(Gtk.Box):
         self._logout_dialog = None
 
     def logout_button_click(self):
-        """Simulates logout button click.
-        This property was made available mainly for testing purposes."""
+        """Clicks the logout button.
+        This method was made available mainly for testing purposes."""
         self._logout_button.clicked()
 
     def close_dialog(self, end_current_connection):
-        """Simulates interaction with logout dialog.
+        """Closes the logout dialog.
         This property was made available mainly for testing purposes."""
         self._logout_dialog.emit(
             "response",

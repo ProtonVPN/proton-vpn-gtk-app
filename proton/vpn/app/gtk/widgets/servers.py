@@ -1,3 +1,6 @@
+"""
+This module defines the widgets used to present the VPN server list to the user.
+"""
 from __future__ import annotations
 
 import logging
@@ -15,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class ServerRow(Gtk.Box):
+    """Displays a single server as a row in the server list."""
     def __init__(self, server: LogicalServer):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self._server = server
@@ -36,10 +40,15 @@ class ServerRow(Gtk.Box):
 
     @property
     def server_label(self):
+        """Returns the server label.
+        This method was made available for tests."""
         return self._server_label.get_label()
 
 
 class ServersWidget(Gtk.ScrolledWindow):
+    """Displays the VPN servers list."""
+
+    # Number of seconds to wait before checking if the servers cache expired.
     RELOAD_INTERVAL_IN_SECONDS = 60
 
     def __init__(self, controller: Controller):
@@ -60,13 +69,22 @@ class ServersWidget(Gtk.ScrolledWindow):
 
     @GObject.Signal(name="server-list-updated")
     def server_list_updated(self):
-        pass
+        """Signal emitted once the server list has been updated. That
+        happens the first time the server list is rendered and every
+        time the server list changes."""
 
     @property
     def server_rows(self) -> List[ServerRow]:
+        """Returns the list of server rows that are currently being displayed.
+        This method was made available for tests."""
         return self._container.get_children()
 
     def retrieve_servers(self) -> Future:
+        """
+        Requests the list of servers. Note that a remote API call is only
+        triggered if the server list cache expired.
+        :return: A future wrapping the server list.
+        """
         logger.debug("Retrieving servers...")
         future = self._controller.get_server_list()
         if not self._server_list:
@@ -77,6 +95,8 @@ class ServersWidget(Gtk.ScrolledWindow):
         return future
 
     def start_reloading_servers_periodically(self):
+        """Schedules retrieve_servers to be called periodically according
+        to ServersWidget.RELOAD_INTERVAL_IN_SECONDS."""
         self.retrieve_servers()
         self._reload_servers_source_id = GLib.timeout_add(
             interval=self.RELOAD_INTERVAL_IN_SECONDS * 1000,
@@ -84,6 +104,7 @@ class ServersWidget(Gtk.ScrolledWindow):
         )
 
     def stop_reloading_servers_periodically(self):
+        """Stops the periodic calls to retrieve_servers."""
         if self._reload_servers_source_id is not None:
             GLib.source_remove(self._reload_servers_source_id)
         else:
@@ -132,9 +153,9 @@ class ServersWidget(Gtk.ScrolledWindow):
 
             if "#" not in server_name:
                 return server_name.lower()
-            else:
-                return f"{server_name.split('#')[0]}" \
-                       f"{server_name.split('#')[1].zfill(5)}"
+
+            return f"{server_name.split('#')[0]}" \
+                   f"{server_name.split('#')[1].zfill(5)}"
 
         servers_sorted_alphabetically = sorted(self._server_list, key=sorting_key)
 

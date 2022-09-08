@@ -1,3 +1,6 @@
+"""
+This module contains the application's View, as in the V in the MVC pattern.
+"""
 from __future__ import annotations
 
 import logging

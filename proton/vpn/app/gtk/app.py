@@ -1,8 +1,11 @@
+"""
+This module defines the main App class.
+"""
 import logging
 import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from typing import Callable
+from typing import Callable, List
 
 from gi.repository import GObject
 
@@ -40,7 +43,7 @@ class App(Gtk.Application):
         self.exception_handler = AppExceptionHandler()
         self._signal_connect_queue = []
 
-    def do_activate(self):
+    def do_activate(self):  # pylint: disable=W0221
         """
         Method called by Gtk.Application when the default first window should
         be shown to the user.
@@ -61,13 +64,17 @@ class App(Gtk.Application):
         self.emit("app-ready")
 
     @property
-    def error_dialogs(self):
+    def error_dialogs(self) -> List[Gtk.MessageDialog]:
+        """
+        Gives access to currently opened error message dialogs. This method
+        is used mainly in tests.
+        :return: The list of currently opened error message dialogs.
+        """
         return self.exception_handler.error_dialogs
 
     @GObject.Signal(name="app-ready")
     def app_ready(self):
         """Signal emitted when the app is ready for interaction."""
-        pass
 
     def queue_signal_connect(self, signal_spec: str, callback: Callable):
         """Queues a request to connect a callback to a signal.
@@ -120,11 +127,11 @@ class App(Gtk.Application):
         self._signal_connect_queue.append((signal_spec, callback))
         if self.window:
             # if the window already exist then the queue is processed instantly
-            self._process_queued_signal_callbacks()
+            self._process_signal_connect_queue()
 
     def _process_signal_connect_queue(self):
         """Processes all signal connection requests queued by calling
-        `queue_signal_connect`"""
+        ``queue_signal_connect``."""
         for _ in range(len(self._signal_connect_queue)):
             signal_spec, callback = self._signal_connect_queue.pop(0)
             widget_path, signal_name = signal_spec.split("::")
@@ -147,6 +154,11 @@ class AppExceptionHandler:
         self._previous_threading_excepthook = threading.excepthook
 
     def enable(self):
+        """
+        Enables the exception handler. Note that the exception handler
+        should be enabled only after the main application window has been
+        presented to the user so that error dialogs can actually be shown.
+        """
         self._previous_sys_excepthook = sys.excepthook
         # Handle exceptions bubbling up in the main thread.
         sys.excepthook = self.handle_errors
@@ -157,16 +169,30 @@ class AppExceptionHandler:
         # ThreadPoolExecutor won't bubble up, as the executor won't allow it.
         # In this case, make sure that you call Future.result() on the future
         # returned by ThreadPoolExecutor.submit() in the main thread
-        # (e.g. using GLib.idle_add())
+        # (e.g. using GLib.idle_add()).
         threading.excepthook = lambda args: self.handle_errors(
             args.exc_type, args.exc_value, args.exc_traceback
         )
 
     def disable(self):
+        """Disables the exception handler. The exception handler should
+        be disabled as soon as the main application window is closed. This
+        is specially important in tests, as the python process might run
+        other test code."""
         sys.excepthook = self._previous_sys_excepthook
         threading.excepthook = self._previous_threading_excepthook
 
     def handle_errors(self, exc_type, exc_value, exc_traceback):
+        """
+        When the application exception handler is enabled, this method is
+        triggered on errors that were not explicitly handled by the
+        application code.
+        :param exc_type: Type of the exception.
+        :param exc_value: Instance of the exception. It might be None if the
+        exception was triggered using an Exception class, rather than an object
+        (e.g. raise Exception, instead of raise Exception()).
+        :param exc_traceback: The exception traceback.
+        """
         if issubclass(exc_type, ProtonAPINotReachable):
             error_message = "Our servers are not reachable. " \
                             "Please check your internet connection."

@@ -1,3 +1,7 @@
+"""
+This module defines the main widget. The main widget is the widget which
+exposes all the available app functionality to the user.
+"""
 from __future__ import annotations
 
 from typing import Union
@@ -28,17 +32,26 @@ class MainWidget(Gtk.Bin):
 
     @property
     def active_widget(self):
+        """Returns the active widget."""
         return self.get_child()
 
     @active_widget.setter
     def active_widget(self, widget: Union[LoginWidget, VPNWidget]):
+        """Sets the active widget. That is, the widget to be shown
+        to the user."""
         if self.get_child():
             self.remove(self.get_child())
         self.add(widget)
 
     def initialize_visible_widget(self):
-        # The widget should already be flagged to be shown
-        # when this method is called.
+        """
+        Initializes the widget by showing either the vpn widget or the
+        login widget depending on whether the user is authenticated or not.
+
+        Note that the widget should already be flagged as shown when this
+        method is called. Otherwise, it won't have effect. For more info:
+        https://lazka.github.io/pgi-docs/#Gtk-3.0/classes/Stack.html#Gtk.Stack.set_visible_child
+        """
         self._display_widget(
             self.vpn_widget
             if self._controller.user_logged_in else

@@ -1,3 +1,6 @@
+"""
+This module defines the login widget, used to authenticate the user.
+"""
 import logging
 from concurrent.futures import Future
 from pathlib import Path
@@ -62,17 +65,22 @@ class LoginWidget(Gtk.Stack):
     @GObject.Signal(name="user-logged-in")
     def user_logged_in(self):
         """Signal emitted after a successful login."""
-        pass
 
     def _signal_user_logged_in(self):
         self.emit("user-logged-in")
 
     def display_form(self, form):
+        """
+        Displays the specified form to the user. That is, either the login
+        form (user/password) or the 2FA form.
+        :param form: The form to be displayed to the user.
+        """
         self.active_form = form
         self.set_visible_child(form)
         form.reset()
 
     def reset(self):
+        """Resets the widget to its initial state."""
         self.display_form(self.login_form)
 
 
@@ -122,7 +130,8 @@ class PasswordEntry(Gtk.Entry):
         )
 
     def _on_change_password_visibility_icon_press(
-            self, gtk_entry_object, gtk_icon_object, gtk_event
+            self, gtk_entry_object,
+            gtk_icon_object, gtk_event  # pylint: disable=W0613
     ):
         """Changes password visibility, updating accordingly the icon."""
         is_text_visible = gtk_entry_object.get_visibility()
@@ -168,7 +177,7 @@ class LoginLinks(Gtk.Box):
         )
 
 
-class LoginForm(Gtk.Box):
+class LoginForm(Gtk.Box):  # pylint: disable=R0902
     """It implements the login form. Once the user is authenticated, it
     emits the `user-authenticated` signal.
 
@@ -196,7 +205,7 @@ class LoginForm(Gtk.Box):
 
         self._login_button = Gtk.Button(label="Login")
         self._login_button.connect("clicked", self._on_login_button_clicked)
-        # By default the button should never be clickable, as username and
+        # By default, the button should never be clickable, as username and
         # password fields are empty and users need to actively provide an input
         # to unlock the login button.
         self._login_button.set_property("sensitive", False)
@@ -238,9 +247,9 @@ class LoginForm(Gtk.Box):
     def _on_login_result(self, future: Future):
         try:
             result = future.result()
-        except ValueError as e:
+        except ValueError as error:
             self.error_message = "Invalid username."
-            logger.debug(e)
+            logger.debug(error)
             self.emit("login-error")
             return
         finally:
@@ -269,12 +278,10 @@ class LoginForm(Gtk.Box):
         Signal emitted after the user successfully authenticates.
         :param two_factor_auth_required: whether 2FA is required or not.
         """
-        pass
 
     @GObject.Signal(name="login-error")
     def login_error(self):
         """Signal emitted when a login error occurred."""
-        pass
 
     def reset(self):
         """Resets the state of the login/2fa forms."""
@@ -409,7 +416,6 @@ class TwoFactorAuthForm(Gtk.Box):
     @GObject.Signal
     def two_factor_auth_successful(self):
         """Signal emitted after a successful 2FA."""
-        pass
 
     @GObject.Signal
     def session_expired(self):

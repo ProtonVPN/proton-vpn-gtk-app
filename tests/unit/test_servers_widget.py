@@ -36,7 +36,8 @@ UNSORTED_SERVER_LIST = ServerList(apidata={
             "Servers": [{"Status": 1}]
         },
     ],
-    "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP
+    "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
+    "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP
 })
 
 
@@ -55,7 +56,8 @@ SERVER_LIST = ServerList(apidata={
             "Servers": [{"Status": 1}]
         },
     ],
-    "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP
+    "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
+    "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP
 })
 
 
@@ -69,7 +71,8 @@ SERVER_LIST_UPDATED = ServerList(apidata={
 
             },
         ],
-        "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP + 1
+        "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP + 1,
+        "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP + 1
     })
 
 
@@ -166,4 +169,4 @@ def test_server_row_signals_server_under_maintenance():
 
     server_row = ServerRow(server)
 
-    assert server_row.server_label == "IS#1 (under maintenance)"
+    assert server_row.under_maintenance

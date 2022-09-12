@@ -22,19 +22,28 @@ class ServerRow(Gtk.Box):
     def __init__(self, server: LogicalServer):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self._server = server
-        self._server_label = Gtk.Label(label=server.name)
+        self._build_row()
+
+    def _build_row(self):
+        self._server_label = Gtk.Label(label=self._server.name)
+        self._load_label = Gtk.Label(label=f"{self._server.load}%")
+
+        if not self._server.enabled:
+            last_item_to_pack = Gtk.Label(label="(under maintenance)")
+        else:
+            last_item_to_pack = Gtk.Button(label="Connect (WIP)")
+            last_item_to_pack.set_sensitive(False)
+
         self.pack_start(
             self._server_label,
             expand=False, fill=False, padding=10
         )
-        if not server.enabled:
-            self._server_label.set_label(
-                f"{self._server_label.get_label()} (under maintenance)"
-            )
-        connect_button = Gtk.Button(label="Connect (WIP)")
-        connect_button.set_sensitive(False)
+        self.pack_start(
+            self._load_label,
+            expand=False, fill=False, padding=10
+        )
         self.pack_end(
-            connect_button,
+            last_item_to_pack,
             expand=False, fill=False, padding=10
         )
 
@@ -43,6 +52,12 @@ class ServerRow(Gtk.Box):
         """Returns the server label.
         This method was made available for tests."""
         return self._server_label.get_label()
+
+    @property
+    def under_maintenance(self):
+        """Returns if the server is under maintenance.
+        This method was made available for tests."""
+        return not self._server.enabled
 
 
 class ServersWidget(Gtk.ScrolledWindow):
@@ -131,13 +146,13 @@ class ServersWidget(Gtk.ScrolledWindow):
         self._container.show_all()
 
     def _is_server_list_outdated(self, new_server_list: ServerList):
-        new_timestamp = new_server_list.logicals_update_timestamp
+        new_timestamp = new_server_list.loads_update_timestamp
         return self._last_update_time < new_timestamp
 
     def _on_servers_retrieved(self, future_server_list: Future):
         new_server_list = future_server_list.result()
         if self._is_server_list_outdated(new_server_list):
-            self._last_update_time = new_server_list.logicals_update_timestamp
+            self._last_update_time = new_server_list.loads_update_timestamp
             self._server_list = new_server_list
             self._show_servers()
         else:

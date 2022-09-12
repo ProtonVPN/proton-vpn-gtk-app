@@ -5,6 +5,7 @@ Proton VPN back-ends.
 from concurrent.futures import ThreadPoolExecutor, Future
 
 from proton.vpn.connection.enum import ConnectionStateEnum
+from proton.vpn.connection import VPNConnection
 from proton.vpn.core_api import ProtonVPNAPI
 from proton.vpn.core_api.connection import Subscriber
 
@@ -55,15 +56,20 @@ class Controller:
         """
         return self._api.is_user_logged_in()
 
-    def connect(self) -> Future:
+    def connect(self, server_name: str = None) -> Future:
         """
         Establishes a VPN connection.
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
+        if not server_name:
+            # When working on the "Quick Connect" functionality, server_name
+            # should be the fastest server
+            server_name = "NL#3"
+
         def _connect():
             server = self._api.servers.get_server_with_features(
-                servername="NL#3"
+                servername=server_name
             )
             self._api.connection.connect(server, protocol="openvpn-udp")
             self._connection_subscriber.wait_for_state(
@@ -95,6 +101,10 @@ class Controller:
             return bool(self._api.connection.get_current_connection())
         return self._thread_pool.submit(_current_connection_exists)
 
+    def get_current_connection(self) -> VPNConnection:
+        """Returns the current VPN connection, if it exists."""
+        return self._thread_pool.submit(self._api.connection.get_current_connection)
+
     def get_server_list(self, force_refresh=False) -> Future:
         """
         Returns the list of Proton VPN servers.
@@ -107,3 +117,17 @@ class Controller:
             self._api.servers.get_server_list,
             force_refresh=force_refresh
         )
+
+    def register_connection_status_subscriber(self, subscriber):
+        """
+        Registers a new subscriber to connection status updates.
+        :param subscriber: The subscriber to be registered.
+        """
+        self._api.connection.register(subscriber)
+
+    def unregister_connection_status_subscriber(self, subscriber):
+        """
+        Unregisters an existing subscriber from connection status updates.
+        :param subscriber: The subscriber to be unregistered.
+        """
+        self._api.connection.unregister(subscriber)

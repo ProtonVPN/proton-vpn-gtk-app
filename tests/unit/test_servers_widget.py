@@ -6,6 +6,7 @@ from unittest.mock import Mock
 import pytest
 from proton.vpn.servers.list import ServerList
 from proton.vpn.servers.server_types import LogicalServer
+from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
 from proton.vpn.app.gtk.widgets.servers import ServersWidget, ServerRow
 from tests.unit.utils import process_gtk_events
@@ -170,3 +171,32 @@ def test_server_row_signals_server_under_maintenance():
     server_row = ServerRow(server)
 
     assert server_row.under_maintenance
+
+
+def test_server_connect_button_triggers_vpn_connection():
+    mock_controller = Mock()
+    servers_widget = ServersWidget(
+        controller=mock_controller, server_list=SERVER_LIST
+    )
+
+    servers_widget.server_rows[0].click_connect_button()
+
+    mock_controller.connect.assert_called_once_with(server_name=SERVER_LIST[0].name)
+
+
+@pytest.mark.parametrize(
+    "connection_state",[(Connecting()), (Connected()), (Disconnected()) ]
+)
+def test_server_widget_updates_row_according_to_connection_status_update(connection_state):
+    mock_controller = Mock()
+    servers_widget = ServersWidget(
+        controller=mock_controller, server_list=SERVER_LIST
+    )
+    vpn_server = Mock()
+    vpn_server.servername = SERVER_LIST[0].name
+
+    servers_widget.connection_status_update(connection_state, vpn_server)
+
+    process_gtk_events()
+
+    assert servers_widget.server_rows[0].connection_state == connection_state.state

@@ -11,6 +11,7 @@ from gi.repository import GLib, GObject
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.list import ServerList
 
@@ -21,31 +22,76 @@ class ServerRow(Gtk.Box):
     """Displays a single server as a row in the server list."""
     def __init__(self, server: LogicalServer):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
-        self._server = server
+        self.server = server
+        self._connection_state: ConnectionStateEnum = None
         self._build_row()
 
+    @property
+    def connection_state(self):
+        """Returns the connection state of the server shown in this row."""
+        return self._connection_state
+
+    @connection_state.setter
+    def connection_state(self, connection_state: ConnectionStateEnum):
+        """Sets the connection state, modifying the row depending on the state."""
+        self._connection_state = connection_state
+
+        # Update the server row according to the connection state.
+        method = f"_on_connection_state_{connection_state.name.lower()}"
+        if hasattr(self, method):
+            getattr(self, method)()
+
     def _build_row(self):
-        self._server_label = Gtk.Label(label=self._server.name)
-        self._load_label = Gtk.Label(label=f"{self._server.load}%")
-
-        if not self._server.enabled:
-            last_item_to_pack = Gtk.Label(label="(under maintenance)")
-        else:
-            last_item_to_pack = Gtk.Button(label="Connect (WIP)")
-            last_item_to_pack.set_sensitive(False)
-
+        self._server_label = Gtk.Label(label=self.server.name)
         self.pack_start(
             self._server_label,
             expand=False, fill=False, padding=10
         )
+
+        self._load_label = Gtk.Label(label=f"{self.server.load}%")
         self.pack_start(
             self._load_label,
             expand=False, fill=False, padding=10
         )
-        self.pack_end(
-            last_item_to_pack,
-            expand=False, fill=False, padding=10
-        )
+
+        self._connect_button = None
+        if self.server.enabled:
+            self._connect_button = Gtk.Button(label="Connect")
+            handler_id = self._connect_button.connect("clicked", self._on_connect_button_clicked)
+            self.connect("destroy", lambda _: self._connect_button.disconnect(handler_id))
+            self.pack_end(
+                self._connect_button,
+                expand=False, fill=False, padding=10
+            )
+        else:
+            self.pack_end(
+                Gtk.Label(label="(under maintenance)"),
+                expand=False, fill=False, padding=10
+            )
+
+    @GObject.Signal(name="server-connection-request")
+    def server_connection_request(self):
+        """
+        Signal emitted when the user request to connect to a server.
+        """
+
+    def _on_connection_state_connecting(self):
+        """Flags this server as "connecting"."""
+        self._connect_button.set_label("Connecting...")
+        self._connect_button.set_sensitive(False)
+
+    def _on_connection_state_connected(self):
+        """Flags this server as "connected"."""
+        self._connect_button.set_sensitive(False)
+        self._connect_button.set_label("Connected")
+
+    def _on_connection_state_disconnected(self):
+        """Flags this server as "not connected"."""
+        self._connect_button.set_sensitive(True)
+        self._connect_button.set_label("Connect")
+
+    def _on_connect_button_clicked(self, _):
+        self.emit("server-connection_request")
 
     @property
     def server_label(self):
@@ -57,7 +103,12 @@ class ServerRow(Gtk.Box):
     def under_maintenance(self):
         """Returns if the server is under maintenance.
         This method was made available for tests."""
-        return not self._server.enabled
+        return not self.server.enabled
+
+    def click_connect_button(self):
+        """Clicks the connect button.
+        This method was made available for tests."""
+        self._connect_button.clicked()
 
 
 class ServersWidget(Gtk.ScrolledWindow):
@@ -66,7 +117,7 @@ class ServersWidget(Gtk.ScrolledWindow):
     # Number of seconds to wait before checking if the servers cache expired.
     RELOAD_INTERVAL_IN_SECONDS = 60
 
-    def __init__(self, controller: Controller):
+    def __init__(self, controller: Controller, server_list: ServerList = None):
         super().__init__()
         self.set_policy(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
@@ -75,9 +126,13 @@ class ServersWidget(Gtk.ScrolledWindow):
         self._controller = controller
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(self._container)
-        self._server_list = None
-        self._last_update_time = 0
+        self._server_list = server_list
+        self._last_update_time = server_list.loads_update_timestamp if server_list else 0
         self._reload_servers_source_id = None
+        self._current_server = None
+
+        if self._server_list:
+            self._show_servers()
 
         self.connect("realize", self._on_realize)
         self.connect("unrealize", self._on_unrealize)
@@ -126,19 +181,31 @@ class ServersWidget(Gtk.ScrolledWindow):
             logger.info("Servers are not being reloaded periodically. "
                         "There is nothing to do.")
 
+    def connection_status_update(self, connection_status, vpn_server):
+        """This method is called by VPNWidget whenever the VPN connection status changes."""
+        def update_server_rows():
+            if vpn_server:
+                self._current_server = self._get_server_row(vpn_server)
+                self._current_server.connection_state = connection_status.state
+            elif self._current_server \
+                    and connection_status.state == ConnectionStateEnum.DISCONNECTED:
+                self._current_server.connection_state = connection_status.state
+
+        GLib.idle_add(update_server_rows)
+
     def _on_realize(self, _servers_widget: ServersWidget):
         self.start_reloading_servers_periodically()
 
     def _on_unrealize(self, _servers_widget: ServersWidget):
         self.stop_reloading_servers_periodically()
 
-    def _reset_server_rows(self):
+    def _remove_server_rows(self):
         for row in self._container.get_children():
             self._container.remove(row)
             row.destroy()
 
     def _show_loading(self):
-        self._reset_server_rows()
+        self._remove_server_rows()
         self._container.pack_start(
             Gtk.Label(label="Loading..."),
             expand=False, fill=False, padding=5
@@ -174,15 +241,29 @@ class ServersWidget(Gtk.ScrolledWindow):
 
         servers_sorted_alphabetically = sorted(self._server_list, key=sorting_key)
 
-        self._reset_server_rows()
+        self._remove_server_rows()
         for server in servers_sorted_alphabetically:
-            server = ServerRow(server=server)
+            server_row = ServerRow(server=server)
+
+            if self._current_server and self._current_server.server.name == server.name:
+                self._current_server = server_row
+                server_row.connection_state = ConnectionStateEnum.CONNECTED
+
             self._container.pack_start(
-                server,
+                server_row,
                 expand=False, fill=False, padding=5
             )
+            server_row.connect("server-connection-request", self._on_server_connection_request)
+
         self._container.show_all()
-
         logger.info("Server list updated.")
-
         self.emit("server-list-updated")
+
+    def _get_server_row(self, vpn_server):
+        for row in self._container.get_children():
+            if row.server.name == vpn_server.servername:
+                return row
+        return None
+
+    def _on_server_connection_request(self, server_row: ServerRow):
+        self._controller.connect(server_name=server_row.server.name)

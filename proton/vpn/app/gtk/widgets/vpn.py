@@ -2,6 +2,7 @@
 This module defines the VPN widget, which contains all the VPN functionality
 that is shown to the user.
 """
+# pylint: disable=R0801
 import logging
 from concurrent.futures import Future
 
@@ -10,6 +11,8 @@ from gi.repository import GObject, GLib
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.servers import ServersWidget
+from proton.vpn.connection.enum import ConnectionStateEnum
+from proton.vpn.connection.states import Disconnected, Connected
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 
 
@@ -25,37 +28,78 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
+        self._connection_status_widget = VPNConnectionStatusWidget(controller)
+        self.pack_start(self._connection_status_widget, expand=False, fill=False, padding=0)
+
         self._logout_dialog = None
         self._logout_button = Gtk.Button(label="Logout")
         self._logout_button.connect("clicked", self._on_logout_button_clicked)
         self.pack_start(self._logout_button, expand=False, fill=False, padding=0)
-        self._connect_button = Gtk.Button(label="Quick Connect")
-        self._connect_button.connect(
-            "clicked", self._on_connect_button_clicked)
-        self.pack_start(self._connect_button, expand=False, fill=False, padding=0)
-        self._disconnect_button = Gtk.Button(label="Disconnect")
-        self._disconnect_button.connect(
-            "clicked", self._on_disconnect_button_clicked)
-        self.pack_start(self._disconnect_button, expand=False, fill=False, padding=0)
-        self._main_spinner = Gtk.Spinner()
-        self.pack_start(self._main_spinner, expand=False, fill=False, padding=0)
+
+        self._quick_connect_widget = QuickConnectWidget(controller)
+        self.pack_start(self._quick_connect_widget, expand=False, fill=False, padding=0)
 
         self.servers_widget = ServersWidget(controller)
         self.pack_end(self.servers_widget, expand=True, fill=True, padding=0)
 
-        self.__vpn_disconnected_signal_id = None
+        # Keep track of child widgets that need to be aware of VPN connection status changes.
+        self._connection_update_subscribers = []
+        for widget in [
+            self._connection_status_widget,
+            self._quick_connect_widget,
+            self.servers_widget
+        ]:
+            self._connection_update_subscribers.append(widget)
+
+        # Flag signaling when a logout is required after VPN disconnection.
+        self._logout_after_vpn_disconnection = False
+
+        self.connect("realize", self._on_realize)
+        self.connect("unrealize", self._on_unrealize)
 
     @GObject.Signal(name="user-logged-out")
     def user_logged_out(self):
         """Signal emitted once the user has been logged out."""
 
-    @GObject.Signal(name="vpn-disconnected")
-    def vpn_disconnected(self):
-        """Signal emitted after disconnection from a VPN server."""
+    def _on_realize(self, _servers_widget: ServersWidget):
+        self._initialize_ui()
+        self._controller.register_connection_status_subscriber(self)
+
+    def _initialize_ui(self):
+        future = self._controller.get_current_connection()
+
+        def initialize_ui(current_connection_future: Future):
+            current_connection = current_connection_future.result()
+            if current_connection:
+                self.status_update(Connected())
+            else:
+                self.status_update(Disconnected())
+
+        future.add_done_callback(initialize_ui)
+
+    def _on_unrealize(self, _servers_widget: ServersWidget):
+        self._controller.unregister_connection_status_subscriber(self)
+
+    def status_update(self, connection_status):
+        """This method is called whenever the VPN connection status changes."""
+        current_connection = self._controller.get_current_connection().result()
+
+        vpn_server = None
+        if current_connection:
+            vpn_server = current_connection._vpnserver  # noqa: temporary hack # pylint: disable=W0212
+
+        def update_widget():
+            for widget in self._connection_update_subscribers:
+                widget.connection_status_update(connection_status, vpn_server)
+            if connection_status.state == ConnectionStateEnum.DISCONNECTED \
+                    and self._logout_after_vpn_disconnection:
+                self._logout_button.clicked()
+                self._logout_after_vpn_disconnection = False
+
+        GLib.idle_add(update_widget)
 
     def _on_logout_button_clicked(self, *_):
         logger.info("Logging out...")
-        self._main_spinner.start()
         future = self._controller.logout()
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_logout_result, future)
@@ -67,41 +111,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
             logger.info("User logged out.")
             self.emit("user-logged-out")
         except VPNConnectionFoundAtLogout:
-            self._main_spinner.start()
             self._show_disconnect_dialog()
-        finally:
-            self._main_spinner.stop()
-
-    def _on_connect_button_clicked(self, _):
-        logger.info("Connecting...")
-        self._main_spinner.start()
-        future = self._controller.connect()
-        future.add_done_callback(
-            lambda future: GLib.idle_add(self._on_connect_result, future)
-        )
-
-    def _on_connect_result(self, future: Future):
-        try:
-            future.result()
-        finally:
-            self._main_spinner.stop()
-        logger.info("Connected.")
-
-    def _on_disconnect_button_clicked(self, _):
-        logger.info("Disconnecting...")
-        self._main_spinner.start()
-        future = self._controller.disconnect()
-        future.add_done_callback(
-            lambda future: GLib.idle_add(self._on_disconnect_result, future)
-        )
-
-    def _on_disconnect_result(self, future: Future):
-        try:
-            future.result()
-            self.emit("vpn-disconnected")
-        finally:
-            self._main_spinner.stop()
-        logger.info("Disconnected.")
 
     def _show_disconnect_dialog(self):
         self._logout_dialog = Gtk.Dialog()
@@ -119,16 +129,8 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
 
     def _on_show_disconnect_response(self, _dialog, response):
         if response == Gtk.ResponseType.YES:
-            def disconnect_before_logout(_):
-                GObject.signal_handler_disconnect(self, self.__vpn_disconnected_signal_id)
-                self.__vpn_disconnected_signal_id = None
-                self._logout_button.clicked()
-
-            self.__vpn_disconnected_signal_id = self.connect(
-                "vpn-disconnected",
-                disconnect_before_logout
-            )
-            self._disconnect_button.clicked()
+            self._logout_after_vpn_disconnection = True
+            self._quick_connect_widget.disconnect_button_click()
 
         self._logout_dialog.destroy()
         self._logout_dialog = None
@@ -144,3 +146,93 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         self._logout_dialog.emit(
             "response",
             Gtk.ResponseType.YES if end_current_connection else Gtk.ResponseType.NO)
+
+
+class VPNConnectionStatusWidget(Gtk.Box):
+    """Displays the current connection status."""
+
+    def __init__(self, controller: Controller):
+        super().__init__(spacing=10)
+        self._controller = controller
+
+        self.set_orientation(Gtk.Orientation.VERTICAL)
+        self._connection_status_label = Gtk.Label(label="")
+        self.add(self._connection_status_label)
+
+    def connection_status_update(self, connection_status, vpn_server=None):
+        """This method is called by VPNWidget whenever the VPN connection status changes."""
+        self._update_status_label(
+            connection_status.state,
+            vpn_server
+        )
+
+    def _update_status_label(self, connection_state: ConnectionStateEnum, vpn_server=None):
+        label = f"Status: {connection_state.name.lower()}"
+        if vpn_server:
+            label = f"{label} to {vpn_server.servername}"
+        self._connection_status_label.set_label(label)
+
+
+class QuickConnectWidget(Gtk.Box):
+    """Widget handling the "Quick Connect" functionality."""
+    def __init__(self, controller: Controller):
+        super().__init__(spacing=10)
+        self._controller = controller
+        self._connection_state: ConnectionStateEnum = None
+
+        self.set_orientation(Gtk.Orientation.VERTICAL)
+        self._connect_button = Gtk.Button(label="Quick Connect")
+        self._connect_button.connect(
+            "clicked", self._on_connect_button_clicked)
+        self.pack_start(self._connect_button, expand=False, fill=False, padding=0)
+        self._disconnect_button = Gtk.Button(label="Disconnect")
+        self._disconnect_button.connect(
+            "clicked", self._on_disconnect_button_clicked)
+        self.pack_start(self._disconnect_button, expand=False, fill=False, padding=0)
+
+    def connect_button_click(self):
+        """Clicks the connect button. This method was made available for tests."""
+        self._connect_button.clicked()
+
+    def disconnect_button_click(self):
+        """Clicks the disconnect button."""
+        self._disconnect_button.clicked()
+
+    @property
+    def connection_state(self):
+        """Returns the current connection state."""
+        return self._connection_state
+
+    @connection_state.setter
+    def connection_state(self, connection_state: ConnectionStateEnum):
+        """Sets the current connection state, updating the UI accordingly."""
+        self._connection_state = connection_state
+
+        # Update the UI according to the connection state.
+        method = f"_on_connection_state_{connection_state.name.lower()}"
+        if hasattr(self, method):
+            getattr(self, method)()
+
+    def connection_status_update(self, connection_status, vpn_server=None):  # pylint: disable=W0613
+        """This method is called by VPNWidget whenever the VPN connection status changes."""
+        self.connection_state = connection_status.state
+
+    def _on_connection_state_connected(self):
+        self._connect_button.hide()
+        self._disconnect_button.set_sensitive(True)
+        self._disconnect_button.show()
+
+    def _on_connection_state_disconnected(self):
+        self._disconnect_button.hide()
+        self._connect_button.set_sensitive(True)
+        self._connect_button.show()
+
+    def _on_connect_button_clicked(self, _):
+        logger.info("Connecting...")
+        self._connect_button.set_sensitive(False)
+        self._controller.connect()
+
+    def _on_disconnect_button_clicked(self, _):
+        logger.info("Disconnecting...")
+        self._disconnect_button.set_sensitive(False)
+        self._controller.disconnect()

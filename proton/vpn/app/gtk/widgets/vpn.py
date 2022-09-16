@@ -82,7 +82,14 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
 
     def status_update(self, connection_status):
         """This method is called whenever the VPN connection status changes."""
-        current_connection = self._controller.get_current_connection().result()
+        current_connection = None
+        if connection_status.state is not ConnectionStateEnum.DISCONNECTED:
+            # Ignoring the fact that current_connection would always be None
+            # when the connection state is DISCONNECTED, currently the app
+            # sometimes gets stuck when we try to get the current connection
+            # when the connection state is DISCONNECTED.
+            # FIXME: To be investigated when we work on the VPN connection.
+            current_connection = self._controller.get_current_connection().result()
 
         vpn_server = None
         if current_connection:
@@ -222,6 +229,12 @@ class QuickConnectWidget(Gtk.Box):
         self._disconnect_button.set_sensitive(True)
         self._disconnect_button.show()
 
+    def _on_connection_state_connecting(self):
+        self._connect_button.set_sensitive(False)
+
+    def _on_connection_state_disconnecting(self):
+        self._disconnect_button.set_sensitive(False)
+
     def _on_connection_state_disconnected(self):
         self._disconnect_button.hide()
         self._connect_button.set_sensitive(True)
@@ -229,10 +242,8 @@ class QuickConnectWidget(Gtk.Box):
 
     def _on_connect_button_clicked(self, _):
         logger.info("Connecting...")
-        self._connect_button.set_sensitive(False)
         self._controller.connect()
 
     def _on_disconnect_button_clicked(self, _):
         logger.info("Disconnecting...")
-        self._disconnect_button.set_sensitive(False)
         self._controller.disconnect()

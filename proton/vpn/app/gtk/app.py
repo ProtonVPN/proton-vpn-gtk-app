@@ -14,8 +14,7 @@ from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.view import MainWindow
-
-logger = logging.getLogger(__name__)
+from proton.vpn.core_api.logger import logger
 
 
 class App(Gtk.Application):
@@ -36,6 +35,7 @@ class App(Gtk.Application):
 
     def __init__(self, thread_pool_executor: ThreadPoolExecutor):
         super().__init__(application_id="proton.vpn.app.gtk")
+        logger.info("application_id='proton.vpn.app.gtk'", category="APP", event="PROCESS_START")
         self._controller = Controller(
             thread_pool_executor=thread_pool_executor
         )
@@ -207,9 +207,10 @@ class AppExceptionHandler:
         else:
             raise exc_value if exc_value else exc_type
 
-        logger.error(
+        logger.critical(
             "Unexpected error.",
-            exc_info=(exc_type, exc_value, exc_traceback)
+            category="APP", event="CRASH",
+            optional=f"exc_info({exc_type}, {exc_value}, {exc_traceback})"
         )
         self._show_error_dialog(error_message)
 

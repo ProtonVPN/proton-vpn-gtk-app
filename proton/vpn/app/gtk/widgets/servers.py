@@ -14,8 +14,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.list import ServerList
-
-logger = logging.getLogger(__name__)
+from proton.vpn.core_api.logger import logger
 
 
 class ServerRow(Gtk.Box):
@@ -155,7 +154,7 @@ class ServersWidget(Gtk.ScrolledWindow):
         triggered if the server list cache expired.
         :return: A future wrapping the server list.
         """
-        logger.debug("Retrieving servers...")
+        logger.debug("Retrieving servers", category="APP", subcategory="SERVERS", event="RETRIEVE")
         future = self._controller.get_server_list()
         if not self._server_list:
             self._show_loading()
@@ -178,8 +177,9 @@ class ServersWidget(Gtk.ScrolledWindow):
         if self._reload_servers_source_id is not None:
             GLib.source_remove(self._reload_servers_source_id)
         else:
-            logger.info("Servers are not being reloaded periodically. "
-                        "There is nothing to do.")
+            logger.info(msg="Servers are not being reloaded periodically. "
+                        "There is nothing to do.",
+                        category="APP", subcategory="SERVERS", event="RELOAD")
 
     def connection_status_update(self, connection_status, vpn_server):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
@@ -223,7 +223,10 @@ class ServersWidget(Gtk.ScrolledWindow):
             self._server_list = new_server_list
             self._show_servers()
         else:
-            logger.debug("Skipping server list reload because it's already up to date.")
+            logger.debug(
+                "Skipping server list reload because it's already up to date.",
+                category="APP", subcategory="SERVERS", event="RELOAD"
+            )
 
     def _show_servers(self):
         def sorting_key(server: LogicalServer):
@@ -256,7 +259,7 @@ class ServersWidget(Gtk.ScrolledWindow):
             server_row.connect("server-connection-request", self._on_server_connection_request)
 
         self._container.show_all()
-        logger.info("Server list updated.")
+        logger.info("Server list updated.", category="APP", subcategory="SERVERS", event="RELOAD")
         self.emit("server-list-updated")
 
     def _get_server_row(self, vpn_server):

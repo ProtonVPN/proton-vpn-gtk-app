@@ -9,9 +9,8 @@ from gi.repository import GObject, GdkPixbuf, GLib
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.core_api.logger import logger
 
-
-logger = logging.getLogger(__name__)
 
 ASSETS_DIR = Path(__file__).parent.parent.resolve() / "assets"
 
@@ -238,6 +237,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self._login_button.clicked()
 
     def _on_login_button_clicked(self, _):
+        logger.info("Clicked on login", category="UI", subcategory="LOGIN", event="CLICK")
         self._login_spinner.start()
         future = self._controller.login(self.username, self.password)
         future.add_done_callback(
@@ -249,7 +249,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
             result = future.result()
         except ValueError as error:
             self.error_message = "Invalid username."
-            logger.debug(error)
+            logger.debug(error, category="APP", subcategory="LOGIN", event="RESULT")
             self.emit("login-error")
             return
         finally:
@@ -260,7 +260,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         else:
             self.error_message = "Wrong credentials."
             self.emit("login-error")
-            logger.debug(self.error_message)
+            logger.debug(self.error_message, category="APP", subcategory="LOGIN", event="RESULT")
 
     def _on_entry_changed(self, _):
         """Toggles login button state based on username and password lengths."""
@@ -385,6 +385,7 @@ class TwoFactorAuthForm(Gtk.Box):
         self.reset()
 
     def _on_2fa_submission_button_clicked(self, _):
+        logger.info("Clicked on login", category="UI", subcategory="LOGIN-2FA", event="CLICK")
         self._2fa_spinner.start()
         future = self._controller.submit_2fa_code(
             self.two_factor_auth_code
@@ -401,11 +402,11 @@ class TwoFactorAuthForm(Gtk.Box):
 
         if not result.authenticated:
             self.error_message = "Session expired. Please login again."
+            logger.debug(self.error_message, category="APP", subcategory="LOGIN-2FA", event="RESULT")
             self.emit("session-expired")
-            logger.debug(self.error_message)
         elif result.twofa_required:
             self.error_message = "Wrong 2FA code."
-            logger.debug(self.error_message)
+            logger.debug(self.error_message, category="APP", subcategory="LOGIN-2FA", event="RESULT")
         else:  # authenticated and 2FA not required
             self._signal_two_factor_auth_successful()
 

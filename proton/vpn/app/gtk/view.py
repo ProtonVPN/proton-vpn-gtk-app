@@ -3,13 +3,9 @@ This module contains the application's View, as in the V in the MVC pattern.
 """
 from __future__ import annotations
 
-import logging
-
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main import MainWidget
-
-logger = logging.getLogger(__name__)
 
 
 class MainWindow(Gtk.ApplicationWindow):

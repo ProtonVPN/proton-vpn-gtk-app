@@ -3,7 +3,6 @@ This module defines the VPN widget, which contains all the VPN functionality
 that is shown to the user.
 """
 # pylint: disable=R0801
-import logging
 from concurrent.futures import Future
 
 from gi.repository import GObject, GLib
@@ -14,9 +13,7 @@ from proton.vpn.app.gtk.widgets.servers import ServersWidget
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.connection.states import Disconnected, Connected
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
-
-
-logger = logging.getLogger(__name__)
+from proton.vpn.core_api.logger import logger
 
 
 class VPNWidget(Gtk.Box):  # pylint: disable=R0902
@@ -106,7 +103,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         GLib.idle_add(update_widget)
 
     def _on_logout_button_clicked(self, *_):
-        logger.info("Logging out...")
+        logger.info("Logout button clicked", category="UI", subcategory="LOGOUT", event="CLICK")
         future = self._controller.logout()
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_logout_result, future)
@@ -115,7 +112,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
     def _on_logout_result(self, future: Future):
         try:
             future.result()
-            logger.info("User logged out.")
+            logger.info("Successful logout", category="APP", subcategory="LOGOUT", event="SUCCESS")
             self.emit("user-logged-out")
         except VPNConnectionFoundAtLogout:
             self._show_disconnect_dialog()
@@ -136,8 +133,11 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
 
     def _on_show_disconnect_response(self, _dialog, response):
         if response == Gtk.ResponseType.YES:
+            logger.info("Yes", category="UI", subcategory="DIALOG", event="DISCONNECT")
             self._logout_after_vpn_disconnection = True
             self._quick_connect_widget.disconnect_button_click()
+        else:
+            logger.info("No", category="UI", subcategory="DIALOG", event="DISCONNECT")
 
         self._logout_dialog.destroy()
         self._logout_dialog = None
@@ -241,9 +241,11 @@ class QuickConnectWidget(Gtk.Box):
         self._connect_button.show()
 
     def _on_connect_button_clicked(self, _):
-        logger.info("Connecting...")
+        logger.info("Connecto to VPN ISO#NUMBER", category="UI", event="CONNECT")
+        self._connect_button.set_sensitive(False)
         self._controller.connect()
 
     def _on_disconnect_button_clicked(self, _):
-        logger.info("Disconnecting...")
+        logger.info("Disconnect from VPN", category="UI", event="DISCONNECT")
+        self._disconnect_button.set_sensitive(False)
         self._controller.disconnect()

@@ -90,17 +90,6 @@ class Controller:
             )
         return self._thread_pool.submit(_disconnect)
 
-    def does_current_connection_exists(self) -> Future:
-        """
-        Checks whether a VPN connection is already established.
-        :return: A Future wrapping the result of the check. The final result
-        will be True if a VPN connection to Proton servers already exist and
-        False otherwise.
-        """
-        def _current_connection_exists():
-            return bool(self._api.connection.get_current_connection())
-        return self._thread_pool.submit(_current_connection_exists)
-
     def get_current_connection(self) -> VPNConnection:
         """Returns the current VPN connection, if it exists."""
         return self._thread_pool.submit(self._api.connection.get_current_connection)

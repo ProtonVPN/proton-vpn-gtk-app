@@ -1,11 +1,17 @@
+proton-vpn-gtk-app (0.1.1) unstable; urgency=medium
+
+  * Fix app freeze when disconnecting from VPN
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Sep, 19 Sep 2022 10:30:00 +0200
+
 proton-vpn-gtk-app (0.1.0) unstable; urgency=medium
 
   * Allow the user to connect to a concrete VPN server
 
- -- Proton Technologies AG <opensource@proton.me>  Thu, 15 Sep 2022 18:00:00 +0200
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Thu, 15 Sep 2022 18:00:00 +0200
 
-proton-vpn-gtk-app (0.0.2) unstable; urgency=medium
+proton-vpn-gtk-app (0.0.0) unstable; urgency=medium
 
   * First release
 
- -- Proton Technologies AG <opensource@proton.me>  Tue, 22 Jun 2022 16:00:02 +0200
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 22 Jun 2022 16:00:02 +0200

@@ -3,7 +3,6 @@ This module defines the widgets used to present the VPN server list to the user.
 """
 from __future__ import annotations
 
-import logging
 from concurrent.futures import Future
 from typing import List
 
@@ -14,7 +13,10 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.list import ServerList
-from proton.vpn.core_api.logger import logger
+from proton.vpn.core_api import vpn_logging as logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class ServerRow(Gtk.Box):

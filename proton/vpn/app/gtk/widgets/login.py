@@ -1,7 +1,6 @@
 """
 This module defines the login widget, used to authenticate the user.
 """
-import logging
 from concurrent.futures import Future
 from pathlib import Path
 
@@ -9,7 +8,10 @@ from gi.repository import GObject, GdkPixbuf, GLib
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.core_api.logger import logger
+from proton.vpn.core_api import vpn_logging as logging
+
+
+logger = logging.getLogger(__name__)
 
 
 ASSETS_DIR = Path(__file__).parent.parent.resolve() / "assets"

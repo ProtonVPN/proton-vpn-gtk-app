@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, Future
 
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.connection import VPNConnection
-from proton.vpn.core_api import ProtonVPNAPI
+from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.connection import Subscriber
 
 

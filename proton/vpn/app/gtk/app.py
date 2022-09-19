@@ -1,7 +1,6 @@
 """
 This module defines the main App class.
 """
-import logging
 import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -14,7 +13,10 @@ from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.view import MainWindow
-from proton.vpn.core_api.logger import logger
+from proton.vpn.core_api import vpn_logging as logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class App(Gtk.Application):
@@ -35,7 +37,7 @@ class App(Gtk.Application):
 
     def __init__(self, thread_pool_executor: ThreadPoolExecutor):
         super().__init__(application_id="proton.vpn.app.gtk")
-        logger.info("application_id='proton.vpn.app.gtk'", category="APP", event="PROCESS_START")
+        logger.info(f"application_id='proton.vpn.app.gtk': {self=}", category="APP", event="PROCESS_START")
         self._controller = Controller(
             thread_pool_executor=thread_pool_executor
         )

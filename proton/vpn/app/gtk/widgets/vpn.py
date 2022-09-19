@@ -13,7 +13,10 @@ from proton.vpn.app.gtk.widgets.servers import ServersWidget
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.connection.states import Disconnected, Connected
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
-from proton.vpn.core_api.logger import logger
+from proton.vpn.core_api import vpn_logging as logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class VPNWidget(Gtk.Box):  # pylint: disable=R0902

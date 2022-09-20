@@ -4,19 +4,154 @@ This module defines the widgets used to present the VPN server list to the user.
 from __future__ import annotations
 
 from concurrent.futures import Future
+from itertools import groupby
 from typing import List
 
 from gi.repository import GLib, GObject
+from iso3166 import countries
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
-from proton.vpn.servers.list import ServerList
+from proton.vpn.servers.list import ServerList, VPNServer
 from proton.vpn.core_api import vpn_logging as logging
 
 
 logger = logging.getLogger(__name__)
+
+
+class CountryHeader(Gtk.Box):
+    """Header with the country name shown at the beginning of each CountryRow."""
+    def __init__(self, country_name: str, show_country_servers=False):
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+        self.country_name = country_name
+
+        self.pack_start(Gtk.Label(label=country_name), expand=False, fill=False, padding=5)
+        self._toggle_button = Gtk.Button(label="")
+        self._toggle_button.connect("clicked", self._on_toggle_button_clicked)
+        self.pack_end(self._toggle_button, expand=False, fill=False, padding=5)
+
+        self.show_country_servers = show_country_servers
+
+    @GObject.Signal(name="toggle-country-servers")
+    def toggle_country_servers(self):
+        """Signal when the user clicks the button to expand/collapse the servers
+        from a country."""
+
+    @property
+    def show_country_servers(self):
+        """Returns whether the country servers should be shown or not."""
+        return self._show_country_servers
+
+    @show_country_servers.setter
+    def show_country_servers(self, show_country_servers: bool):
+        """Sets whether the country servers should be shown or not."""
+        self._show_country_servers = show_country_servers
+        if self.show_country_servers:
+            self._toggle_button.set_label("Hide servers")
+        else:
+            self._toggle_button.set_label("Show servers")
+
+    def click_toggle_country_servers_button(self):
+        """Clicks the button to toggle the country servers.
+        This method was made available for tests."""
+        self._toggle_button.clicked()
+
+    def _on_toggle_button_clicked(self, _toggle_button: Gtk.Button):
+        self.show_country_servers = not self.show_country_servers
+        self.emit("toggle-country-servers")
+
+
+class CountryRow(Gtk.Box):
+    """Row containing all servers from a country."""
+    def __init__(
+            self, country_code: str,
+            country_servers: List[LogicalServer],
+            connected_country_row: CountryRow = None
+    ):
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        self._indexed_server_rows = {}
+        self.connected_server_row = None
+
+        self._server_rows_revealer = Gtk.Revealer()
+        country_name = _get_country_name_by_code(country_code)
+        self._country_header = CountryHeader(country_name)
+        self.pack_start(self._country_header, expand=False, fill=False, padding=5)
+        self._country_header.connect("toggle-country-servers", self._on_toggle_country_servers)
+
+        self._server_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.pack_start(self._server_rows_revealer, expand=False, fill=False, padding=5)
+        self._server_rows_revealer.add(self._server_rows_container)
+
+        for server in country_servers:
+            server_row = ServerRow(server=server)
+            self._server_rows_container.pack_start(
+                server_row,
+                expand=False, fill=False, padding=5
+            )
+            server_row.connect(
+                "server-connection-request",
+                self._on_server_connection_request
+            )
+
+            self._indexed_server_rows[server.name] = server_row
+
+            # If we are currently connected to a server then set its row state to "connected".
+            if connected_country_row and \
+                    connected_country_row.connected_server_row.server.name == server.name:
+                self.connected_server_row = server_row
+                server_row.connection_state = ConnectionStateEnum.CONNECTED
+
+    @GObject.Signal(name="server-connection-request", arg_types=(object,))
+    def server_connection_request(self, server_row: ServerRow):
+        """
+        Signal emitted when the user request to connect to a server.
+        """
+
+    @property
+    def country_name(self):
+        """Returns the name of the country.
+        This method was made available for tests."""
+        return self._country_header.country_name
+
+    @property
+    def showing_servers(self):
+        """Returns True if the servers are being showed and False otherwise.
+        This method was made available for tests."""
+        return self._server_rows_revealer.get_reveal_child()
+
+    def click_toggle_country_servers_button(self):
+        self._country_header.click_toggle_country_servers_button()
+
+    @property
+    def server_rows(self) -> List[ServerRow]:
+        """Returns the list of server rows for this server.
+        This method was made available for tests."""
+        return self._server_rows_container.get_children()
+
+    def _on_toggle_country_servers(self, country_header: CountryHeader):
+        self._server_rows_revealer.set_reveal_child(country_header.show_country_servers)
+
+    def _get_server_row(self, vpn_server) -> ServerRow:
+        try:
+            return self._indexed_server_rows[vpn_server.servername]
+        except KeyError as error:
+            raise RuntimeError(
+                f"Unable to get server row for {vpn_server.servername}."
+            ) from error
+
+    def connection_status_update(self, connection_status, vpn_server: VPNServer):
+        """This method is called by VPNWidget whenever the VPN connection status changes."""
+        server = self._get_server_row(vpn_server)
+        server.connection_state = connection_status.state
+        if connection_status.state == ConnectionStateEnum.CONNECTED:
+            self.connected_server_row = server
+        elif connection_status.state == ConnectionStateEnum.DISCONNECTED:
+            self.connected_server_row = None
+
+    def _on_server_connection_request(self, server_row: ServerRow):
+        self.emit("server-connection-request", server_row)
 
 
 class ServerRow(Gtk.Box):
@@ -58,7 +193,9 @@ class ServerRow(Gtk.Box):
         self._connect_button = None
         if self.server.enabled:
             self._connect_button = Gtk.Button(label="Connect")
-            handler_id = self._connect_button.connect("clicked", self._on_connect_button_clicked)
+            handler_id = self._connect_button.connect(
+                "clicked", self._on_connect_button_clicked
+            )
             self.connect("destroy", lambda _: self._connect_button.disconnect(handler_id))
             self.pack_end(
                 self._connect_button,
@@ -126,11 +263,13 @@ class ServersWidget(Gtk.ScrolledWindow):
         )
         self._controller = controller
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._container.set_margin_end(15)  # Leave space for the scroll bar.
         self.add(self._container)
         self._server_list = server_list
         self._last_update_time = server_list.loads_update_timestamp if server_list else 0
         self._reload_servers_source_id = None
-        self._current_server = None
+        self._connected_country_row = None  # Row of the country we are connected to.
+        self._country_rows = {}  # Country rows indexed by country code.
 
         if self._server_list:
             self._show_servers()
@@ -145,8 +284,8 @@ class ServersWidget(Gtk.ScrolledWindow):
         time the server list changes."""
 
     @property
-    def server_rows(self) -> List[ServerRow]:
-        """Returns the list of server rows that are currently being displayed.
+    def country_rows(self) -> List[CountryRow]:
+        """Returns the list of country rows that are currently being displayed.
         This method was made available for tests."""
         return self._container.get_children()
 
@@ -183,17 +322,19 @@ class ServersWidget(Gtk.ScrolledWindow):
                         "There is nothing to do.",
                         category="APP", subcategory="SERVERS", event="RELOAD")
 
-    def connection_status_update(self, connection_status, vpn_server):
+    def connection_status_update(self, connection_status, vpn_server: VPNServer):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
-        def update_server_rows():
-            if vpn_server:
-                self._current_server = self._get_server_row(vpn_server)
-                self._current_server.connection_state = connection_status.state
-            elif self._current_server \
-                    and connection_status.state == ConnectionStateEnum.DISCONNECTED:
-                self._current_server.connection_state = connection_status.state
+        if vpn_server:
+            def update_server_rows():
+                country_row = self._get_country_row(vpn_server)
+                country_row.connection_status_update(connection_status, vpn_server)
 
-        GLib.idle_add(update_server_rows)
+                if connection_status.state == ConnectionStateEnum.CONNECTED:
+                    self._connected_country_row = country_row
+                elif connection_status.state == ConnectionStateEnum.DISCONNECTED:
+                    self._connected_country_row = None
+
+            GLib.idle_add(update_server_rows)
 
     def _on_realize(self, _servers_widget: ServersWidget):
         self.start_reloading_servers_periodically()
@@ -201,13 +342,14 @@ class ServersWidget(Gtk.ScrolledWindow):
     def _on_unrealize(self, _servers_widget: ServersWidget):
         self.stop_reloading_servers_periodically()
 
-    def _remove_server_rows(self):
+    def _remove_all_servers(self):
         for row in self._container.get_children():
             self._container.remove(row)
             row.destroy()
+        self._country_rows = {}
 
     def _show_loading(self):
-        self._remove_server_rows()
+        self._remove_all_servers()
         self._container.pack_start(
             Gtk.Label(label="Loading..."),
             expand=False, fill=False, padding=5
@@ -231,6 +373,14 @@ class ServersWidget(Gtk.ScrolledWindow):
             )
 
     def _show_servers(self):
+        self._remove_all_servers()
+        self._add_all_servers()
+
+        self._container.show_all()
+        logger.info("Server list updated.", category="APP", subcategory="SERVERS", event="RELOAD")
+        self.emit("server-list-updated")
+
+    def _add_all_servers(self):
         def sorting_key(server: LogicalServer):
             server_name = server.name
 
@@ -241,34 +391,68 @@ class ServersWidget(Gtk.ScrolledWindow):
             if "#" not in server_name:
                 return server_name.lower()
 
-            return f"{server_name.split('#')[0]}" \
+            country_name = _get_country_name_by_code(server.exit_country)
+
+            return f"{country_name}__" \
+                   f"{server_name.split('#')[0]}" \
                    f"{server_name.split('#')[1].zfill(5)}"
 
         servers_sorted_alphabetically = sorted(self._server_list, key=sorting_key)
 
-        self._remove_server_rows()
-        for server in servers_sorted_alphabetically:
-            server_row = ServerRow(server=server)
+        def grouping_key(server: LogicalServer):
+            return server.exit_country.lower()
 
-            if self._current_server and self._current_server.server.name == server.name:
-                self._current_server = server_row
-                server_row.connection_state = ConnectionStateEnum.CONNECTED
-
+        for country_code, country_servers in groupby(servers_sorted_alphabetically, grouping_key):
+            country_row = CountryRow(
+                country_code, country_servers, self._connected_country_row
+            )
             self._container.pack_start(
-                server_row,
+                country_row,
                 expand=False, fill=False, padding=5
             )
-            server_row.connect("server-connection-request", self._on_server_connection_request)
+            self._country_rows[country_code.lower()] = country_row
+            country_row.connect(
+                "server-connection-request",
+                self._on_server_connection_request
+            )
 
-        self._container.show_all()
-        logger.info("Server list updated.", category="APP", subcategory="SERVERS", event="RELOAD")
-        self.emit("server-list-updated")
+    def _get_country_row(self, vpn_server) -> CountryRow:
+        # We could avoid this call if vpn_server contained the country code.
+        country_code = _get_country_code_from_vpn_server(vpn_server)
+        try:
+            return self._country_rows[country_code]
+        except KeyError as error:
+            raise RuntimeError(
+                f"Unable to get country row {country_code} for server "
+                f"{vpn_server.servername}."
+            ) from error
 
-    def _get_server_row(self, vpn_server):
-        for row in self._container.get_children():
-            if row.server.name == vpn_server.servername:
-                return row
+    def _on_server_connection_request(
+            self, _country_row: CountryRow, server_row: ServerRow
+    ):
+        self._controller.connect(server_name=server_row.server.name)
+
+
+def _get_country_code_from_vpn_server(vpn_server) -> str:
+    server_name = vpn_server.servername
+    if "#" not in server_name:
         return None
 
-    def _on_server_connection_request(self, server_row: ServerRow):
-        self._controller.connect(server_name=server_row.server.name)
+    country_code = server_name.split("#")[0].lower()
+
+    if len(country_code) > 2:
+        # Secure core server (e.g. country_code is CH-PT then we should return PT)
+        country_code = country_code[-2:]
+
+    return country_code
+
+
+def _get_country_name_by_code(country_code: str):
+    if country_code.lower() == "uk":
+        # Even though we use UK, the correct ISO 3166 code is GB.
+        country_code = "gb"
+
+    country = countries.get(country_code.lower(), default=None)
+
+    # If the country name was not found then default to the country code.
+    return country.name if country else country_code

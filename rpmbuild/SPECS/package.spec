@@ -28,12 +28,14 @@ BuildRequires: python3-gobject
 BuildRequires: python3-proton-vpn-api-core
 BuildRequires: python3-proton-vpn-network-manager-openvpn
 BuildRequires: python3-proton-keyring-linux-secretservice
+BuildRequires: python3-iso3166
 
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-proton-vpn-api-core
 Requires: python3-proton-vpn-network-manager-openvpn
 Requires: python3-proton-keyring-linux-secretservice
+Requires: python3-iso3166
 
 %{?python_disable_dependency_generator}
 

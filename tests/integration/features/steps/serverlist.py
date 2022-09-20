@@ -15,4 +15,5 @@ def step_impl(context):
 @then("the server list should be displayed")
 def step_impl(context):
     servers_widget = context.app.window.main_widget.vpn_widget.servers_widget
-    assert len(servers_widget.server_rows) > 0
+    assert len(servers_widget.country_rows) > 0
+    assert len(servers_widget.country_rows[0].server_rows) > 0

@@ -212,7 +212,7 @@ class AppExceptionHandler:
         logger.critical(
             "Unexpected error.",
             category="APP", event="CRASH",
-            optional=f"exc_info({exc_type}, {exc_value}, {exc_traceback})"
+            exc_info=(exc_type, exc_value, exc_traceback)
         )
         self._show_error_dialog(error_message)
 

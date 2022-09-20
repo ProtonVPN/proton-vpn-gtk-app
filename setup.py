@@ -15,6 +15,7 @@ setup(
         "proton-vpn-network-manager-openvpn",
         "pygobject",
         "pycairo",
+        "iso3166"
     ],
     extras_require={
         "development": [

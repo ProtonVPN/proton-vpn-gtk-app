@@ -404,11 +404,17 @@ class TwoFactorAuthForm(Gtk.Box):
 
         if not result.authenticated:
             self.error_message = "Session expired. Please login again."
-            logger.debug(self.error_message, category="APP", subcategory="LOGIN-2FA", event="RESULT")
+            logger.debug(
+                self.error_message, category="APP",
+                subcategory="LOGIN-2FA", event="RESULT"
+            )
             self.emit("session-expired")
         elif result.twofa_required:
             self.error_message = "Wrong 2FA code."
-            logger.debug(self.error_message, category="APP", subcategory="LOGIN-2FA", event="RESULT")
+            logger.debug(
+                self.error_message, category="APP",
+                subcategory="LOGIN-2FA", event="RESULT"
+            )
         else:  # authenticated and 2FA not required
             self._signal_two_factor_auth_successful()
 

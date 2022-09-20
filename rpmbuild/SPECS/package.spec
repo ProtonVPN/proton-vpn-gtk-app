@@ -67,5 +67,5 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 - Fix app freeze when disconnecting from VPN
 * Thu Sep 15 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.1.0
 - Allow the user to connect to a concrete VPN server
-* Mon Jun 4 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.0.2
+* Mon Jun 4 2022 Proton Technologies AG <opensource@proton.me> 0.0.2
 - First RPM release

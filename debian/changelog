@@ -4,6 +4,12 @@ proton-vpn-gtk-app (0.1.1) unstable; urgency=medium
 
  -- Josep Llaneras <josep.llaneras@proton.ch>  Sep, 19 Sep 2022 10:30:00 +0200
 
+proton-vpn-gtk-app (0.1.1) unstable; urgency=medium
+
+  * Add basic logging
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 20 Sep 2022 12:00:00 +09100
+
 proton-vpn-gtk-app (0.1.0) unstable; urgency=medium
 
   * Allow the user to connect to a concrete VPN server

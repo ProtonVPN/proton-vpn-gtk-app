@@ -37,7 +37,7 @@ class App(Gtk.Application):
 
     def __init__(self, thread_pool_executor: ThreadPoolExecutor):
         super().__init__(application_id="proton.vpn.app.gtk")
-        logger.info(f"application_id='proton.vpn.app.gtk': {self=}", category="APP", event="PROCESS_START")
+        logger.info(f"{self=}", category="APP", event="PROCESS_START")
         self._controller = Controller(
             thread_pool_executor=thread_pool_executor
         )

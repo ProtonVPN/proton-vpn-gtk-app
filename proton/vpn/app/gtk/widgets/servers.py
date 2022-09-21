@@ -66,9 +66,11 @@ class CountryHeader(Gtk.Box):
 class CountryRow(Gtk.Box):
     """Row containing all servers from a country."""
     def __init__(
-            self, country_code: str,
+            self,
+            country_code: str,
             country_servers: List[LogicalServer],
-            connected_country_row: CountryRow = None
+            user_tier: int,
+            connected_country_row: CountryRow = None,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._indexed_server_rows = {}
@@ -85,7 +87,7 @@ class CountryRow(Gtk.Box):
         self._server_rows_revealer.add(self._server_rows_container)
 
         for server in country_servers:
-            server_row = ServerRow(server=server)
+            server_row = ServerRow(server=server, user_tier=user_tier)
             self._server_rows_container.pack_start(
                 server_row,
                 expand=False, fill=False, padding=5
@@ -156,9 +158,10 @@ class CountryRow(Gtk.Box):
 
 class ServerRow(Gtk.Box):
     """Displays a single server as a row in the server list."""
-    def __init__(self, server: LogicalServer):
+    def __init__(self, server: LogicalServer, user_tier: int):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.server = server
+        self._user_tier = user_tier
         self._connection_state: ConnectionStateEnum = None
         self._build_row()
 
@@ -190,22 +193,28 @@ class ServerRow(Gtk.Box):
             expand=False, fill=False, padding=10
         )
 
-        self._connect_button = None
-        if self.server.enabled:
-            self._connect_button = Gtk.Button(label="Connect")
-            handler_id = self._connect_button.connect(
-                "clicked", self._on_connect_button_clicked
-            )
-            self.connect("destroy", lambda _: self._connect_button.disconnect(handler_id))
-            self.pack_end(
-                self._connect_button,
-                expand=False, fill=False, padding=10
-            )
-        else:
+        if not self.server.enabled:
             self.pack_end(
                 Gtk.Label(label="(under maintenance)"),
                 expand=False, fill=False, padding=10
             )
+            return
+
+        if self.upgrade_required:
+            self._upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
+            self._upgrade_button.set_uri("https://account.protonvpn.com/")
+            _button_to_attach = self._upgrade_button
+        else:
+            self._connect_button = Gtk.Button(label="Connect")
+            self._connect_button.set_sensitive(True)
+            handler_id = self._connect_button.connect("clicked", self._on_connect_button_clicked)
+            self.connect("destroy", lambda _: self._connect_button.disconnect(handler_id))
+            _button_to_attach = self._connect_button
+
+        self.pack_end(
+            _button_to_attach,
+            expand=False, fill=False, padding=10
+        )
 
     @GObject.Signal(name="server-connection-request")
     def server_connection_request(self):
@@ -230,6 +239,11 @@ class ServerRow(Gtk.Box):
 
     def _on_connect_button_clicked(self, _):
         self.emit("server-connection_request")
+
+    @property
+    def upgrade_required(self) -> bool:
+        """Returns if a plan upgrade is required to connect to server."""
+        return self.server.tier > self._user_tier
 
     @property
     def server_label(self):
@@ -404,7 +418,7 @@ class ServersWidget(Gtk.ScrolledWindow):
 
         for country_code, country_servers in groupby(servers_sorted_alphabetically, grouping_key):
             country_row = CountryRow(
-                country_code, country_servers, self._connected_country_row
+                country_code, country_servers, self._controller.user_tier, self._connected_country_row
             )
             self._container.pack_start(
                 country_row,

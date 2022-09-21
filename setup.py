@@ -4,7 +4,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name="proton-vpn-gtk-app",
-    version="0.2.0",
+    version="0.3.0",
     description="Proton VPN GTK app",
     author="Proton Technologies",
     author_email="contact@protonmail.com",

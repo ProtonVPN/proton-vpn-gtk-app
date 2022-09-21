@@ -56,6 +56,11 @@ class Controller:
         """
         return self._api.is_user_logged_in()
 
+    @property
+    def user_tier(self):
+        """Returns user tier."""
+        return self._api.get_user_tier()
+
     def connect(self, server_name: str = None) -> Future:
         """
         Establishes a VPN connection.

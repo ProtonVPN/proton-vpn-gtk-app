@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.3.0) unstable; urgency=medium
+
+  * Display upgrade button for servers that require a higher tier plan to connect to
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 22 Sep 2022 11:00:00 +0000
+
 proton-vpn-gtk-app (0.2.0) unstable; urgency=medium
 
   * Group servers by country

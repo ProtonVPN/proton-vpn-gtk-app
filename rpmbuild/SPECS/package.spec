@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.2.0
+%define version 0.3.0
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -65,6 +65,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Sep 22 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.3.0
+- Display upgrade button for servers that require a higher tier plan to connect to
+
 * Wed Sep 21 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.2.0
 - Group servers by country
 

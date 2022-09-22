@@ -248,7 +248,7 @@ class QuickConnectWidget(Gtk.Box):
         self._connect_button.show()
 
     def _on_connect_button_clicked(self, _):
-        logger.info("Connecto to VPN ISO#NUMBER", category="UI", event="CONNECT")
+        logger.info("Connect to VPN ISO#NUMBER", category="UI", event="CONNECT")
         self._connect_button.set_sensitive(False)
         self._controller.connect()
 

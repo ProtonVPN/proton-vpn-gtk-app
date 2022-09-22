@@ -124,6 +124,10 @@ class CountryRow(Gtk.Box):
         return self._server_rows_revealer.get_reveal_child()
 
     def click_toggle_country_servers_button(self):
+        """
+        Clicks the button to toggle the visibility of the country servers.
+        This method was made available for tests.
+        """
         self._country_header.click_toggle_country_servers_button()
 
     @property
@@ -411,14 +415,15 @@ class ServersWidget(Gtk.ScrolledWindow):
                    f"{server_name.split('#')[0]}" \
                    f"{server_name.split('#')[1].zfill(5)}"
 
-        servers_sorted_alphabetically = sorted(self._server_list, key=sorting_key)
+        self._server_list.sort(key=sorting_key)
 
         def grouping_key(server: LogicalServer):
             return server.exit_country.lower()
 
-        for country_code, country_servers in groupby(servers_sorted_alphabetically, grouping_key):
+        for country_code, country_servers in groupby(self._server_list, grouping_key):
             country_row = CountryRow(
-                country_code, country_servers, self._controller.user_tier, self._connected_country_row
+                country_code, country_servers, self._controller.user_tier,
+                self._connected_country_row
             )
             self._container.pack_start(
                 country_row,
@@ -431,8 +436,8 @@ class ServersWidget(Gtk.ScrolledWindow):
             )
 
     def _get_country_row(self, vpn_server) -> CountryRow:
-        # We could avoid this call if vpn_server contained the country code.
-        country_code = _get_country_code_from_vpn_server(vpn_server)
+        logical_server = self._server_list.get_by_name(vpn_server.servername)
+        country_code = logical_server.exit_country.lower()
         try:
             return self._country_rows[country_code]
         except KeyError as error:
@@ -445,20 +450,6 @@ class ServersWidget(Gtk.ScrolledWindow):
             self, _country_row: CountryRow, server_row: ServerRow
     ):
         self._controller.connect(server_name=server_row.server.name)
-
-
-def _get_country_code_from_vpn_server(vpn_server) -> str:
-    server_name = vpn_server.servername
-    if "#" not in server_name:
-        return None
-
-    country_code = server_name.split("#")[0].lower()
-
-    if len(country_code) > 2:
-        # Secure core server (e.g. country_code is CH-PT then we should return PT)
-        country_code = country_code[-2:]
-
-    return country_code
 
 
 def _get_country_name_by_code(country_code: str):

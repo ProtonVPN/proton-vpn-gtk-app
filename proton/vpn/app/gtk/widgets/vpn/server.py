@@ -49,7 +49,7 @@ class ServerRow(Gtk.Box):
             expand=False, fill=False, padding=10
         )
 
-        if not self.server.enabled:
+        if self.under_maintenance:
             self.pack_end(
                 Gtk.Label(label="(under maintenance)"),
                 expand=False, fill=False, padding=10
@@ -109,8 +109,7 @@ class ServerRow(Gtk.Box):
 
     @property
     def under_maintenance(self):
-        """Returns if the server is under maintenance.
-        This method was made available for tests."""
+        """Returns if the server is under maintenance."""
         return not self.server.enabled
 
     def click_connect_button(self):

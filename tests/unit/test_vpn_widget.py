@@ -1,11 +1,13 @@
 from concurrent.futures import Future
 from unittest.mock import Mock
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
 from proton.vpn.app.gtk.widgets.vpn.vpn import VPNWidget, QuickConnectWidget
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 from proton.vpn.connection.states import Disconnected, Connected
+from proton.vpn.app.gtk.controller import Controller
 
 from tests.unit.utils import process_gtk_events
 
@@ -88,3 +90,18 @@ def test_quick_connect_widget_requests_vpn_connection_when_connect_button_is_cli
     process_gtk_events()
 
     mock_controller.connect.assert_called_once()
+
+
+def test_quick_connect_widget_connects_to_fastest_server():
+    mock_api = Mock()
+
+    with ThreadPoolExecutor() as thread_pool_executor:
+        controller = Controller(thread_pool_executor, mock_api, 0)
+
+        quick_connect_widget = QuickConnectWidget(controller=controller)
+
+        quick_connect_widget.connect_button_click()
+
+        process_gtk_events()
+
+        mock_api.servers.get_fastest_server.assert_called_once()

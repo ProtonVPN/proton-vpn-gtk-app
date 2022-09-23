@@ -205,11 +205,15 @@ class QuickConnectWidget(Gtk.Box):
         self.pack_start(self._disconnect_button, expand=False, fill=False, padding=0)
 
     def connect_button_click(self):
-        """Clicks the connect button. This method was made available for tests."""
+        """Clicks the connect button.
+        This method was made available for tests.
+        """
         self._connect_button.clicked()
 
     def disconnect_button_click(self):
-        """Clicks the disconnect button."""
+        """Clicks the disconnect button.
+        This method was made available for tests.
+        """
         self._disconnect_button.clicked()
 
     @property

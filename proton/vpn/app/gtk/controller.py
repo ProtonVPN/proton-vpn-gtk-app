@@ -12,11 +12,17 @@ from proton.vpn.core_api.connection import Subscriber
 
 class Controller:
     """The C in the MVC pattern."""
-    def __init__(self, thread_pool_executor: ThreadPoolExecutor):
+    def __init__(
+        self, thread_pool_executor: ThreadPoolExecutor,
+        api: ProtonVPNAPI = None,
+        connect_timeout: int = 10, disconnect_timeout: int = 5
+    ):
         self._thread_pool = thread_pool_executor
-        self._api = ProtonVPNAPI()
+        self._api = api or ProtonVPNAPI()
         self._connection_subscriber = Subscriber()
         self._api.connection.register(self._connection_subscriber)
+        self._connect_timeout = connect_timeout
+        self._disconnect_timeout = disconnect_timeout
 
     def login(self, username: str, password: str) -> Future:
         """
@@ -67,20 +73,27 @@ class Controller:
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
-        if not server_name:
-            # When working on the "Quick Connect" functionality, server_name
-            # should be the fastest server
-            server_name = "NL#3"
-
         def _connect():
-            server = self._api.servers.get_server_with_features(
-                servername=server_name
+            self._api.connection.connect(
+                self._get_server(server_name),
+                protocol="openvpn-udp"
             )
-            self._api.connection.connect(server, protocol="openvpn-udp")
             self._connection_subscriber.wait_for_state(
-                ConnectionStateEnum.CONNECTED, timeout=10
+                ConnectionStateEnum.CONNECTED,
+                timeout=self._connect_timeout
             )
         return self._thread_pool.submit(_connect)
+
+    def _get_server(self, server_name: str = None):
+        """Returns either the quickest server or the server that matches
+        the provided `server_name`.
+        """
+        if server_name:
+            return self._api.servers.get_vpn_server_by_name(
+                servername=server_name
+            )
+
+        return self._api.servers.get_fastest_server()
 
     def disconnect(self) -> Future:
         """
@@ -91,7 +104,8 @@ class Controller:
         def _disconnect():
             self._api.connection.disconnect()
             self._connection_subscriber.wait_for_state(
-                ConnectionStateEnum.DISCONNECTED, timeout=5
+                ConnectionStateEnum.DISCONNECTED,
+                timeout=self._disconnect_timeout
             )
         return self._thread_pool.submit(_disconnect)
 

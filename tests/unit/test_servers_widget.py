@@ -2,6 +2,7 @@ import time
 from concurrent.futures import Future
 from threading import Event
 from unittest.mock import Mock
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 from proton.vpn.servers.list import ServerList
@@ -11,6 +12,7 @@ from proton.vpn.connection.states import Connecting, Connected, Disconnected
 from proton.vpn.app.gtk.widgets.vpn.servers_list import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.server import ServerRow
 from proton.vpn.app.gtk.widgets.vpn.country import CountryRow
+from proton.vpn.app.gtk.controller import Controller
 from tests.unit.utils import process_gtk_events
 
 
@@ -28,7 +30,6 @@ UNSORTED_SERVER_LIST = ServerList(apidata={
             "Servers": [{"Status": 1}],
             "ExitCountry": "IS",
             "Tier": 0,
-
         },
         {
             "ID": 1,
@@ -282,3 +283,37 @@ def test_upgrade_vpn_plan_required():
 
     assert servers_widget.country_rows[0].server_rows[0].upgrade_required
     assert not servers_widget.country_rows[0].server_rows[1].upgrade_required
+
+
+def test_server_row_connects_to_server_connect_button_is_clicked():
+    custom_server_list = ServerList(apidata={
+        "LogicalServers": [
+            {
+                "ID": 1,
+                "Name": "AR#1",
+                "Status": 1,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "AR",
+                "Tier": 1,
+                "Score": 0.9524321
+            },
+        ],
+        "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
+        "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP
+    })
+
+    mock_api = Mock()
+    mock_api.get_user_tier.return_value = DEFAULT_TEST_PLUS_TIER
+
+    with ThreadPoolExecutor() as thread_pool_executor:
+        controller = Controller(thread_pool_executor, mock_api, 0)
+
+        servers_widget = ServerListWidget(
+            controller=controller, server_list=custom_server_list
+        )
+
+        servers_widget.country_rows[0].server_rows[0].click_connect_button()
+
+        process_gtk_events()
+
+        mock_api.servers.get_vpn_server_by_name.assert_called_once_with(servername="AR#1")

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.3.1) unstable; urgency=medium
+
+  * Fix crash when connecting to free server
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Fri, 23 Sep 2022 11:22:36 +0200
+
 proton-vpn-gtk-app (0.3.0) unstable; urgency=medium
 
   * Display upgrade button for servers that require a higher tier plan to connect to

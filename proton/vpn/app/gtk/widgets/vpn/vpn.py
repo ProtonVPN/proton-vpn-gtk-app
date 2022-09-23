@@ -9,7 +9,7 @@ from gi.repository import GObject, GLib
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.widgets.servers import ServersWidget
+from proton.vpn.app.gtk.widgets.vpn.servers_list import ServerListWidget
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.connection.states import Disconnected, Connected
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
@@ -42,7 +42,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         self._quick_connect_widget = QuickConnectWidget(controller)
         self.pack_start(self._quick_connect_widget, expand=False, fill=False, padding=0)
 
-        self.servers_widget = ServersWidget(controller)
+        self.servers_widget = ServerListWidget(controller)
         self.pack_end(self.servers_widget, expand=True, fill=True, padding=0)
 
         # Keep track of child widgets that need to be aware of VPN connection status changes.
@@ -61,7 +61,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
     def user_logged_out(self):
         """Signal emitted once the user has been logged out."""
 
-    def _on_realize(self, _servers_widget: ServersWidget):
+    def _on_realize(self, _servers_widget: ServerListWidget):
         self._initialize_ui()
         self._controller.register_connection_status_subscriber(self)
 
@@ -77,7 +77,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
 
         future.add_done_callback(initialize_ui)
 
-    def _on_unrealize(self, _servers_widget: ServersWidget):
+    def _on_unrealize(self, _servers_widget: ServerListWidget):
         self._controller.unregister_connection_status_subscriber(self)
 
     def status_update(self, connection_status):
@@ -91,7 +91,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
             # when the connection state is DISCONNECTED, currently the app
             # sometimes gets stuck when we try to get the current connection
             # when the connection state is DISCONNECTED.
-            # FIXME: To be investigated when we work on the VPN connection.
+            # FIXME: To be investigated when we work on the VPN connection. # pylint: disable=W0511
             current_connection = self._controller.get_current_connection().result()
             self._current_vpn_server = current_connection._vpnserver  # noqa: temporary hack # pylint: disable=W0212
 

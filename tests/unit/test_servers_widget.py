@@ -8,7 +8,9 @@ from proton.vpn.servers.list import ServerList
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
-from proton.vpn.app.gtk.widgets.servers import ServersWidget, ServerRow, CountryRow
+from proton.vpn.app.gtk.widgets.vpn.servers_list import ServerListWidget
+from proton.vpn.app.gtk.widgets.vpn.server import ServerRow
+from proton.vpn.app.gtk.widgets.vpn.country import CountryRow
 from tests.unit.utils import process_gtk_events
 
 
@@ -122,7 +124,7 @@ def test_retrieve_servers_shows_servers_grouped_by_country_and_sorted_alphabetic
     mock_controller.get_server_list.return_value = future_server_list
     mock_controller.user_tier = DEFAULT_TEST_PLUS_TIER
 
-    servers_widget = ServersWidget(controller=mock_controller)
+    servers_widget = ServerListWidget(controller=mock_controller)
 
     server_list_updated_event = Event()
     servers_widget.connect(
@@ -166,7 +168,7 @@ def test_retrieve_servers_only_triggers_a_ui_update_if_the_server_list_was_updat
     mock_controller.get_server_list.side_effect = future_server_lists
     mock_controller.user_tier = DEFAULT_TEST_PLUS_TIER
 
-    servers_widget = ServersWidget(controller=mock_controller)
+    servers_widget = ServerListWidget(controller=mock_controller)
 
     server_list_updated_event = Event()
     servers_widget.connect(
@@ -221,7 +223,7 @@ def test_server_row_signals_server_under_maintenance():
 def test_server_connect_button_triggers_vpn_connection():
     mock_controller = Mock()
     mock_controller.user_tier = DEFAULT_TEST_PLUS_TIER
-    servers_widget = ServersWidget(
+    servers_widget = ServerListWidget(
         controller=mock_controller, server_list=SERVER_LIST
     )
 
@@ -236,7 +238,7 @@ def test_server_connect_button_triggers_vpn_connection():
 def test_server_widget_updates_row_according_to_connection_status_update(connection_state):
     mock_controller = Mock()
     mock_controller.user_tier = DEFAULT_TEST_PLUS_TIER
-    servers_widget = ServersWidget(
+    servers_widget = ServerListWidget(
         controller=mock_controller, server_list=SERVER_LIST
     )
     vpn_server = Mock()
@@ -274,7 +276,7 @@ def test_country_row_toggles_servers_when_requested():
 def test_upgrade_vpn_plan_required():
     mock_controller = Mock()
     mock_controller.user_tier = DEFAULT_TEST_FREE_TIER
-    servers_widget = ServersWidget(
+    servers_widget = ServerListWidget(
         controller=mock_controller, server_list=SERVER_LIST_REQUIRED_UPGRADE
     )
 

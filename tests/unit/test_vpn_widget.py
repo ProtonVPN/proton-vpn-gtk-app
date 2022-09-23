@@ -3,9 +3,9 @@ from unittest.mock import Mock
 
 import pytest
 
-from proton.vpn.app.gtk.widgets.vpn import VPNWidget, QuickConnectWidget
+from proton.vpn.app.gtk.widgets.vpn.vpn import VPNWidget, QuickConnectWidget
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
-from proton.vpn.connection.states import Disconnected, Connecting, Connected
+from proton.vpn.connection.states import Disconnected, Connected
 
 from tests.unit.utils import process_gtk_events
 

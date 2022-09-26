@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.4.1) unstable; urgency=medium
+
+  * Cleanup server list after logout
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 26 Sep 2022 17:53:11 +0200
+
 proton-vpn-gtk-app (0.4.0) unstable; urgency=medium
 
   * Properly implement Quick Connect

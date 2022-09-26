@@ -67,33 +67,44 @@ class Controller:
         """Returns user tier."""
         return self._api.get_user_tier()
 
-    def connect(self, server_name: str = None) -> Future:
+    def connect_to_country(self, country_code: str) -> Future:
         """
-        Establishes a VPN connection.
+        Establishes a VPN connection to the specified country.
+        :param country_code: The ISO3166 code of the country to connect to.
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
-        def _connect():
-            self._api.connection.connect(
-                self._get_server(server_name),
-                protocol="openvpn-udp"
-            )
+        server = self._api.servers.get_server_by_country_code(country_code)
+        return self._connect(server)
+
+    def connect_to_fastest_server(self) -> Future:
+        """
+        Establishes a VPN connection to the fastest server.
+        :return: A Future object that resolves once the connection reaches the
+        "connected" state.
+        """
+        server = self._api.servers.get_fastest_server()
+        return self._connect(server)
+
+    def connect_to_server(self, server_name: str = None) -> Future:
+        """
+        Establishes a VPN connection.
+        :param server_name: The name of the server to connect to.
+        :return: A Future object that resolves once the connection reaches the
+        "connected" state.
+        """
+        server = self._api.servers.get_vpn_server_by_name(servername=server_name)
+        return self._connect(server)
+
+    def _connect(self, vpn_server) -> Future:
+        def __connect():
+            self._api.connection.connect(vpn_server, protocol="openvpn-udp")
             self._connection_subscriber.wait_for_state(
                 ConnectionStateEnum.CONNECTED,
                 timeout=self._connect_timeout
             )
-        return self._thread_pool.submit(_connect)
 
-    def _get_server(self, server_name: str = None):
-        """Returns either the quickest server or the server that matches
-        the provided `server_name`.
-        """
-        if server_name:
-            return self._api.servers.get_vpn_server_by_name(
-                servername=server_name
-            )
-
-        return self._api.servers.get_fastest_server()
+        return self._thread_pool.submit(__connect)
 
     def disconnect(self) -> Future:
         """

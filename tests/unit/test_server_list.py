@@ -2,22 +2,17 @@ import time
 from concurrent.futures import Future
 from threading import Event
 from unittest.mock import Mock
-from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 from proton.vpn.servers.list import ServerList
-from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
-from proton.vpn.app.gtk.widgets.vpn.servers_list import ServerListWidget
-from proton.vpn.app.gtk.widgets.vpn.server import ServerRow
-from proton.vpn.app.gtk.widgets.vpn.country import CountryRow
-from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
 from tests.unit.utils import process_gtk_events
 
 
-DEFAULT_TEST_PLUS_TIER = 2
-DEFAULT_TEST_FREE_TIER = 0
+PLUS_TIER = 2
+FREE_TIER = 0
 
 SERVER_LIST_TIMESTAMP = time.time()
 
@@ -29,7 +24,7 @@ UNSORTED_SERVER_LIST = ServerList(apidata={
             "Status": 1,
             "Servers": [{"Status": 1}],
             "ExitCountry": "IS",
-            "Tier": 0,
+            "Tier": PLUS_TIER,
         },
         {
             "ID": 1,
@@ -37,7 +32,7 @@ UNSORTED_SERVER_LIST = ServerList(apidata={
             "Status": 1,
             "Servers": [{"Status": 1}],
             "ExitCountry": "JP",
-            "Tier": 1,
+            "Tier": FREE_TIER,
 
         },
         {
@@ -46,7 +41,7 @@ UNSORTED_SERVER_LIST = ServerList(apidata={
             "Status": 1,
             "Servers": [{"Status": 1}],
             "ExitCountry": "IS",
-            "Tier": 2,
+            "Tier": PLUS_TIER,
         },
     ],
     "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
@@ -62,7 +57,7 @@ SERVER_LIST = ServerList(apidata={
             "Status": 1,
             "Servers": [{"Status": 1}],
             "ExitCountry": "AR",
-            "Tier": 1,
+            "Tier": PLUS_TIER,
         },
         {
             "ID": 2,
@@ -70,36 +65,13 @@ SERVER_LIST = ServerList(apidata={
             "Status": 1,
             "Servers": [{"Status": 1}],
             "ExitCountry": "AR",
-            "Tier": 2,
+            "Tier": PLUS_TIER,
         },
     ],
     "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
     "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP
 })
 
-
-SERVER_LIST_REQUIRED_UPGRADE = ServerList(apidata={
-    "LogicalServers": [
-        {
-            "ID": 1,
-            "Name": "AR#1",
-            "Status": 1,
-            "Servers": [{"Status": 1}],
-            "ExitCountry": "AR",
-            "Tier": 2,
-        },
-        {
-            "ID": 2,
-            "Name": "AR#2",
-            "Status": 1,
-            "Servers": [{"Status": 1}],
-            "ExitCountry": "AR",
-            "Tier": 0,
-        },
-    ],
-    "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
-    "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP
-})
 
 SERVER_LIST_UPDATED = ServerList(apidata={
         "LogicalServers": [
@@ -109,7 +81,7 @@ SERVER_LIST_UPDATED = ServerList(apidata={
                 "Status": 1,
                 "Servers": [{"Status": 1}],
                 "ExitCountry": "AR",
-                "Tier": 3,
+                "Tier": PLUS_TIER,
 
             },
         ],
@@ -123,7 +95,7 @@ def test_retrieve_servers_shows_servers_grouped_by_country_and_sorted_alphabetic
     future_server_list.set_result(UNSORTED_SERVER_LIST)
     mock_controller = Mock()
     mock_controller.get_server_list.return_value = future_server_list
-    mock_controller.user_tier = DEFAULT_TEST_PLUS_TIER
+    mock_controller.user_tier = PLUS_TIER
 
     servers_widget = ServerListWidget(controller=mock_controller)
 
@@ -167,7 +139,7 @@ def test_retrieve_servers_only_triggers_a_ui_update_if_the_server_list_was_updat
 
     mock_controller = Mock()
     mock_controller.get_server_list.side_effect = future_server_lists
-    mock_controller.user_tier = DEFAULT_TEST_PLUS_TIER
+    mock_controller.user_tier = PLUS_TIER
 
     servers_widget = ServerListWidget(controller=mock_controller)
 
@@ -192,55 +164,16 @@ def test_retrieve_servers_only_triggers_a_ui_update_if_the_server_list_was_updat
         server_list_updated_event.clear()
 
 
-def test_server_row_displays_server_name():
-    server = LogicalServer(data={
-            "Name": "IS#1",
-            "Status": 1,
-            "Servers": [
-                {
-                    "ID": "OYB-3pMQQA2Z2Qnp5s5nIvTV…x9DCAUM9uXfM2ZUFjzPXw==",
-                    "Status": 1
-                }
-            ],
-            "Tier": 1,
-    })
-
-    server_row = ServerRow(server, DEFAULT_TEST_PLUS_TIER)
-
-    assert server_row.server_label == "IS#1"
-
-
-def test_server_row_signals_server_under_maintenance():
-    server = LogicalServer(data={
-        "Name": "IS#1",
-        "Status": 0
-    })
-
-    server_row = ServerRow(server, DEFAULT_TEST_PLUS_TIER)
-
-    assert server_row.under_maintenance
-
-
-def test_server_connect_button_triggers_vpn_connection():
-    mock_controller = Mock()
-    mock_controller.user_tier = DEFAULT_TEST_PLUS_TIER
-    servers_widget = ServerListWidget(
-        controller=mock_controller, server_list=SERVER_LIST
-    )
-
-    servers_widget.country_rows[0].server_rows[0].click_connect_button()
-
-    mock_controller.connect.assert_called_once_with(server_name=SERVER_LIST[0].name)
-
-
 @pytest.mark.parametrize(
     "connection_state", [(Connecting()), (Connected()), (Disconnected())]
 )
-def test_server_widget_updates_row_according_to_connection_status_update(connection_state):
-    mock_controller = Mock()
-    mock_controller.user_tier = DEFAULT_TEST_PLUS_TIER
+def test_server_widget_updates_country_rows_on_connection_status_update(
+        connection_state
+):
+    controller_mock = Mock()
+    controller_mock.user_tier = PLUS_TIER
     servers_widget = ServerListWidget(
-        controller=mock_controller, server_list=SERVER_LIST
+        controller=controller_mock, server_list=SERVER_LIST
     )
     vpn_server = Mock()
     vpn_server.servername = SERVER_LIST[0].name
@@ -249,71 +182,4 @@ def test_server_widget_updates_row_according_to_connection_status_update(connect
 
     process_gtk_events()
 
-    assert servers_widget.country_rows[0].server_rows[0].connection_state == connection_state.state
-
-
-def test_country_row_toggles_servers_when_requested():
-    country_row = CountryRow(
-        country_code="AR",
-        country_servers=SERVER_LIST,
-        user_tier=DEFAULT_TEST_PLUS_TIER
-    )
-
-    # Initially the servers should not be shown
-    assert not country_row.showing_servers
-
-    showing_servers_expected = True
-    for _ in range(2):
-        country_row.click_toggle_country_servers_button()
-
-        process_gtk_events()
-
-        # assert that the servers were toggled
-        assert country_row.showing_servers is showing_servers_expected
-
-        showing_servers_expected = not showing_servers_expected
-
-
-def test_upgrade_vpn_plan_required():
-    mock_controller = Mock()
-    mock_controller.user_tier = DEFAULT_TEST_FREE_TIER
-    servers_widget = ServerListWidget(
-        controller=mock_controller, server_list=SERVER_LIST_REQUIRED_UPGRADE
-    )
-
-    assert servers_widget.country_rows[0].server_rows[0].upgrade_required
-    assert not servers_widget.country_rows[0].server_rows[1].upgrade_required
-
-
-def test_server_row_connects_to_server_connect_button_is_clicked():
-    custom_server_list = ServerList(apidata={
-        "LogicalServers": [
-            {
-                "ID": 1,
-                "Name": "AR#1",
-                "Status": 1,
-                "Servers": [{"Status": 1}],
-                "ExitCountry": "AR",
-                "Tier": 1,
-                "Score": 0.9524321
-            },
-        ],
-        "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
-        "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP
-    })
-
-    mock_api = Mock()
-    mock_api.get_user_tier.return_value = DEFAULT_TEST_PLUS_TIER
-
-    with ThreadPoolExecutor() as thread_pool_executor:
-        controller = Controller(thread_pool_executor, mock_api, 0)
-
-        servers_widget = ServerListWidget(
-            controller=controller, server_list=custom_server_list
-        )
-
-        servers_widget.country_rows[0].server_rows[0].click_connect_button()
-
-        process_gtk_events()
-
-        mock_api.servers.get_vpn_server_by_name.assert_called_once_with(servername="AR#1")
+    assert servers_widget.country_rows[0].connection_state == connection_state.state

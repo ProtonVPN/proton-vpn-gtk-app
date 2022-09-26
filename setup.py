@@ -14,8 +14,7 @@ setup(
         "proton-keyring-linux-secretservice",
         "proton-vpn-network-manager-openvpn",
         "pygobject",
-        "pycairo",
-        "iso3166"
+        "pycairo"
     ],
     extras_require={
         "development": [

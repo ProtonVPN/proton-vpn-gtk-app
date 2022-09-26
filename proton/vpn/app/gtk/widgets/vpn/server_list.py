@@ -16,7 +16,6 @@ from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.list import ServerList, VPNServer
 from proton.vpn.core_api import vpn_logging as logging
-from proton.vpn.app.gtk.widgets.vpn.server import ServerRow
 from proton.vpn.app.gtk import utils
 
 
@@ -179,7 +178,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
         for country_code, country_servers in groupby(self._server_list, grouping_key):
             country_row = CountryRow(
-                country_code, country_servers, self._controller.user_tier,
+                country_code, list(country_servers), self._controller,
                 self._connected_country_row
             )
             self._container.pack_start(
@@ -187,10 +186,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
                 expand=False, fill=False, padding=5
             )
             self._country_rows[country_code.lower()] = country_row
-            country_row.connect(
-                "server-connection-request",
-                self._on_server_connection_request
-            )
 
     def _get_country_row(self, vpn_server) -> CountryRow:
         logical_server = self._server_list.get_by_name(vpn_server.servername)
@@ -202,8 +197,3 @@ class ServerListWidget(Gtk.ScrolledWindow):
                 f"Unable to get country row {country_code} for server "
                 f"{vpn_server.servername}."
             ) from error
-
-    def _on_server_connection_request(
-            self, _country_row: CountryRow, server_row: ServerRow
-    ):
-        self._controller.connect(server_name=server_row.server.name)

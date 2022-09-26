@@ -1,4 +1,26 @@
-from behave import given, when, then
+"""
+Fixtures and steps for the Server List feature.
+"""
+from behave import given, when, then, fixture, use_fixture
+
+from proton.vpn.core_api.api import ProtonVPNAPI
+
+from tests.integration.features.steps.login import VPNPLUS_USERNAME, VPNPLUS_PASSWORD
+
+
+def before_feature_serverlist(context, feature):
+    """Called before running the tests for the Server List feature from
+    environment.py."""
+    use_fixture(logged_in_session, context)
+
+
+@fixture
+def logged_in_session(context):
+    context.api = ProtonVPNAPI()
+    result = context.api.login(username=VPNPLUS_USERNAME, password=VPNPLUS_PASSWORD)
+    assert result.success, f"Unable to login with {VPNPLUS_USERNAME}."
+    yield context.api
+    context.api.logout()
 
 
 @given("the user is logged in")

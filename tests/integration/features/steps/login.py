@@ -1,12 +1,50 @@
+"""
+Fixtures and steps for the Login feature.
+"""
+
+import os
 import threading
+import urllib
 
 from proton.sso import ProtonSSO
+from proton.vpn.core_api.api import ProtonVPNAPI
 from keyring.backends import SecretService
 from behave import given, when, then
 import pyotp
 
-from tests.integration.features.environment import \
-    VPNPLUS_USERNAME, VPNPLUS_PASSWORD
+VPNPLUS_USERNAME = "vpnplus"
+VPNPLUS_PASSWORD = "12341234"
+VPNFREE_USERNAME = "vpnfree"
+VPNFREE_PASSWORD = "12341234"
+
+
+def before_login_scenario(context, scenario):
+    """Called before every login scenario from environment.py."""
+
+    # Atlas users used to test the login feature are likely to get banned
+    # due to the high number of logins.
+    unban_atlas_users()
+
+    if not hasattr(context, "username"):
+        # Default to vpnfree user.
+        context.username = VPNFREE_USERNAME
+        context.password = VPNFREE_PASSWORD
+
+
+def unban_atlas_users():
+    env = os.environ.get("PROTON_API_ENVIRONMENT")
+    if "atlas" in env:
+        atlas_env = f"{env.split(':')[1]}." if ":" in env else None
+        try:
+            urllib.request.urlopen(f"https://account.{atlas_env}proton.black/api/internal/quark/jail:unban",
+                                   timeout=3)
+        except:
+            pass
+
+
+def after_login_scenario(context, scenario):
+    """Called after every login scenario from environment.py"""
+    ProtonVPNAPI().logout()
 
 
 @given("a user without 2FA enabled")
@@ -17,14 +55,15 @@ def step_impl(context):
 
 @given("the user is not logged in")
 def step_impl(context):
-    if not hasattr(context, "username"):
-        # Default to vpnplus user.
-        context.username = VPNPLUS_USERNAME
-        context.password = VPNPLUS_PASSWORD
-
-    session = ProtonSSO().get_session(account_name=context.username)
-    if session.authenticated:
-        session.logout()
+    # Log out from any existing authenticated sessions.
+    sso = ProtonSSO()
+    authenticated_sessions = True
+    while authenticated_sessions:
+        s = sso.get_default_session()
+        if s.authenticated:
+            s.logout()
+        else:
+            authenticated_sessions = False
 
 
 @when("the correct username and password are introduced in the login form")

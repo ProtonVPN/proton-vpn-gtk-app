@@ -3,6 +3,11 @@ Feature: Login
   Background:
     Given the user is not logged in
 
+  Scenario: Wrong password.
+    When the wrong password is introduced
+    And the login form is submitted
+    Then the user should be notified with the error message: "Wrong credentials."
+
   Scenario: Successful login without 2FA.
     Given a user without 2FA enabled
     When the correct username and password are introduced in the login form
@@ -17,11 +22,6 @@ Feature: Login
     And a correct 2FA code is submitted
     Then the user should be logged in
     And the credentials should be stored in the system's keyring
-
-  Scenario: Wrong password.
-    When the wrong password is introduced
-    And the login form is submitted
-    Then the user should be notified with the error message: "Wrong credentials."
 
   Scenario: Username and password not provided.
     When the login data is not provided

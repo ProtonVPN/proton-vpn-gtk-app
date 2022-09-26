@@ -71,7 +71,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
         """
         logger.debug("Retrieving servers", category="APP", subcategory="SERVERS", event="RETRIEVE")
         future = self._controller.get_server_list()
-        if not self._server_list:
+        if not self.country_rows:
             self._show_loading()
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_servers_retrieved, future)
@@ -115,6 +115,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def _on_unrealize(self, _servers_widget: ServerListWidget):
         self.stop_reloading_servers_periodically()
+        self._remove_all_servers()
 
     def _remove_all_servers(self):
         for row in self._container.get_children():

@@ -18,6 +18,7 @@ class ServerRow(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.server = server
         self._controller = controller
+        self._user_tier = controller.user_tier
         self._connection_state: ConnectionStateEnum = None
         self._build_row()
 
@@ -94,7 +95,7 @@ class ServerRow(Gtk.Box):
     @property
     def upgrade_required(self) -> bool:
         """Returns if a plan upgrade is required to connect to server."""
-        return self.server.tier > self._controller.user_tier
+        return self.server.tier > self._user_tier
 
     @property
     def server_label(self):

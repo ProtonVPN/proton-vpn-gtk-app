@@ -26,9 +26,8 @@ class VPNConnectionStatusWidget(Gtk.Box):
 
     def _update_status_label(self, connection_state: ConnectionStateEnum, vpn_server=None):
         label = f"Status: {connection_state.name.lower()}"
-        if vpn_server:
-            preposition = "to" if connection_state in (
-                ConnectionStateEnum.CONNECTING, ConnectionStateEnum.CONNECTED
-            ) else "from"
-            label = f"{label} {preposition} {vpn_server.servername}"
+        if vpn_server and connection_state in (
+            ConnectionStateEnum.CONNECTING, ConnectionStateEnum.CONNECTED
+        ):
+            label = f"{label} to {vpn_server.servername}"
         self._connection_status_label.set_label(label)

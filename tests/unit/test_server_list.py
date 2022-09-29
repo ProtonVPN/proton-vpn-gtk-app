@@ -115,10 +115,10 @@ def test_retrieve_servers_shows_servers_grouped_by_country_and_sorted_alphabetic
     assert len(servers_widget.country_rows) == 2
 
     assert servers_widget.country_rows[0].country_name == "Iceland"
-    assert servers_widget.country_rows[0].server_rows[0].server.name == "IS#9"
-    assert servers_widget.country_rows[0].server_rows[1].server.name == "IS#10"
+    assert servers_widget.country_rows[0].server_rows[0]._server.name == "IS#9"
+    assert servers_widget.country_rows[0].server_rows[1]._server.name == "IS#10"
     assert servers_widget.country_rows[1].country_name == "Japan"
-    assert servers_widget.country_rows[1].server_rows[0].server.name == "Random Name"
+    assert servers_widget.country_rows[1].server_rows[0]._server.name == "Random Name"
 
 
 @pytest.mark.parametrize(

@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class CountryHeader(Gtk.Box):  # pylint: disable=R0902
     """Header with the country name shown at the beginning of each CountryRow."""
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
             self, country_code: str,
             upgrade_required: bool,
             under_maintenance: bool,
@@ -94,7 +94,9 @@ class CountryHeader(Gtk.Box):  # pylint: disable=R0902
         )
 
     @property
-    def available(self):
+    def available(self) -> bool:
+        """Returns True if the country is available, meaning the user can
+        connect to one of its servers. Otherwise, it returns False."""
         return not self.upgrade_required and not self.under_maintenance
 
     @property
@@ -163,7 +165,8 @@ class CountryRow(Gtk.Box):
             country_code: str,
             country_servers: List[LogicalServer],
             controller: Controller,
-            connected_country_row: CountryRow = None,
+            connected_server_id: str = None,
+            show_country_servers: bool = False,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller
@@ -178,7 +181,8 @@ class CountryRow(Gtk.Box):
             country_code=country_code,
             upgrade_required=self.upgrade_required,
             under_maintenance=under_maintenance,
-            controller=controller
+            controller=controller,
+            show_country_servers=show_country_servers
         )
 
         self.pack_start(self._country_header, expand=False, fill=False, padding=5)
@@ -199,11 +203,13 @@ class CountryRow(Gtk.Box):
             self._indexed_server_rows[server.name] = server_row
 
             # If we are currently connected to a server then set its row state to "connected".
-            if connected_country_row and \
-                    connected_country_row.connected_server_row.server.name == server.name:
+            if connected_server_id == server.id:
                 self.connected_server_row = server_row
                 self._country_header.connection_state = ConnectionStateEnum.CONNECTED
                 server_row.connection_state = ConnectionStateEnum.CONNECTED
+
+        if show_country_servers:
+            self._server_rows_revealer.set_reveal_child(True)
 
     @property
     def country_name(self):
@@ -234,6 +240,11 @@ class CountryRow(Gtk.Box):
     def connection_state(self):
         """Returns the connection state for this row."""
         return self._country_header.connection_state
+
+    @property
+    def connected_server_id(self):
+        return self.connected_server_row.server_id \
+            if self.connected_server_row else None
 
     def _on_toggle_country_servers(self, country_header: CountryHeader):
         self._server_rows_revealer.set_reveal_child(country_header.show_country_servers)

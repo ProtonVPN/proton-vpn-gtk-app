@@ -16,7 +16,7 @@ class ServerRow(Gtk.Box):
     """Displays a single server as a row in the server list."""
     def __init__(self, server: LogicalServer, controller: Controller):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
-        self.server = server
+        self._server = server
         self._controller = controller
         self._user_tier = controller.user_tier
         self._connection_state: ConnectionStateEnum = None
@@ -39,13 +39,13 @@ class ServerRow(Gtk.Box):
                 getattr(self, method)()
 
     def _build_row(self):
-        self._server_label = Gtk.Label(label=self.server.name)
+        self._server_label = Gtk.Label(label=self._server.name)
         self.pack_start(
             self._server_label,
             expand=False, fill=False, padding=10
         )
 
-        self._load_label = Gtk.Label(label=f"{self.server.load}%")
+        self._load_label = Gtk.Label(label=f"{self._server.load}%")
         self.pack_start(
             self._load_label,
             expand=False, fill=False, padding=10
@@ -90,22 +90,27 @@ class ServerRow(Gtk.Box):
         self._connect_button.set_label("Connect")
 
     def _on_connect_button_clicked(self, _):
-        self._controller.connect_to_server(self.server.name)
+        self._controller.connect_to_server(self._server.name)
 
     @property
     def upgrade_required(self) -> bool:
         """Returns if a plan upgrade is required to connect to server."""
-        return self.server.tier > self._user_tier
+        return self._server.tier > self._user_tier
 
     @property
-    def server_label(self):
+    def server_label(self) -> str:
         """Returns the server label."""
         return self._server_label.get_label()
 
     @property
-    def under_maintenance(self):
+    def server_id(self) -> str:
+        """Returns the server ID"""
+        return self._server.id
+
+    @property
+    def under_maintenance(self) -> bool:
         """Returns if the server is under maintenance."""
-        return not self.server.enabled
+        return not self._server.enabled
 
     def click_connect_button(self):
         """Clicks the connect button.

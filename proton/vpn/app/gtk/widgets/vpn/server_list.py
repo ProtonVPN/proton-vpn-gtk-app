@@ -6,7 +6,7 @@ from __future__ import annotations
 from concurrent.futures import Future
 from dataclasses import dataclass
 from itertools import groupby
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from gi.repository import GLib, GObject
 
@@ -40,9 +40,17 @@ class ServerListWidgetState:
     widget_loaded: bool = False
 
     def get_server_by_name(self, server_name: str) -> LogicalServer:
+        """Returns the server with the given name."""
         if self.server_list:
             return self.server_list.get_by_name(server_name)
         return None
+
+    @property
+    def connected_server_id(self) -> Optional[str]:
+        """Returns the ID of the server the user is currently connected.
+        If the user didn't connect yet to a server, then it returns None."""
+        return self.connected_country_row.connected_server_id \
+            if self.connected_country_row else None
 
 
 class ServerListWidget(Gtk.ScrolledWindow):
@@ -138,6 +146,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
         GLib.idle_add(update_server_rows)
 
     def reset(self):
+        """Resets the widget state."""
         self.stop_reloading_servers_periodically()
         self._remove_all_servers()
         self._state = ServerListWidgetState()
@@ -179,15 +188,16 @@ class ServerListWidget(Gtk.ScrolledWindow):
             )
 
     def _show_servers(self):
+        old_country_rows = self._state.country_rows
         self._remove_all_servers()
-        self._add_all_servers()
+        self._add_all_servers(old_country_rows)
 
         self._container.show_all()
         self._state.widget_loaded = True
         self.emit("server-list-updated")
         logger.info("Server list updated.", category="APP", subcategory="SERVERS", event="RELOAD")
 
-    def _add_all_servers(self):
+    def _add_all_servers(self, old_country_rows: Dict[str, CountryRow]):
         def sorting_key(server: LogicalServer):
             country_name = utils.get_country_name_by_code(server.exit_country)
 
@@ -220,9 +230,16 @@ class ServerListWidget(Gtk.ScrolledWindow):
             return server.exit_country.lower()
 
         for country_code, country_servers in groupby(self._state.server_list, grouping_key):
+            show_country_servers = False
+            if old_country_rows and old_country_rows.get(country_code):
+                show_country_servers = old_country_rows[country_code].showing_servers
+
             country_row = CountryRow(
-                country_code, list(country_servers), self._controller,
-                self._state.connected_country_row
+                country_code=country_code,
+                country_servers=list(country_servers),
+                controller=self._controller,
+                connected_server_id=self._state.connected_server_id,
+                show_country_servers=show_country_servers
             )
             self._container.pack_start(
                 country_row,

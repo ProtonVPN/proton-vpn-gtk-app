@@ -138,16 +138,42 @@ def test_connect_button_click_triggers_vpn_connection_to_country(
 def test_initialize_currently_connected_country(
         country_servers, mock_controller
 ):
+    """
+    When reloading the server list, all country rows are recreated.
+    When recreating the country row containing the server the user is
+    currently connected to, we need to initialize both the new country row
+    and its child server row in a "connected" state.
+    """
     mock_controller.user_tier = PLUS_TIER
-    connected_country_row = Mock()
-    connected_country_row.country_code = COUNTRY_CODE
-    connected_country_row.connected_server_row.server.name = country_servers[1].name
+
     country_row = CountryRow(
         country_servers=country_servers,
         controller=mock_controller,
         country_code=COUNTRY_CODE,
-        connected_country_row=connected_country_row
+        connected_server_id=country_servers[1].id
     )
 
     assert country_row.connection_state == ConnectionStateEnum.CONNECTED
     assert country_row.server_rows[1].connection_state == ConnectionStateEnum.CONNECTED
+
+
+def test_initialize_country_row_showing_country_servers(
+        country_servers,  mock_controller
+):
+    """
+    When reloading the server list, all country rows are recreated.
+    By default, country rows are shown collapsed (i.e. hiding all country
+    servers). However, if a country row is expanded (i.e. showing all country
+    servers) when reloading the server list, then it needs to be recreated in
+    the expanded state. This is what we test here.
+    """
+    mock_controller.user_tier = PLUS_TIER
+
+    country_row = CountryRow(
+        country_servers=country_servers,
+        controller=mock_controller,
+        country_code=COUNTRY_CODE,
+        show_country_servers=True  # Country servers should
+    )
+
+    assert country_row.showing_servers

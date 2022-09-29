@@ -3,6 +3,7 @@ This module defines the country widgets.
 """
 
 from __future__ import annotations
+
 from typing import List
 from gi.repository import GObject
 from proton.vpn.connection.enum import ConnectionStateEnum
@@ -160,6 +161,8 @@ class CountryHeader(Gtk.Box):  # pylint: disable=R0902
 
 class CountryRow(Gtk.Box):
     """Row containing all servers from a country."""
+
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             country_code: str,
@@ -171,8 +174,9 @@ class CountryRow(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller
         self._indexed_server_rows = {}
-        self.connected_server_row = None
-        self.upgrade_required = all(
+        self._connected_server_row = None
+        self._is_free_country = any(server.tier == 0 for server in country_servers)
+        self._upgrade_required = all(
             server.tier > self._controller.user_tier for server in country_servers
         )
         under_maintenance = all(not server.enabled for server in country_servers)
@@ -190,12 +194,12 @@ class CountryRow(Gtk.Box):
 
         self._server_rows_revealer = Gtk.Revealer()
         self.pack_start(self._server_rows_revealer, expand=False, fill=False, padding=5)
-        self._server_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self._server_rows_revealer.add(self._server_rows_container)
+        server_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._server_rows_revealer.add(server_rows_container)
 
         for server in country_servers:
             server_row = ServerRow(server=server, controller=self._controller)
-            self._server_rows_container.pack_start(
+            server_rows_container.pack_start(
                 server_row,
                 expand=False, fill=False, padding=5
             )
@@ -204,7 +208,7 @@ class CountryRow(Gtk.Box):
 
             # If we are currently connected to a server then set its row state to "connected".
             if connected_server_id == server.id:
-                self.connected_server_row = server_row
+                self._connected_server_row = server_row
                 self._country_header.connection_state = ConnectionStateEnum.CONNECTED
                 server_row.connection_state = ConnectionStateEnum.CONNECTED
 
@@ -216,6 +220,19 @@ class CountryRow(Gtk.Box):
         """Returns the name of the country.
         This method was made available for tests."""
         return self._country_header.country_name
+
+    @property
+    def upgrade_required(self):
+        """Returns True if this country is not in the currently logged-in
+        user tier, and therefore it requires a plan upgrade. Otherwise, it
+        returns False."""
+        return self._upgrade_required
+
+    @property
+    def is_free_country(self) -> bool:
+        """Returns True if this country has any servers available to
+        users with a free account. Otherwise, it returns False."""
+        return self._is_free_country
 
     @property
     def showing_servers(self):
@@ -234,7 +251,7 @@ class CountryRow(Gtk.Box):
     def server_rows(self) -> List[ServerRow]:
         """Returns the list of server rows for this server.
         This method was made available for tests."""
-        return self._server_rows_container.get_children()
+        return self._server_rows_revealer.get_child().get_children()
 
     @property
     def connection_state(self):
@@ -243,8 +260,10 @@ class CountryRow(Gtk.Box):
 
     @property
     def connected_server_id(self):
-        return self.connected_server_row.server_id \
-            if self.connected_server_row else None
+        """Returns the ID of the server the user is currently connected to
+        or None if the user did not connect to a server yet."""
+        return self._connected_server_row.server_id \
+            if self._connected_server_row else None
 
     def _on_toggle_country_servers(self, country_header: CountryHeader):
         self._server_rows_revealer.set_reveal_child(country_header.show_country_servers)
@@ -263,9 +282,9 @@ class CountryRow(Gtk.Box):
         server = self._get_server_row(vpn_server)
         server.connection_state = connection_status.state
         if connection_status.state == ConnectionStateEnum.CONNECTED:
-            self.connected_server_row = server
+            self._connected_server_row = server
         elif connection_status.state == ConnectionStateEnum.DISCONNECTED:
-            self.connected_server_row = None
+            self._connected_server_row = None
 
     def click_connect_button(self):
         """Clicks the button to connect to the country.

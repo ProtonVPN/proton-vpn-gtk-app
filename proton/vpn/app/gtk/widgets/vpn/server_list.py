@@ -4,9 +4,9 @@ This module defines the widgets used to present the VPN server list to the user.
 from __future__ import annotations
 
 from concurrent.futures import Future
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import groupby
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Callable
 
 from gi.repository import GLib, GObject
 
@@ -35,7 +35,7 @@ class ServerListWidgetState:
     # Row of the country we are connected to.
     connected_country_row: CountryRow = None
     # Country rows indexed by country code.
-    country_rows: Dict[str, CountryRow] = None
+    country_rows: Dict[str, CountryRow] = field(default_factory=dict)
     # Flag signaling when the widget finished loading
     widget_loaded: bool = False
 
@@ -90,7 +90,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
     def country_rows(self) -> List[CountryRow]:
         """Returns the list of country rows that are currently being displayed.
         This method was made available for tests."""
-        return self._container.get_children()
+        return list(self._state.country_rows.values())
 
     def retrieve_servers(self) -> Future:
         """
@@ -198,37 +198,14 @@ class ServerListWidget(Gtk.ScrolledWindow):
         logger.info("Server list updated.", category="APP", subcategory="SERVERS", event="RELOAD")
 
     def _add_all_servers(self, old_country_rows: Dict[str, CountryRow]):
-        def sorting_key(server: LogicalServer):
-            country_name = utils.get_country_name_by_code(server.exit_country)
-
-            user_tier = self._controller.user_tier
-            if user_tier == 0:
-                # Free users (tier 0) see country servers ordered by server tier
-                # in ascending order: 0 (free servers), 2 (plus servers)
-                tier_priority = server.tier
-            else:
-                # Paid users see country servers ordered by server tier but in
-                # descending order: 3 (employee servers), 2 (plus servers),
-                # 0 (free servers)
-                tier_priority = user_tier - server.tier
-
-            # Severs without secure core are shown before servers with secure core
-            secure_core_priority = 1 if ServerFeatureEnum.SECURE_CORE in server.features else 0
-
-            server_name = server.name or ""
-            server_name = server_name.lower()
-            if "#" in server_name:
-                # Pad server number with zeros to sort servers alphabetically
-                server_name = f"{server_name.split('#')[0]}" \
-                              f"{server_name.split('#')[1].zfill(10)}"
-
-            return f"{country_name}__{tier_priority}__{secure_core_priority}__{server_name}"
+        sorting_key = get_server_list_sorting_key_function(self._controller.user_tier)
 
         self._state.server_list.sort(key=sorting_key)
 
         def grouping_key(server: LogicalServer):
             return server.exit_country.lower()
 
+        country_rows = []
         for country_code, country_servers in groupby(self._state.server_list, grouping_key):
             show_country_servers = False
             if old_country_rows and old_country_rows.get(country_code):
@@ -241,11 +218,28 @@ class ServerListWidget(Gtk.ScrolledWindow):
                 connected_server_id=self._state.connected_server_id,
                 show_country_servers=show_country_servers
             )
+            country_rows.append(country_row)
+            self._state.country_rows[country_code.lower()] = country_row
+
+        if self._controller.user_tier == 0:
+            # If the current user has a free account, show the countries having
+            # free servers first.
+            country_rows.sort(
+                key=free_countries_first_sorting_key
+            )
+
+        for country_number, country_row in enumerate(country_rows):
             self._container.pack_start(
                 country_row,
-                expand=False, fill=False, padding=5
+                expand=False, fill=False, padding=0
             )
-            self._state.country_rows[country_code.lower()] = country_row
+            if country_number < len(country_rows) - 1:
+                separator = Gtk.Separator()
+                separator.set_margin_bottom(10)
+                self._container.pack_start(
+                    separator,
+                    expand=False, fill=False, padding=0
+                )
 
     def _get_country_row(self, vpn_server) -> CountryRow:
         logical_server = self._state.get_server_by_name(vpn_server.servername)
@@ -257,3 +251,84 @@ class ServerListWidget(Gtk.ScrolledWindow):
                 f"Unable to get country row {country_code} for server "
                 f"{vpn_server.servername}."
             ) from error
+
+
+def get_server_list_sorting_key_function(user_tier: int) -> Callable:
+    """
+    Returns the key function to be able to sort the server list.
+
+    Usage:
+
+    .. code-block:: python
+        sort_key_func = get_server_list_sort_key_func(user_tier)
+        server_list.sort(key=sort_key_func)
+
+    This key sorts servers by the following fields in the following order:
+        1) Country name. That is, the full name of the exit country of the
+        server in ascending order.
+        2) Server tier:
+            a) In ascending order for free users. That is, first free servers
+            (tier 0), then the ones in the tier above and so on.
+            b) In descending order for paid users. That is, first the servers
+            in the user tier, then the ones on the tier below and so on.
+        3) Secure core. Servers without the secure core feature are sorted
+        before servers having such feature.
+        4) Server name. If the server name is in the form of COUNTRY_CODE#NUMBER,
+        the number is padded with zeros to be able to sort it alphabetically
+        in ascending order.
+
+    This sorting schema has 2 goals:
+        1) Sorting the servers by country so that afterwards we can easily
+        group them by country.
+        2) Sorting the servers *in each country* according to the business
+        requirements mentioned above.
+
+    Note however that, after grouping the servers into country groups,
+    another sorting schema may be required to sort the country groups
+    themselves according to business requirements (for example, users in
+    the free tier should see countries having free servers first).
+
+    :param user_tier: The user tier to use when sorting the servers in a country.
+    :returns: The function used to generate the comparison key to sort each
+    server in the list.
+    """
+    def sorting_key(server: LogicalServer):
+        country_name = utils.get_country_name_by_code(server.exit_country)
+
+        if user_tier == 0:
+            # Free users (tier 0) see country servers ordered by server tier
+            # in ascending order: 0 (free servers), 2 (plus servers)
+            tier_priority = server.tier
+        else:
+            # Paid users see country servers ordered by server tier but in
+            # descending order: 3 (employee servers), 2 (plus servers),
+            # 0 (free servers)
+            tier_priority = user_tier - server.tier
+
+        # Severs without secure core are shown before servers with secure core
+        secure_core_priority = 1 if ServerFeatureEnum.SECURE_CORE in server.features else 0
+
+        server_name = server.name or ""
+        server_name = server_name.lower()
+        if "#" in server_name:
+            # Pad server number with zeros to sort servers alphabetically
+            server_name = f"{server_name.split('#')[0]}#" \
+                          f"{server_name.split('#')[1].zfill(10)}"
+
+        return f"{country_name}__{tier_priority}__{secure_core_priority}__{server_name}"
+
+    return sorting_key
+
+
+def free_countries_first_sorting_key(row: CountryRow):
+    """
+    Returns the comparison key to sort countries according to
+    business rules for free users.
+
+    Apart from sorting country rows by country name, free users should
+    have countries having free servers sorted first.
+
+    :param row: country row to generate the comparison key for.
+    :return: The comparison key.
+    """
+    return f"{0 if row.is_free_country else 1}__{row.country_name}"

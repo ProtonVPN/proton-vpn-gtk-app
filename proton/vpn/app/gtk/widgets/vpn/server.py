@@ -45,9 +45,9 @@ class ServerRow(Gtk.Box):
             expand=False, fill=False, padding=10
         )
 
-        self._load_label = Gtk.Label(label=f"{self._server.load}%")
+        load_label = Gtk.Label(label=f"{self._server.load}%")
         self.pack_start(
-            self._load_label,
+            load_label,
             expand=False, fill=False, padding=10
         )
 
@@ -59,17 +59,15 @@ class ServerRow(Gtk.Box):
             return
 
         if self.upgrade_required:
-            self._upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
-            self._upgrade_button.set_tooltip_text(f"Upgrade to connect to {self.server_label}")
-            self._upgrade_button.set_uri("https://account.protonvpn.com/")
-            button_to_pack = self._upgrade_button
+            upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
+            upgrade_button.set_tooltip_text(f"Upgrade to connect to {self.server_label}")
+            upgrade_button.set_uri("https://account.protonvpn.com/")
+            self.pack_end(upgrade_button, expand=False, fill=False, padding=10)
         else:
             self._connect_button = Gtk.Button(label="Connect")
             self._connect_button.set_tooltip_text(f"Connect to {self.server_label}")
             self._connect_button.connect("clicked", self._on_connect_button_clicked)
-            button_to_pack = self._connect_button
-
-        self.pack_end(button_to_pack, expand=False, fill=False, padding=10)
+            self.pack_end(self._connect_button, expand=False, fill=False, padding=10)
 
     def _on_connection_state_connecting(self):
         """Flags this server as "connecting"."""

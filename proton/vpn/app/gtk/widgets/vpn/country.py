@@ -23,11 +23,13 @@ class CountryHeader(Gtk.Box):  # pylint: disable=R0902
     def __init__(
             self, country_code: str,
             upgrade_required: bool,
+            under_maintenance: bool,
             controller: Controller,
             show_country_servers: bool = False
     ):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.upgrade_required = upgrade_required
+        self.under_maintenance = under_maintenance
         self._controller = controller
 
         self.country_code = country_code
@@ -36,34 +38,38 @@ class CountryHeader(Gtk.Box):  # pylint: disable=R0902
 
         self._connection_state = None
 
-        self._build_ui(country_name, upgrade_required)
+        self._build_ui()
 
         # The following setters needs to be called after the UI has been built
         # as they need to modify some UI widgets.
         self.show_country_servers = show_country_servers
         self.connection_state = ConnectionStateEnum.DISCONNECTED
 
-    def _build_ui(self, country_name, upgrade_required):
-        country_name_label = Gtk.Label(label=country_name)
-        self.pack_start(country_name_label, expand=False, fill=False, padding=5)
+    def _build_ui(self):
+        country_name_label = Gtk.Label(label=self.country_name)
+        self.pack_start(country_name_label, expand=False, fill=False, padding=0)
+        self.set_spacing(10)
 
         self._toggle_button = Gtk.Button()
         self._toggle_button.connect("clicked", self._on_toggle_button_clicked)
-        self.pack_end(self._toggle_button, expand=False, fill=False, padding=5)
+        self.pack_end(self._toggle_button, expand=False, fill=False, padding=0)
 
-        if upgrade_required:
-            self._upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
-            self._upgrade_button.set_tooltip_text(
+        if self.upgrade_required:
+            upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
+            upgrade_button.set_tooltip_text(
                 f"Upgrade to connect to {self.country_name}"
             )
-            self._upgrade_button.set_uri("https://account.protonvpn.com/")
-            button_to_pack = self._upgrade_button
-        else:
+            upgrade_button.set_uri("https://account.protonvpn.com/")
+            self.pack_end(upgrade_button, expand=False, fill=False, padding=0)
+
+        if self.under_maintenance:
+            under_maintenance_label = Gtk.Label(label="(under maintenance)")
+            self.pack_end(under_maintenance_label, expand=False, fill=False, padding=0)
+
+        if self.available:
             self._connect_button = Gtk.Button()
             self._connect_button.connect("clicked", self._on_connect_button_clicked)
-            button_to_pack = self._connect_button
-
-        self.pack_end(button_to_pack, expand=False, fill=False, padding=5)
+            self.pack_end(self._connect_button, expand=False, fill=False, padding=0)
 
     @GObject.Signal(name="toggle-country-servers")
     def toggle_country_servers(self):
@@ -88,6 +94,10 @@ class CountryHeader(Gtk.Box):  # pylint: disable=R0902
         )
 
     @property
+    def available(self):
+        return not self.upgrade_required and not self.under_maintenance
+
+    @property
     def connection_state(self):
         """Returns the connection state of the server shown in this row."""
         return self._connection_state
@@ -98,7 +108,7 @@ class CountryHeader(Gtk.Box):  # pylint: disable=R0902
         # pylint: disable=duplicate-code
         self._connection_state = connection_state
 
-        if not self.upgrade_required:
+        if self.available:
             # Update the server row according to the connection state.
             method = f"_on_connection_state_{connection_state.name.lower()}"
             if hasattr(self, method):
@@ -162,15 +172,21 @@ class CountryRow(Gtk.Box):
         self.upgrade_required = all(
             server.tier > self._controller.user_tier for server in country_servers
         )
+        under_maintenance = all(not server.enabled for server in country_servers)
 
-        self._server_rows_revealer = Gtk.Revealer()
-        self._country_header = CountryHeader(country_code, self.upgrade_required, controller)
+        self._country_header = CountryHeader(
+            country_code=country_code,
+            upgrade_required=self.upgrade_required,
+            under_maintenance=under_maintenance,
+            controller=controller
+        )
 
         self.pack_start(self._country_header, expand=False, fill=False, padding=5)
         self._country_header.connect("toggle-country-servers", self._on_toggle_country_servers)
 
-        self._server_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._server_rows_revealer = Gtk.Revealer()
         self.pack_start(self._server_rows_revealer, expand=False, fill=False, padding=5)
+        self._server_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._server_rows_revealer.add(self._server_rows_container)
 
         for server in country_servers:

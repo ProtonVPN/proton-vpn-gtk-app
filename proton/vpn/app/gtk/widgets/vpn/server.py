@@ -102,8 +102,13 @@ class ServerRow(Gtk.Box):
 
     @property
     def server_id(self) -> str:
-        """Returns the server ID"""
+        """Returns the server ID."""
         return self._server.id
+
+    @property
+    def server_tier(self) -> str:
+        """Returns the server tier."""
+        return self._server.tier
 
     @property
     def under_maintenance(self) -> bool:

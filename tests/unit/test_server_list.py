@@ -7,7 +7,7 @@ import pytest
 from proton.vpn.servers.list import ServerList
 from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
-from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget, get_server_list_sorting_key_function
+from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
 from tests.unit.utils import process_gtk_events
 
 
@@ -23,10 +23,10 @@ def unsorted_server_list():
         "LogicalServers": [
             {
                 "ID": 2,
-                "Name": "IS#10",
+                "Name": "AR#10",
                 "Status": 1,
                 "Servers": [{"Status": 1}],
-                "ExitCountry": "IS",
+                "ExitCountry": "AR",
                 "Tier": PLUS_TIER,
             },
             {
@@ -40,10 +40,10 @@ def unsorted_server_list():
             },
             {
                 "ID": 3,
-                "Name": "IS#9",
+                "Name": "AR#9",
                 "Status": 1,
                 "Servers": [{"Status": 1}],
-                "ExitCountry": "IS",
+                "ExitCountry": "AR",
                 "Tier": PLUS_TIER,
             },
             {
@@ -111,14 +111,26 @@ SERVER_LIST_UPDATED = ServerList(apidata={
 })
 
 
-def test_retrieve_servers_shows_servers_grouped_by_country_and_sorted_alphabetically(
-        unsorted_server_list
+@pytest.mark.parametrize(
+    "user_tier,expected_country_names", [
+        (FREE_TIER, ["Japan", "Argentina"]),
+        (PLUS_TIER, ["Argentina", "Japan"])
+    ]
+)
+def test_server_widget_orders_country_rows_depening_on_user_tier(
+        user_tier, expected_country_names, unsorted_server_list
 ):
+    """
+    Plus users should see countries sorted alphabetically.
+    Free users, apart from having countries sorted alphabetically, should see
+    countries having free servers first.
+    """
     future_server_list = Future()
     future_server_list.set_result(unsorted_server_list)
     mock_controller = Mock()
     mock_controller.get_server_list.return_value = future_server_list
-    mock_controller.user_tier = PLUS_TIER
+    print(user_tier)
+    mock_controller.user_tier = user_tier
 
     servers_widget = ServerListWidget(controller=mock_controller)
 
@@ -135,15 +147,8 @@ def test_retrieve_servers_shows_servers_grouped_by_country_and_sorted_alphabetic
     server_list_updated = server_list_updated_event.wait(timeout=0)
     assert server_list_updated
 
-    assert len(servers_widget.country_rows) == 2
-
-    assert servers_widget.country_rows[0].country_name == "Iceland"
-    assert servers_widget.country_rows[0].server_rows[0].server_label == "IS#9"
-    assert servers_widget.country_rows[0].server_rows[1].server_label == "IS#10"
-    assert servers_widget.country_rows[1].country_name == "Japan"
-    assert servers_widget.country_rows[1].server_rows[0].server_label == "JP#9"
-    assert servers_widget.country_rows[1].server_rows[1].server_label == "CH-JP#1"
-    assert servers_widget.country_rows[1].server_rows[2].server_label == "JP-FREE#10"
+    country_names = [country_row.country_name for country_row in servers_widget.country_rows]
+    assert country_names == expected_country_names
 
 
 @pytest.mark.parametrize(
@@ -209,30 +214,3 @@ def test_server_widget_updates_country_rows_on_connection_status_update(
 
     assert servers_widget.country_rows[0].connection_state == connection_state.state
 
-
-@pytest.mark.parametrize(
-    "user_tier,expected_sort_keys", [
-        (0, [  # COUNTRY-NAME__TIER-PRIORITY__SECURE-CORE-PRIORITY__SERVER-NAME
-            'Iceland__2__0__is#0000000009',
-            'Iceland__2__0__is#0000000010',
-            'Japan__0__0__jp-free#0000000010',  # Free users see free servers first for each country
-            'Japan__2__0__jp#0000000009',
-            'Japan__2__1__ch-jp#0000000001',  # Secure-core servers are sorted after non-secure-core servers
-        ]),
-        (2, [
-            'Iceland__0__0__is#0000000009',
-            'Iceland__0__0__is#0000000010',
-            'Japan__0__0__jp#0000000009',  # Plus users see plus servers first for each country
-            'Japan__0__1__ch-jp#0000000001',
-            'Japan__2__0__jp-free#0000000010',
-        ])
-    ]
-)
-def test_get_server_list_sort_key_sorts_by_country_user_tier_secure_core_and_server_name(
-        user_tier, expected_sort_keys, unsorted_server_list
-):
-    sort_key_func = get_server_list_sorting_key_function(user_tier=user_tier)
-    sort_keys = [sort_key_func(server) for server in unsorted_server_list]
-
-    sort_keys.sort()
-    assert sort_keys == expected_sort_keys

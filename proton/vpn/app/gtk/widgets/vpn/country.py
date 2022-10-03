@@ -4,38 +4,33 @@ This module defines the country widgets.
 
 from __future__ import annotations
 
-from typing import List
+from typing import List, Tuple
 from gi.repository import GObject
 from proton.vpn.connection.enum import ConnectionStateEnum
-from proton.vpn.servers.server_types import LogicalServer
-from proton.vpn.servers.list import VPNServer
+from proton.vpn.servers import VPNServer, Country
 from proton.vpn.core_api import vpn_logging as logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.server import ServerRow
-from proton.vpn.app.gtk import utils
 
 
 logger = logging.getLogger(__name__)
 
 
-class CountryHeader(Gtk.Box):  # pylint: disable=R0902
+class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Header with the country name shown at the beginning of each CountryRow."""
-    def __init__(  # pylint: disable=too-many-arguments
-            self, country_code: str,
+    def __init__(
+            self,
+            country: Country,
             upgrade_required: bool,
-            under_maintenance: bool,
             controller: Controller,
             show_country_servers: bool = False
     ):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+        self._country = country
         self.upgrade_required = upgrade_required
-        self.under_maintenance = under_maintenance
+        self.under_maintenance = all(not server.enabled for server in country.servers)
         self._controller = controller
-
-        self.country_code = country_code
-        country_name = utils.get_country_name_by_code(country_code)
-        self.country_name = country_name
 
         self._connection_state = None
 
@@ -76,6 +71,16 @@ class CountryHeader(Gtk.Box):  # pylint: disable=R0902
     def toggle_country_servers(self):
         """Signal when the user clicks the button to expand/collapse the servers
         from a country."""
+
+    @property
+    def country_code(self):
+        """Returns the code of the country this header is for."""
+        return self._country.code
+
+    @property
+    def country_name(self):
+        """Returns the name of the country this header is for."""
+        return self._country.name
 
     @property
     def show_country_servers(self):
@@ -162,11 +167,9 @@ class CountryHeader(Gtk.Box):  # pylint: disable=R0902
 class CountryRow(Gtk.Box):
     """Row containing all servers from a country."""
 
-    # pylint: disable=too-many-arguments
     def __init__(
             self,
-            country_code: str,
-            country_servers: List[LogicalServer],
+            country: Country,
             controller: Controller,
             connected_server_id: str = None,
             show_country_servers: bool = False,
@@ -175,29 +178,37 @@ class CountryRow(Gtk.Box):
         self._controller = controller
         self._indexed_server_rows = {}
         self._connected_server_row = None
-        self._is_free_country = any(server.tier == 0 for server in country_servers)
-        self._upgrade_required = all(
-            server.tier > self._controller.user_tier for server in country_servers
-        )
-        under_maintenance = all(not server.enabled for server in country_servers)
+
+        free_servers, plus_servers = self._group_servers_by_tier(country.servers)
+        self._is_free_country = len(free_servers) > 0
+        is_free_user = controller.user_tier == 0
+        self._upgrade_required = (is_free_user and not country.is_free)
 
         self._country_header = CountryHeader(
-            country_code=country_code,
+            country=country,
             upgrade_required=self.upgrade_required,
-            under_maintenance=under_maintenance,
             controller=controller,
             show_country_servers=show_country_servers
         )
-
         self.pack_start(self._country_header, expand=False, fill=False, padding=5)
-        self._country_header.connect("toggle-country-servers", self._on_toggle_country_servers)
+        self._country_header.connect(
+            "toggle-country-servers", self._on_toggle_country_servers
+        )
 
         self._server_rows_revealer = Gtk.Revealer()
         self.pack_start(self._server_rows_revealer, expand=False, fill=False, padding=5)
         server_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._server_rows_revealer.add(server_rows_container)
 
-        for server in country_servers:
+        ordered_servers = []
+        if is_free_user:
+            ordered_servers.extend(free_servers)
+            ordered_servers.extend(plus_servers)
+        else:
+            ordered_servers.extend(plus_servers)
+            ordered_servers.extend(free_servers)
+
+        for server in ordered_servers:
             server_row = ServerRow(server=server, controller=self._controller)
             server_rows_container.pack_start(
                 server_row,
@@ -264,6 +275,18 @@ class CountryRow(Gtk.Box):
         or None if the user did not connect to a server yet."""
         return self._connected_server_row.server_id \
             if self._connected_server_row else None
+
+    @staticmethod
+    def _group_servers_by_tier(country_servers) -> Tuple[List]:
+        free_servers = []
+        plus_servers = []
+        for server in country_servers:
+            if server.tier == 0:
+                free_servers.append(server)
+            else:
+                plus_servers.append(server)
+
+        return free_servers, plus_servers
 
     def _on_toggle_country_servers(self, country_header: CountryHeader):
         self._server_rows_revealer.set_reveal_child(country_header.show_country_servers)

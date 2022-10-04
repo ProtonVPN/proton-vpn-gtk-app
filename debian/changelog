@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.5.1) unstable; urgency=medium
+
+  * Fix several bugs in the server list widget
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Tue, 04 Oct 2022 15:37:54 +0200
+
 proton-vpn-gtk-app (0.5.0) unstable; urgency=medium
 
   * Add "Connect" button on country rows

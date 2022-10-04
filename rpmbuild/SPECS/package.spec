@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.5.0
+%define version 0.5.1
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -63,6 +63,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Oct 04 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.5.1
+- Fix several bugs in the server list widget
+
 * Wed Sep 28 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.5.0
 - Add "Connect" button on country rows
 

@@ -1,22 +1,33 @@
 """
 This module defines the main App class.
 """
-import sys
-import threading
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, List
 
 from gi.repository import GObject
 
-from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
-
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.view import MainWindow
+from proton.vpn.app.gtk.widgets.main import MainWidget
 from proton.vpn.core_api import vpn_logging as logging
 
 
 logger = logging.getLogger(__name__)
+
+
+class MainWindow(Gtk.ApplicationWindow):
+    """Main window."""
+    def __init__(self, controller: Controller):
+        super().__init__(title="Proton VPN")
+
+        self._controller = controller
+
+        self.set_size_request(400, 600)
+        self.set_border_width(10)
+        self.set_resizable(False)
+
+        self.main_widget = MainWidget(controller=controller, main_window=self)
+        self.add(self.main_widget)
 
 
 class App(Gtk.Application):
@@ -42,7 +53,6 @@ class App(Gtk.Application):
             thread_pool_executor=thread_pool_executor
         )
         self.window = None
-        self.exception_handler = AppExceptionHandler()
         self._signal_connect_queue = []
 
     def do_activate(self):  # pylint: disable=W0221
@@ -54,12 +64,9 @@ class App(Gtk.Application):
             self.window = MainWindow(self._controller)
             # Process signal connection requests asap.
             self._process_signal_connect_queue()
-            # Disable exception handler as soon as the main window is closed.
-            self.connect("window-removed", lambda *_: self.exception_handler.disable())
             # Windows are associated with the application like this.
             # When the last one is closed, the application shuts down.
             self.add_window(self.window)
-            self.exception_handler.enable()
 
         self.window.show_all()
         self.window.present()
@@ -69,10 +76,10 @@ class App(Gtk.Application):
     def error_dialogs(self) -> List[Gtk.MessageDialog]:
         """
         Gives access to currently opened error message dialogs. This method
-        is used mainly in tests.
+        was made available for testing purposes.
         :return: The list of currently opened error message dialogs.
         """
-        return self.exception_handler.error_dialogs
+        return self.window.main_widget.error_dialogs
 
     @GObject.Signal(name="app-ready")
     def app_ready(self):
@@ -144,90 +151,3 @@ class App(Gtk.Application):
             assert isinstance(obj, GObject.Object), \
                 f"{type(obj)} does not inherit from GObject.Object."
             obj.connect(signal_name, callback)
-
-
-class AppExceptionHandler:
-    """Handles exceptions before they bubble all the way up."""
-
-    def __init__(self, application_window: Gtk.ApplicationWindow = None):
-        self._application_window = application_window
-        self.error_dialogs = []
-        self._previous_sys_excepthook = sys.excepthook
-        self._previous_threading_excepthook = threading.excepthook
-
-    def enable(self):
-        """
-        Enables the exception handler. Note that the exception handler
-        should be enabled only after the main application window has been
-        presented to the user so that error dialogs can actually be shown.
-        """
-        self._previous_sys_excepthook = sys.excepthook
-        # Handle exceptions bubbling up in the main thread.
-        sys.excepthook = self.handle_errors
-
-        self._previous_threading_excepthook = threading.excepthook
-        # Handle exceptions bubbling up in threads started with Thread.run().
-        # Notice that an exception raised from a thread managed by a
-        # ThreadPoolExecutor won't bubble up, as the executor won't allow it.
-        # In this case, make sure that you call Future.result() on the future
-        # returned by ThreadPoolExecutor.submit() in the main thread
-        # (e.g. using GLib.idle_add()).
-        threading.excepthook = lambda args: self.handle_errors(
-            args.exc_type, args.exc_value, args.exc_traceback
-        )
-
-    def disable(self):
-        """Disables the exception handler. The exception handler should
-        be disabled as soon as the main application window is closed. This
-        is specially important in tests, as the python process might run
-        other test code."""
-        sys.excepthook = self._previous_sys_excepthook
-        threading.excepthook = self._previous_threading_excepthook
-
-    def handle_errors(self, exc_type, exc_value, exc_traceback):
-        """
-        When the application exception handler is enabled, this method is
-        triggered on errors that were not explicitly handled by the
-        application code.
-        :param exc_type: Type of the exception.
-        :param exc_value: Instance of the exception. It might be None if the
-        exception was triggered using an Exception class, rather than an object
-        (e.g. raise Exception, instead of raise Exception()).
-        :param exc_traceback: The exception traceback.
-        """
-        if issubclass(exc_type, ProtonAPINotReachable):
-            error_message = "Our servers are not reachable. " \
-                            "Please check your internet connection."
-        elif isinstance(exc_value, ProtonAPIError) and exc_value.error:
-            error_message = exc_value.error
-        elif isinstance(exc_value, AssertionError):
-            # We shouldn't catch assertion errors raised by tests.
-            raise exc_value
-        elif issubclass(exc_type, Exception):
-            error_message = "We're sorry, an unexpected error occurred. " \
-                            "Please try later."
-        else:
-            raise exc_value if exc_value else exc_type
-
-        logger.critical(
-            "Unexpected error.",
-            category="APP", event="CRASH",
-            exc_info=(exc_type, exc_value, exc_traceback)
-        )
-        self._show_error_dialog(error_message)
-
-    def _show_error_dialog(
-            self, secondary_text, primary_text="Something went wrong"
-    ):
-        error_dialog = Gtk.MessageDialog(
-            transient_for=self._application_window,
-            flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
-            message_type=Gtk.MessageType.ERROR,
-            buttons=Gtk.ButtonsType.OK,
-            text=primary_text,
-        )
-        self.error_dialogs.append(error_dialog)
-        error_dialog.format_secondary_text(secondary_text)
-        error_dialog.run()
-        error_dialog.destroy()
-        self.error_dialogs.remove(error_dialog)

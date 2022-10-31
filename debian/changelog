@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.6.0) unstable; urgency=medium
+
+  * Show the login screen when the session expired
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 31 Oct 2022 13:00:00 +0100
+
 proton-vpn-gtk-app (0.5.1) unstable; urgency=medium
 
   * Fix several bugs in the server list widget

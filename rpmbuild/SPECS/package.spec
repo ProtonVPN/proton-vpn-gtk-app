@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.6.0
+%define version 0.6.1
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -63,6 +63,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Nov 4 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.6.1
+- Fix bug happening when connecting to a server without disconnecting first from the previous one
+
 * Mon Oct 31 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.6.0
 - Show the login screen when the session expired
 

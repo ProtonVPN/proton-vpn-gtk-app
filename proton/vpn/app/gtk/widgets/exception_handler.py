@@ -21,8 +21,7 @@ class ExceptionHandler:
     def __init__(self, main_widget):
         super().__init__()
         self._main_widget = main_widget
-        # As from Python 3.10 threading.__excepthook__ can be used to revert
-        # to the original threading excepthook.
+        self._previous_sys_excepthook = sys.excepthook
         self._previous_threading_excepthook = threading.excepthook
 
     def enable(self):
@@ -31,10 +30,12 @@ class ExceptionHandler:
         should be enabled only after the main application window has been
         presented to the user so that error dialogs can actually be shown.
         """
+        self._previous_sys_excepthook = sys.excepthook
+        self._previous_threading_excepthook = threading.excepthook
+
         # Handle exceptions bubbling up in the main thread.
         sys.excepthook = self.handle_exception
 
-        self._previous_threading_excepthook = threading.excepthook
         # Handle exceptions bubbling up in threads started with Thread.run().
         # Notice that an exception raised from a thread managed by a
         # ThreadPoolExecutor won't bubble up, as the executor won't allow it.
@@ -48,7 +49,7 @@ class ExceptionHandler:
         be disabled as soon as the main application window is closed. This
         is specially important in tests, as the python process might run
         other test code."""
-        sys.excepthook = sys.__excepthook__
+        sys.excepthook = self._previous_sys_excepthook
         threading.excepthook = self._previous_threading_excepthook
 
     def handle_thread_exception(self, args):

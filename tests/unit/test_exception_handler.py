@@ -47,8 +47,8 @@ def test_disable_exception_handler_removes_excepthooks():
         exception_handler.enable()
         exception_handler.disable()
 
-        assert sys.excepthook == original_sys_excepthook
-        assert threading.excepthook == original_threading_excepthook
+        assert sys.excepthook is original_sys_excepthook
+        assert threading.excepthook is original_threading_excepthook
     finally:
         sys.excepthook = original_sys_excepthook
         threading.excepthook = original_threading_excepthook

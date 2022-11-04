@@ -17,8 +17,12 @@ class VPNConnectionStatusWidget(Gtk.Box):
         self._connection_status_label = Gtk.Label(label="")
         self.add(self._connection_status_label)
 
-    def connection_status_update(self, connection_status, vpn_server=None):
+    def connection_status_update(self, connection_status):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
+        connection = connection_status.context.connection
+        # noqa: temporary hack # pylint: disable=W0212
+        vpn_server = connection._vpnserver if connection else None
+
         self._update_status_label(
             connection_status.state,
             vpn_server

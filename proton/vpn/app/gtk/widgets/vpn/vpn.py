@@ -29,7 +29,6 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         self._controller = controller
         # Flag signaling when a logout is required after VPN disconnection.
         self._logout_after_vpn_disconnection = False
-        self._current_vpn_server = None
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
@@ -88,18 +87,10 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
             f"VPN widget received connection status update: "
             f"{connection_status.state.name}."
         )
-        if connection_status.state is not ConnectionStateEnum.DISCONNECTED:
-            # Ignoring the fact that current_connection would always be None
-            # when the connection state is DISCONNECTED, currently the app
-            # sometimes gets stuck when we try to get the current connection
-            # when the connection state is DISCONNECTED.
-            # FIXME: To be investigated when we work on the VPN connection. # pylint: disable=W0511
-            current_connection = self._controller.get_current_connection().result()
-            self._current_vpn_server = current_connection._vpnserver  # noqa: temporary hack # pylint: disable=W0212
 
         def update_widget():
             for widget in self._connection_update_subscribers:
-                widget.connection_status_update(connection_status, self._current_vpn_server)
+                widget.connection_status_update(connection_status)
 
             if connection_status.state == ConnectionStateEnum.DISCONNECTED \
                     and self._logout_after_vpn_disconnection:

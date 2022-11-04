@@ -14,7 +14,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.country import CountryRow
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
-from proton.vpn.servers.list import ServerList, VPNServer, Country
+from proton.vpn.servers.list import ServerList, Country
 from proton.vpn.core_api import vpn_logging as logging
 
 
@@ -124,13 +124,17 @@ class ServerListWidget(Gtk.ScrolledWindow):
                         "There is nothing to do.",
                         category="APP", subcategory="SERVERS", event="RELOAD")
 
-    def connection_status_update(self, connection_status, vpn_server: VPNServer):
+    def connection_status_update(self, connection_status):
         """
         This method is called by VPNWidget whenever the VPN connection status changes.
         Important: as this method is always called from another thread, we need
         to make sure that any resulting actions are passed to the main thread
         running GLib's main loop with GLib.idle_add.
         """
+        connection = connection_status.context.connection
+        # noqa: temporary hack # pylint: disable=W0212
+        vpn_server = connection._vpnserver if connection else None
+
         def update_server_rows():
             if self._state.widget_loaded and vpn_server:
                 country_row = self._get_country_row(vpn_server)

@@ -200,15 +200,17 @@ def test_retrieve_servers_only_triggers_a_ui_update_if_the_server_list_was_updat
 def test_server_widget_updates_country_rows_on_connection_status_update(
         connection_state
 ):
+    connection_mock = Mock()
+    connection_mock._vpnserver.servername = SERVER_LIST[0].name
+    connection_state.context.connection = connection_mock
+
     controller_mock = Mock()
     controller_mock.user_tier = PLUS_TIER
     servers_widget = ServerListWidget(
         controller=controller_mock, server_list=SERVER_LIST
     )
-    vpn_server = Mock()
-    vpn_server.servername = SERVER_LIST[0].name
 
-    servers_widget.connection_status_update(connection_state, vpn_server)
+    servers_widget.connection_status_update(connection_state)
 
     process_gtk_events()
 

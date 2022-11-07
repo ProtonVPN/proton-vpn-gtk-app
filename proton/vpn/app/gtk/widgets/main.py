@@ -20,7 +20,9 @@ class MainWidget(Gtk.Box):
     VPNWidget, depending on whether the user is logged in or not.
     """
     ERROR_DIALOG_PRIMARY_TEXT = "Something went wrong"
-    SESSION_EXPIRED_ERROR_MESSAGE = "Session expired."
+    SESSION_EXPIRED_ERROR_MESSAGE = "Your session is invalid. "\
+        "Please login to re-authenticate."
+    SESSION_EXPIRED_ERROR_TITLE = "Invalid Session"
 
     def __init__(self, controller: Controller, main_window: Gtk.ApplicationWindow = None):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
@@ -72,7 +74,10 @@ class MainWidget(Gtk.Box):
             self.login_widget
         )
 
-    def show_error_message(self, error_message: str, blocking: bool = False):
+    def show_error_message(
+        self, error_message: str, blocking: bool = False,
+        error_title: str = None
+    ):
         """
         Shows an error message to the user. The message is hidden after the
         specified amount of time.
@@ -81,14 +86,17 @@ class MainWidget(Gtk.Box):
         confirmation from the user or not.
         """
         if blocking:
-            GLib.idle_add(self._show_error_dialog, error_message)
+            GLib.idle_add(self._show_error_dialog, error_message, error_title)
         else:
             GLib.idle_add(self.notification_bar.show_error_message, error_message)
 
     def session_expired(self):
         """This method is called by the exception handler once the session
         expires."""
-        self.show_error_message(self.SESSION_EXPIRED_ERROR_MESSAGE)
+        self.show_error_message(
+            self.SESSION_EXPIRED_ERROR_MESSAGE,
+            True, self.SESSION_EXPIRED_ERROR_TITLE
+        )
         self._display_widget(self.login_widget)
         self.login_widget.reset()
 

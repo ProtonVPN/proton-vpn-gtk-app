@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.6.2) unstable; urgency=medium
+
+  * Ensure that vpn connection is stopped before logging out the user, if there is one
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Mon, 07 Nov 2022 16:00:00 +0100
+
 proton-vpn-gtk-app (0.6.1) unstable; urgency=medium
 
   * Fix bug happening when connecting to a server without disconnecting first from the previous one

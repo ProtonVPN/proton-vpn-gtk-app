@@ -79,7 +79,15 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         future.add_done_callback(initialize_ui)
 
     def _on_unrealize(self, _servers_widget: ServerListWidget):
-        self._controller.unregister_connection_status_subscriber(self)
+        future = self._controller.get_current_connection()
+
+        def initialize_ui(current_connection_future: Future):
+            current_connection = current_connection_future.result()
+            if current_connection:
+                self._controller.disconnect()
+                self._controller.unregister_connection_status_subscriber(self)
+
+        future.add_done_callback(initialize_ui)
 
     def status_update(self, connection_status):
         """This method is called whenever the VPN connection status changes."""

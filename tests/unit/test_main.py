@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 from proton.vpn.app.gtk.widgets.main import MainWidget
 from tests.unit.utils import process_gtk_events
+from unittest.mock import patch
 
 
 def test_main_widget_initially_shows_login_widget_if_the_user_did_not_log_in_yet():
@@ -42,13 +43,15 @@ def test_main_widget_switches_from_vpn_to_login_widget_after_logout():
     assert main_widget.active_widget is main_widget.login_widget
 
 
-def test_main_widget_switches_to_login_widget_when_session_expired():
+@patch("proton.vpn.app.gtk.widgets.main.MainWidget.show_error_message")
+def test_main_widget_switches_to_login_widget_when_session_expired(patched_show_error_message):
+
     main_widget = MainWidget(controller=None)
     main_widget.active_widget = main_widget.vpn_widget
-
     main_widget.session_expired()
 
-    process_gtk_events()
-
     assert main_widget.active_widget is main_widget.login_widget
-    assert main_widget.notification_bar.error_message == MainWidget.SESSION_EXPIRED_ERROR_MESSAGE
+    patched_show_error_message.assert_called_once_with(
+        MainWidget.SESSION_EXPIRED_ERROR_MESSAGE,
+        True, MainWidget.SESSION_EXPIRED_ERROR_TITLE
+    )

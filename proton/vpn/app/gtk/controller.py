@@ -4,7 +4,6 @@ Proton VPN back-ends.
 """
 from concurrent.futures import ThreadPoolExecutor, Future
 
-from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.connection import VPNConnection
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.connection import Subscriber
@@ -12,6 +11,8 @@ from proton.vpn.core_api.connection import Subscriber
 
 class Controller:
     """The C in the MVC pattern."""
+    connection_protocol = "openvpn-udp"
+
     def __init__(
         self, thread_pool_executor: ThreadPoolExecutor,
         api: ProtonVPNAPI = None,
@@ -67,7 +68,7 @@ class Controller:
         """Returns user tier."""
         return self._api.get_user_tier()
 
-    def connect_to_country(self, country_code: str) -> Future:
+    def connect_to_country(self, country_code: str):
         """
         Establishes a VPN connection to the specified country.
         :param country_code: The ISO3166 code of the country to connect to.
@@ -75,18 +76,18 @@ class Controller:
         "connected" state.
         """
         server = self._api.servers.get_server_by_country_code(country_code)
-        return self._connect(server)
+        self._api.connection.connect(server, protocol=self.connection_protocol)
 
-    def connect_to_fastest_server(self) -> Future:
+    def connect_to_fastest_server(self):
         """
         Establishes a VPN connection to the fastest server.
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
         server = self._api.servers.get_fastest_server()
-        return self._connect(server)
+        self._api.connection.connect(server, protocol=self.connection_protocol)
 
-    def connect_to_server(self, server_name: str = None) -> Future:
+    def connect_to_server(self, server_name: str = None):
         """
         Establishes a VPN connection.
         :param server_name: The name of the server to connect to.
@@ -94,35 +95,20 @@ class Controller:
         "connected" state.
         """
         server = self._api.servers.get_vpn_server_by_name(servername=server_name)
-        return self._connect(server)
+        self._api.connection.connect(server, protocol=self.connection_protocol)
 
-    def _connect(self, vpn_server) -> Future:
-        def __connect():
-            self._api.connection.connect(vpn_server, protocol="openvpn-udp")
-            self._connection_subscriber.wait_for_state(
-                ConnectionStateEnum.CONNECTED,
-                timeout=self._connect_timeout
-            )
-
-        return self._thread_pool.submit(__connect)
-
-    def disconnect(self) -> Future:
+    def disconnect(self):
         """
         Terminates a VPN connection.
         :return: A Future object that resolves once the connection reaches the
         "disconnected" state.
         """
-        def _disconnect():
-            self._api.connection.disconnect()
-            self._connection_subscriber.wait_for_state(
-                ConnectionStateEnum.DISCONNECTED,
-                timeout=self._disconnect_timeout
-            )
-        return self._thread_pool.submit(_disconnect)
+        self._api.connection.disconnect()
 
-    def get_current_connection(self) -> VPNConnection:
+    @property
+    def current_connection(self) -> VPNConnection:
         """Returns the current VPN connection, if it exists."""
-        return self._thread_pool.submit(self._api.connection.get_current_connection)
+        return self._api.connection.current_connection
 
     def get_server_list(self, force_refresh=False) -> Future:
         """

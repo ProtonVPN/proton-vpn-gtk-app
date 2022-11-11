@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.6.4) unstable; urgency=medium
+
+  * Display error dialog whenever a connection fails to be established
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Mon, 15 Nov 2022 16:00:00 +0100
+ 
 proton-vpn-gtk-app (0.6.3) unstable; urgency=medium
 
   * Add Proton VPN logging library

@@ -12,7 +12,6 @@ from gi.repository import GLib, GObject
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.country import CountryRow
-from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.list import ServerList, Country
 from proton.vpn import logging
@@ -139,11 +138,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
             if self._state.widget_loaded and vpn_server:
                 country_row = self._get_country_row(vpn_server)
                 country_row.connection_status_update(connection_status, vpn_server)
-
-                if connection_status.state == ConnectionStateEnum.CONNECTED:
-                    self._state.connected_country_row = country_row
-                elif connection_status.state == ConnectionStateEnum.DISCONNECTED:
-                    self._state.connected_country_row = None
 
         GLib.idle_add(update_server_rows)
 

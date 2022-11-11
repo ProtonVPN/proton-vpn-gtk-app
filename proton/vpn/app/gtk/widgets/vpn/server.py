@@ -87,6 +87,10 @@ class ServerRow(Gtk.Box):
         self._connect_button.set_tooltip_text(f"Connect to {self.server_label}")
         self._connect_button.set_label("Connect")
 
+    def _on_connection_state_error(self):
+        """Flags this server as "not connected"."""
+        self._on_connection_state_disconnected()
+
     def _on_connect_button_clicked(self, _):
         self._controller.connect_to_server(self._server.name)
 

@@ -74,6 +74,9 @@ class QuickConnectWidget(Gtk.Box):
         self._connect_button.set_sensitive(True)
         self._connect_button.show()
 
+    def _on_connection_state_error(self):
+        self._on_connection_state_disconnected()
+
     def _on_connect_button_clicked(self, _):
         logger.info("Connect to VPN ISO#NUMBER", category="UI", event="CONNECT")
         self._connect_button.set_sensitive(False)

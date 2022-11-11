@@ -11,7 +11,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn.quick_connect import QuickConnectWidget
 from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
-from proton.vpn.connection.enum import ConnectionStateEnum
+from proton.vpn.connection.enum import ConnectionStateEnum, StateMachineEventEnum
 from proton.vpn.connection.states import Disconnected, Connected
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 from proton.vpn import logging
@@ -92,8 +92,26 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
                     and self._logout_after_vpn_disconnection:
                 self._logout_button.clicked()
                 self._logout_after_vpn_disconnection = False
+            elif connection_status.state == ConnectionStateEnum.ERROR:
+                title = "VPN Connection Error"
+                message = "Unable to establish VPN Connection"
+
+                if connection_status.context.event.event == StateMachineEventEnum.AUTH_DENIED:
+                    title = f"{title}: Authentication Denied"
+                    message = "Unable to establish VPN due to " \
+                        "wrong authentication credentials"
+
+                self.emit(
+                    "vpn-connection-error",
+                    title,
+                    message
+                )
 
         GLib.idle_add(update_widget)
+
+    @GObject.Signal(name="vpn-connection-error", arg_types=(str, str))
+    def vpn_connection_error(self, title: str, text: str):
+        """Signal emitted when a connection error occurred."""
 
     def _on_logout_button_clicked(self, *_):
         logger.info("Logout button clicked", category="UI", subcategory="LOGOUT", event="CLICK")

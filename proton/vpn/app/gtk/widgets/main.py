@@ -3,7 +3,6 @@ This module defines the main widget. The main widget is the widget which
 exposes all the available app functionality to the user.
 """
 from typing import Union
-from gi.repository import GLib
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
@@ -11,6 +10,7 @@ from proton.vpn.app.gtk.widgets.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.widgets.login import LoginWidget
 from proton.vpn.app.gtk.widgets.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
+from proton.vpn.app.gtk.widgets.error_messenger import ErrorMessenger
 
 
 # pylint: disable=too-many-instance-attributes
@@ -29,17 +29,19 @@ class MainWidget(Gtk.Box):
         self._active_widget = None
         self._controller = controller
         self._application_window = main_window
-        self.error_dialogs = []
         exception_handler = ExceptionHandler(main_widget=self)
+        notification_bar = NotificationBar()
 
-        self.notification_bar = NotificationBar()
-        self.pack_start(self.notification_bar, expand=False, fill=False, padding=0)
+        self.pack_start(notification_bar, expand=False, fill=False, padding=0)
+
+        self._error_messenger = ErrorMessenger(main_window, notification_bar)
 
         self.login_widget = LoginWidget(controller)
         self.login_widget.connect("user-logged-in", self._on_user_logged_in)
 
         self.vpn_widget = VPNWidget(controller)
         self.vpn_widget.connect("user-logged-out", self._on_user_logged_out)
+        self.vpn_widget.connect("vpn-connection-error", self._display_connection_error)
 
         self.connect("show", lambda *_: self.initialize_visible_widget())
         self.connect("realize", lambda *_: exception_handler.enable())
@@ -74,6 +76,10 @@ class MainWidget(Gtk.Box):
             self.login_widget
         )
 
+    def _display_connection_error(self, *args):
+        _, title, message = args
+        self.show_error_message(message, True, title)
+
     def show_error_message(
         self, error_message: str, blocking: bool = False,
         error_title: str = None
@@ -86,9 +92,9 @@ class MainWidget(Gtk.Box):
         confirmation from the user or not.
         """
         if blocking:
-            GLib.idle_add(self._show_error_dialog, error_message, error_title)
+            self._error_messenger.show_error_dialog(error_message, error_title)
         else:
-            GLib.idle_add(self.notification_bar.show_error_message, error_message)
+            self._error_messenger.show_error_bar(error_message)
 
     def session_expired(self):
         """This method is called by the exception handler once the session
@@ -110,20 +116,3 @@ class MainWidget(Gtk.Box):
     def _display_widget(self, widget: Union[LoginWidget, VPNWidget]):
         self.active_widget = widget
         self.active_widget.show_all()
-
-    def _show_error_dialog(
-            self, secondary_text, primary_text=None
-    ):
-        primary_text = primary_text or self.ERROR_DIALOG_PRIMARY_TEXT
-        error_dialog = Gtk.MessageDialog(
-            transient_for=self._application_window,
-            flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
-            message_type=Gtk.MessageType.ERROR,
-            buttons=Gtk.ButtonsType.OK,
-            text=primary_text,
-        )
-        self.error_dialogs.append(error_dialog)
-        error_dialog.format_secondary_text(secondary_text)
-        error_dialog.run()
-        error_dialog.destroy()
-        self.error_dialogs.remove(error_dialog)

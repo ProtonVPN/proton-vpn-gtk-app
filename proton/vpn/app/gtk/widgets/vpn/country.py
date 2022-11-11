@@ -145,6 +145,10 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         )
         self._connect_button.set_label("Connected")
 
+    def _on_connection_state_error(self):
+        """Flags this server as "error"."""
+        self._on_connection_state_disconnected()
+
     def _on_connection_state_disconnected(self):
         """Flags this server as "not connected"."""
         self._connect_button.set_sensitive(True)
@@ -304,10 +308,6 @@ class CountryRow(Gtk.Box):
         self._country_header.connection_state = connection_status.state
         server = self._get_server_row(vpn_server)
         server.connection_state = connection_status.state
-        if connection_status.state == ConnectionStateEnum.CONNECTED:
-            self._connected_server_row = server
-        elif connection_status.state == ConnectionStateEnum.DISCONNECTED:
-            self._connected_server_row = None
 
     def click_connect_button(self):
         """Clicks the button to connect to the country.

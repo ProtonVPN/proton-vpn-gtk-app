@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.6.2
+%define version 0.6.3
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -26,12 +26,14 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-proton-vpn-api-core
+BuildRequires: python3-proton-vpn-logger
 BuildRequires: python3-proton-vpn-network-manager-openvpn
 BuildRequires: python3-proton-keyring-linux-secretservice
 
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-proton-vpn-api-core
+Requires: python3-proton-vpn-logger
 Requires: python3-proton-vpn-network-manager-openvpn
 Requires: python3-proton-keyring-linux-secretservice
 
@@ -63,6 +65,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Nov 11 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.6.3
+- Add Proton VPN logging library
+
 * Fri Nov 7 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.6.2
 - Ensure that vpn connection is stopped before logging out the user, if there is one
 

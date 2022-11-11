@@ -4,7 +4,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name="proton-vpn-gtk-app",
-    version="0.6.2",
+    version="0.6.3",
     description="Proton VPN GTK app",
     author="Proton Technologies",
     author_email="contact@protonmail.com",
@@ -13,6 +13,7 @@ setup(
         "proton-vpn-api-core",
         "proton-keyring-linux-secretservice",
         "proton-vpn-network-manager-openvpn",
+        "proton-vpn-logger",
         "pygobject",
         "pycairo"
     ],

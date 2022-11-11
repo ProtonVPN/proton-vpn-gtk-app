@@ -6,7 +6,7 @@ import threading
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
     ProtonAPIAuthenticationNeeded
-from proton.vpn.core_api import vpn_logging as logging
+from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
 

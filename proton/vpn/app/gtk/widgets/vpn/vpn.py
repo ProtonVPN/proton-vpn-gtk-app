@@ -14,7 +14,7 @@ from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.connection.states import Disconnected, Connected
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
-from proton.vpn.core_api import vpn_logging as logging
+from proton.vpn import logging
 
 from proton.vpn.app.gtk.widgets.vpn.status import VPNConnectionStatusWidget
 

@@ -5,7 +5,7 @@ This module defines the server widget.
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.core_api import vpn_logging as logging
+from proton.vpn import logging
 
 from proton.vpn.app.gtk.controller import Controller
 

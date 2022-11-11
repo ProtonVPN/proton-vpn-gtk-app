@@ -4,7 +4,7 @@ This module defines the Quick Connect widget.
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.core_api import vpn_logging as logging
+from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
 

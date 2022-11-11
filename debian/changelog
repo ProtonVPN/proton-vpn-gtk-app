@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.6.3) unstable; urgency=medium
+
+  * Add Proton VPN logging library
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Fri, 11 Nov 2022 17:00:00 +0100
+ 
 proton-vpn-gtk-app (0.6.2) unstable; urgency=medium
 
   * Ensure that vpn connection is stopped before logging out the user, if there is one

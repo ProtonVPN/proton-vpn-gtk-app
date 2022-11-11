@@ -15,7 +15,7 @@ from proton.vpn.app.gtk.widgets.vpn.country import CountryRow
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.list import ServerList, Country
-from proton.vpn.core_api import vpn_logging as logging
+from proton.vpn import logging
 
 
 logger = logging.getLogger(__name__)

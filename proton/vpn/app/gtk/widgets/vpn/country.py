@@ -8,7 +8,7 @@ from typing import List, Tuple
 from gi.repository import GObject
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers import VPNServer, Country
-from proton.vpn.core_api import vpn_logging as logging
+from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.server import ServerRow

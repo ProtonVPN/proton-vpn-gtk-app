@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.6.5) unstable; urgency=medium
+
+  * Check if the current connection is active before disconnecting
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Tue, 15 Nov 2022 16:15:54 +0100
+
 proton-vpn-gtk-app (0.6.4) unstable; urgency=medium
 
   * Display error dialog whenever a connection fails to be established

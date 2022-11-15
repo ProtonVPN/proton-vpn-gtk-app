@@ -73,7 +73,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
             self.status_update(Disconnected())
 
     def _on_unrealize(self, _servers_widget: ServerListWidget):
-        if self._controller.current_connection:
+        if self._controller.is_connection_active:
             self._controller.disconnect()
             self._controller.unregister_connection_status_subscriber(self)
 

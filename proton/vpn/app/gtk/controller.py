@@ -110,6 +110,11 @@ class Controller:
         """Returns the current VPN connection, if it exists."""
         return self._api.connection.current_connection
 
+    @property
+    def is_connection_active(self) -> bool:
+        """Returns whether the current connection is in connecting/connected state or not."""
+        return self._api.connection.is_connection_active
+
     def get_server_list(self, force_refresh=False) -> Future:
         """
         Returns the list of Proton VPN servers.

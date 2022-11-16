@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from concurrent.futures import Future
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 from gi.repository import GLib, GObject
 
@@ -29,8 +29,6 @@ class ServerListWidgetState:
     last_update_time: int = 0
     # ID of the GTK Source which reloads the server list periodically
     reload_servers_source_id: int = None
-    # Row of the country we are connected to.
-    connected_country_row: CountryRow = None
     # Country rows indexed by country code.
     country_rows: Dict[str, CountryRow] = field(default_factory=dict)
     # Flag signaling when the widget finished loading
@@ -41,13 +39,6 @@ class ServerListWidgetState:
         if self.server_list:
             return self.server_list.get_by_name(server_name)
         return None
-
-    @property
-    def connected_server_id(self) -> Optional[str]:
-        """Returns the ID of the server the user is currently connected.
-        If the user didn't connect yet to a server, then it returns None."""
-        return self.connected_country_row.connected_server_id \
-            if self.connected_country_row else None
 
 
 class ServerListWidget(Gtk.ScrolledWindow):
@@ -214,6 +205,10 @@ class ServerListWidget(Gtk.ScrolledWindow):
             # free servers first.
             countries.sort(key=free_countries_first_sorting_key)
 
+        connected_server_name = None
+        if self._controller.is_connection_active:
+            connected_server_name = self._controller.current_connection._vpnserver.servername
+
         new_country_rows = {}
         for country in countries:
             show_country_servers = False
@@ -223,7 +218,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
             country_row = CountryRow(
                 country=country,
                 controller=self._controller,
-                connected_server_id=self._state.connected_server_id,
+                connected_server_name=connected_server_name,
                 show_country_servers=show_country_servers
             )
             new_country_rows[country.code.lower()] = country_row

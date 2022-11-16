@@ -175,13 +175,12 @@ class CountryRow(Gtk.Box):
             self,
             country: Country,
             controller: Controller,
-            connected_server_id: str = None,
+            connected_server_name: str = None,
             show_country_servers: bool = False,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller
         self._indexed_server_rows = {}
-        self._connected_server_row = None
 
         free_servers, plus_servers = self._group_servers_by_tier(country.servers)
         self._is_free_country = len(free_servers) > 0
@@ -222,8 +221,7 @@ class CountryRow(Gtk.Box):
             self._indexed_server_rows[server.name] = server_row
 
             # If we are currently connected to a server then set its row state to "connected".
-            if connected_server_id == server.id:
-                self._connected_server_row = server_row
+            if connected_server_name == server.name:
                 self._country_header.connection_state = ConnectionStateEnum.CONNECTED
                 server_row.connection_state = ConnectionStateEnum.CONNECTED
 
@@ -272,13 +270,6 @@ class CountryRow(Gtk.Box):
     def connection_state(self):
         """Returns the connection state for this row."""
         return self._country_header.connection_state
-
-    @property
-    def connected_server_id(self):
-        """Returns the ID of the server the user is currently connected to
-        or None if the user did not connect to a server yet."""
-        return self._connected_server_row.server_id \
-            if self._connected_server_row else None
 
     @staticmethod
     def _group_servers_by_tier(country_servers) -> Tuple[List]:

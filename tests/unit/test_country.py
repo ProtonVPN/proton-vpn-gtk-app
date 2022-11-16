@@ -141,7 +141,7 @@ def test_initialize_currently_connected_country(
     country_row = CountryRow(
         country=country,
         controller=mock_controller,
-        connected_server_id=country.servers[1].id
+        connected_server_name=country.servers[1].name
     )
 
     assert country_row.connection_state == ConnectionStateEnum.CONNECTED

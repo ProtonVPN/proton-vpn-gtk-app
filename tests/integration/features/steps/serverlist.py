@@ -30,7 +30,7 @@ def step_impl(context):
 
 @when("the server list widget is initialized")
 def step_impl(context):
-    server_list_updated = context.app_events["server-list-updated"].wait(timeout=10)
+    server_list_updated = context.app_events["vpn-widget-ready"].wait(timeout=10)
     assert server_list_updated
 
 

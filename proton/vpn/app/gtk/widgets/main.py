@@ -10,11 +10,12 @@ from proton.vpn.app.gtk.widgets.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.widgets.login import LoginWidget
 from proton.vpn.app.gtk.widgets.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
+from proton.vpn.app.gtk.widgets.loading import LoadingWidget
 from proton.vpn.app.gtk.widgets.error_messenger import ErrorMessenger
 
 
 # pylint: disable=too-many-instance-attributes
-class MainWidget(Gtk.Box):
+class MainWidget(Gtk.Overlay):
     """
     Main Proton VPN widget. It switches between the LoginWidget and the
     VPNWidget, depending on whether the user is logged in or not.
@@ -25,14 +26,19 @@ class MainWidget(Gtk.Box):
     SESSION_EXPIRED_ERROR_TITLE = "Invalid Session"
 
     def __init__(self, controller: Controller, main_window: Gtk.ApplicationWindow = None):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        super().__init__()
+        self.main_widget = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.loading_widget = LoadingWidget()
+        self.add(self.main_widget)
+        self.add_overlay(self.loading_widget)
+
         self._active_widget = None
         self._controller = controller
         self._application_window = main_window
         exception_handler = ExceptionHandler(main_widget=self)
         notification_bar = NotificationBar()
 
-        self.pack_start(notification_bar, expand=False, fill=False, padding=0)
+        self.main_widget.pack_start(notification_bar, expand=False, fill=False, padding=0)
 
         self._error_messenger = ErrorMessenger(main_window, notification_bar)
 
@@ -43,6 +49,7 @@ class MainWidget(Gtk.Box):
         self.vpn_widget.connect("user-logged-out", self._on_user_logged_out)
         self.vpn_widget.connect("vpn-connection-error", self._display_connection_error)
 
+        self.vpn_widget.connect("vpn-widget-ready", self._hide_loading_widget)
         self.connect("show", lambda *_: self.initialize_visible_widget())
         self.connect("realize", lambda *_: exception_handler.enable())
         self.connect("unrealize", lambda *_: exception_handler.disable())
@@ -57,9 +64,9 @@ class MainWidget(Gtk.Box):
         """Sets the active widget. That is, the widget to be shown
         to the user."""
         if self._active_widget:
-            self.remove(self._active_widget)
+            self.main_widget.remove(self._active_widget)
         self._active_widget = widget
-        self.pack_start(self._active_widget, expand=True, fill=True, padding=0)
+        self.main_widget.pack_start(self._active_widget, expand=True, fill=True, padding=0)
 
     def initialize_visible_widget(self):
         """
@@ -70,11 +77,11 @@ class MainWidget(Gtk.Box):
         method is called. Otherwise, it won't have effect. For more info:
         https://lazka.github.io/pgi-docs/#Gtk-3.0/classes/Stack.html#Gtk.Stack.set_visible_child
         """
-        self._display_widget(
-            self.vpn_widget
-            if self._controller.user_logged_in else
-            self.login_widget
-        )
+        if not self._controller.user_logged_in:
+            self._display_widget(self.login_widget)
+        else:
+            self._display_widget(self.vpn_widget)
+            self.loading_widget.show()
 
     def _display_connection_error(self, *args):
         _, title, message = args
@@ -116,3 +123,7 @@ class MainWidget(Gtk.Box):
     def _display_widget(self, widget: Union[LoginWidget, VPNWidget]):
         self.active_widget = widget
         self.active_widget.show_all()
+
+    def _hide_loading_widget(self, _):
+        # TO-DO: check if this is the appopriate way to do
+        self.loading_widget.hide()

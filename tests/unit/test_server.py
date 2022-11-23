@@ -68,8 +68,10 @@ def test_server_row_signals_server_under_maintenance(
 def test_connect_button_click_triggers_vpn_connection(plus_logical_server):
     mock_api = Mock()
     mock_api.get_user_tier.return_value = PLUS_TIER
+    mock_logical_server = Mock()
     mock_vpn_server = Mock()
-    mock_api.servers.get_vpn_server_by_name.return_value = mock_vpn_server
+    mock_api.servers.get_server_by_country_code.return_value = mock_logical_server
+    mock_api.get_vpn_server.return_value = mock_vpn_server
 
     with ThreadPoolExecutor() as thread_pool_executor:
         controller = Controller(thread_pool_executor, mock_api, 0)

@@ -5,8 +5,10 @@ Proton VPN back-ends.
 from concurrent.futures import ThreadPoolExecutor, Future
 
 from proton.vpn.connection import VPNConnection
+from proton.vpn.core_api.client_config import ClientConfig
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.connection import Subscriber
+from proton.vpn.servers.server_types import LogicalServer
 
 
 class Controller:
@@ -24,6 +26,7 @@ class Controller:
         self._api.connection.register(self._connection_subscriber)
         self._connect_timeout = connect_timeout
         self._disconnect_timeout = disconnect_timeout
+        self.client_config: ClientConfig = None
 
     def login(self, username: str, password: str) -> Future:
         """
@@ -76,7 +79,7 @@ class Controller:
         "connected" state.
         """
         server = self._api.servers.get_server_by_country_code(country_code)
-        self._api.connection.connect(server, protocol=self.connection_protocol)
+        self._connect_to_vpn(server)
 
     def connect_to_fastest_server(self):
         """
@@ -85,7 +88,7 @@ class Controller:
         "connected" state.
         """
         server = self._api.servers.get_fastest_server()
-        self._api.connection.connect(server, protocol=self.connection_protocol)
+        self._connect_to_vpn(server)
 
     def connect_to_server(self, server_name: str = None):
         """
@@ -95,7 +98,14 @@ class Controller:
         "connected" state.
         """
         server = self._api.servers.get_vpn_server_by_name(servername=server_name)
-        self._api.connection.connect(server, protocol=self.connection_protocol)
+        self._connect_to_vpn(server)
+
+    def _connect_to_vpn(self, server: LogicalServer):
+        vpn_server = self._api.get_vpn_server(server, self.client_config)
+        self._api.connection.connect(
+            vpn_server,
+            protocol=self.connection_protocol
+        )
 
     def disconnect(self):
         """
@@ -115,7 +125,7 @@ class Controller:
         """Returns whether the current connection is in connecting/connected state or not."""
         return self._api.connection.is_connection_active
 
-    def get_server_list(self, force_refresh=False) -> Future:
+    def get_server_list(self, force_refresh: bool = False) -> Future:
         """
         Returns the list of Proton VPN servers.
         :param force_refresh: When False (the default), servers will be
@@ -127,6 +137,25 @@ class Controller:
             self._api.servers.get_server_list,
             force_refresh=force_refresh
         )
+
+    def get_client_config(self, force_refresh: bool = False) -> Future:
+        """
+        Returns the Proton client configurations.
+        :param force_refresh: When False (the default), servers will be
+        obtained from memry. When
+        True it will always retrieve the server list from Proton's REST API.
+        :return: A Future wrapping the server list.
+        """
+        client_config_future = self._thread_pool.submit(
+            self._api.get_client_config,
+            force_refresh=force_refresh
+        )
+        client_config_future.add_done_callback(self._update_client_config)
+        return client_config_future
+
+    def _update_client_config(self, client_config_future: Future):
+        """Updates client config parameter."""
+        self.client_config = client_config_future.result()
 
     def register_connection_status_subscriber(self, subscriber):
         """

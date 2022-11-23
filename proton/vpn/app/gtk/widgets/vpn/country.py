@@ -7,7 +7,8 @@ from __future__ import annotations
 from typing import List, Tuple
 from gi.repository import GObject
 from proton.vpn.connection.enum import ConnectionStateEnum
-from proton.vpn.servers import VPNServer, Country
+from proton.vpn.servers import Country
+from proton.vpn.core_api.servers import VPNServer
 from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller

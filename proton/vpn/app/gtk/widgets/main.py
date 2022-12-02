@@ -35,21 +35,15 @@ class MainWidget(Gtk.Overlay):
         self._active_widget = None
         self._controller = controller
         self._application_window = main_window
+
         exception_handler = ExceptionHandler(main_widget=self)
         notification_bar = NotificationBar()
-
         self.main_widget.pack_start(notification_bar, expand=False, fill=False, padding=0)
-
         self._error_messenger = ErrorMessenger(main_window, notification_bar)
 
-        self.login_widget = LoginWidget(controller)
-        self.login_widget.connect("user-logged-in", self._on_user_logged_in)
+        self._create_login_widget()
+        self._create_vpn_widget()
 
-        self.vpn_widget = VPNWidget(controller)
-        self.vpn_widget.connect("user-logged-out", self._on_user_logged_out)
-        self.vpn_widget.connect("vpn-connection-error", self._display_connection_error)
-
-        self.vpn_widget.connect("vpn-widget-ready", self._hide_loading_widget)
         self.connect("show", lambda *_: self.initialize_visible_widget())
         self.connect("realize", lambda *_: exception_handler.enable())
         self.connect("unrealize", lambda *_: exception_handler.disable())
@@ -119,6 +113,7 @@ class MainWidget(Gtk.Overlay):
     def _on_user_logged_out(self, _vpn_widget: VPNWidget):
         self._display_widget(self.login_widget)
         self.login_widget.reset()
+        self._create_vpn_widget()
 
     def _display_widget(self, widget: Union[LoginWidget, VPNWidget]):
         self.active_widget = widget
@@ -127,3 +122,19 @@ class MainWidget(Gtk.Overlay):
     def _hide_loading_widget(self, _):
         # TO-DO: check if this is the appopriate way to do
         self.loading_widget.hide()
+
+    def _create_login_widget(self):
+        self.login_widget = LoginWidget(self._controller)
+        self.login_widget.connect("user-logged-in", self._on_user_logged_in)
+
+    def _create_vpn_widget(self):
+        self.vpn_widget = VPNWidget(self._controller)
+        self.vpn_widget.connect(
+            "user-logged-out", self._on_user_logged_out
+        )
+        self.vpn_widget.connect(
+            "vpn-connection-error", self._display_connection_error
+        )
+        self.vpn_widget.connect(
+            "vpn-widget-ready", self._hide_loading_widget
+        )

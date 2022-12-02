@@ -26,8 +26,6 @@ class ServerListWidgetState:
     server_list: ServerList = None
     # Country rows indexed by country code.
     country_rows: Dict[str, CountryRow] = field(default_factory=dict)
-    # Flag signaling when the widget finished loading
-    widget_loaded: bool = False
 
     def get_server_by_name(self, server_name: str) -> LogicalServer:
         """Returns the server with the given name."""
@@ -81,15 +79,12 @@ class ServerListWidget(Gtk.ScrolledWindow):
         running GLib's main loop with GLib.idle_add.
         """
         connection = connection_status.context.connection
-        # noqa: temporary hack # pylint: disable=W0212
-        vpn_server = connection._vpnserver if connection else None
+        if connection:
+            def update_server_rows():
+                country_row = self._get_country_row(connection.server_name)
+                country_row.connection_status_update(connection_status)
 
-        def update_server_rows():
-            if self._state.widget_loaded and vpn_server:
-                country_row = self._get_country_row(vpn_server)
-                country_row.connection_status_update(connection_status, vpn_server)
-
-        GLib.idle_add(update_server_rows)
+            GLib.idle_add(update_server_rows)
 
     def reset(self):
         """Resets the widget state."""
@@ -120,7 +115,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._add_country_rows()
 
         self._container.show_all()
-        self._state.widget_loaded = True
         self.emit("ui-updated")
         logger.info("Server list updated.", category="APP", subcategory="SERVERS", event="RELOAD")
 
@@ -149,8 +143,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
         connected_server_name = None
         if self._controller.is_connection_active:
-            connected_server_name = self._controller\
-                .current_connection._vpnserver.servername  # pylint: disable=W0212
+            connected_server_name = self._controller.current_connection.server_name
 
         new_country_rows = {}
         for country in countries:
@@ -168,16 +161,16 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
         return new_country_rows
 
-    def _get_country_row(self, vpn_server) -> CountryRow:
+    def _get_country_row(self, server_name: str) -> CountryRow:
         """Returns a country row based on the vpn server."""
-        logical_server = self._state.get_server_by_name(vpn_server.servername)
+        logical_server = self._state.get_server_by_name(server_name)
         country_code = logical_server.exit_country.lower()
         try:
             return self._state.country_rows[country_code]
         except KeyError as error:
             raise RuntimeError(
                 f"Unable to get country row {country_code} for server "
-                f"{vpn_server.servername}."
+                f"{server_name}."
             ) from error
 
 

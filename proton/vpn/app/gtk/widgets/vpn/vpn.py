@@ -14,7 +14,7 @@ from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
 from proton.vpn.servers.list import ServerList
 from proton.vpn.core_api.client_config import ClientConfig
 from proton.vpn.connection.enum import ConnectionStateEnum, StateMachineEventEnum
-from proton.vpn.connection.states import Disconnected, Connected
+from proton.vpn.connection.states import Disconnected
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 from proton.vpn import logging
 
@@ -95,8 +95,9 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         self._controller.register_connection_status_subscriber(self)
 
     def _update_connection_status(self):
-        if self._controller.current_connection:
-            self.status_update(Connected())
+        connection = self._controller.current_connection
+        if connection:
+            self.status_update(connection.status)
         else:
             self.status_update(Disconnected())
 

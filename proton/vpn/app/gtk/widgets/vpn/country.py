@@ -8,7 +8,6 @@ from typing import List, Tuple
 from gi.repository import GObject
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers import Country
-from proton.vpn.core_api.connection import VPNServer
 from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
@@ -287,18 +286,19 @@ class CountryRow(Gtk.Box):
     def _on_toggle_country_servers(self, country_header: CountryHeader):
         self._server_rows_revealer.set_reveal_child(country_header.show_country_servers)
 
-    def _get_server_row(self, vpn_server) -> ServerRow:
+    def _get_server_row(self, server_name: str) -> ServerRow:
         try:
-            return self._indexed_server_rows[vpn_server.servername]
+            return self._indexed_server_rows[server_name]
         except KeyError as error:
             raise RuntimeError(
-                f"Unable to get server row for {vpn_server.servername}."
+                f"Unable to get server row for {server_name}."
             ) from error
 
-    def connection_status_update(self, connection_status, vpn_server: VPNServer):
+    def connection_status_update(self, connection_status):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
         self._country_header.connection_state = connection_status.state
-        server = self._get_server_row(vpn_server)
+        server_name = connection_status.context.connection.server_name
+        server = self._get_server_row(server_name)
         server.connection_state = connection_status.state
 
     def click_connect_button(self):

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.7.0) unstable; urgency=medium
+
+  * Get server name/id from connection status update
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 05 Dec 2022 18:42:13 +0100
+
 proton-vpn-gtk-app (0.6.6) unstable; urgency=medium
 
   * Ensure that UI is updated after logout/login

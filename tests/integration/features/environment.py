@@ -12,7 +12,7 @@ from tests.integration.features.steps.serverlist import before_feature_serverlis
 
 logging.basicConfig(level=logging.INFO)
 
-os.environ["PROTON_API_ENVIRONMENT"] = "atlas:cousteau"
+os.environ["PROTON_API_ENVIRONMENT"] = "atlas"
 
 
 def before_feature(context, feature):

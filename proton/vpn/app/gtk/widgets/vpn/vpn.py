@@ -96,7 +96,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
 
     def _update_connection_status(self):
         if self._controller.is_connection_active:
-            self.status_update(self._controller.current_connection)
+            self.status_update(self._controller.current_connection.status)
         else:
             self.status_update(Disconnected())
 

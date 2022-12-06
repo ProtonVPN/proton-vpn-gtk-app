@@ -58,7 +58,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._state = ServerListWidgetState(server_list=server_list)
 
         self._show_servers()
-        self.connect("unrealize", self._on_unrealize)
 
     @GObject.Signal(name="ui-updated")
     def ui_updated(self):
@@ -85,15 +84,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
                 country_row.connection_status_update(connection_status)
 
             GLib.idle_add(update_server_rows)
-
-    def reset(self):
-        """Resets the widget state."""
-        self._remove_country_rows()
-        self._state = ServerListWidgetState()
-
-    def _on_unrealize(self, _servers_widget: ServerListWidget):
-        """Whenever the window is closed, this method is triggered."""
-        self.reset()
 
     def _remove_country_rows(self):
         """Remove UI country rows."""

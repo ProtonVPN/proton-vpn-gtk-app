@@ -92,7 +92,7 @@ def test_country_row_updates_server_rows_on_connection_status_update(
     country_row = CountryRow(country=country, controller=mock_controller)
 
     connection_mock = Mock()
-    connection_mock.server_name = country.servers[0].name
+    connection_mock.server_id = country.servers[0].id
     connection_state.context.connection = connection_mock
 
     country_row.connection_status_update(connection_state)
@@ -144,7 +144,7 @@ def test_initialize_currently_connected_country(
     country_row = CountryRow(
         country=country,
         controller=mock_controller,
-        connected_server_name=country.servers[1].name
+        connected_server_id=country.servers[1].id
     )
 
     assert country_row.connection_state == ConnectionStateEnum.CONNECTED

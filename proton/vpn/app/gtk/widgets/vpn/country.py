@@ -175,7 +175,7 @@ class CountryRow(Gtk.Box):
             self,
             country: Country,
             controller: Controller,
-            connected_server_name: str = None,
+            connected_server_id: str = None,
             show_country_servers: bool = False,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
@@ -218,10 +218,10 @@ class CountryRow(Gtk.Box):
                 expand=False, fill=False, padding=5
             )
 
-            self._indexed_server_rows[server.name] = server_row
+            self._indexed_server_rows[server.id] = server_row
 
             # If we are currently connected to a server then set its row state to "connected".
-            if connected_server_name == server.name:
+            if connected_server_id == server.id:
                 self._country_header.connection_state = ConnectionStateEnum.CONNECTED
                 server_row.connection_state = ConnectionStateEnum.CONNECTED
 
@@ -286,19 +286,19 @@ class CountryRow(Gtk.Box):
     def _on_toggle_country_servers(self, country_header: CountryHeader):
         self._server_rows_revealer.set_reveal_child(country_header.show_country_servers)
 
-    def _get_server_row(self, server_name: str) -> ServerRow:
+    def _get_server_row(self, server_id: str) -> ServerRow:
         try:
-            return self._indexed_server_rows[server_name]
+            return self._indexed_server_rows[server_id]
         except KeyError as error:
             raise RuntimeError(
-                f"Unable to get server row for {server_name}."
+                f"Unable to get server row for {server_id}."
             ) from error
 
     def connection_status_update(self, connection_status):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
         self._country_header.connection_state = connection_status.state
-        server_name = connection_status.context.connection.server_name
-        server = self._get_server_row(server_name)
+        server_id = connection_status.context.connection.server_id
+        server = self._get_server_row(server_id)
         server.connection_state = connection_status.state
 
     def click_connect_button(self):

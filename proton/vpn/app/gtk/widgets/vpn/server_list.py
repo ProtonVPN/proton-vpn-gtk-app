@@ -27,10 +27,10 @@ class ServerListWidgetState:
     # Country rows indexed by country code.
     country_rows: Dict[str, CountryRow] = field(default_factory=dict)
 
-    def get_server_by_name(self, server_name: str) -> LogicalServer:
+    def get_server_by_id(self, server_id: str) -> LogicalServer:
         """Returns the server with the given name."""
         if self.server_list:
-            return self.server_list.get_by_name(server_name)
+            return self.server_list.get_by_id(server_id)
         return None
 
 
@@ -81,7 +81,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
         connection = connection_status.context.connection
         if connection:
             def update_server_rows():
-                country_row = self._get_country_row(connection.server_name)
+                country_row = self._get_country_row(connection.server_id)
                 country_row.connection_status_update(connection_status)
 
             GLib.idle_add(update_server_rows)
@@ -141,9 +141,9 @@ class ServerListWidget(Gtk.ScrolledWindow):
             # free servers first.
             countries.sort(key=free_countries_first_sorting_key)
 
-        connected_server_name = None
+        connected_server_id = None
         if self._controller.is_connection_active:
-            connected_server_name = self._controller.current_connection.server_name
+            connected_server_id = self._controller.current_connection.server_id
 
         new_country_rows = {}
         for country in countries:
@@ -154,23 +154,23 @@ class ServerListWidget(Gtk.ScrolledWindow):
             country_row = CountryRow(
                 country=country,
                 controller=self._controller,
-                connected_server_name=connected_server_name,
+                connected_server_id=connected_server_id,
                 show_country_servers=show_country_servers
             )
             new_country_rows[country.code.lower()] = country_row
 
         return new_country_rows
 
-    def _get_country_row(self, server_name: str) -> CountryRow:
+    def _get_country_row(self, server_id: str) -> CountryRow:
         """Returns a country row based on the vpn server."""
-        logical_server = self._state.get_server_by_name(server_name)
+        logical_server = self._state.get_server_by_id(server_id)
         country_code = logical_server.exit_country.lower()
         try:
             return self._state.country_rows[country_code]
         except KeyError as error:
             raise RuntimeError(
                 f"Unable to get country row {country_code} for server "
-                f"{server_name}."
+                f"{server_id}."
             ) from error
 
 

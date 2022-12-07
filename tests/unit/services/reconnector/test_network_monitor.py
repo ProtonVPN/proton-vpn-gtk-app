@@ -6,7 +6,7 @@ import gi
 gi.require_version("NM", "1.0")
 from gi.repository import NM
 
-from proton.vpn.app.gtk.widgets.vpn.reconnector.network_monitor import NetworkMonitor
+from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 
 
 def test_enable_connects_to_nm_client_state_changes():

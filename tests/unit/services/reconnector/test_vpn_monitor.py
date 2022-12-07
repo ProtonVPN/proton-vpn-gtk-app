@@ -5,7 +5,7 @@ import pytest
 from proton.vpn.connection import states
 from proton.vpn.core_api.connection import VPNConnectionHolder
 
-from proton.vpn.app.gtk.widgets.vpn.reconnector.vpn_monitor import VPNMonitor
+from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 
 
 def test_enable_registers_monitor_to_connection_state_updated():

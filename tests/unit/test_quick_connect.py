@@ -27,7 +27,7 @@ def test_quick_connect_widget_connects_to_fastest_server_when_connect_button_is_
     mock_api = Mock()
 
     with ThreadPoolExecutor() as thread_pool_executor:
-        controller = Controller(thread_pool_executor, mock_api, 0)
+        controller = Controller(thread_pool_executor, mock_api)
 
         quick_connect_widget = QuickConnectWidget(controller=controller)
 

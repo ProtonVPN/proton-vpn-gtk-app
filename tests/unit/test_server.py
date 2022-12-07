@@ -36,9 +36,8 @@ def mock_controller():
 def test_server_row_displays_server_name(
         plus_logical_server, mock_controller
 ):
-    mock_controller.user_tier = PLUS_TIER
     server_row = ServerRow(
-        server=plus_logical_server, controller=mock_controller
+        server=plus_logical_server, user_tier=PLUS_TIER, controller=mock_controller
     )
 
     assert server_row.server_label == "IS#1"
@@ -57,36 +56,23 @@ def unavailable_logical_server():
 def test_server_row_signals_server_under_maintenance(
         unavailable_logical_server, mock_controller
 ):
-    mock_controller.user_tier = PLUS_TIER
     server_row = ServerRow(
-        server=unavailable_logical_server, controller=mock_controller
+        server=unavailable_logical_server, user_tier=PLUS_TIER, controller=mock_controller
     )
 
     assert server_row.under_maintenance
 
 
-def test_connect_button_click_triggers_vpn_connection(plus_logical_server):
-    mock_api = Mock()
-    mock_api.get_user_tier.return_value = PLUS_TIER
-    mock_logical_server = Mock()
-    mock_vpn_server = Mock()
-    mock_api.servers.get_server_by_country_code.return_value = mock_logical_server
-    mock_api.get_vpn_server.return_value = mock_vpn_server
+def test_connect_button_click_triggers_vpn_connection(plus_logical_server, mock_controller):
+    server_row = ServerRow(
+        server=plus_logical_server, user_tier=PLUS_TIER, controller=mock_controller
+    )
 
-    with ThreadPoolExecutor() as thread_pool_executor:
-        controller = Controller(thread_pool_executor, mock_api, 0)
+    server_row.click_connect_button()
 
-        server_row = ServerRow(
-            server=plus_logical_server, controller=controller
-        )
+    process_gtk_events()
 
-        server_row.click_connect_button()
+    mock_controller.connect_to_server.assert_called_once_with(
+        plus_logical_server.name
+    )
 
-        process_gtk_events()
-
-        mock_api.servers.get_vpn_server_by_name.assert_called_once_with(
-            servername=plus_logical_server.name
-        )
-        mock_api.connection.connect.assert_called_once_with(
-            mock_vpn_server, protocol="openvpn-udp"
-        )

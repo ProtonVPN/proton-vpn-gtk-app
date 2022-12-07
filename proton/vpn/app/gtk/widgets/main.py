@@ -41,8 +41,8 @@ class MainWidget(Gtk.Overlay):
         self.main_widget.pack_start(notification_bar, expand=False, fill=False, padding=0)
         self._error_messenger = ErrorMessenger(main_window, notification_bar)
 
-        self._create_login_widget()
-        self._create_vpn_widget()
+        self.login_widget = self._create_login_widget()
+        self.vpn_widget = self._create_vpn_widget()
 
         self.connect("show", lambda *_: self.initialize_visible_widget())
         self.connect("realize", lambda *_: exception_handler.enable())
@@ -66,16 +66,11 @@ class MainWidget(Gtk.Overlay):
         """
         Initializes the widget by showing either the vpn widget or the
         login widget depending on whether the user is authenticated or not.
-
-        Note that the widget should already be flagged as shown when this
-        method is called. Otherwise, it won't have effect. For more info:
-        https://lazka.github.io/pgi-docs/#Gtk-3.0/classes/Stack.html#Gtk.Stack.set_visible_child
         """
-        if not self._controller.user_logged_in:
-            self._display_widget(self.login_widget)
+        if self._controller.user_logged_in:
+            self._display_vpn_widget()
         else:
-            self._display_widget(self.vpn_widget)
-            self.loading_widget.show()
+            self._display_login_widget()
 
     def _display_connection_error(self, *args):
         _, title, message = args
@@ -104,37 +99,42 @@ class MainWidget(Gtk.Overlay):
             self.SESSION_EXPIRED_ERROR_MESSAGE,
             True, self.SESSION_EXPIRED_ERROR_TITLE
         )
-        self._display_widget(self.login_widget)
-        self.login_widget.reset()
+        self._display_login_widget()
 
     def _on_user_logged_in(self, _login_widget: LoginWidget):
-        self._display_widget(self.vpn_widget)
+        self._display_vpn_widget()
 
     def _on_user_logged_out(self, _vpn_widget: VPNWidget):
-        self._display_widget(self.login_widget)
-        self.login_widget.reset()
-        self._create_vpn_widget()
-
-    def _display_widget(self, widget: Union[LoginWidget, VPNWidget]):
-        self.active_widget = widget
-        self.active_widget.show_all()
+        self._display_login_widget()
 
     def _hide_loading_widget(self, _):
-        # TO-DO: check if this is the appopriate way to do
         self.loading_widget.hide()
 
-    def _create_login_widget(self):
-        self.login_widget = LoginWidget(self._controller)
-        self.login_widget.connect("user-logged-in", self._on_user_logged_in)
+    def _create_login_widget(self) -> LoginWidget:
+        login_widget = LoginWidget(self._controller)
+        login_widget.connect("user-logged-in", self._on_user_logged_in)
+        return login_widget
 
-    def _create_vpn_widget(self):
-        self.vpn_widget = VPNWidget(self._controller)
-        self.vpn_widget.connect(
+    def _create_vpn_widget(self) -> VPNWidget:
+        vpn_widget = VPNWidget(self._controller)
+        vpn_widget.connect(
             "user-logged-out", self._on_user_logged_out
         )
-        self.vpn_widget.connect(
+        vpn_widget.connect(
             "vpn-connection-error", self._display_connection_error
         )
-        self.vpn_widget.connect(
+        vpn_widget.connect(
             "vpn-widget-ready", self._hide_loading_widget
         )
+        return vpn_widget
+
+    def _display_vpn_widget(self):
+        self.loading_widget.show()
+        self.active_widget = self.vpn_widget
+        self.vpn_widget.load(self._controller.user_tier)
+
+    def _display_login_widget(self):
+        self.loading_widget.hide()  # Required on session expired while loading VPN widget.
+        self.active_widget = self.login_widget
+        self.login_widget.reset()
+        self.login_widget.show_all()

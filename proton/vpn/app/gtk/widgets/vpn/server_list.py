@@ -10,6 +10,7 @@ from gi.repository import GLib, GObject
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.country import CountryRow
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.list import ServerList, Country
@@ -21,11 +22,21 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ServerListWidgetState:
-    """Class to hold the state of the ServerListWidget."""
-    # List of servers to be displayed
+    """
+    Holds the state of the ServerListWidget. This state is reset after
+    login/logout.
+
+    Attributes:
+        user_tier: the tier the user has access to.
+        server_list: list of servers to be displayed.
+        country_rows: country rows indexed by country code.
+        new_server_list_handler_id: handler id obtained when connecting
+        to the new-server-list signal on VPNDataRefresher.
+    """
+    user_tier: int = None
     server_list: ServerList = None
-    # Country rows indexed by country code.
     country_rows: Dict[str, CountryRow] = field(default_factory=dict)
+    new_server_list_handler_id: int = None
 
     def get_server_by_id(self, server_id: str) -> LogicalServer:
         """Returns the server with the given name."""
@@ -42,8 +53,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def __init__(
         self,
-        controller: Controller,
-        server_list: ServerList,
+        controller: Controller
     ):
         super().__init__()
         self.set_policy(
@@ -55,9 +65,12 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._container.set_margin_end(15)  # Leave space for the scroll bar.
         self.add(self._container)
 
-        self._state = ServerListWidgetState(server_list=server_list)
+        self._state = ServerListWidgetState()
 
-        self._show_servers()
+        self.connect("unrealize", self._on_unrealize)
+
+    def _on_unrealize(self, _widget):
+        self.unload()
 
     @GObject.Signal(name="ui-updated")
     def ui_updated(self):
@@ -91,22 +104,43 @@ class ServerListWidget(Gtk.ScrolledWindow):
             self._container.remove(row)
             row.destroy()
 
-    def on_servers_update(self, _: "VPNWidget", server_list: "ServerList"):  # noqa: F821
+    def _on_server_list_update(
+            self, _: VPNDataRefresher, server_list: ServerList):
         """Whenever a new server list is received the UI should be updated."""
         self._state.server_list = server_list
-        self._show_servers()
+        self._update_country_rows()
 
-    def _show_servers(self):
+    def display(self, user_tier: int, server_list: int):
         """Update UI with the new server list."""
+        self._state = ServerListWidgetState(
+            server_list=server_list,
+            user_tier=user_tier
+        )
+
+        self._update_country_rows()
+
+        self._state.new_server_list_handler_id = self._controller.vpn_data_refresher.connect(
+            "new-server-list", self._on_server_list_update
+        )
+
+    def _update_country_rows(self):
         self._remove_country_rows()
         self._state.country_rows = self._create_new_country_rows(
             old_country_rows=self._state.country_rows
         )
         self._add_country_rows()
-
         self._container.show_all()
         self.emit("ui-updated")
-        logger.info("Server list updated.", category="APP", subcategory="SERVERS", event="RELOAD")
+        logger.info(
+            "Server list updated.",
+            category="APP", subcategory="SERVERS", event="WIDGET_READY"
+        )
+
+    def unload(self):
+        """Things to do before the widget is being removed from the window."""
+        self._controller.vpn_data_refresher.disconnect(
+            self._state.new_server_list_handler_id
+        )
 
     def _add_country_rows(self):
         """Adds country rows to the container."""
@@ -126,7 +160,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
     def _create_new_country_rows(self, old_country_rows) -> Dict[str, CountryRow]:
         """Returns new country rows."""
         countries = self._state.server_list.group_by_country()
-        if self._controller.user_tier == 0:
+        if self._state.user_tier == 0:
             # If the current user has a free account, sort the countries having
             # free servers first.
             countries.sort(key=free_countries_first_sorting_key)
@@ -143,6 +177,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
             country_row = CountryRow(
                 country=country,
+                user_tier=self._state.user_tier,
                 controller=self._controller,
                 connected_server_id=connected_server_id,
                 show_country_servers=show_country_servers

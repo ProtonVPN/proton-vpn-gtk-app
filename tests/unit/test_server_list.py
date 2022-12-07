@@ -5,6 +5,7 @@ import pytest
 from proton.vpn.servers.list import ServerList
 from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
+from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
 from tests.unit.utils import process_gtk_events
 
@@ -103,10 +104,58 @@ SERVER_LIST_UPDATED = ServerList(apidata={
             "Tier": PLUS_TIER,
 
         },
+        {
+            "ID": 2,
+            "Name": "JP-FREE#10",
+            "Status": 1,
+            "Servers": [{"Status": 1}],
+            "ExitCountry": "JP",
+            "Tier": FREE_TIER,
+
+        },
     ],
     "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP + 1,
     "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP + 1
 })
+
+
+def test_server_list_widget_subscribes_to_server_list_updates_on_realize():
+    mock_controller = Mock()
+    mock_controller.vpn_data_refresher = VPNDataRefresher(
+        thread_pool_executor=Mock(),
+        proton_vpn_api=Mock()
+    )
+
+    server_list_widget = ServerListWidget(
+        controller=mock_controller
+    )
+    server_list_widget.display(user_tier=PLUS_TIER, server_list=SERVER_LIST)
+
+    # Assert that we only have servers in one country.
+    assert len(server_list_widget.country_rows) == 1
+
+    # Simulate new-server-list signal.
+    mock_controller.vpn_data_refresher.emit("new-server-list", SERVER_LIST_UPDATED)
+
+    process_gtk_events()
+
+    # Assert that we now have servers in two countries.
+    assert len(server_list_widget.country_rows) == 2
+
+
+def test_unload_disconnects_from_server_list_updates_and_removes_country_rows():
+    mock_controller = Mock()
+    server_list_widget = ServerListWidget(
+        controller=mock_controller
+    )
+
+    server_list_widget.display(user_tier=PLUS_TIER, server_list=SERVER_LIST)
+
+    assert len(server_list_widget.country_rows) == 1
+
+    server_list_widget.unload()
+
+    mock_controller.vpn_data_refresher.disconnect.assert_called_once()
 
 
 @pytest.mark.parametrize(
@@ -115,7 +164,7 @@ SERVER_LIST_UPDATED = ServerList(apidata={
         (PLUS_TIER, ["Argentina", "Japan"])
     ]
 )
-def test_server_widget_orders_country_rows_depening_on_user_tier(
+def test_server_list_widget_orders_country_rows_depending_on_user_tier(
         user_tier, expected_country_names, unsorted_server_list
 ):
     """
@@ -123,14 +172,15 @@ def test_server_widget_orders_country_rows_depening_on_user_tier(
     Free users, apart from having countries sorted alphabetically, should see
     countries having free servers first.
     """
-    mock_controller = Mock()
-    print(user_tier)
-    mock_controller.user_tier = user_tier
-
     servers_widget = ServerListWidget(
-        controller=mock_controller,
+        controller=Mock(),
+    )
+
+    servers_widget.display(
+        user_tier=user_tier,
         server_list=unsorted_server_list
     )
+
     country_names = [country_row.country_name for country_row in servers_widget.country_rows]
     assert country_names == expected_country_names
 
@@ -142,17 +192,18 @@ def test_server_widget_orders_country_rows_depening_on_user_tier(
         Disconnected()
     ]
 )
-def test_server_widget_updates_country_rows_on_connection_status_update(
+def test_server_list_widget_updates_country_rows_on_connection_status_update(
         connection_state
 ):
-    connection_mock = Mock()
-    connection_mock.server_id = SERVER_LIST[0].id
-    connection_state.context.connection = connection_mock
+    connection_state = Connecting()
+    connection_state.context.connection = Mock()
+    connection_state.context.connection.server_id = SERVER_LIST[0].id
 
-    controller_mock = Mock()
-    controller_mock.user_tier = PLUS_TIER
     servers_widget = ServerListWidget(
-        controller=controller_mock,
+        controller=Mock()
+    )
+    servers_widget.display(
+        user_tier=PLUS_TIER,
         server_list=SERVER_LIST
     )
     servers_widget.connection_status_update(connection_state)

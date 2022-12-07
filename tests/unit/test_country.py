@@ -55,8 +55,7 @@ def mock_controller():
 def test_country_row_toggles_servers_when_requested(
         country, mock_controller
 ):
-    mock_controller.user_tier = PLUS_TIER
-    country_row = CountryRow(country=country,controller=mock_controller)
+    country_row = CountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
 
     # Initially the servers should not be shown
     assert not country_row.showing_servers
@@ -76,8 +75,7 @@ def test_country_row_toggles_servers_when_requested(
 def test_country_row_shows_upgrade_link_when_country_servers_are_not_in_the_users_plan(
         country, mock_controller
 ):
-    mock_controller.user_tier = FREE_TIER
-    country_row = CountryRow(country=country, controller=mock_controller)
+    country_row = CountryRow(country=country, user_tier=FREE_TIER, controller=mock_controller)
 
     assert country_row.upgrade_required
 
@@ -88,12 +86,10 @@ def test_country_row_shows_upgrade_link_when_country_servers_are_not_in_the_user
 def test_country_row_updates_server_rows_on_connection_status_update(
         connection_state, country, mock_controller
 ):
-    mock_controller.user_tier = PLUS_TIER
-    country_row = CountryRow(country=country, controller=mock_controller)
+    country_row = CountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
 
-    connection_mock = Mock()
-    connection_mock.server_id = country.servers[0].id
-    connection_state.context.connection = connection_mock
+    connection_state = Mock()
+    connection_state.context.connection.server_id = country.servers[0].id
 
     country_row.connection_status_update(connection_state)
 
@@ -103,31 +99,16 @@ def test_country_row_updates_server_rows_on_connection_status_update(
     assert country_row.server_rows[0].connection_state == connection_state.state
 
 
-def test_connect_button_click_triggers_vpn_connection_to_country(country):
-    mock_api = Mock()
-    mock_logical_server = Mock()
-    mock_vpn_server = Mock()
-    mock_api.get_user_tier.return_value = PLUS_TIER
-    mock_api.servers.get_server_by_country_code.return_value = mock_logical_server
-    mock_api.get_vpn_server.return_value = mock_vpn_server
+def test_connect_button_click_triggers_vpn_connection_to_country(country, mock_controller):
+    country_row = CountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
 
-    with ThreadPoolExecutor() as thread_pool_executor:
-        controller = Controller(thread_pool_executor, mock_api, 0)
+    country_row.click_connect_button()
 
-        country_row = CountryRow(country=country, controller=controller)
+    process_gtk_events()
 
-        country_row.click_connect_button()
-
-        process_gtk_events()
-
-        # Assert that the country code was used to retrieve the VPN server.
-        mock_api.servers.get_server_by_country_code.assert_called_once_with(
-            country.code
-        )
-        # Assert that the connection was done using the VPN server above.
-        mock_api.connection.connect.assert_called_once_with(
-            mock_vpn_server, protocol="openvpn-udp"
-        )
+    mock_controller.connect_to_country.assert_called_once_with(
+        country.code
+    )
 
 
 def test_initialize_currently_connected_country(
@@ -139,10 +120,9 @@ def test_initialize_currently_connected_country(
     currently connected to, we need to initialize both the new country row
     and its child server row in a "connected" state.
     """
-    mock_controller.user_tier = PLUS_TIER
-
     country_row = CountryRow(
         country=country,
+        user_tier=PLUS_TIER,
         controller=mock_controller,
         connected_server_id=country.servers[1].id
     )
@@ -161,10 +141,9 @@ def test_initialize_country_row_showing_country_servers(
     servers) when reloading the server list, then it needs to be recreated in
     the expanded state. This is what we test here.
     """
-    mock_controller.user_tier = PLUS_TIER
-
     country_row = CountryRow(
         country=country,
+        user_tier=PLUS_TIER,
         controller=mock_controller,
         show_country_servers=True  # Country servers should
     )
@@ -205,12 +184,11 @@ def test_country_widget_shows_user_tier_servers_first(
     Free users should have free servers listed first.
     Plus users should have plus servers listed first.
     """
-    mock_controller.user_tier = user_tier
-
     country = Country(code="jp", servers=free_and_plus_servers)
 
     country_row = CountryRow(
         country=country,
+        user_tier=user_tier,
         controller=mock_controller
     )
 

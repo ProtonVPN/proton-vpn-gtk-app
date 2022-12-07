@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.9.0) unstable; urgency=medium
+
+  * Add unit tests and improve API data handling
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 20 Dec 2022 15:00:00 +0100
+ 
 proton-vpn-gtk-app (0.8.0) unstable; urgency=medium
 
   * Reconnect to VPN when network connectivity is detected

@@ -171,9 +171,11 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 class CountryRow(Gtk.Box):
     """Row containing all servers from a country."""
 
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             country: Country,
+            user_tier: int,
             controller: Controller,
             connected_server_id: str = None,
             show_country_servers: bool = False,
@@ -184,7 +186,7 @@ class CountryRow(Gtk.Box):
 
         free_servers, plus_servers = self._group_servers_by_tier(country.servers)
         self._is_free_country = len(free_servers) > 0
-        is_free_user = controller.user_tier == 0
+        is_free_user = user_tier == 0
         self._upgrade_required = (is_free_user and not country.is_free)
 
         self._country_header = CountryHeader(
@@ -212,7 +214,11 @@ class CountryRow(Gtk.Box):
             ordered_servers.extend(free_servers)
 
         for server in ordered_servers:
-            server_row = ServerRow(server=server, controller=self._controller)
+            server_row = ServerRow(
+                server=server,
+                user_tier=user_tier,
+                controller=self._controller
+            )
             server_rows_container.pack_start(
                 server_row,
                 expand=False, fill=False, padding=5

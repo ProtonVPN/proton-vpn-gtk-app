@@ -6,10 +6,13 @@ Fixtures that are scoped to a single feature go in their own module (in /steps).
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Event
 from typing import Dict
+from unittest.mock import Mock
 
 from behave import fixture, use_fixture
 
 from proton.vpn.app.gtk.app import App
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.services import VPNReconnector
 
 
 def before_each_scenario(context, scenario):
@@ -29,7 +32,12 @@ def app(context):
 
 
 def start_app(thread_pool_executor) -> (App, Thread, Dict):
-    app = App(thread_pool_executor)
+    app = App(
+        thread_pool_executor,
+        controller=Controller(
+            thread_pool_executor,
+            vpn_reconnector=Mock(VPNReconnector))
+    )
     app_events = dict()
 
     # Register an event to be able to wait for the application to be ready.

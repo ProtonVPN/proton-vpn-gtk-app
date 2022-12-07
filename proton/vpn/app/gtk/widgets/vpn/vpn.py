@@ -2,165 +2,102 @@
 This module defines the VPN widget, which contains all the VPN functionality
 that is shown to the user.
 """
-# pylint: disable=R0801
 from concurrent.futures import Future
+from dataclasses import dataclass
 
 from gi.repository import GObject, GLib
 
-from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.widgets.vpn.quick_connect import QuickConnectWidget
-from proton.vpn.app.gtk.widgets.vpn.reconnector.reconnector import VPNReconnector
-from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
-from proton.vpn.servers.list import ServerList
-from proton.vpn.core_api.client_config import ClientConfig
-from proton.vpn.connection.enum import ConnectionStateEnum, StateMachineEventEnum
-from proton.vpn.connection.states import Disconnected
-from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 from proton.vpn import logging
 
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.services import VPNDataRefresher
+from proton.vpn.app.gtk.widgets.vpn.quick_connect import QuickConnectWidget
+from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.status import VPNConnectionStatusWidget
+from proton.vpn.connection.enum import ConnectionStateEnum, StateMachineEventEnum
+from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
+from proton.vpn.core_api.client_config import ClientConfig
+from proton.vpn.servers.list import ServerList
 
 logger = logging.getLogger(__name__)
 
 
-class VPNWidget(Gtk.Box):  # pylint: disable=R0902
+@dataclass
+class VPNWidgetState:
+    """
+    Holds the state of the VPNWidget. This state is reset after login/logout.
+
+    Attributes:
+        is_widget_ready: flag set to True once the widget has been initialized.
+        user_tier: tier of the logged-in user.
+        vpn_data_ready_handler_id: handler id obtained when connecting to the
+        vpn-data-ready signal on VPNDataRefresher.
+        logout_after_vpn_disconnection: flag signaling when a logout is required
+        after VPN disconnection.
+        logout_dialog: confirmation dialog shown to the user when logout is
+        requested while being connected to the VPN.
+    """
+    is_widget_ready: bool = False
+    user_tier: int = None
+    vpn_data_ready_handler_id: int = None
+    logout_after_vpn_disconnection: bool = False
+    logout_dialog: Gtk.Dialog = None
+
+
+class VPNWidget(Gtk.Box):
     """Exposes the ProtonVPN product functionality to the user."""
 
-    # Number of seconds to wait before checking if the servers cache expired.
-    RELOAD_INTERVAL_IN_SECONDS = 60
-
-    def __init__(
-        self,
-        controller: Controller,
-        server_list: "ServerList" = None,
-        client_config: "ClientConfig" = None,
-        reconnector: VPNReconnector = None
-    ):
+    def __init__(self, controller: Controller):
         super().__init__(spacing=10)
-
-        self._reload_servers_source_id = None
-        self._reload_clientconfig_source_id = None
-        self._is_widget_loaded = False
-        self._logout_button = None
-        self._logout_dialog = None
-        self._connection_status_widget = None
-        self._quick_connect_widget = None
+        self._state = VPNWidgetState()
 
         self._controller = controller
-        self._server_list = server_list
-        self._client_config = client_config
-        self._reconnector = reconnector or VPNReconnector(controller.vpn_connector)
 
-        # Keep track of child widgets that need to be aware of VPN connection status changes.
-        self._connection_update_subscribers = []
+        self.connection_status_widget = VPNConnectionStatusWidget(self._controller)
+        self.pack_start(self.connection_status_widget, expand=False, fill=False, padding=0)
 
-        self.servers_widget = None
-        # Last time the server list was updated
-        self.last_server_list_update_time: int = 0
+        self.logout_button = Gtk.Button(label="Logout")
+        self.logout_button.connect("clicked", self._on_logout_button_clicked)
+        self.pack_start(self.logout_button, expand=False, fill=False, padding=0)
 
-        # Flag signaling when a logout is required after VPN disconnection.
-        self._logout_after_vpn_disconnection = False
+        self.quick_connect_widget = QuickConnectWidget(self._controller)
+        self.pack_start(self.quick_connect_widget, expand=False, fill=False, padding=0)
+
+        self.server_list_widget = ServerListWidget(self._controller)
+        self.pack_end(self.server_list_widget, expand=True, fill=True, padding=0)
+
+        self.connection_status_subscribers = []
+        for widget in [
+            self.connection_status_widget,
+            self.quick_connect_widget,
+            self.server_list_widget
+        ]:
+            self.connection_status_subscribers.append(widget)
+
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
-        if not self._is_widget_loaded and self.is_api_data_retrieved:
-            self.load_widget()
-
-        self.connect("realize", self._on_realize)
         self.connect("unrealize", self._on_unrealize)
 
-    @property
-    def is_api_data_retrieved(self) -> bool:
-        """Returns if the necessary data from API is retrived."""
-        return self._server_list and self._client_config
-
-    @GObject.Signal(name="vpn-widget-ready")
-    def vpn_ready(self):
+    @GObject.Signal
+    def vpn_widget_ready(self):
         """Signal emitted when all resources were loaded and widget is ready."""
 
-    @GObject.Signal(name="update-server-list", arg_types=(object,))
-    def update_server_list(self, server_list: object):
-        """Signal emitted when server list object has been updated."""
-
-    @GObject.Signal(name="update-client-config")
-    def update_client_config(self):
-        """Signal emitted when client config object has been updated."""
+    @GObject.Signal
+    def user_logged_out(self):
+        """Signal emitted once the user has been logged out."""
 
     @GObject.Signal(name="vpn-connection-error", arg_types=(str, str))
     def vpn_connection_error(self, title: str, text: str):
         """Signal emitted when a connection error occurred."""
 
-    @GObject.Signal(name="user-logged-out")
-    def user_logged_out(self):
-        """Signal emitted once the user has been logged out."""
+    @property
+    def user_tier(self) -> int:
+        """Returns the tier of the user currently logged in."""
+        return self._state.user_tier
 
-    def _on_realize(self, _servers_widget: ServerListWidget):
-        self.start_reloading_data_periodically()
-        self._controller.register_connection_status_subscriber(self)
-        self._reconnector.enable()
-
-    def _update_connection_status(self):
-        if self._controller.is_connection_active:
-            self.status_update(self._controller.current_connection.status)
-        else:
-            self.status_update(Disconnected())
-
-    def _on_unrealize(self, _servers_widget: ServerListWidget):
-        self.stop_reloading_data_periodically()
-        if self._controller.is_connection_active:
-            self._controller.disconnect()
-            self._controller.unregister_connection_status_subscriber(self)
-        self._reconnector.disable()
-
-    def start_reloading_data_periodically(self):
-        """Schedules retrieve_client_config to be called periodically according
-        to VPNWidget.RELOAD_INTERVAL_IN_SECONDS."""
-        self.retrieve_client_config()
-        self.retrieve_servers()
-        self._reload_clientconfig_source_id = GLib.timeout_add(
-            interval=self.RELOAD_INTERVAL_IN_SECONDS * 1000,
-            function=self.retrieve_client_config
-        )
-        self._reload_servers_source_id = GLib.timeout_add(
-            interval=self.RELOAD_INTERVAL_IN_SECONDS * 1000,
-            function=self.retrieve_servers
-        )
-
-    def retrieve_client_config(self) -> Future:
-        """Returns client config."""
-        future = self._controller.get_client_config()
-        future.add_done_callback(
-            lambda future: GLib.idle_add(
-                self._on_clientconfig_retrieved, future
-            )
-        )
-        return future
-
-    def retrieve_servers(self) -> Future:
-        """
-        Requests the list of servers. Note that a remote API call is only
-        triggered if the server list cache expired.
-        :return: A future wrapping the server list.
-        """
-        logger.debug("Retrieving servers", category="APP", subcategory="SERVERS", event="RETRIEVE")
-        future = self._controller.get_server_list()
-        future.add_done_callback(
-            lambda future: GLib.idle_add(self._on_servers_retrieved, future)
-        )
-        return future
-
-    def stop_reloading_data_periodically(self):
-        """Stops the periodic calls to retrieve_client_config."""
-        if self._reload_clientconfig_source_id is not None:
-            GLib.source_remove(self._reload_clientconfig_source_id)
-            self._reload_clientconfig_source_id = None
-        if self._reload_servers_source_id is not None:
-            GLib.source_remove(self._reload_servers_source_id)
-            self._reload_servers_source_id = None
-        else:
-            logger.info(msg="Client config is not being reloaded periodically. "
-                        "There is nothing to do.",
-                        category="APP", subcategory="CLIENTCONFIG", event="RELOAD")
+    def _on_unrealize(self, _widget):
+        self.unload()
 
     def status_update(self, connection_status):
         """This method is called whenever the VPN connection status changes."""
@@ -170,13 +107,13 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         )
 
         def update_widget():
-            for widget in self._connection_update_subscribers:
+            for widget in self.connection_status_subscribers:
                 widget.connection_status_update(connection_status)
 
             if connection_status.state == ConnectionStateEnum.DISCONNECTED \
-                    and self._logout_after_vpn_disconnection:
-                self._logout_button.clicked()
-                self._logout_after_vpn_disconnection = False
+                    and self._state.logout_after_vpn_disconnection:
+                self.logout_button.clicked()
+                self._state.logout_after_vpn_disconnection = False
             elif connection_status.state == ConnectionStateEnum.ERROR:
                 title = "VPN Connection Error"
                 message = "Unable to establish VPN Connection"
@@ -207,28 +144,29 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         This method is called when the user attempts to logout while there is still
         an active VPN connection.
         """
-        self._logout_dialog = Gtk.Dialog()
-        self._logout_dialog.set_title("Active connection found")
-        self._logout_dialog.set_default_size(500, 200)
-        self._logout_dialog.add_button("_Yes", Gtk.ResponseType.YES)
-        self._logout_dialog.add_button("_No", Gtk.ResponseType.NO)
-        self._logout_dialog.connect("response", self._on_show_disconnect_response)
+        logout_dialog = Gtk.Dialog()
+        logout_dialog.set_title("Active connection found")
+        logout_dialog.set_default_size(500, 200)
+        logout_dialog.add_button("_Yes", Gtk.ResponseType.YES)
+        logout_dialog.add_button("_No", Gtk.ResponseType.NO)
+        logout_dialog.connect("response", self._on_show_disconnect_response)
         label = Gtk.Label(
             label="Logging out of the application will disconnect the active"
                   " vpn connection.\n\nDo you want to continue ?"
         )
-        self._logout_dialog.get_content_area().add(label)
-        self._logout_dialog.show_all()
+        logout_dialog.get_content_area().add(label)
+        self._state.logout_dialog = logout_dialog
+        logout_dialog.show_all()
 
     def logout_button_click(self):
         """Clicks the logout button.
         This method was made available mainly for testing purposes."""
-        self._logout_button.clicked()
+        self.logout_button.clicked()
 
     def close_dialog(self, end_current_connection):
         """Closes the logout dialog.
         This property was made available mainly for testing purposes."""
-        self._logout_dialog.emit(
+        self._state.logout_dialog.emit(
             "response",
             Gtk.ResponseType.YES if end_current_connection else Gtk.ResponseType.NO)
 
@@ -249,78 +187,74 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         a dialog that is triggered from `_show_disconnect_dialog` """
         if response == Gtk.ResponseType.YES:
             logger.info("Yes", category="UI", subcategory="DIALOG", event="DISCONNECT")
-            self._logout_after_vpn_disconnection = True
-            self._quick_connect_widget.disconnect_button_click()
+            self._state.logout_after_vpn_disconnection = True
+            self.quick_connect_widget.disconnect_button_click()
         else:
             logger.info("No", category="UI", subcategory="DIALOG", event="DISCONNECT")
 
-        self._logout_dialog.destroy()
-        self._logout_dialog = None
+        self._state.logout_dialog.destroy()
+        self._state.logout_dialog = None
 
-    def _on_clientconfig_retrieved(self, future_client_config: Future):
-        """Callback that emits a signals when the client config has been
-        received.
+    def _on_vpn_data_ready(
+            self,
+            _vpn_data_refresher: VPNDataRefresher,
+            server_list: ServerList,
+            _client_config: ClientConfig
+    ):
+        if not self._state.is_widget_ready:
+            self.display(self._state.user_tier, server_list)
 
-        This is crucial for the widget to be displayed.
+    def load(self, user_tier: int):
         """
-        self._client_config = future_client_config.result()
-        self.emit("update-client-config")
+        Starts loading the widget.
 
-        if not self._is_widget_loaded and self.is_api_data_retrieved:
-            self.load_widget()
-
-    def _on_servers_retrieved(self, future_server_list: Future):
-        """Callback that emits a signal if the server list has been updated
-        or not, based on previous timestamp.
-
-        This is crucial for the widget to be displayed.
+        The call to this method triggers networks calls to Proton's REST API
+        to download the required data to display the widget. Once the required
+        data has been downloaded, the widget will be automatically displayed.
         """
-        server_list = future_server_list.result()
-        if self._is_server_list_outdated(server_list):
-            self._server_list = server_list
-            self.last_server_list_update_time = server_list.loads_update_timestamp
-            self.emit("update-server-list", server_list)
-        else:
-            logger.debug(
-                "Skipping server list reload because it's already up to date.",
-                category="APP", subcategory="SERVERS", event="RELOAD"
-            )
-
-        if not self._is_widget_loaded and self.is_api_data_retrieved:
-            self.load_widget()
-
-    def _is_server_list_outdated(self, new_server_list: ServerList):
-        """Returns if server list is outdated or not."""
-        new_timestamp = new_server_list.loads_update_timestamp
-        return self.last_server_list_update_time < new_timestamp
-
-    def load_widget(self):
-        """Loads the widget once all necessary data from API is acquired."""
-        self._connection_status_widget = VPNConnectionStatusWidget(
-            self._controller
+        self._state.user_tier = user_tier
+        self._controller.vpn_data_refresher.connect(
+            "vpn-data-ready", self._on_vpn_data_ready
         )
-        self.pack_start(self._connection_status_widget, expand=False, fill=False, padding=0)
 
-        self._logout_dialog = None
-        self._logout_button = Gtk.Button(label="Logout")
-        self._logout_button.connect("clicked", self._on_logout_button_clicked)
-        self.pack_start(self._logout_button, expand=False, fill=False, padding=0)
+        self._controller.vpn_data_refresher.enable()
 
-        self._quick_connect_widget = QuickConnectWidget(self._controller)
-        self.pack_start(self._quick_connect_widget, expand=False, fill=False, padding=0)
+    def display(self, user_tier: int, server_list: ServerList):
+        """Displays the widget once all necessary data from API has been acquired."""
+        self.server_list_widget.display(user_tier=user_tier, server_list=server_list)
 
-        self.servers_widget = ServerListWidget(self._controller, self._server_list)
-        self.pack_end(self.servers_widget, expand=True, fill=True, padding=0)
+        # Initialize connection status subscribers with current connection status.
+        self.status_update(self._controller.current_connection_status)
 
-        for widget in [
-            self._connection_status_widget,
-            self._quick_connect_widget,
-            self.servers_widget
-        ]:
-            self._connection_update_subscribers.append(widget)
+        # The VPN widget subscribes to connection status updates, and then
+        # passes on these connection status updates to child widgets
+        self._controller.register_connection_status_subscriber(self)
 
-        self._update_connection_status()
-        self.connect("update-server-list", self.servers_widget.on_servers_update)
+        self._controller.reconnector.enable()
+
         self.show_all()
         self.emit("vpn-widget-ready")
-        self._is_widget_loaded = True
+        self._state.is_widget_ready = True
+        logger.info(
+            "VPN widget is ready",
+            category="app", subcategory="VPN", event="widget_ready"
+        )
+
+    def unload(self):
+        """Unloads the widget and resets its state."""
+        if self._controller.is_connection_active:
+            self._controller.disconnect()
+
+        self._controller.unregister_connection_status_subscriber(self)
+
+        self._controller.reconnector.disable()
+        self._controller.vpn_data_refresher.disable()
+
+        for widget in [
+            self.connection_status_widget, self.logout_button,
+            self.quick_connect_widget, self.server_list_widget
+        ]:
+            widget.hide()
+
+        # Reset widget state
+        self._state = VPNWidgetState()

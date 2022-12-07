@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
+from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.main import MainWidget
-from tests.unit.utils import process_gtk_events
 from unittest.mock import patch
 
 
@@ -55,3 +55,8 @@ def test_main_widget_switches_to_login_widget_when_session_expired(patched_show_
         MainWidget.SESSION_EXPIRED_ERROR_MESSAGE,
         True, MainWidget.SESSION_EXPIRED_ERROR_TITLE
     )
+
+
+def test_hide_loading_widget_after_vpn_widget_is_ready():
+    """The main widget should hide the loading widget whenever the vpn
+    widget is ready."""

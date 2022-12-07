@@ -5,9 +5,9 @@ from proton.vpn import logging
 from proton.vpn.connection import events, states, VPNConnection
 from proton.vpn.core_api.connection import VPNConnectionHolder
 
-from proton.vpn.app.gtk.widgets.vpn.reconnector.network_monitor import NetworkMonitor
-from proton.vpn.app.gtk.widgets.vpn.reconnector.session_monitor import SessionMonitor
-from proton.vpn.app.gtk.widgets.vpn.reconnector.vpn_monitor import VPNMonitor
+from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
+from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
+from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 
 logger = logging.getLogger(__name__)
 

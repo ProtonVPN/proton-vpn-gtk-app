@@ -4,11 +4,12 @@ Proton VPN back-ends.
 """
 from concurrent.futures import ThreadPoolExecutor, Future
 
-from proton.vpn.connection import VPNConnection
-from proton.vpn.core_api.client_config import ClientConfig
+from proton.vpn.connection import VPNConnection, states
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.connection import Subscriber, VPNConnectionHolder
 from proton.vpn.servers.server_types import LogicalServer
+
+from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
 
 
 class Controller:
@@ -16,17 +17,20 @@ class Controller:
     connection_protocol = "openvpn-udp"
 
     def __init__(
-        self, thread_pool_executor: ThreadPoolExecutor,
+        self,
+        thread_pool_executor: ThreadPoolExecutor,
         api: ProtonVPNAPI = None,
-        connect_timeout: int = 10, disconnect_timeout: int = 5
+        vpn_data_refresher: VPNDataRefresher = None,
+        vpn_reconnector: VPNReconnector = None,
     ):
         self._thread_pool = thread_pool_executor
         self._api = api or ProtonVPNAPI()
         self._connection_subscriber = Subscriber()
         self._api.connection.register(self._connection_subscriber)
-        self._connect_timeout = connect_timeout
-        self._disconnect_timeout = disconnect_timeout
-        self.client_config: ClientConfig = None
+        self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
+            self._thread_pool, self._api
+        )
+        self.reconnector = vpn_reconnector or VPNReconnector(self._api.connection)
 
     def login(self, username: str, password: str) -> Future:
         """
@@ -101,7 +105,7 @@ class Controller:
         self._connect_to_vpn(server)
 
     def _connect_to_vpn(self, server: LogicalServer):
-        vpn_server = self._api.get_vpn_server(server, self.client_config)
+        vpn_server = self._api.get_vpn_server(server, self.vpn_data_refresher.client_config)
         self._api.connection.connect(
             vpn_server,
             protocol=self.connection_protocol
@@ -121,41 +125,18 @@ class Controller:
         return self._api.connection.current_connection
 
     @property
+    def current_connection_status(self) -> states.BaseState:
+        """Returns the current VPN connection status. If there is not a
+        current VPN connection, then the Disconnected state is returned."""
+        if self.is_connection_active:
+            return self.current_connection.status
+
+        return states.Disconnected()
+
+    @property
     def is_connection_active(self) -> bool:
         """Returns whether the current connection is in connecting/connected state or not."""
         return self._api.connection.is_connection_active
-
-    def get_server_list(self, force_refresh: bool = False) -> Future:
-        """
-        Returns the list of Proton VPN servers.
-        :param force_refresh: When False (the default), servers will be
-        obtained from a cache file when it exists, and it is not expired. When
-        True it will always retrieve the server list from Proton's REST API.
-        :return: A Future wrapping the server list.
-        """
-        return self._thread_pool.submit(
-            self._api.servers.get_server_list,
-            force_refresh=force_refresh
-        )
-
-    def get_client_config(self, force_refresh: bool = False) -> Future:
-        """
-        Returns the Proton client configurations.
-        :param force_refresh: When False (the default), servers will be
-        obtained from memry. When
-        True it will always retrieve the server list from Proton's REST API.
-        :return: A Future wrapping the server list.
-        """
-        client_config_future = self._thread_pool.submit(
-            self._api.get_client_config,
-            force_refresh=force_refresh
-        )
-        client_config_future.add_done_callback(self._update_client_config)
-        return client_config_future
-
-    def _update_client_config(self, client_config_future: Future):
-        """Updates client config parameter."""
-        self.client_config = client_config_future.result()
 
     def register_connection_status_subscriber(self, subscriber):
         """

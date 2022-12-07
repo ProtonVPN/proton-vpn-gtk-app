@@ -6,9 +6,9 @@ from proton.vpn.connection import events, states
 from proton.vpn.connection.events import EVENT_TYPES
 from proton.vpn.core_api.connection import VPNConnectionHolder
 
-from proton.vpn.app.gtk.widgets.vpn.reconnector.network_monitor import NetworkMonitor
-from proton.vpn.app.gtk.widgets.vpn.reconnector.reconnector import VPNReconnector
-from proton.vpn.app.gtk.widgets.vpn.reconnector.session_monitor import SessionMonitor
+from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
+from proton.vpn.app.gtk.services.reconnector.reconnector import VPNReconnector
+from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 
 
 @pytest.fixture

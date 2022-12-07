@@ -46,10 +46,14 @@ class App(Gtk.Application):
      - It allows desktop shell integration by exporting actions and menus.
     """
 
-    def __init__(self, thread_pool_executor: ThreadPoolExecutor):
+    def __init__(
+            self,
+            thread_pool_executor: ThreadPoolExecutor,
+            controller: Controller = None
+    ):
         super().__init__(application_id="proton.vpn.app.gtk")
         logger.info(f"{self=}", category="APP", event="PROCESS_START")
-        self._controller = Controller(
+        self._controller = controller or Controller(
             thread_pool_executor=thread_pool_executor
         )
         self.window = None

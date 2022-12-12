@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, Future
 from proton.vpn.connection import VPNConnection
 from proton.vpn.core_api.client_config import ClientConfig
 from proton.vpn.core_api.api import ProtonVPNAPI
-from proton.vpn.core_api.connection import Subscriber
+from proton.vpn.core_api.connection import Subscriber, VPNConnectionHolder
 from proton.vpn.servers.server_types import LogicalServer
 
 
@@ -170,3 +170,8 @@ class Controller:
         :param subscriber: The subscriber to be unregistered.
         """
         self._api.connection.unregister(subscriber)
+
+    @property
+    def vpn_connector(self) -> VPNConnectionHolder:
+        """Returns the VPN connector"""
+        return self._api.connection

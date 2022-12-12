@@ -10,6 +10,7 @@ from gi.repository import GObject, GLib
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn.quick_connect import QuickConnectWidget
+from proton.vpn.app.gtk.widgets.vpn.reconnector.reconnector import VPNReconnector
 from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
 from proton.vpn.servers.list import ServerList
 from proton.vpn.core_api.client_config import ClientConfig
@@ -34,6 +35,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         controller: Controller,
         server_list: "ServerList" = None,
         client_config: "ClientConfig" = None,
+        reconnector: VPNReconnector = None
     ):
         super().__init__(spacing=10)
 
@@ -45,8 +47,11 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         self._connection_status_widget = None
         self._quick_connect_widget = None
 
+        self._controller = controller
         self._server_list = server_list
         self._client_config = client_config
+        self._reconnector = reconnector or VPNReconnector(controller.vpn_connector)
+
         # Keep track of child widgets that need to be aware of VPN connection status changes.
         self._connection_update_subscribers = []
 
@@ -54,7 +59,6 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         # Last time the server list was updated
         self.last_server_list_update_time: int = 0
 
-        self._controller = controller
         # Flag signaling when a logout is required after VPN disconnection.
         self._logout_after_vpn_disconnection = False
         self.set_orientation(Gtk.Orientation.VERTICAL)
@@ -93,6 +97,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
     def _on_realize(self, _servers_widget: ServerListWidget):
         self.start_reloading_data_periodically()
         self._controller.register_connection_status_subscriber(self)
+        self._reconnector.enable()
 
     def _update_connection_status(self):
         if self._controller.is_connection_active:
@@ -105,6 +110,7 @@ class VPNWidget(Gtk.Box):  # pylint: disable=R0902
         if self._controller.is_connection_active:
             self._controller.disconnect()
             self._controller.unregister_connection_status_subscriber(self)
+        self._reconnector.disable()
 
     def start_reloading_data_periodically(self):
         """Schedules retrieve_client_config to be called periodically according

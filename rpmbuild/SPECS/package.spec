@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.7.2
+%define version 0.8.0
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -65,6 +65,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Dec 14 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.8.0
+- Reconnect to VPN when network connectivity is detected
+
 * Tue Dec 06 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.7.2
 - Fix app crash after starting the app with a persisted connection
 

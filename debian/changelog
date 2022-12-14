@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.8.0) unstable; urgency=medium
+
+  * Reconnect to VPN when network connectivity is detected
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Wed, 14 Dec 2022 11:50:41 +0100
+
 proton-vpn-gtk-app (0.7.2) unstable; urgency=medium
 
   * Fix app crash after starting the app with a persisted connection

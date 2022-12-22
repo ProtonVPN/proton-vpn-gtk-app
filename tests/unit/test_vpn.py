@@ -192,23 +192,6 @@ def test_vpn_widget_notifies_child_widgets_on_connection_status_update():
     connection_status_subscriber.connection_status_update.assert_called_once_with(state)
 
 
-def test_vpn_widget_signals_error_on_connection_error():
-    vpn_widget = VPNWidget(controller=Mock())
-
-    vpn_widget_error_event = Event()
-    vpn_widget.connect(
-        "vpn-connection-error",
-        lambda _, title, message: vpn_widget_error_event.set()
-    )
-
-    state = Error(StateContext(UnexpectedError(), None))
-    vpn_widget.status_update(state)
-
-    process_gtk_events()
-
-    assert vpn_widget_error_event.wait(timeout=0) is True
-
-
 def test_unload_resets_widget_state():
     """
     The `unload()` method is called on the "unrealize" event and its goal

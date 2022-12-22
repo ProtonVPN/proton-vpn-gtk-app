@@ -15,7 +15,7 @@ from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.quick_connect import QuickConnectWidget
 from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.status import VPNConnectionStatusWidget
-from proton.vpn.connection.enum import ConnectionStateEnum, StateMachineEventEnum
+from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 from proton.vpn.core_api.client_config import ClientConfig
 from proton.vpn.servers.list import ServerList
@@ -54,7 +54,7 @@ class VPNWidget(Gtk.Box):
 
         self._controller = controller
 
-        self.connection_status_widget = VPNConnectionStatusWidget(self._controller)
+        self.connection_status_widget = VPNConnectionStatusWidget()
         self.pack_start(self.connection_status_widget, expand=False, fill=False, padding=0)
 
         self.logout_button = Gtk.Button(label="Logout")
@@ -87,10 +87,6 @@ class VPNWidget(Gtk.Box):
     def user_logged_out(self):
         """Signal emitted once the user has been logged out."""
 
-    @GObject.Signal(name="vpn-connection-error", arg_types=(str, str))
-    def vpn_connection_error(self, title: str, text: str):
-        """Signal emitted when a connection error occurred."""
-
     @property
     def user_tier(self) -> int:
         """Returns the tier of the user currently logged in."""
@@ -114,20 +110,6 @@ class VPNWidget(Gtk.Box):
                     and self._state.logout_after_vpn_disconnection:
                 self.logout_button.clicked()
                 self._state.logout_after_vpn_disconnection = False
-            elif connection_status.state == ConnectionStateEnum.ERROR:
-                title = "VPN Connection Error"
-                message = "Unable to establish VPN Connection"
-
-                if connection_status.context.event.event == StateMachineEventEnum.AUTH_DENIED:
-                    title = f"{title}: Authentication Denied"
-                    message = "Unable to establish VPN due to " \
-                        "wrong authentication credentials"
-
-                self.emit(
-                    "vpn-connection-error",
-                    title,
-                    message
-                )
 
         GLib.idle_add(update_widget)
 

@@ -72,10 +72,6 @@ class MainWidget(Gtk.Overlay):
         else:
             self._display_login_widget()
 
-    def _display_connection_error(self, *args):
-        _, title, message = args
-        self.show_error_message(message, True, title)
-
     def show_error_message(
         self, error_message: str, blocking: bool = False,
         error_title: str = None
@@ -119,9 +115,6 @@ class MainWidget(Gtk.Overlay):
         vpn_widget = VPNWidget(self._controller)
         vpn_widget.connect(
             "user-logged-out", self._on_user_logged_out
-        )
-        vpn_widget.connect(
-            "vpn-connection-error", self._display_connection_error
         )
         vpn_widget.connect(
             "vpn-widget-ready", self._hide_loading_widget

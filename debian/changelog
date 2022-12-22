@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.9.1) unstable; urgency=medium
+
+  * Do not show popups on connection errors
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Thu, 22 Dec 2022 18:22:51 +0100
+
 proton-vpn-gtk-app (0.9.0) unstable; urgency=medium
 
   * Add unit tests and improve API data handling

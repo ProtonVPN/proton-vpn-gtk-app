@@ -93,7 +93,7 @@ class VPNReconnector:
 
         disconnection_event = self._current_connection.status.context.event
         if not isinstance(disconnection_event, (
-                events.DeviceDisconnected, events.Timeout
+                events.DeviceDisconnected, events.Timeout, events.AuthDenied
         )):
             logger.error("VPN reconnection not implemented for the following "
                          f"disconnection event: {disconnection_event}")

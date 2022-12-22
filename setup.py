@@ -15,7 +15,8 @@ setup(
         "proton-vpn-network-manager-openvpn",
         "proton-vpn-logger",
         "pygobject",
-        "pycairo"
+        "pycairo",
+        "dbus-python"
     ],
     extras_require={
         "development": [

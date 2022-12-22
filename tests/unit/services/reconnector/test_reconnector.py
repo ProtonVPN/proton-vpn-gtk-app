@@ -164,5 +164,7 @@ def test_reconnect_currently_only_reconnects_on_device_disconnected_and_timeout_
     reconnector.reconnect()
 
     # Reconnection currently should only happen on these events:
-    connection_expected = event_type in (events.DeviceDisconnected, events.Timeout)
+    connection_expected = event_type in (
+        events.DeviceDisconnected, events.Timeout, events.AuthDenied
+        )
     assert vpn_connector.connect.called == connection_expected

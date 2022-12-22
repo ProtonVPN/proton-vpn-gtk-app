@@ -29,6 +29,7 @@ BuildRequires: python3-proton-vpn-api-core
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: python3-proton-vpn-network-manager-openvpn
 BuildRequires: python3-proton-keyring-linux-secretservice
+BuildRequires: python3-dbus
 
 Requires: gtk3
 Requires: python3-gobject
@@ -36,6 +37,7 @@ Requires: python3-proton-vpn-api-core
 Requires: python3-proton-vpn-logger
 Requires: python3-proton-vpn-network-manager-openvpn
 Requires: python3-proton-keyring-linux-secretservice
+Requires: python3-dbus
 
 %{?python_disable_dependency_generator}
 
@@ -65,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Dec 29 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.9.2
+- Attempt to reconnect after user session has been unlocked from suspend
+
 * Thu Dec 22 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.9.1
 - Do not show popups on connection errors
 

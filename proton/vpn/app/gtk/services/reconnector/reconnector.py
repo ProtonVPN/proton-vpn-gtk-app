@@ -1,8 +1,12 @@
 """
 Auto reconnect feature.
 """
+import random
+
+from gi.repository import GLib
+
 from proton.vpn import logging
-from proton.vpn.connection import events, states, VPNConnection
+from proton.vpn.connection import states, VPNConnection
 from proton.vpn.core_api.connection import VPNConnectionHolder
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
@@ -43,8 +47,12 @@ class VPNReconnector:
         self._session_monitor = session_monitor or SessionMonitor()
         self._session_monitor.session_unlocked_callback = self._on_session_unlocked
 
+        self._retry_src_id = None
+        self._retry_counter = 0
+
     def enable(self):
         """Enables the auto reconnect feature."""
+        self._reset_retry_counter()
         self._vpn_monitor.enable()
         self._network_monitor.enable()
         self._session_monitor.enable()
@@ -65,41 +73,23 @@ class VPNReconnector:
 
         return isinstance(self._current_connection.status, states.Error)
 
-    @property
-    def is_reconnection_possible(self):
-        """Returns True if all resources required to be able to reconnect are
-        available, or False otherwise."""
-        if not self._current_connection:
-            logger.info("VPN reconnection was not possible: "
-                        "there is not an existing VPN connection.")
-            return False
+    def schedule_reconnection(self) -> bool:
+        """Schedules a reconnection attempt.
 
-        if not self._session_monitor.is_session_unlocked:
-            logger.info("VPN reconnection was not possible: the user's session is locked.")
-            return False
+        The amount of time elapsed before the reconnection is attempted
+        depends on the number of previous failed reconnection attempts.
 
-        if not self._network_monitor.is_network_up:
-            logger.info("VPN reconnection was not possible: there is not network connectivity.")
-            return False
-
-        return True
-
-    def reconnect(self) -> bool:
-        """Runs a reconnection attempt.
-        :return: True if the reconnection could be initiated and False otherwise.
+        :return: True if the reconnection could be scheduled and False otherwise.
         """
-        if not self.is_reconnection_possible:
-            return True
-
-        disconnection_event = self._current_connection.status.context.event
-        if not isinstance(disconnection_event, (
-                events.DeviceDisconnected, events.Timeout, events.AuthDenied
-        )):
-            logger.error("VPN reconnection not implemented for the following "
-                         f"disconnection event: {disconnection_event}")
+        if self._retry_src_id:
+            logger.warning("There is already a scheduled VPN reconnection attempt.")
             return False
 
-        self._reconnect()
+        retry_delay = self._calculate_retry_delay_in_seconds()
+        logger.info(
+            f"Reconnection attempt #{self._retry_counter} scheduled in "
+            f"{retry_delay:.2f} seconds.")
+        self._retry_src_id = GLib.timeout_add_seconds(retry_delay, self._reconnect)
         return True
 
     @property
@@ -108,11 +98,21 @@ class VPNReconnector:
 
     def _on_session_unlocked(self):
         """
-        Callback called once the user session has been unlocked.
+        Callback called by the session monitor once the user session has been
+        unlocked.
         """
-        logger.info("Session unlocked")
-        if self.did_vpn_drop:
-            self.reconnect()
+        logger.info("Session unlocked.")
+        self._reset_retry_counter()
+
+        if not self.did_vpn_drop:
+            logger.debug("VPN reconnection not necessary: connection didn't drop.")
+            return
+
+        if not self._network_monitor.is_network_up:
+            logger.info("VPN reconnection not possible: network is down.")
+            return
+
+        self.schedule_reconnection()
 
     def _on_network_up(self):
         """
@@ -121,22 +121,53 @@ class VPNReconnector:
         the internet.
         """
         logger.info("Network connectivity was detected.")
-        if self.did_vpn_drop:
-            self.reconnect()
+        self._reset_retry_counter()
+
+        if not self.did_vpn_drop:
+            logger.debug("VPN reconnection not necessary: connection didn't drop.")
+            return
+
+        if not self._session_monitor.is_session_unlocked:
+            logger.info("VPN reconnection not possible: session is locked.")
+            return
+
+        self.schedule_reconnection()
 
     def _on_vpn_drop(self):
         """Callback called by the VPN monitor when a VPN connection drop was detected."""
         logger.info("VPN connection drop was detected.")
+        self.schedule_reconnection()
 
     def _on_vpn_up(self):
         """Callback called by the VPN monitor when the VPN connection is up."""
         logger.debug("VPN connection is up.")
+        self._reset_retry_counter()
 
     def _reconnect(self):
-        logger.info("Reconnecting...")
+        logger.info(f"Reconnecting (attempt #{self._retry_counter})...")
+
         connection = self._vpn_connector.current_connection
         self._vpn_connector.connect(
             connection._vpnserver,  # pylint: disable=protected-access
             connection.protocol,
             connection.backend
         )
+        self._retry_counter += 1
+        self._retry_src_id = None
+
+        return False  # Remove periodic source
+
+    def _calculate_retry_delay_in_seconds(self) -> int:
+        """
+        Returns the amount of seconds to wait before a VPN connection retry.
+
+        The amount of time increases exponentially based on the number of
+        previous attempts.
+        """
+        return 2 ** self._retry_counter * random.uniform(0.9, 1.1)
+
+    def _reset_retry_counter(self):
+        if self._retry_src_id:
+            GLib.source_remove(self._retry_src_id)
+            self._retry_src_id = None
+        self._retry_counter = 0

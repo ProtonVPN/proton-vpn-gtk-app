@@ -59,7 +59,9 @@ class SessionMonitor:
     @property
     def is_session_unlocked(self):
         """Returns True if the user session is unlocked or False otherwise."""
-        return True
+        active_session = self._bus.get_object(BUS_NAME, self._session_object_path)
+        active_session_properties = dbus.Interface(active_session, PROPERTIES_INTERFACE)
+        return not bool(active_session_properties.Get(SESSION_INTERFACE, "LockedHint"))
 
     def _setup(self):
         seat_auto_proxy = self._bus.get_object(

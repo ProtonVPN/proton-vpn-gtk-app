@@ -136,6 +136,9 @@ class VPNReconnector:
     def _on_vpn_drop(self):
         """Callback called by the VPN monitor when a VPN connection drop was detected."""
         logger.info("VPN connection drop was detected.")
+        if self._retry_src_id:
+            GLib.source_remove(self._retry_src_id)
+            self._retry_src_id = None
         self.schedule_reconnection()
 
     def _on_vpn_up(self):

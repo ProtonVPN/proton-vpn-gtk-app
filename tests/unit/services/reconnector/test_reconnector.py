@@ -2,18 +2,18 @@ from unittest.mock import Mock, patch, PropertyMock
 
 import pytest
 
-from proton.vpn.connection import events, states
-from proton.vpn.connection.events import EVENT_TYPES
+from proton.vpn.connection import states
 from proton.vpn.core_api.connection import VPNConnectionHolder
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.reconnector import VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
+from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 
 
 @pytest.fixture
 def vpn_monitor():
-    return Mock()
+    return Mock(VPNMonitor)
 
 
 @pytest.fixture
@@ -93,7 +93,8 @@ def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_o
     )
 
     with patch.object(VPNReconnector, "did_vpn_drop", new_callable=PropertyMock) as did_vpn_drop_patch, \
-         patch.object(VPNReconnector, "schedule_reconnection"):
+            patch.object(VPNReconnector, "schedule_reconnection"):
+
         # Mock whether a VPN connection dropped happened or not
         did_vpn_drop_patch.return_value = did_vpn_drop
 
@@ -153,3 +154,26 @@ def test_schedule_reconnection_only_schedule_a_reconnection_if_there_is_not_one_
     glib_mock.timeout_add_seconds.assert_called_once()
 
 
+@patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
+@patch("proton.vpn.app.gtk.services.reconnector.reconnector.VPNReconnector.did_vpn_drop")
+def test_schedule_reconnection_attempt_to_reconnect_after_network_up_with_error(
+    did_vpn_drop_mock, glib_mock,
+    vpn_connector, vpn_monitor, network_monitor, session_monitor
+):
+    VPNReconnector(
+        vpn_connector, vpn_monitor, network_monitor, session_monitor
+    )
+
+    glib_mock.timeout_add_seconds.return_value = 1
+    did_vpn_drop_mock = True
+    session_monitor.is_session_unlocked = True
+
+    network_monitor.network_up_callback()
+    glib_mock.timeout_add_seconds.call_count == 1
+
+    num_of_reconnect_attempts = 1
+    for num_attempts in range(0, 4):
+        vpn_monitor.vpn_drop_callback()
+        num_of_reconnect_attempts += 1
+
+    glib_mock.timeout_add_seconds.call_count == num_of_reconnect_attempts

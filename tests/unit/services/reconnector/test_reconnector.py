@@ -146,12 +146,12 @@ def test_schedule_reconnection_only_schedule_a_reconnection_if_there_is_not_one_
 
     reconnection_scheduled = reconnector.schedule_reconnection()
     assert reconnection_scheduled
-    glib_mock.timeout_add_seconds.assert_called_once()
+    glib_mock.timeout_add.assert_called_once()
 
     reconnection_scheduled = reconnector.schedule_reconnection()
     assert not reconnection_scheduled
     # assert that Glib was not called a second time.
-    glib_mock.timeout_add_seconds.assert_called_once()
+    glib_mock.timeout_add.assert_called_once()
 
 
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")

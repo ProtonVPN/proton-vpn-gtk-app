@@ -85,11 +85,11 @@ class VPNReconnector:
             logger.warning("There is already a scheduled VPN reconnection attempt.")
             return False
 
-        retry_delay = self._calculate_retry_delay_in_seconds()
+        retry_delay = self._calculate_retry_delay_in_milliseconds()
         logger.info(
             f"Reconnection attempt #{self._retry_counter} scheduled in "
-            f"{retry_delay:.2f} seconds.")
-        self._retry_src_id = GLib.timeout_add_seconds(retry_delay, self._reconnect)
+            f"{retry_delay/1000:.2f} seconds.")
+        self._retry_src_id = GLib.timeout_add(retry_delay, self._reconnect)
         return True
 
     @property
@@ -160,14 +160,14 @@ class VPNReconnector:
 
         return False  # Remove periodic source
 
-    def _calculate_retry_delay_in_seconds(self) -> int:
+    def _calculate_retry_delay_in_milliseconds(self) -> int:
         """
-        Returns the amount of seconds to wait before a VPN connection retry.
+        Returns the amount of milliseconds to wait before a VPN connection retry.
 
         The amount of time increases exponentially based on the number of
         previous attempts.
         """
-        return 2 ** self._retry_counter * random.uniform(0.9, 1.1)
+        return 2 ** self._retry_counter * random.uniform(0.9, 1.1) * 1000
 
     def _reset_retry_counter(self):
         if self._retry_src_id:

@@ -48,7 +48,12 @@ class VPNReconnector:
         self._session_monitor.session_unlocked_callback = self._on_session_unlocked
 
         self._retry_src_id = None
-        self._retry_counter = 0
+        self.retry_counter = 0
+
+    @property
+    def is_reconnection_scheduled(self) -> bool:
+        """Returns True if there is a pending scheduled reconnection and False otherwise."""
+        return self._retry_src_id is not None
 
     def enable(self):
         """Enables the auto reconnect feature."""
@@ -87,7 +92,7 @@ class VPNReconnector:
 
         retry_delay = self._calculate_retry_delay_in_milliseconds()
         logger.info(
-            f"Reconnection attempt #{self._retry_counter} scheduled in "
+            f"Reconnection attempt #{self.retry_counter} scheduled in "
             f"{retry_delay/1000:.2f} seconds.")
         self._retry_src_id = GLib.timeout_add(retry_delay, self._reconnect)
         return True
@@ -136,9 +141,6 @@ class VPNReconnector:
     def _on_vpn_drop(self):
         """Callback called by the VPN monitor when a VPN connection drop was detected."""
         logger.info("VPN connection drop was detected.")
-        if self._retry_src_id:
-            GLib.source_remove(self._retry_src_id)
-            self._retry_src_id = None
         self.schedule_reconnection()
 
     def _on_vpn_up(self):
@@ -147,7 +149,7 @@ class VPNReconnector:
         self._reset_retry_counter()
 
     def _reconnect(self):
-        logger.info(f"Reconnecting (attempt #{self._retry_counter})...")
+        logger.info(f"Reconnecting (attempt #{self.retry_counter})...")
 
         connection = self._vpn_connector.current_connection
         self._vpn_connector.connect(
@@ -155,7 +157,7 @@ class VPNReconnector:
             connection.protocol,
             connection.backend
         )
-        self._retry_counter += 1
+        self.retry_counter += 1
         self._retry_src_id = None
 
         return False  # Remove periodic source
@@ -167,10 +169,10 @@ class VPNReconnector:
         The amount of time increases exponentially based on the number of
         previous attempts.
         """
-        return 2 ** self._retry_counter * random.uniform(0.9, 1.1) * 1000
+        return 2 ** self.retry_counter * random.uniform(0.9, 1.1) * 1000
 
     def _reset_retry_counter(self):
         if self._retry_src_id:
             GLib.source_remove(self._retry_src_id)
             self._retry_src_id = None
-        self._retry_counter = 0
+        self.retry_counter = 0

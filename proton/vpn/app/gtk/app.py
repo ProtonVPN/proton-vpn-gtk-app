@@ -71,8 +71,8 @@ class App(Gtk.Application):
             # Windows are associated with the application like this.
             # When the last one is closed, the application shuts down.
             self.add_window(self.window)
+            self.window.show_all()
 
-        self.window.show_all()
         self.window.present()
         self.emit("app-ready")
 

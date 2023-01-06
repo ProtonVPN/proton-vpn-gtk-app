@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.9.2
+%define version 0.9.3
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Jan 06 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.9.3
+- Fix quick connect widget glitch when opening the app twice
+
 * Thu Dec 29 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.9.2
 - Attempt to reconnect after user session has been unlocked from suspend
 

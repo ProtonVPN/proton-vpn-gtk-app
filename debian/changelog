@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.9.3) unstable; urgency=medium
+
+  * Fix quick connect widget glitch when opening the app twice
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Thu, 06 Jan 2023 18:30:00 +0100
+
 proton-vpn-gtk-app (0.9.2) unstable; urgency=medium
 
   * Attempt to reconnect after user session has been unlocked from suspend

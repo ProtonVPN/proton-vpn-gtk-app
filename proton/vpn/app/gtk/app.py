@@ -22,9 +22,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._controller = controller
 
-        self.set_size_request(400, 600)
+        self.set_size_request(400, 800)
         self.set_border_width(10)
         self.set_resizable(False)
+        self.set_position(Gtk.WindowPosition.CENTER)
 
         self.main_widget = MainWidget(controller=controller, main_window=self)
         self.add(self.main_widget)

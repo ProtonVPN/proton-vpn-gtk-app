@@ -19,7 +19,8 @@ class NotificationBar(Gtk.Revealer):
         self._clear_error_message_src_id = None
         self._error_message_label = Gtk.Label()
         self._error_message_label.set_line_wrap(True)
-        self._error_message_label.set_max_width_chars(1)  # Required for set_line_wrap to have effect.
+        # set_max_width_chars is required for set_line_wrap to have effect.
+        self._error_message_label.set_max_width_chars(1)
         self.add(self._error_message_label)
 
     @property

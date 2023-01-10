@@ -4,11 +4,13 @@ from unittest.mock import Mock, patch
 import time
 
 import pytest
+from proton.session.exceptions import ProtonError
 
 from proton.vpn.core_api.client_config import ClientConfig, DEFAULT_CLIENT_CONFIG
 from proton.vpn.servers.list import ServerList
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
+from proton.vpn.app.gtk.services.vpn_data_refresher import VPNDataRefresherState
 
 from tests.unit.utils import process_gtk_events
 
@@ -159,3 +161,63 @@ def test_disable_resets_state(
     assert len(patched_glib_source_remove.mock_calls) == 2
     for nth_call, call in enumerate(patched_glib_source_remove.mock_calls):
         assert call.args[0] == timeout_add_source_ids[nth_call]
+
+
+def test_retrieve_server_list_raises_error_when_api_request_fails_and_it_was_not_retrieved_previously(
+        thread_pool_executor
+):
+    mock_api = Mock()
+    mock_api.servers.get_server_list.side_effect = ProtonError("Expected error")
+
+    vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
+    vpn_data_refresher.retrieve_server_list()
+
+    with pytest.raises(ProtonError):
+        process_gtk_events()
+
+
+def test_retrieve_client_config_raises_error_when_api_request_fails_and_it_was_not_retrieved_previously(
+        thread_pool_executor
+):
+    mock_api = Mock()
+    mock_api.get_client_config.side_effect = ProtonError("Expected error")
+
+    vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
+    vpn_data_refresher.retrieve_client_config()
+
+    with pytest.raises(ProtonError):
+        process_gtk_events()
+
+
+def test_retrieve_server_list_fails_silently_when_api_request_fails_but_it_was_retrieved_previously(
+        thread_pool_executor, caplog
+):
+    mock_api = Mock()
+    mock_api.servers.get_server_list.side_effect = ProtonError("Expected error")
+    state = VPNDataRefresherState(server_list=Mock())
+
+    vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api, state)
+    vpn_data_refresher.retrieve_server_list()
+
+    process_gtk_events()
+
+    warnings = [record for record in caplog.records if record.levelname == "WARNING"]
+    assert warnings
+    assert "Server list update failed" in warnings[0].message
+
+
+def test_retrieve_client_config_fails_silently_when_api_request_fails_but_it_was_retrieved_previously(
+        thread_pool_executor, caplog
+):
+    mock_api = Mock()
+    mock_api.get_client_config.side_effect = ProtonError("Expected error")
+    state = VPNDataRefresherState(client_config=Mock())
+
+    vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api, state)
+    vpn_data_refresher.retrieve_client_config()
+
+    process_gtk_events()
+
+    warnings = [record for record in caplog.records if record.levelname == "WARNING"]
+    assert warnings
+    assert "Client config update failed" in warnings[0].message

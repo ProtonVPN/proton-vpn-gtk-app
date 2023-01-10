@@ -8,6 +8,7 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
 
 from gi.repository import GLib, GObject
+from proton.session.exceptions import ProtonError
 
 from proton.vpn.servers.list import ServerList
 from proton.vpn.core_api.api import ProtonVPNAPI
@@ -17,8 +18,8 @@ from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
 
-# Number of seconds to wait before checking if the servers cache expired.
-RELOAD_INTERVAL_IN_SECONDS = 60
+# Number of seconds to wait before checking if the cache is expired.
+CACHE_EXPIRATION_CHECK_INTERVAL_IN_SECONDS = 60
 
 
 @dataclass
@@ -51,12 +52,13 @@ class VPNDataRefresher(GObject.Object):
     def __init__(
         self,
         thread_pool_executor: ThreadPoolExecutor,
-        proton_vpn_api: ProtonVPNAPI
+        proton_vpn_api: ProtonVPNAPI,
+        state: VPNDataRefresherState = None
     ):
         super().__init__()
         self._thread_pool = thread_pool_executor
         self._api = proton_vpn_api
-        self._state = VPNDataRefresherState()
+        self._state = state or VPNDataRefresherState()
 
     @property
     def server_list(self) -> ServerList:
@@ -99,42 +101,54 @@ class VPNDataRefresher(GObject.Object):
 
     def enable(self):
         """Start retrieving data periodically from Proton's REST API."""
-        self.retrieve_client_config()
-        self.retrieve_server_list()
-        self._state.reload_client_config_source_id = GLib.timeout_add(
-            interval=RELOAD_INTERVAL_IN_SECONDS * 1000,
-            function=self.retrieve_client_config
-        )
-        self._state.reload_servers_source_id = GLib.timeout_add(
-            interval=RELOAD_INTERVAL_IN_SECONDS * 1000,
-            function=self.retrieve_server_list
-        )
+        self._start_retrieving_client_config_periodically()
+        self._start_retrieving_server_list_periodically()
         logger.info(
             "VPN data refresher service enabled.",
-            category="APP", subcategory="VPN_DATA_REFRESHER", event="ENABLE"
+            category="app", subcategory="vpn_data_refresher", event="enable"
         )
 
     def disable(self):
         """Stops retrieving data periodically from Proton's REST API."""
-        if self._state.reload_client_config_source_id is not None:
-            GLib.source_remove(self._state.reload_client_config_source_id)
-        if self._state.reload_servers_source_id is not None:
-            GLib.source_remove(self._state.reload_servers_source_id)
-
+        self._stop_retrieving_client_config_periodically()
+        self._stop_retrieving_server_list_periodically()
         self._state = VPNDataRefresherState()
         logger.info(
             "VPN data refresher service disabled.",
-            category="APP", subcategory="VPN_DATA_REFRESHER", event="DISABLE"
+            category="app", subcategory="vpn_data_refresher", event="disable"
         )
+
+    def _start_retrieving_client_config_periodically(self):
+        self.retrieve_client_config()
+        self._state.reload_client_config_source_id = GLib.timeout_add(
+            interval=CACHE_EXPIRATION_CHECK_INTERVAL_IN_SECONDS * 1000,
+            function=self.retrieve_client_config
+        )
+
+    def _stop_retrieving_client_config_periodically(self):
+        if self._state.reload_client_config_source_id is not None:
+            GLib.source_remove(self._state.reload_client_config_source_id)
+
+    def _start_retrieving_server_list_periodically(self):
+        self.retrieve_server_list()
+        self._state.reload_servers_source_id = GLib.timeout_add(
+            interval=CACHE_EXPIRATION_CHECK_INTERVAL_IN_SECONDS * 1000,
+            function=self.retrieve_server_list
+        )
+
+    def _stop_retrieving_server_list_periodically(self):
+        if self._state.reload_servers_source_id is not None:
+            GLib.source_remove(self._state.reload_servers_source_id)
 
     def retrieve_client_config(self) -> Future:
         """Returns client config."""
         logger.debug(
             "Retrieving client configuration...",
-            category="API", subcategory="CLIENT_CONFIG", event="GET"
+            category="api", subcategory="client_config", event="get"
         )
         future = self._thread_pool.submit(
-            self._api.get_client_config
+            self._api.get_client_config,
+            force_refresh=False
         )
         future.add_done_callback(
             lambda f: GLib.idle_add(
@@ -151,7 +165,7 @@ class VPNDataRefresher(GObject.Object):
         """
         logger.debug(
             "Retrieving server list...",
-            category="API", subcategory="LOGICALS", event="GET"
+            category="api", subcategory="logicals", event="get"
         )
         future = self._thread_pool.submit(
             self._api.servers.get_server_list,
@@ -163,7 +177,16 @@ class VPNDataRefresher(GObject.Object):
         return future
 
     def _on_client_config_retrieved(self, future_client_config: Future):
-        new_client_config = future_client_config.result()
+        try:
+            new_client_config = future_client_config.result()
+        except ProtonError as error:
+            logger.warning(
+                f"Client config update failed: {error}",
+                category="app", subcategory="clientconfig", event="get")
+            if not self.client_config:
+                raise
+            return
+
         if new_client_config is not self.client_config:
             self.client_config = new_client_config
             self.emit("new-client-config", self.client_config)
@@ -171,12 +194,21 @@ class VPNDataRefresher(GObject.Object):
         else:
             logger.debug(
                 "Skipping client configuration reload because it's already up "
-                "to date.", category="APP", subcategory="CLIENT_CONFIG",
-                event="reload"
+                "to date.", category="app", subcategory="client_config",
+                event="get"
             )
 
     def _on_servers_retrieved(self, future_server_list: Future):
-        server_list = future_server_list.result()
+        try:
+            server_list = future_server_list.result()
+        except ProtonError as error:
+            logger.warning(
+                f"Server list update failed: {error}",
+                category="app", subcategory="servers", event="get")
+            if not self.server_list:
+                raise
+            return
+
         if self._is_server_list_outdated(server_list):
             self.server_list = server_list
             self._state.last_server_list_update_time = server_list.loads_update_timestamp
@@ -184,8 +216,8 @@ class VPNDataRefresher(GObject.Object):
             self._emit_signal_once_all_required_vpn_data_is_available()
         else:
             logger.debug(
-                "Skipping server list reload because it's already up to date.",
-                category="APP", subcategory="SERVERS", event="RELOAD"
+                "Skipping server list update because it's already up to date.",
+                category="app", subcategory="servers", event="reload"
             )
 
     def _emit_signal_once_all_required_vpn_data_is_available(self):

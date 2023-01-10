@@ -12,7 +12,6 @@ from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 from proton.vpn.connection.states import Disconnected, Connected, StateContext, Error
-from proton.vpn.connection.events import UnexpectedError
 
 from tests.unit.utils import process_gtk_events
 
@@ -60,6 +59,7 @@ def controller_mocking_successful_logout():
 
     controller_mock.logout.return_value = logout_future
     controller_mock.is_connection_active = False
+    controller_mock.current_connection_status = Disconnected(StateContext(event=None, connection=None))
 
     return controller_mock
 
@@ -78,10 +78,10 @@ def test_successful_logout(controller_mocking_successful_logout, server_list):
 
 
 @pytest.fixture
-def controller_mocking_successful_logout_with_current_connection():
+def controller_mocking_successful_logout_with_current_connection(server_list):
     controller_mock = Mock()
     vpnconnection_mock = Mock()
-    vpnconnection_mock.server_id = 1
+    vpnconnection_mock.server_id = server_list[0].id
 
     logout_future_raises_exception = Future()
     logout_future_raises_exception.set_exception(VPNConnectionFoundAtLogout("test"))
@@ -91,7 +91,7 @@ def controller_mocking_successful_logout_with_current_connection():
 
     controller_mock.logout.side_effect = [logout_future_raises_exception, logout_future_success]
     controller_mock.is_connection_active = True
-    controller_mock.current_connection.status = Connected(StateContext(None, vpnconnection_mock))
+    controller_mock.current_connection_status = Connected(StateContext(event=None, connection=vpnconnection_mock))
 
     return controller_mock
 

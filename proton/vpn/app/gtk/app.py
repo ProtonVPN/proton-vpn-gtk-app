@@ -4,11 +4,12 @@ This module defines the main App class.
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, List
 
-from gi.repository import GObject
+from gi.repository import GObject, Gdk, Gtk
 
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.main import MainWidget
+from proton.vpn.app.gtk.widgets.headerbar import HeaderBarWidget
+from proton.vpn.app.gtk.widgets.report import BugReportWidget
 from proton.vpn import logging
 
 
@@ -17,18 +18,66 @@ logger = logging.getLogger(__name__)
 
 class MainWindow(Gtk.ApplicationWindow):
     """Main window."""
-    def __init__(self, controller: Controller):
+
+    WIDTH = 400
+    HEIGTH = 600
+
+    def __init__(
+        self,
+        controller: Controller,
+    ):
         super().__init__(title="Proton VPN")
 
+        self.headerbar_widget = HeaderBarWidget()
+        self.bug_report_widget = BugReportWidget
+        self._setup_headerbar_actions()
         self._controller = controller
-
-        self.set_size_request(400, 600)
         self.set_border_width(10)
-        self.set_resizable(False)
         self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_window_resize_restrictions()
 
+        self.set_titlebar(self.headerbar_widget)
         self.main_widget = MainWidget(controller=controller, main_window=self)
         self.add(self.main_widget)
+
+    def set_window_resize_restrictions(self):
+        """Set window resize restrictions.
+        The window should be able to be resized on the vertical axis but not
+        on the horizontal axis.
+        """
+        self.set_size_request(MainWindow.WIDTH, MainWindow.HEIGTH)
+        geometry = Gdk.Geometry()
+        geometry.min_width = 0
+        geometry.max_width = MainWindow.WIDTH
+        geometry.min_height = 0
+        geometry.max_height = 99999
+        self.set_geometry_hints(
+            self,
+            geometry,
+            (Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE)
+        )
+
+    def _setup_headerbar_actions(self):
+        # Add actions to this window
+        self.add_action(self.headerbar_widget.bug_report_action)
+        self.add_action(self.headerbar_widget.quit_action)
+
+        # Connect actions to callbacks
+        self.headerbar_widget.bug_report_action.connect(
+            "activate", self._report_an_issue
+        )
+        self.headerbar_widget.quit_action.connect(
+            "activate", self._quit
+        )
+
+    def _report_an_issue(self, simple_action, _):  # pylint: disable=unused-argument
+        new_dialog = BugReportWidget(self._controller, self)
+        new_dialog_response = Gtk.ResponseType(new_dialog.run())
+        if new_dialog_response == Gtk.ResponseType.DELETE_EVENT:
+            new_dialog.destroy()
+
+    def _quit(self, simple_action, _):  # pylint: disable=unused-argument
+        self.close()
 
 
 class App(Gtk.Application):

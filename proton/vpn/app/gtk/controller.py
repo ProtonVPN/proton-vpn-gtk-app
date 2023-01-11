@@ -10,6 +10,7 @@ from proton.vpn.core_api.connection import Subscriber, VPNConnectionHolder
 from proton.vpn.servers.server_types import LogicalServer
 
 from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
+from proton.vpn.app.gtk.widgets.report import BugReportForm
 
 
 class Controller:
@@ -141,6 +142,14 @@ class Controller:
     def is_connection_active(self) -> bool:
         """Returns whether the current connection is in connecting/connected state or not."""
         return self._api.connection.is_connection_active
+
+    def submit_bug_report(self, report_form: BugReportForm) -> Future:
+        """Submits an issue report.
+        :return: A Future object wrapping the result of the API."""
+        return self._thread_pool.submit(
+            self._api.bug_report.submit,
+            report_form
+        )
 
     def register_connection_status_subscriber(self, subscriber):
         """

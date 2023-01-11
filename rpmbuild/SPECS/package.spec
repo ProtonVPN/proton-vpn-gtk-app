@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.9.5
+%define version 0.10.0
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -69,6 +69,8 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %changelog
 * Fri Jan 13 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.9.5
 - Load VPN server details from persisted connection
+* Tue Jan 17 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.10.0
+- Feature: Add issue report submission dialog
 
 * Wed Jan 11 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.9.4
 - Fix Fail silently when the server list or the client config could not be updated

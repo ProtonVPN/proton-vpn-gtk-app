@@ -101,8 +101,8 @@ class VPNDataRefresher(GObject.Object):
 
     def enable(self):
         """Start retrieving data periodically from Proton's REST API."""
-        self._start_retrieving_client_config_periodically()
-        self._start_retrieving_server_list_periodically()
+        self._enable_client_config_refresh()
+        self._enable_server_list_refresh()
         logger.info(
             "VPN data refresher service enabled.",
             category="app", subcategory="vpn_data_refresher", event="enable"
@@ -110,44 +110,82 @@ class VPNDataRefresher(GObject.Object):
 
     def disable(self):
         """Stops retrieving data periodically from Proton's REST API."""
-        self._stop_retrieving_client_config_periodically()
-        self._stop_retrieving_server_list_periodically()
+        self._disable_client_config_refresh()
+        self._disable_server_list_refresh()
         self._state = VPNDataRefresherState()
         logger.info(
             "VPN data refresher service disabled.",
             category="app", subcategory="vpn_data_refresher", event="disable"
         )
 
-    def _start_retrieving_client_config_periodically(self):
-        self.retrieve_client_config()
-        self._state.reload_client_config_source_id = GLib.timeout_add(
-            interval=CACHE_EXPIRATION_CHECK_INTERVAL_IN_SECONDS * 1000,
-            function=self.retrieve_client_config
+    def _enable_server_list_refresh(self):
+        """Schedules periodic API calls to refresh the server list."""
+        future_server_list = self._get_cached_server_list()
+        # After the server list is retrieved from cache (if existing),
+        # start updating it periodically with data retrieved from the API.
+        future_server_list.add_done_callback(
+            lambda f: GLib.idle_add(
+                self._refresh_server_list_periodically
+            )
         )
 
-    def _stop_retrieving_client_config_periodically(self):
+    def _enable_client_config_refresh(self):
+        """Schedules periodic API calls to refresh the client configuration."""
+        future_client_config = self._get_cached_client_config()
+        # After the client config is retrieved from cache (if existing),
+        # start updating it periodically with data retrieved from the API.
+        future_client_config.add_done_callback(
+            lambda f: GLib.idle_add(
+                self._refresh_client_config_periodically
+            )
+        )
+
+    def _disable_client_config_refresh(self):
         if self._state.reload_client_config_source_id is not None:
             GLib.source_remove(self._state.reload_client_config_source_id)
+            self._state.reload_client_config_source_id = None
 
-    def _start_retrieving_server_list_periodically(self):
-        self.retrieve_server_list()
-        self._state.reload_servers_source_id = GLib.timeout_add(
-            interval=CACHE_EXPIRATION_CHECK_INTERVAL_IN_SECONDS * 1000,
-            function=self.retrieve_server_list
-        )
-
-    def _stop_retrieving_server_list_periodically(self):
+    def _disable_server_list_refresh(self):
         if self._state.reload_servers_source_id is not None:
             GLib.source_remove(self._state.reload_servers_source_id)
+            self._state.reload_servers_source_id = None
 
-    def retrieve_client_config(self) -> Future:
+    def _refresh_client_config_periodically(self):
+        self.get_fresh_client_config()
+        self._state.reload_client_config_source_id = GLib.timeout_add(
+            interval=CACHE_EXPIRATION_CHECK_INTERVAL_IN_SECONDS * 1000,
+            function=self.get_fresh_client_config
+        )
+
+    def _get_cached_client_config(self) -> Future:
+        future = self._thread_pool.submit(self._api.get_cached_client_config)
+        future.add_done_callback(lambda f: GLib.idle_add(
+            self._on_client_config_retrieved, f
+        ))
+        return future
+
+    def _refresh_server_list_periodically(self):
+        self.get_fresh_server_list()
+        self._state.reload_servers_source_id = GLib.timeout_add(
+            interval=CACHE_EXPIRATION_CHECK_INTERVAL_IN_SECONDS * 1000,
+            function=self.get_fresh_server_list
+        )
+
+    def _get_cached_server_list(self):
+        future = self._thread_pool.submit(self._api.servers.get_cached_server_list)
+        future.add_done_callback(lambda f: GLib.idle_add(
+            self._on_server_list_retrieved, f
+        ))
+        return future
+
+    def get_fresh_client_config(self) -> Future:
         """Returns client config."""
         logger.debug(
             "Retrieving client configuration...",
             category="api", subcategory="client_config", event="get"
         )
         future = self._thread_pool.submit(
-            self._api.get_client_config,
+            self._api.get_fresh_client_config,
             force_refresh=False
         )
         future.add_done_callback(
@@ -157,7 +195,7 @@ class VPNDataRefresher(GObject.Object):
         )
         return future
 
-    def retrieve_server_list(self) -> Future:
+    def get_fresh_server_list(self) -> Future:
         """
         Requests the list of servers. Note that a remote API call is only
         triggered if the server list cache expired.
@@ -168,11 +206,11 @@ class VPNDataRefresher(GObject.Object):
             category="api", subcategory="logicals", event="get"
         )
         future = self._thread_pool.submit(
-            self._api.servers.get_server_list,
+            self._api.servers.get_fresh_server_list,
             force_refresh=False
         )
         future.add_done_callback(
-            lambda future: GLib.idle_add(self._on_servers_retrieved, future)
+            lambda future: GLib.idle_add(self._on_server_list_retrieved, future)
         )
         return future
 
@@ -187,6 +225,10 @@ class VPNDataRefresher(GObject.Object):
                 raise
             return
 
+        if not new_client_config:
+            # Client config cache did not exist.
+            return
+
         if new_client_config is not self.client_config:
             self.client_config = new_client_config
             self.emit("new-client-config", self.client_config)
@@ -198,7 +240,7 @@ class VPNDataRefresher(GObject.Object):
                 event="get"
             )
 
-    def _on_servers_retrieved(self, future_server_list: Future):
+    def _on_server_list_retrieved(self, future_server_list: Future):
         try:
             server_list = future_server_list.result()
         except ProtonError as error:
@@ -207,6 +249,10 @@ class VPNDataRefresher(GObject.Object):
                 category="app", subcategory="servers", event="get")
             if not self.server_list:
                 raise
+            return
+
+        if not server_list:
+            # Server list cache did not exist.
             return
 
         if self._is_server_list_outdated(server_list):

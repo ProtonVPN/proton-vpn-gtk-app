@@ -1,4 +1,4 @@
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, Future
 from threading import Event
 from unittest.mock import Mock, patch
 import time
@@ -15,10 +15,28 @@ from proton.vpn.app.gtk.services.vpn_data_refresher import VPNDataRefresherState
 from tests.unit.utils import process_gtk_events
 
 
+class FakeThreadPoolExecutor:
+    """
+    Fake thread pool executor implementation.
+
+    It exposes the same interface but tasks submitted to this pool are
+    just executed synchronously.
+    """
+    def submit(self, fn, *args, **kwargs):
+        future = Future()
+        try:
+            result = fn(*args, **kwargs)
+            future.set_result(result)
+            return future
+        except Exception as exception:
+            future.set_exception(exception)
+
+        return future
+
+
 @pytest.fixture
 def thread_pool_executor():
-    with ThreadPoolExecutor() as thread_pool_executor:
-        yield thread_pool_executor
+    return FakeThreadPoolExecutor()
 
 
 @pytest.fixture
@@ -48,7 +66,7 @@ def test_notify_subscribers_when_client_config_is_updated(
         thread_pool_executor, expected_client_config
 ):
     mock_api = Mock()
-    mock_api.get_client_config.return_value = expected_client_config
+    mock_api.get_fresh_client_config.return_value = expected_client_config
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
 
@@ -65,7 +83,7 @@ def test_notify_subscribers_when_client_config_is_updated(
     vpn_data_ready_event = Event()
     vpn_data_refresher.connect("vpn-data-ready", lambda *_: vpn_data_ready_event.set())
 
-    vpn_data_refresher.retrieve_client_config()
+    vpn_data_refresher.get_fresh_client_config()
 
     process_gtk_events()
 
@@ -78,7 +96,7 @@ def test_notify_subscribers_when_server_list_is_updated(
         thread_pool_executor, expected_server_list
 ):
     mock_api = Mock()
-    mock_api.servers.get_server_list.return_value = expected_server_list
+    mock_api.servers.get_fresh_server_list.return_value = expected_server_list
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
 
@@ -95,7 +113,7 @@ def test_notify_subscribers_when_server_list_is_updated(
     vpn_data_ready_event = Event()
     vpn_data_refresher.connect("vpn-data-ready", lambda *_: vpn_data_ready_event.set())
 
-    vpn_data_refresher.retrieve_server_list()
+    vpn_data_refresher.get_fresh_server_list()
 
     process_gtk_events()
 
@@ -108,8 +126,10 @@ def test_enable_notifies_subscribers_when_vpn_data_is_ready(
         thread_pool_executor, expected_client_config, expected_server_list
 ):
     mock_api = Mock()
-    mock_api.get_client_config.return_value = expected_client_config
-    mock_api.servers.get_server_list.return_value = expected_server_list
+    mock_api.get_cached_client_config.return_value = None
+    mock_api.get_fresh_client_config.return_value = expected_client_config
+    mock_api.servers.get_cached_server_list.return_value = None
+    mock_api.servers.get_fresh_server_list.return_value = expected_server_list
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
 
@@ -140,18 +160,27 @@ def test_disable_resets_state(
         thread_pool_executor, expected_client_config, expected_server_list
 ):
     mock_api = Mock()
-    mock_api.get_client_config.return_value = expected_client_config
-    mock_api.servers.get_server_list.return_value = expected_server_list
+    mock_api.get_cached_client_config.return_value = None
+    mock_api.get_fresh_client_config.return_value = expected_client_config
+    mock_api.servers.get_cached_server_list.return_value = None
+    mock_api.servers.get_fresh_server_list.return_value = expected_server_list
 
     timeout_add_source_ids = [1, 2]
     patched_glib_timeout_add.side_effect = timeout_add_source_ids
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
 
+    vpn_data_ready_event = Event()
+    vpn_data_refresher.connect(
+        "vpn-data-ready",
+        lambda *_: vpn_data_ready_event.set()
+    )
+
     vpn_data_refresher.enable()
 
     process_gtk_events()
 
+    assert vpn_data_ready_event.wait(timeout=0)
     assert vpn_data_refresher.is_vpn_data_ready
 
     vpn_data_refresher.disable()
@@ -163,41 +192,41 @@ def test_disable_resets_state(
         assert call.args[0] == timeout_add_source_ids[nth_call]
 
 
-def test_retrieve_server_list_raises_error_when_api_request_fails_and_it_was_not_retrieved_previously(
+def test_get_fresh_server_list_raises_error_when_api_request_fails_and_it_was_not_retrieved_previously(
         thread_pool_executor
 ):
     mock_api = Mock()
-    mock_api.servers.get_server_list.side_effect = ProtonError("Expected error")
+    mock_api.servers.get_fresh_server_list.side_effect = ProtonError("Expected error")
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
-    vpn_data_refresher.retrieve_server_list()
+    vpn_data_refresher.get_fresh_server_list()
 
     with pytest.raises(ProtonError):
         process_gtk_events()
 
 
-def test_retrieve_client_config_raises_error_when_api_request_fails_and_it_was_not_retrieved_previously(
+def test_get_fresh_client_config_raises_error_when_api_request_fails_and_it_was_not_retrieved_previously(
         thread_pool_executor
 ):
     mock_api = Mock()
-    mock_api.get_client_config.side_effect = ProtonError("Expected error")
+    mock_api.get_fresh_client_config.side_effect = ProtonError("Expected error")
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
-    vpn_data_refresher.retrieve_client_config()
+    vpn_data_refresher.get_fresh_client_config()
 
     with pytest.raises(ProtonError):
         process_gtk_events()
 
 
-def test_retrieve_server_list_fails_silently_when_api_request_fails_but_it_was_retrieved_previously(
+def test_get_fresh_server_list_fails_silently_when_api_request_fails_but_it_was_retrieved_previously(
         thread_pool_executor, caplog
 ):
     mock_api = Mock()
-    mock_api.servers.get_server_list.side_effect = ProtonError("Expected error")
+    mock_api.servers.get_fresh_server_list.side_effect = ProtonError("Expected error")
     state = VPNDataRefresherState(server_list=Mock())
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api, state)
-    vpn_data_refresher.retrieve_server_list()
+    vpn_data_refresher.get_fresh_server_list()
 
     process_gtk_events()
 
@@ -206,15 +235,15 @@ def test_retrieve_server_list_fails_silently_when_api_request_fails_but_it_was_r
     assert "Server list update failed" in warnings[0].message
 
 
-def test_retrieve_client_config_fails_silently_when_api_request_fails_but_it_was_retrieved_previously(
+def test_get_fresh_client_config_fails_silently_when_api_request_fails_but_it_was_retrieved_previously(
         thread_pool_executor, caplog
 ):
     mock_api = Mock()
-    mock_api.get_client_config.side_effect = ProtonError("Expected error")
+    mock_api.get_fresh_client_config.side_effect = ProtonError("Expected error")
     state = VPNDataRefresherState(client_config=Mock())
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api, state)
-    vpn_data_refresher.retrieve_client_config()
+    vpn_data_refresher.get_fresh_client_config()
 
     process_gtk_events()
 

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.9.5) unstable; urgency=medium
+
+  * Load VPN server details from persisted connection
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Fri, 13 Jan 2023 17:47:04 +0000
+
 proton-vpn-gtk-app (0.9.4) unstable; urgency=medium
 
   * Fail silently when the server list or the client config could not be updated

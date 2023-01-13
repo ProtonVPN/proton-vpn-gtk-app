@@ -30,7 +30,9 @@ class Controller:
         self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
             self._thread_pool, self._api
         )
-        self.reconnector = vpn_reconnector or VPNReconnector(self._api.connection)
+        self.reconnector = vpn_reconnector or VPNReconnector(
+            self._api.connection, self.vpn_data_refresher
+        )
 
     def login(self, username: str, password: str) -> Future:
         """
@@ -105,7 +107,9 @@ class Controller:
         self._connect_to_vpn(server)
 
     def _connect_to_vpn(self, server: LogicalServer):
-        vpn_server = self._api.get_vpn_server(server, self.vpn_data_refresher.client_config)
+        vpn_server = self._api.connection.get_vpn_server(
+            server, self.vpn_data_refresher.client_config
+        )
         self._api.connection.connect(
             vpn_server,
             protocol=self.connection_protocol

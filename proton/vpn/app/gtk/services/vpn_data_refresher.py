@@ -8,8 +8,8 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
 
 from gi.repository import GLib, GObject
-from proton.session.exceptions import ProtonError
 
+from proton.session.exceptions import ProtonError
 from proton.vpn.servers.list import ServerList
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.client_config import ClientConfig

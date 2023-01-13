@@ -2,6 +2,7 @@
 Auto reconnect feature.
 """
 import random
+from typing import TYPE_CHECKING
 
 from gi.repository import GLib
 
@@ -12,6 +13,9 @@ from proton.vpn.core_api.connection import VPNConnectionHolder
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
+
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.services import VPNDataRefresher
 
 logger = logging.getLogger(__name__)
 
@@ -28,9 +32,11 @@ class VPNReconnector:
     process and will run its own main loop.
     """
 
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             vpn_connector: VPNConnectionHolder,
+            vpn_data_refresher: "VPNDataRefresher",
             vpn_monitor: VPNMonitor = None,
             network_monitor: NetworkMonitor = None,
             session_monitor: SessionMonitor = None
@@ -47,6 +53,8 @@ class VPNReconnector:
         self._session_monitor = session_monitor or SessionMonitor()
         self._session_monitor.session_unlocked_callback = self._on_session_unlocked
 
+        self._vpn_data_refresher = vpn_data_refresher
+
         self._retry_src_id = None
         self.retry_counter = 0
 
@@ -57,6 +65,8 @@ class VPNReconnector:
 
     def enable(self):
         """Enables the auto reconnect feature."""
+        if not self._vpn_data_refresher.is_vpn_data_ready:
+            raise RuntimeError("VPN data refresher is not ready.")
         self._reset_retry_counter()
         self._vpn_monitor.enable()
         self._network_monitor.enable()
@@ -150,17 +160,33 @@ class VPNReconnector:
 
     def _reconnect(self):
         logger.info(f"Reconnecting (attempt #{self.retry_counter})...")
-
         connection = self._vpn_connector.current_connection
-        self._vpn_connector.connect(
-            connection._vpnserver,  # pylint: disable=protected-access
-            connection.protocol,
-            connection.backend
-        )
-        self.retry_counter += 1
-        self._retry_src_id = None
+
+        vpn_server = self._get_vpn_server(connection.server_id)
+        if vpn_server:
+            self._vpn_connector.connect(
+                vpn_server,
+                connection.protocol,
+                connection.backend
+            )
+            self.retry_counter += 1
+            self._retry_src_id = None
+        else:
+            # The server was removed from the server list after the user had connected to it.
+            logger.warning(
+                "VPN Reconnection not possible: logical server not found "
+                f"(id = {connection.server_id})"
+            )
 
         return False  # Remove periodic source
+
+    def _get_vpn_server(self, server_id: str):
+        logical_server = self._vpn_data_refresher.server_list.get_by_id(server_id)
+        if not logical_server:
+            return None
+        client_config = self._vpn_data_refresher.client_config
+
+        return self._vpn_connector.get_vpn_server(logical_server, client_config)
 
     def _calculate_retry_delay_in_milliseconds(self) -> int:
         """

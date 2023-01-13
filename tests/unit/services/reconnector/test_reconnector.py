@@ -5,10 +5,21 @@ import pytest
 from proton.vpn.connection import states
 from proton.vpn.core_api.connection import VPNConnectionHolder
 
+from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.reconnector import VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
+
+
+@pytest.fixture
+def vpn_connector():
+    return Mock(VPNConnectionHolder)
+
+
+@pytest.fixture
+def vpn_data_refresher():
+    return Mock(VPNDataRefresher)
 
 
 @pytest.fixture
@@ -26,15 +37,12 @@ def session_monitor():
     return Mock(SessionMonitor)
 
 
-@pytest.fixture
-def vpn_connector():
-    return Mock(VPNConnectionHolder)
-
-
 def test_enable_enables_vpn_and_network_and_session_monitors(
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
-    reconnector = VPNReconnector(vpn_connector, vpn_monitor, network_monitor, session_monitor)
+    reconnector = VPNReconnector(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    )
 
     reconnector.enable()
 
@@ -43,10 +51,32 @@ def test_enable_enables_vpn_and_network_and_session_monitors(
     session_monitor.enable.assert_called_once()
 
 
-def test_disable_disables_vpn_and_network_and_session_monitors(
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+def test_enable_raises_runtime_error_if_vpn_data_refresher_is_not_ready(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
-    reconnector = VPNReconnector(vpn_connector, vpn_monitor, network_monitor, session_monitor)
+    """
+    The reconnector retrieves the server list and the client configuration
+    required to initiate a reconnection from its VPNDataRefresher instance.
+    For this reason, it cannot be enabled if the VPNDataRefresher is not
+    ready. That is, the VPNDataRefresher did not retrieve the server list
+    and/or the client configuration yet.
+    """
+    reconnector = VPNReconnector(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    )
+
+    vpn_data_refresher.is_vpn_data_ready = False
+
+    with pytest.raises(RuntimeError):
+        reconnector.enable()
+
+
+def test_disable_disables_vpn_and_network_and_session_monitors(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+):
+    reconnector = VPNReconnector(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    )
 
     reconnector.disable()
 
@@ -56,10 +86,12 @@ def test_disable_disables_vpn_and_network_and_session_monitors(
 
 
 def test_did_vpn_drop_returns_false_if_there_is_not_a_vpn_connection(
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     vpn_connector.current_connection = None
-    reconnector = VPNReconnector(vpn_connector, vpn_monitor, network_monitor, session_monitor)
+    reconnector = VPNReconnector(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    )
 
     assert not reconnector.did_vpn_drop
 
@@ -69,10 +101,12 @@ def test_did_vpn_drop_returns_false_if_there_is_not_a_vpn_connection(
 ])
 def test_did_vpn_drop_returns_true_only_if_the_current_connection_state_is_error(
         state,
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     vpn_connector.current_connection.status = state
-    reconnector = VPNReconnector(vpn_connector, vpn_monitor, network_monitor, session_monitor)
+    reconnector = VPNReconnector(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    )
 
     expected_result = isinstance(state, states.Error)
     assert reconnector.did_vpn_drop is expected_result
@@ -86,10 +120,10 @@ def test_did_vpn_drop_returns_true_only_if_the_current_connection_state_is_error
 ])
 def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_only_if_vpn_connection_dropped_and_session_is_unlocked(
         did_vpn_drop, is_session_unlocked, reconnection_expected,
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     reconnector = VPNReconnector(
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
     )
 
     with patch.object(VPNReconnector, "did_vpn_drop", new_callable=PropertyMock) as did_vpn_drop_patch, \
@@ -113,10 +147,10 @@ def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_o
 ])
 def test_reconnect_is_called_once_user_session_is_unlocked_only_if_vpn_connection_dropped_and_network_is_up(
         did_vpn_drop, is_network_up, reconnection_expected,
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     reconnector = VPNReconnector(
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
     )
 
     with patch.object(VPNReconnector, "did_vpn_drop", new_callable=PropertyMock) as did_vpn_drop_patch, \
@@ -135,12 +169,12 @@ def test_reconnect_is_called_once_user_session_is_unlocked_only_if_vpn_connectio
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
 def test_schedule_reconnection_only_schedule_a_reconnection_if_there_is_not_one_already_scheduled(
     glib_mock,
-    vpn_connector, vpn_monitor, network_monitor, session_monitor
+    vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     glib_mock.timeout_add_seconds.return_value = 1
 
     reconnector = VPNReconnector(
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
     )
 
     reconnection_scheduled = reconnector.schedule_reconnection()
@@ -157,12 +191,12 @@ def test_schedule_reconnection_only_schedule_a_reconnection_if_there_is_not_one_
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
 def test_on_vpn_drop_a_reconnection_attempt_is_scheduled_with_an_exponential_backoff_delay(
     glib_mock, random_mock,
-    vpn_connector, vpn_monitor, network_monitor, session_monitor
+    vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     """After each reconnection attempt, the backoff delay should increase
     exponentially."""
     VPNReconnector(
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
     )
 
     glib_mock.timeout_add_seconds.return_value = 1
@@ -190,13 +224,13 @@ def test_on_vpn_drop_a_reconnection_attempt_is_scheduled_with_an_exponential_bac
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
 def test_on_vpn_up_resets_retry_counter_and_removes_pending_scheduled_attempt(
         glib_mock, random_mock,
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     """After the VPN connection has been restored, the retry counter that
     increases the backoff delay should be reset, and if there is a pending
     scheduled reconnection attempt then it should be unscheduled."""
     reconnector = VPNReconnector(
-        vpn_connector, vpn_monitor, network_monitor, session_monitor
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
     )
 
     glib_mock.timeout_add_seconds.return_value = 1

@@ -67,10 +67,11 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Fri Jan 13 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.9.5
-- Load VPN server details from persisted connection
 * Tue Jan 17 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.10.0
 - Feature: Add issue report submission dialog
+
+* Fri Jan 13 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.9.5
+- Load VPN server details from persisted connection
 
 * Wed Jan 11 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.9.4
 - Fix Fail silently when the server list or the client config could not be updated

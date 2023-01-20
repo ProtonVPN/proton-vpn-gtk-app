@@ -10,7 +10,7 @@ import re
 from typing import TYPE_CHECKING
 from gi.repository import Gtk, GLib
 
-from proton.session.exceptions import ProtonAPINotReachable
+from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.core_api.reports import BugReportForm
 import proton.vpn.app.gtk as app
 from proton.vpn import logging
@@ -25,12 +25,20 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     """Widget used to report bug/issues to Proton."""
     WIDTH = 400
     HEIGHT = 300
+    EMAIL_REGEX = re.compile(
+        r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
+    )
+    BUG_REPORT_SENDING_MESSAGE = "Sending bug report..."
+    BUG_REPORT_SUCCESS_MESSAGE = "Report sent successfully\n"\
+                                 "(this window will close automatically)"
+    BUG_REPORT_NETWORK_ERROR_MESSAGE = "Proton services could not be reached.\n" \
+                                       "Please try again."
+    BUG_REPORT_UNEXPECTED_ERROR_MESSAGE = "Something went wrong. " \
+                                          "Please try submitting your report at:\n" \
+                                          "https://protonvpn.com/support-form"
 
     def __init__(self, controller: Controller, main_window: Gtk.ApplicationWindow):
         super().__init__(transient_for=main_window)
-        self._compiled_email_regex = re.compile(
-            r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
-        )
         self.controller = controller
 
         self.set_title("Report an Issue")
@@ -48,7 +56,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     @property
     def status_label(self) -> str:
         """Returns submission status"""
-        return self._submission_status_label
+        return self._submission_status_label.get_text()
 
     @status_label.setter
     def status_label(self, newvalue: str):
@@ -66,14 +74,8 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             self.close()
             return
 
-        self.status_label = "Sending bug report...\n"
+        self.status_label = self.BUG_REPORT_SENDING_MESSAGE
 
-        self.set_response_sensitive(Gtk.ResponseType.OK, False)
-        attachments = (
-            [LogCollector.get_app_log(logger)]
-            if self.send_logs_checkbox.get_active()
-            else []
-        )
         report_form = BugReportForm(
             username=self.username_entry.get_text(),
             email=self.email_entry.get_text(),
@@ -83,11 +85,14 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
                 self.description_buffer.get_end_iter(),
                 True
             ),
-            attachments=attachments,
             client_version=app.__version__,
             client="GUI/Desktop",
         )
 
+        if self.send_logs_checkbox.get_active():
+            report_form.attachments.append(LogCollector.get_app_log(logger))
+
+        self._disable_form()
         future = self.controller.submit_bug_report(report_form)
         future.add_done_callback(
             lambda future: GLib.idle_add(
@@ -97,19 +102,24 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         )
 
     def _on_report_submission_result(self, future: Future):
-        self.set_response_sensitive(Gtk.ResponseType.OK, True)
         try:
             future.result()
         except ProtonAPINotReachable:
-            self.status_label = "Proton services could not be reached. Please try again.\n"
             logger.warning("Report submission failed: API not reachable.")
-        except Exception:
-            self.status_label = "Something went wrong. Please try submitting your report at:\n" \
-                                "https://protonvpn.com/support-form\n"
-            raise
+            self.status_label = self.BUG_REPORT_NETWORK_ERROR_MESSAGE
+            self._enable_form()
+        except ProtonAPIError as exc:
+            # ProtonAPIError is raised when the backend considers the email
+            # address is not valid (some addresses like test@test.com are banned).
+            logger.warning(f"Proton API error: {exc}")
+            self.status_label = exc.error
+            self._enable_form()
+        except Exception:  # pylint: disable=broad-except
+            self.status_label = self.BUG_REPORT_UNEXPECTED_ERROR_MESSAGE
+            self._enable_form()
+            logger.exception("Unexpected error submitting bug report.")
         else:
-            self.status_label = "Report sent successfully\n"\
-                "(dialog window will close by itself)\n"
+            self.status_label = self.BUG_REPORT_SUCCESS_MESSAGE
             GLib.timeout_add_seconds(
                 interval=3,
                 function=self.close
@@ -117,10 +127,33 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
         return False
 
+    def _disable_form(self):
+        self.username_entry.set_sensitive(False)
+        self.email_entry.set_sensitive(False)
+        self.title_entry.set_sensitive(False)
+        self.description_textview.set_sensitive(False)
+        self.send_logs_checkbox.set_sensitive(False)
+        self.set_response_sensitive(Gtk.ResponseType.OK, False)
+
+    def _enable_form(self):
+        self.username_entry.set_sensitive(True)
+        self.email_entry.set_sensitive(True)
+        self.title_entry.set_sensitive(True)
+        self.description_textview.set_sensitive(True)
+        self.send_logs_checkbox.set_sensitive(True)
+        if self._can_user_submit_form:
+            self.set_response_sensitive(Gtk.ResponseType.OK, True)
+
     def _on_entry_changed(self, _: Gtk.Widget):
+        self.set_response_sensitive(
+            Gtk.ResponseType.OK, self._can_user_submit_form
+        )
+
+    @property
+    def _can_user_submit_form(self) -> bool:
         is_username_provided = len(self.username_entry.get_text().strip()) > 0
         is_email_provided = re.fullmatch(
-            self._compiled_email_regex, self.email_entry.get_text()
+            self.EMAIL_REGEX, self.email_entry.get_text()
         )
         is_title_provided = len(self.title_entry.get_text().strip()) > 0
         is_description_provided = len(self.description_buffer.get_text(
@@ -129,15 +162,11 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             True
         )) > 10
 
-        can_user_submit_form = (
+        return bool(
             is_username_provided
             and is_email_provided
             and is_title_provided
             and is_description_provided
-        )
-
-        self.set_response_sensitive(
-            Gtk.ResponseType.OK, can_user_submit_form
         )
 
     def _generate_fields(self):  # pylint: disable=too-many-statements
@@ -152,9 +181,10 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self._submission_status_label.set_line_wrap(True)
         # set_max_width_chars is required for set_line_wrap to have effect.
         self._submission_status_label.set_max_width_chars(1)
+        self._submission_status_label.set_property("margin-bottom", 10)
         fields_vbox.add(self._submission_status_label)  # pylint: disable=no-member
 
-        username_label = Gtk.Label.new("Username*")
+        username_label = Gtk.Label.new("Username")
         username_label.set_halign(Gtk.Align.START)
         self.username_entry = Gtk.Entry.new()
         self.username_entry.set_property("margin-bottom", 10)
@@ -163,7 +193,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         fields_vbox.add(username_label)  # pylint: disable=no-member
         fields_vbox.add(self.username_entry)  # pylint: disable=no-member
 
-        email_label = Gtk.Label.new("Email*")
+        email_label = Gtk.Label.new("Email")
         email_label.set_halign(Gtk.Align.START)
         self.email_entry = Gtk.Entry.new()
         self.email_entry.set_property("margin-bottom", 10)
@@ -172,7 +202,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         fields_vbox.add(email_label)  # pylint: disable=no-member
         fields_vbox.add(self.email_entry)  # pylint: disable=no-member
 
-        title_label = Gtk.Label.new("Title*")
+        title_label = Gtk.Label.new("Title")
         title_label.set_halign(Gtk.Align.START)
         self.title_entry = Gtk.Entry.new()
         self.title_entry.set_property("margin-bottom", 10)
@@ -181,7 +211,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         fields_vbox.add(title_label)  # pylint: disable=no-member
         fields_vbox.add(self.title_entry)  # pylint: disable=no-member
 
-        description_label = Gtk.Label.new("Description*")
+        description_label = Gtk.Label.new("Description")
         description_label.set_halign(Gtk.Align.START)
         # Has to have min 10 chars
         self.description_buffer = Gtk.TextBuffer.new(None)
@@ -206,7 +236,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
         # By default Gtk.Dialog has a vertical box child (Gtk.Box)
         self.vbox.add(fields_vbox)  # pylint: disable=no-member
-        self.vbox.set_border_width(30)  # pylint: disable=no-member
+        self.vbox.set_border_width(20)  # pylint: disable=no-member
         self.vbox.set_spacing(20)  # pylint: disable=no-member
 
         self.username_entry.connect(

@@ -143,12 +143,12 @@ class Controller:
         """Returns whether the current connection is in connecting/connected state or not."""
         return self._api.connection.is_connection_active
 
-    def submit_bug_report(self, report_form: BugReportForm) -> Future:
+    def submit_bug_report(self, bug_report: BugReportForm) -> Future:
         """Submits an issue report.
         :return: A Future object wrapping the result of the API."""
         return self._thread_pool.submit(
-            self._api.bug_report.submit,
-            report_form
+            self._api.submit_bug_report,
+            bug_report
         )
 
     def register_connection_status_subscriber(self, subscriber):

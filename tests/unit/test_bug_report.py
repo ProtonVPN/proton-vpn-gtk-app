@@ -6,21 +6,23 @@ from proton.vpn.core_api.reports import BugReportForm
 from proton.vpn.app.gtk.widgets.report import BugReportWidget
 import proton.vpn.app.gtk as app
 from unittest.mock import Mock, patch
+import pytest
 
 
+@pytest.mark.parametrize(
+    "attach_logs, log_file", [(False, None), (True, StringIO("Log contents."))]
+)
 @patch("proton.vpn.app.gtk.widgets.report.LogCollector")
-def test_submit_form_successfully_arguments_are_passed_to_controller(log_collector_mock):
+def test_submit_form_successfully_arguments_are_passed_to_controller(log_collector_mock, attach_logs, log_file):
     controller_mock = Mock()
     bug_report_widget = BugReportWidget(controller_mock, Gtk.Window())
-
-    log_file = StringIO("Log contents.")
 
     expected_report_form = BugReportForm(
         username="test_user",
         email="email@pm.me",
         title="This is a title example",
         description="This is a description example",
-        attachments=[log_file],
+        attachments=[log_file] if log_file else [],
         client_version=app.__version__,
         client="GUI/Desktop",
     )
@@ -29,6 +31,7 @@ def test_submit_form_successfully_arguments_are_passed_to_controller(log_collect
     bug_report_widget.email_entry.set_text(expected_report_form.email)
     bug_report_widget.title_entry.set_text(expected_report_form.title)
     bug_report_widget.description_buffer.set_text(expected_report_form.description)
+    bug_report_widget.send_logs_checkbox.set_active(attach_logs)
     log_collector_mock.get_app_log.return_value = log_file
 
     bug_report_widget.click_on_submit_button()

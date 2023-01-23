@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.10.0
+%define version 0.10.1
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Mon Jan 23 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.10.1
+- Fix: Bug report feature
+
 * Tue Jan 17 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.10.0
 - Feature: Add issue report submission dialog
 

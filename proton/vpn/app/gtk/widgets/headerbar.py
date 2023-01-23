@@ -14,7 +14,7 @@ class HeaderBarWidget(Gtk.HeaderBar):
     def __init__(self):
         super().__init__()
         self.set_decoration_layout("menu:minimize,close")
-        self.set_title("Proton VPN Dashboard")
+        self.set_title("Proton VPN")
         self.set_show_close_button(True)
 
         self.menu_button_widget = Gtk.MenuButton()

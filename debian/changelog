@@ -1,8 +1,14 @@
+proton-vpn-gtk-app (0.10.1) unstable; urgency=medium
+
+  * Fix: Bug report feature
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Mon, 23 Jan 2023 09:00:00 +0100
+
 proton-vpn-gtk-app (0.10.0) unstable; urgency=medium
 
   * Feature: Add issue report submission dialog
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 17 Dec 2023 12:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 17 Jan 2023 12:00:00 +0100
 
 proton-vpn-gtk-app (0.9.5) unstable; urgency=medium
 

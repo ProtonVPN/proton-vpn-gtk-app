@@ -69,6 +69,11 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.status_label = "Sending bug report...\n"
 
         self.set_response_sensitive(Gtk.ResponseType.OK, False)
+        attachments = (
+            [LogCollector.get_app_log(logger)]
+            if self.send_logs_checkbox.get_active()
+            else []
+        )
         report_form = BugReportForm(
             username=self.username_entry.get_text(),
             email=self.email_entry.get_text(),
@@ -78,11 +83,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
                 self.description_buffer.get_end_iter(),
                 True
             ),
-            attachments=(
-                [LogCollector.get_app_log(logger)]
-                if self.send_logs_checkbox
-                else []
-            ),
+            attachments=attachments,
             client_version=app.__version__,
             client="GUI/Desktop",
         )
@@ -148,6 +149,9 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self._submission_status_label.set_name("error_label")
         self._submission_status_label.set_no_show_all(True)  # pylint: disable=no-member
         self._submission_status_label.set_justify(Gtk.Justification.CENTER)
+        self._submission_status_label.set_line_wrap(True)
+        # set_max_width_chars is required for set_line_wrap to have effect.
+        self._submission_status_label.set_max_width_chars(1)
         fields_vbox.add(self._submission_status_label)  # pylint: disable=no-member
 
         username_label = Gtk.Label.new("Username*")

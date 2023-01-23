@@ -26,7 +26,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self,
         controller: Controller,
     ):
-        super().__init__(title="Proton VPN")
+        super().__init__()
 
         self.headerbar_widget = HeaderBarWidget()
         self.bug_report_widget = BugReportWidget

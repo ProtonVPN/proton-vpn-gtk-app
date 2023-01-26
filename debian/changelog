@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.10.3) unstable; urgency=medium
+
+  * Add window icon
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Thu, 26 Jan 2023 10:13:18 +0100
+
 proton-vpn-gtk-app (0.10.2) unstable; urgency=medium
 
   * Submit bug report using proton-core

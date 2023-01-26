@@ -4,8 +4,9 @@ This module defines the main App class.
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, List
 
-from gi.repository import GObject, Gdk, Gtk
+from gi.repository import GObject, Gdk, Gtk, GdkPixbuf
 
+from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar import HeaderBarWidget
@@ -35,7 +36,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_border_width(10)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_window_resize_restrictions()
-
+        self.set_icon(GdkPixbuf.Pixbuf.new_from_file_at_size(
+            filename=str(ICONS_PATH / "proton-vpn-sign.svg"),
+            width=128, height=128
+        ))
         self.set_titlebar(self.headerbar_widget)
         self.main_widget = MainWidget(controller=controller, main_window=self)
         self.add(self.main_widget)

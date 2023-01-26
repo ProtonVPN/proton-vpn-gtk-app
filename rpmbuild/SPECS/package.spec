@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.10.3
+%define version 0.10.4
 %define logo_filename proton-vpn-logo.png
 %define desktop_entry_filename proton-vpn.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Jan 26 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.10.4
+- Display pop-up when unable to reach API during logout
+
 * Thu Jan 26 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.10.3
 - Add window icon
 

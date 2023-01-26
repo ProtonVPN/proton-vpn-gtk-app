@@ -24,6 +24,9 @@ class MainWidget(Gtk.Overlay):
     SESSION_EXPIRED_ERROR_MESSAGE = "Your session is invalid. "\
         "Please login to re-authenticate."
     SESSION_EXPIRED_ERROR_TITLE = "Invalid Session"
+    UNABLE_TO_LOGOUT_TITLE = "Unable to logout. "\
+        "Please ensure you have internet access."
+    UNABLE_TO_LOGOUT_MESSAGE = "Unable to Logout"
 
     def __init__(self, controller: Controller, main_window: Gtk.ApplicationWindow = None):
         super().__init__()
@@ -118,6 +121,14 @@ class MainWidget(Gtk.Overlay):
         )
         vpn_widget.connect(
             "vpn-widget-ready", self._hide_loading_widget
+        )
+        vpn_widget.connect(
+            "unreachable-api-during-logout",
+            lambda _: self.show_error_message(
+                self.UNABLE_TO_LOGOUT_MESSAGE,
+                True,
+                self.UNABLE_TO_LOGOUT_TITLE
+            )
         )
         return vpn_widget
 

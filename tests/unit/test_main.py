@@ -44,6 +44,20 @@ def test_main_widget_switches_from_vpn_to_login_widget_after_logout():
 
 
 @patch("proton.vpn.app.gtk.widgets.main.MainWidget.show_error_message")
+def test_main_widget_vpn_widget_stays_after_failed_logout(patched_show_error_message):
+    main_widget = MainWidget(controller=Mock())
+    main_widget.active_widget = main_widget.vpn_widget
+
+    main_widget.vpn_widget.emit("unreachable-api-during-logout")
+
+    assert main_widget.active_widget is main_widget.vpn_widget
+    patched_show_error_message.assert_called_once_with(
+        MainWidget.UNABLE_TO_LOGOUT_MESSAGE,
+        True, MainWidget.UNABLE_TO_LOGOUT_TITLE,
+    )
+
+
+@patch("proton.vpn.app.gtk.widgets.main.MainWidget.show_error_message")
 def test_main_widget_switches_to_login_widget_when_session_expired(patched_show_error_message):
 
     main_widget = MainWidget(controller=Mock())

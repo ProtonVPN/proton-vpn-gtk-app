@@ -19,6 +19,7 @@ from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 from proton.vpn.core_api.client_config import ClientConfig
 from proton.vpn.servers.list import ServerList
+from proton.session.exceptions import ProtonAPINotReachable
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +88,10 @@ class VPNWidget(Gtk.Box):
     def user_logged_out(self):
         """Signal emitted once the user has been logged out."""
 
+    @GObject.Signal
+    def unreachable_api_during_logout(self):
+        """Signal emitted if API is not reacheable during logout action."""
+
     @property
     def user_tier(self) -> int:
         """Returns the tier of the user currently logged in."""
@@ -114,7 +119,8 @@ class VPNWidget(Gtk.Box):
         GLib.idle_add(update_widget)
 
     def _on_logout_button_clicked(self, *_):
-        logger.info("Logout button clicked", category="UI", subcategory="LOGOUT", event="CLICK")
+        logger.info("Logout button clicked", category="ui", subcategory="logout", event="click")
+        self.logout_button.set_sensitive(False)
         future = self._controller.logout()
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_logout_result, future)
@@ -157,22 +163,32 @@ class VPNWidget(Gtk.Box):
         Mainly used to emit if a sucessful logout has happened, or if a
             connection is found at logout, to display the dialog to the user.
         """
+        self.logout_button.set_sensitive(True)
         try:
             future.result()
-            logger.info("Successful logout", category="APP", subcategory="LOGOUT", event="SUCCESS")
+            logger.info(
+                "Successful logout",
+                category="app", subcategory="logout", event="success"
+            )
             self.emit("user-logged-out")
         except VPNConnectionFoundAtLogout:
             self._show_disconnect_dialog()
+        except ProtonAPINotReachable as e:  # pylint: disable=invalid-name
+            logger.info(
+                getattr(e, 'message', repr(e)),
+                category="app", subcategory="logout", event="fail"
+            )
+            self.emit("unreachable-api-during-logout")
 
     def _on_show_disconnect_response(self, _dialog, response):
         """Callback that is triggered once the user presses on a button from
         a dialog that is triggered from `_show_disconnect_dialog` """
         if response == Gtk.ResponseType.YES:
-            logger.info("Yes", category="UI", subcategory="DIALOG", event="DISCONNECT")
+            logger.info("Yes", category="ui", subcategory="dialog", event="disconnect")
             self._state.logout_after_vpn_disconnection = True
             self.quick_connect_widget.disconnect_button_click()
         else:
-            logger.info("No", category="UI", subcategory="DIALOG", event="DISCONNECT")
+            logger.info("No", category="ui", subcategory="dialog", event="disconnect")
 
         self._state.logout_dialog.destroy()
         self._state.logout_dialog = None
@@ -219,7 +235,7 @@ class VPNWidget(Gtk.Box):
         self._state.is_widget_ready = True
         logger.info(
             "VPN widget is ready",
-            category="app", subcategory="VPN", event="widget_ready"
+            category="app", subcategory="vpn", event="widget_ready"
         )
 
     def unload(self):

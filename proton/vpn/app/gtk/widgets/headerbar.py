@@ -29,6 +29,11 @@ class HeaderBarWidget(Gtk.HeaderBar):
         return self._menu_widget.bug_report_action
 
     @property
+    def about_action(self):
+        """Shortcut property for the about Gtk.SimpleAction"""
+        return self._menu_widget.about_action
+
+    @property
     def quit_action(self):
         """Shortcut property for the quit Gtk.SimpleAction"""
         return self._menu_widget.quit_action
@@ -39,7 +44,9 @@ class MenuWidget(Gio.Menu):
     def __init__(self):
         super().__init__()
         self.bug_report_action = Gio.SimpleAction.new("report", None)
+        self.about_action = Gio.SimpleAction.new("about", None)
         self.quit_action = Gio.SimpleAction.new("quit", None)
 
         self.append_item(Gio.MenuItem.new("Report an Issue", "win.report"))
+        self.append_item(Gio.MenuItem.new("About", "win.about"))
         self.append_item(Gio.MenuItem.new("Exit", "win.quit"))

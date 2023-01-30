@@ -144,18 +144,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def _add_country_rows(self):
         """Adds country rows to the container."""
-        for country_number, country_row in enumerate(self._state.country_rows.values()):
+        for country_row in self._state.country_rows.values():
             self._container.pack_start(
                 country_row,
                 expand=False, fill=False, padding=0
             )
-            if country_number < len(self._state.country_rows) - 1:
-                separator = Gtk.Separator()
-                separator.set_margin_bottom(10)
-                self._container.pack_start(
-                    separator,
-                    expand=False, fill=False, padding=0
-                )
 
     def _create_new_country_rows(self, old_country_rows) -> Dict[str, CountryRow]:
         """Returns new country rows."""

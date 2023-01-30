@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import List, Tuple
 from gi.repository import GObject
+from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers import Country
 from proton.vpn import logging
@@ -277,6 +278,11 @@ class CountryRow(Gtk.Box):
         """Returns the connection state for this row."""
         return self._country_header.connection_state
 
+    @property
+    def header_searchable_content(self) -> str:
+        """Returns the normalized searchable content for the country header."""
+        return normalize(self.country_name)
+
     @staticmethod
     def _group_servers_by_tier(country_servers) -> Tuple[List]:
         free_servers = []
@@ -291,6 +297,11 @@ class CountryRow(Gtk.Box):
 
     def _on_toggle_country_servers(self, country_header: CountryHeader):
         self._server_rows_revealer.set_reveal_child(country_header.show_country_servers)
+
+    def set_servers_visibility(self, visible: bool):
+        """Country servers will be shown if set to True. Otherwise, they'll be hidden."""
+        self._country_header.show_country_servers = visible
+        self._server_rows_revealer.set_reveal_child(visible)
 
     def _get_server_row(self, server_id: str) -> ServerRow:
         try:

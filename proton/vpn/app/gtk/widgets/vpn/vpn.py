@@ -4,6 +4,7 @@ that is shown to the user.
 """
 from concurrent.futures import Future
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from gi.repository import GObject, GLib
 
@@ -14,12 +15,16 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.quick_connect import QuickConnectWidget
 from proton.vpn.app.gtk.widgets.vpn.server_list import ServerListWidget
+from proton.vpn.app.gtk.widgets.vpn.search import SearchWidget
 from proton.vpn.app.gtk.widgets.vpn.status import VPNConnectionStatusWidget
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
 from proton.vpn.core_api.client_config import ClientConfig
 from proton.vpn.servers.list import ServerList
 from proton.session.exceptions import ProtonAPINotReachable
+
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.app import MainWindow
 
 logger = logging.getLogger(__name__)
 
@@ -46,10 +51,11 @@ class VPNWidgetState:
     logout_dialog: Gtk.Dialog = None
 
 
+# pylint: disable=too-many-instance-attributes
 class VPNWidget(Gtk.Box):
     """Exposes the ProtonVPN product functionality to the user."""
 
-    def __init__(self, controller: Controller):
+    def __init__(self, controller: Controller, main_window: "MainWindow"):
         super().__init__(spacing=10)
         self._state = VPNWidgetState()
 
@@ -67,6 +73,14 @@ class VPNWidget(Gtk.Box):
 
         self.server_list_widget = ServerListWidget(self._controller)
         self.pack_end(self.server_list_widget, expand=True, fill=True, padding=0)
+
+        self.search_widget = SearchWidget(self.server_list_widget)
+        main_window.add_keyboard_shortcut(
+            target_widget=self.search_widget,
+            target_signal="request_focus",
+            shortcut="<Control>f"
+        )
+        self.pack_start(self.search_widget, expand=False, fill=True, padding=0)
 
         self.connection_status_subscribers = []
         for widget in [

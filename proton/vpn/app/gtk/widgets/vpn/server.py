@@ -1,7 +1,7 @@
 """
 This module defines the server widget.
 """
-
+from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.app.gtk import Gtk
@@ -118,6 +118,11 @@ class ServerRow(Gtk.Box):
     def under_maintenance(self) -> bool:
         """Returns if the server is under maintenance."""
         return not self._server.enabled
+
+    @property
+    def searchable_content(self) -> str:
+        """Returns searchable content on this server."""
+        return normalize(self.server_label)
 
     def click_connect_button(self):
         """Clicks the connect button.

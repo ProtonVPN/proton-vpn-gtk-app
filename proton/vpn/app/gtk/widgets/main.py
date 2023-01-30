@@ -2,7 +2,7 @@
 This module defines the main widget. The main widget is the widget which
 exposes all the available app functionality to the user.
 """
-from typing import Union
+from typing import Union, TYPE_CHECKING
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
@@ -12,6 +12,9 @@ from proton.vpn.app.gtk.widgets.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 from proton.vpn.app.gtk.widgets.loading import LoadingWidget
 from proton.vpn.app.gtk.widgets.error_messenger import ErrorMessenger
+
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.app import MainWindow
 
 
 # pylint: disable=too-many-instance-attributes
@@ -27,7 +30,7 @@ class MainWidget(Gtk.Overlay):
     UNABLE_TO_LOGOUT_TITLE = "Unable to Logout"
     UNABLE_TO_LOGOUT_MESSAGE = "Please ensure you have internet access."
 
-    def __init__(self, controller: Controller, main_window: Gtk.ApplicationWindow = None):
+    def __init__(self, controller: Controller, main_window: "MainWindow"):
         super().__init__()
         self.main_widget = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.loading_widget = LoadingWidget()
@@ -36,7 +39,7 @@ class MainWidget(Gtk.Overlay):
 
         self._active_widget = None
         self._controller = controller
-        self._application_window = main_window
+        self._main_window = main_window
 
         exception_handler = ExceptionHandler(main_widget=self)
         notification_bar = NotificationBar()
@@ -114,7 +117,10 @@ class MainWidget(Gtk.Overlay):
         return login_widget
 
     def _create_vpn_widget(self) -> VPNWidget:
-        vpn_widget = VPNWidget(self._controller)
+        vpn_widget = VPNWidget(
+            controller=self._controller,
+            main_window=self._main_window
+        )
         vpn_widget.connect(
             "user-logged-out", self._on_user_logged_out
         )

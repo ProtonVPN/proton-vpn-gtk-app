@@ -30,6 +30,8 @@ class MainWindow(Gtk.ApplicationWindow):
     ):
         super().__init__(application=application)
 
+        self._accelerators_group = Gtk.AccelGroup()
+        self.add_accel_group(self._accelerators_group)
         self.headerbar_widget = HeaderBarWidget()
         self.bug_report_widget = BugReportWidget
         self._setup_headerbar_actions()
@@ -44,6 +46,23 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_titlebar(self.headerbar_widget)
         self.main_widget = MainWidget(controller=controller, main_window=self)
         self.add(self.main_widget)
+
+    def add_keyboard_shortcut(self, target_widget: Gtk.Widget, target_signal: str, shortcut: str):
+        """
+        Adds a keyboard shortcut so that when pressed it causes the target signal
+        to be triggered on the target widget.
+
+        :param target_widget: The widget the keyboard shortcut will trigger the signal on.
+        :param target_signal: The signal the keyboard shortcut will trigger on the target widget.
+        :param shortcut: The keyboard shortcut should be a string parseable with
+        Gtk.parse_accelerator:
+        https://lazka.github.io/pgi-docs/#Gtk-3.0/functions.html#Gtk.accelerator_parse
+        """
+        key, modifier = Gtk.accelerator_parse(shortcut)
+        target_widget.add_accelerator(
+            target_signal, self._accelerators_group,
+            key, modifier, Gtk.AccelFlags.VISIBLE
+        )
 
     def set_window_resize_restrictions(self):
         """Set window resize restrictions.

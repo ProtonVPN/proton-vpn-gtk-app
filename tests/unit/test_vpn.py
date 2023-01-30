@@ -68,6 +68,7 @@ def controller_mocking_successful_logout():
 def test_successful_logout(controller_mocking_successful_logout, server_list):
     vpn_widget = VPNWidget(
         controller=controller_mocking_successful_logout,
+        main_window=Mock()
     )
 
     vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
@@ -102,7 +103,8 @@ def test_successful_logout_with_current_connection(
         server_list
 ):
     vpn_widget = VPNWidget(
-        controller=controller_mocking_successful_logout_with_current_connection
+        controller=controller_mocking_successful_logout_with_current_connection,
+        main_window=Mock()
     )
     vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
 
@@ -136,7 +138,7 @@ def test_logout_raises_exception_when_api_is_unreacheable(server_list):
         StateContext(event=None, connection=None)
     )
 
-    vpn_widget = VPNWidget(controller=controller_mock)
+    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
     vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
     vpn_widget_logout_on_unreacheable_api_event = Event()
     vpn_widget.connect(
@@ -161,7 +163,7 @@ def test_logout_ensure_logout_button_is_disabled_until_future_is_resolved(server
         StateContext(event=None, connection=None)
     )
 
-    vpn_widget = VPNWidget(controller=controller_mock)
+    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
     vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
 
     assert vpn_widget.logout_button.is_sensitive()
@@ -188,7 +190,7 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
         proton_vpn_api=Mock()
     )
 
-    vpn_widget = VPNWidget(controller_mock)
+    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
     with patch.object(vpn_widget, "display"):
         vpn_widget.load(user_tier=PLUS_TIER)
 
@@ -213,7 +215,7 @@ def test_display_initializes_widget(server_list):
      4. emit the vpn-widget-ready signal.
     """
     controller_mock = Mock()
-    vpn_widget = VPNWidget(controller_mock)
+    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
 
     # Mock connection status subscribers
     connection_status_subscriber = Mock()
@@ -234,7 +236,7 @@ def test_display_initializes_widget(server_list):
 
 
 def test_vpn_widget_notifies_child_widgets_on_connection_status_update():
-    vpn_widget = VPNWidget(controller=Mock())
+    vpn_widget = VPNWidget(controller=Mock(), main_window=Mock())
 
     # Mock connection status subscribers
     connection_status_subscriber = Mock()
@@ -261,7 +263,7 @@ def test_unload_resets_widget_state():
     mock_controller = Mock()
     mock_controller.is_connection_active = True
 
-    vpn_widget = VPNWidget(controller=mock_controller)
+    vpn_widget = VPNWidget(controller=mock_controller, main_window=Mock())
     vpn_widget.unload()
 
     mock_controller.disconnect.assert_called_once()  # (1)

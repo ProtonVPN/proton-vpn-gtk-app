@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.core_api.reports import BugReportForm
 
-from proton.vpn.app.gtk import Gtk, __version__
+from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.report import BugReportWidget
 from tests.unit.utils import process_gtk_events
 
@@ -22,16 +22,15 @@ def test_bug_report_widget_delegates_submission_to_controller_when_submit_button
     expected_report_form = BugReportForm(
         username="test_user",
         email="email@pm.me",
-        title="This is a title example",
         description="This is a description example",
         attachments=[StringIO("Log contents.")],
-        client_version=__version__,
-        client="GUI/Desktop",
+        client_version=bug_report_widget.BUG_REPORT_VERSION,
+        client=bug_report_widget.BUG_REPORT_CLIENT,
+        title=bug_report_widget.BUG_REPORT_TITLE,
     )
 
     bug_report_widget.username_entry.set_text(expected_report_form.username)
     bug_report_widget.email_entry.set_text(expected_report_form.email)
-    bug_report_widget.title_entry.set_text(expected_report_form.title)
     bug_report_widget.description_buffer.set_text(expected_report_form.description)
     bug_report_widget.send_logs_checkbox.set_active(True)
 
@@ -58,7 +57,6 @@ def test_bug_report_widget_does_not_check_logs_when_logs_checkbox_is_unchecked(l
 
     bug_report_widget.username_entry.set_text("Username")
     bug_report_widget.email_entry.set_text("me@proton.ch")
-    bug_report_widget.title_entry.set_text("Title")
     bug_report_widget.description_buffer.set_text("Bug report description.")
     bug_report_widget.send_logs_checkbox.set_active(False)  # Checkbox to send logs is unchecked.
 

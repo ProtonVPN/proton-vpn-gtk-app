@@ -12,7 +12,7 @@ from gi.repository import Gtk, GLib
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.core_api.reports import BugReportForm
-import proton.vpn.app.gtk as app
+from proton.vpn.app.gtk import __version__
 from proton.vpn import logging
 
 if TYPE_CHECKING:
@@ -36,6 +36,9 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     BUG_REPORT_UNEXPECTED_ERROR_MESSAGE = "Something went wrong. " \
                                           "Please try submitting your report at:\n" \
                                           "https://protonvpn.com/support-form"
+    BUG_REPORT_TITLE = "Report from Linux app"
+    BUG_REPORT_CLIENT = "Linux GUI"
+    BUG_REPORT_VERSION = __version__
 
     def __init__(self, controller: Controller, main_window: Gtk.ApplicationWindow):
         super().__init__(transient_for=main_window)
@@ -79,14 +82,14 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         report_form = BugReportForm(
             username=self.username_entry.get_text(),
             email=self.email_entry.get_text(),
-            title=self.title_entry.get_text(),
+            title=self.BUG_REPORT_TITLE,
             description=self.description_buffer.get_text(
                 self.description_buffer.get_start_iter(),
                 self.description_buffer.get_end_iter(),
                 True
             ),
-            client_version=app.__version__,
-            client="GUI/Desktop",
+            client_version=self.BUG_REPORT_VERSION,
+            client=self.BUG_REPORT_CLIENT,
         )
 
         if self.send_logs_checkbox.get_active():
@@ -130,7 +133,6 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     def _disable_form(self):
         self.username_entry.set_sensitive(False)
         self.email_entry.set_sensitive(False)
-        self.title_entry.set_sensitive(False)
         self.description_textview.set_sensitive(False)
         self.send_logs_checkbox.set_sensitive(False)
         self.set_response_sensitive(Gtk.ResponseType.OK, False)
@@ -138,7 +140,6 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     def _enable_form(self):
         self.username_entry.set_sensitive(True)
         self.email_entry.set_sensitive(True)
-        self.title_entry.set_sensitive(True)
         self.description_textview.set_sensitive(True)
         self.send_logs_checkbox.set_sensitive(True)
         if self._can_user_submit_form:
@@ -155,7 +156,6 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         is_email_provided = re.fullmatch(
             self.EMAIL_REGEX, self.email_entry.get_text()
         )
-        is_title_provided = len(self.title_entry.get_text().strip()) > 0
         is_description_provided = len(self.description_buffer.get_text(
             self.description_buffer.get_start_iter(),
             self.description_buffer.get_end_iter(),
@@ -165,7 +165,6 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         return bool(
             is_username_provided
             and is_email_provided
-            and is_title_provided
             and is_description_provided
         )
 
@@ -202,15 +201,6 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         fields_vbox.add(email_label)  # pylint: disable=no-member
         fields_vbox.add(self.email_entry)  # pylint: disable=no-member
 
-        title_label = Gtk.Label.new("Title")
-        title_label.set_halign(Gtk.Align.START)
-        self.title_entry = Gtk.Entry.new()
-        self.title_entry.set_property("margin-bottom", 10)
-        self.title_entry.set_input_purpose(Gtk.InputPurpose.ALPHA)
-        self.title_entry.set_name("title")
-        fields_vbox.add(title_label)  # pylint: disable=no-member
-        fields_vbox.add(self.title_entry)  # pylint: disable=no-member
-
         description_label = Gtk.Label.new("Description")
         description_label.set_halign(Gtk.Align.START)
         # Has to have min 10 chars
@@ -243,9 +233,6 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             "changed", self._on_entry_changed
         )
         self.email_entry.connect(
-            "changed", self._on_entry_changed
-        )
-        self.title_entry.connect(
             "changed", self._on_entry_changed
         )
         self.description_buffer.connect(

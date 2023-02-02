@@ -4,16 +4,13 @@ This module defines the main App class.
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, List
 
-from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, Gio
+from gi.repository import GObject, Gdk, Gtk, GdkPixbuf
 
 from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar import HeaderBarWidget
-from proton.vpn.app.gtk.widgets.report import BugReportWidget
 from proton.vpn import logging
-from proton.vpn.app.gtk import __version__
-
 
 logger = logging.getLogger(__name__)
 
@@ -30,20 +27,11 @@ class MainWindow(Gtk.ApplicationWindow):
     ):
         super().__init__(application=application)
 
-        self._accelerators_group = Gtk.AccelGroup()
-        self.add_accel_group(self._accelerators_group)
-        self.headerbar_widget = HeaderBarWidget()
-        self.bug_report_widget = BugReportWidget
-        self._setup_headerbar_actions()
-        self._controller = controller
-        self.set_border_width(10)
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_window_resize_restrictions()
-        self.set_icon(GdkPixbuf.Pixbuf.new_from_file_at_size(
-            filename=str(ICONS_PATH / "proton-vpn-sign.svg"),
-            width=128, height=128
-        ))
+        self.configure_window()
+
+        self.headerbar_widget = HeaderBarWidget(controller, self)
         self.set_titlebar(self.headerbar_widget)
+
         self.main_widget = MainWidget(controller=controller, main_window=self)
         self.add(self.main_widget)
 
@@ -64,11 +52,20 @@ class MainWindow(Gtk.ApplicationWindow):
             key, modifier, Gtk.AccelFlags.VISIBLE
         )
 
-    def set_window_resize_restrictions(self):
+    def configure_window(self):
         """Set window resize restrictions.
         The window should be able to be resized on the vertical axis but not
         on the horizontal axis.
         """
+        self._accelerators_group = Gtk.AccelGroup()
+        self.add_accel_group(self._accelerators_group)
+        self.set_border_width(10)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_icon(GdkPixbuf.Pixbuf.new_from_file_at_size(
+            filename=str(ICONS_PATH / "proton-vpn-sign.svg"),
+            width=128, height=128
+        ))
+
         self.set_size_request(MainWindow.WIDTH, MainWindow.HEIGTH)
         geometry = Gdk.Geometry()
         geometry.min_width = 0
@@ -80,53 +77,6 @@ class MainWindow(Gtk.ApplicationWindow):
             geometry,
             (Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE)
         )
-
-    def _setup_headerbar_actions(self):
-        # Add actions to this window
-        self.add_action(self.headerbar_widget.bug_report_action)
-        self.add_action(self.headerbar_widget.about_action)
-        self.add_action(self.headerbar_widget.quit_action)
-
-        # Connect actions to callbacks
-        self.headerbar_widget.bug_report_action.connect(
-            "activate", self._report_an_issue
-        )
-        self.headerbar_widget.about_action.connect(
-            "activate", self._display_about_dialog
-        )
-        self.headerbar_widget.quit_action.connect(
-            "activate", self._quit
-        )
-
-    def _report_an_issue(self, action: Gio.SimpleAction, *_):  # pylint: disable=unused-argument # noqa
-        bug_report_dialog = BugReportWidget(self._controller, self)
-        bug_report_dialog_response = Gtk.ResponseType(bug_report_dialog.run())
-
-        if bug_report_dialog_response == Gtk.ResponseType.DELETE_EVENT:
-            bug_report_dialog.destroy()
-
-    def _display_about_dialog(self, action: Gio.SimpleAction, *_):  # pylint: disable=unused-argument # noqa
-        icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            filename=str(ICONS_PATH / "proton-vpn-sign.svg"),
-            width=80, height=80
-        )
-        about_dialog = Gtk.AboutDialog()
-        about_dialog.set_title("About")
-        about_dialog.set_program_name("Proton VPN Linux Client")
-        about_dialog.set_version(__version__)
-        about_dialog.set_copyright("Copyright Proton AG 2023")
-        about_dialog.set_license_type(Gtk.License.GPL_3_0)
-        about_dialog.set_website("https://protonvpn.com/")
-        about_dialog.set_website_label("Proton VPN")
-        about_dialog.set_authors(["Proton AG"])
-        about_dialog.set_logo(icon)
-        dialog_response = Gtk.ResponseType(about_dialog.run())
-
-        if dialog_response == Gtk.ResponseType.DELETE_EVENT:
-            about_dialog.destroy()
-
-    def _quit(self, action: Gio.SimpleAction, *_):  # pylint: disable=unused-argument # noqa
-        self.close()
 
 
 class App(Gtk.Application):

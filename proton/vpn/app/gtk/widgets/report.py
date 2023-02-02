@@ -40,8 +40,8 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     BUG_REPORT_CLIENT = "Linux GUI"
     BUG_REPORT_VERSION = __version__
 
-    def __init__(self, controller: Controller, main_window: Gtk.ApplicationWindow):
-        super().__init__(transient_for=main_window)
+    def __init__(self, controller: Controller):
+        super().__init__()
         self.controller = controller
 
         self.set_title("Report an Issue")
@@ -66,10 +66,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self._submission_status_label.set_text(newvalue if newvalue else "")
         self._submission_status_label.set_property("visible", bool(newvalue))
 
-    def _on_response(
-        self, dialog: BugReportWidget,
-        response: Gtk.ResponseType
-    ):  # pylint: disable=unused-argument
+    def _on_response(self, _: BugReportWidget, response: Gtk.ResponseType):
         """Upon any of the button being clicked in the dialog,
         it's responde is evaluated.
         """
@@ -170,8 +167,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
     def _generate_fields(self):  # pylint: disable=too-many-statements
         """Generates the necessary fields for the report."""
-        fields_vbox = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        fields_vbox.set_spacing(3)
+        fields_vbox = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=3)
 
         self._submission_status_label = Gtk.Label.new(None)
         self._submission_status_label.set_name("error_label")
@@ -224,7 +220,7 @@ class BugReportWidget(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.send_logs_checkbox.set_name("send_logs")
         fields_vbox.add(self.send_logs_checkbox)  # pylint: disable=no-member
 
-        # By default Gtk.Dialog has a vertical box child (Gtk.Box)
+        # By default Gtk.Dialog has a vertical box child (Gtk.Box) `vbox`
         self.vbox.add(fields_vbox)  # pylint: disable=no-member
         self.vbox.set_border_width(20)  # pylint: disable=no-member
         self.vbox.set_spacing(20)  # pylint: disable=no-member

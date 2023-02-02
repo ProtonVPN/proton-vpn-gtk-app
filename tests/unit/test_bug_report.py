@@ -17,7 +17,7 @@ def test_bug_report_widget_delegates_submission_to_controller_when_submit_button
     future = Future()
     future.set_result(None)
     controller_mock.submit_bug_report.return_value = future
-    bug_report_widget = BugReportWidget(controller_mock, Gtk.Window())
+    bug_report_widget = BugReportWidget(controller_mock)
 
     expected_report_form = BugReportForm(
         username="test_user",
@@ -53,7 +53,7 @@ def test_bug_report_widget_delegates_submission_to_controller_when_submit_button
 @patch("proton.vpn.app.gtk.widgets.report.LogCollector")
 def test_bug_report_widget_does_not_check_logs_when_logs_checkbox_is_unchecked(log_collector_mock):
     controller_mock = Mock()
-    bug_report_widget = BugReportWidget(controller_mock, Gtk.Window())
+    bug_report_widget = BugReportWidget(controller_mock)
 
     bug_report_widget.username_entry.set_text("Username")
     bug_report_widget.email_entry.set_text("me@proton.ch")
@@ -75,7 +75,7 @@ def test_bug_report_widget_does_not_check_logs_when_logs_checkbox_is_unchecked(l
 @patch("proton.vpn.app.gtk.widgets.report.LogCollector")
 def test_bug_report_widget_shows_error_message_when_api_is_not_reachable(_log_collector_mock):
     controller_mock = Mock()
-    bug_report_widget = BugReportWidget(controller_mock, Gtk.Window())
+    bug_report_widget = BugReportWidget(controller_mock)
 
     future = Future()
     future.set_exception(ProtonAPINotReachable("Forced error"))
@@ -91,7 +91,7 @@ def test_bug_report_widget_shows_error_message_when_api_is_not_reachable(_log_co
 @patch("proton.vpn.app.gtk.widgets.report.LogCollector")
 def test_bug_report_widget_shows_error_message_on_api_error(_log_collector_mock):
     controller_mock = Mock()
-    bug_report_widget = BugReportWidget(controller_mock, Gtk.Window())
+    bug_report_widget = BugReportWidget(controller_mock)
 
     future = Future()
     api_error = ProtonAPIError(
@@ -110,7 +110,7 @@ def test_bug_report_widget_shows_error_message_on_api_error(_log_collector_mock)
 @patch("proton.vpn.app.gtk.widgets.report.LogCollector")
 def test_bug_report_widget_shows_error_message_on_unexpected_errors_reaching_api(_log_collector_mock):
     controller_mock = Mock()
-    bug_report_widget = BugReportWidget(controller_mock, Gtk.Window())
+    bug_report_widget = BugReportWidget(controller_mock)
 
     future = Future()
     future.set_exception(RuntimeError("Forced error"))

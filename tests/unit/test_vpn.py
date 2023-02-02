@@ -10,9 +10,7 @@ from proton.vpn.core_api.client_config import DEFAULT_CLIENT_CONFIG, ClientConfi
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
-from proton.vpn.core_api.exceptions import VPNConnectionFoundAtLogout
-from proton.session.exceptions import ProtonAPINotReachable
-from proton.vpn.connection.states import Disconnected, Connected, StateContext, Error
+from proton.vpn.connection.states import Connected
 
 from tests.unit.utils import process_gtk_events
 
@@ -49,136 +47,6 @@ def server_list():
 @pytest.fixture
 def client_config():
     return ClientConfig.from_dict(DEFAULT_CLIENT_CONFIG)
-
-
-@pytest.fixture
-def controller_mocking_successful_logout():
-    controller_mock = Mock()
-
-    logout_future = Future()
-    logout_future.set_result(None)
-
-    controller_mock.logout.return_value = logout_future
-    controller_mock.is_connection_active = False
-    controller_mock.current_connection_status = Disconnected(StateContext(event=None, connection=None))
-
-    return controller_mock
-
-
-def test_successful_logout(controller_mocking_successful_logout, server_list):
-    vpn_widget = VPNWidget(
-        controller=controller_mocking_successful_logout,
-        main_window=Mock()
-    )
-
-    vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
-    vpn_widget.logout_button_click()
-
-    process_gtk_events()
-
-    controller_mocking_successful_logout.logout.assert_called_once()
-
-
-@pytest.fixture
-def controller_mocking_successful_logout_with_current_connection(server_list):
-    controller_mock = Mock()
-    vpnconnection_mock = Mock()
-    vpnconnection_mock.server_id = server_list[0].id
-
-    logout_future_raises_exception = Future()
-    logout_future_raises_exception.set_exception(VPNConnectionFoundAtLogout("test"))
-
-    logout_future_success = Future()
-    logout_future_success.set_result(None)
-
-    controller_mock.logout.side_effect = [logout_future_raises_exception, logout_future_success]
-    controller_mock.is_connection_active = True
-    controller_mock.current_connection_status = Connected(StateContext(event=None, connection=vpnconnection_mock))
-
-    return controller_mock
-
-
-def test_successful_logout_with_current_connection(
-        controller_mocking_successful_logout_with_current_connection,
-        server_list
-):
-    vpn_widget = VPNWidget(
-        controller=controller_mocking_successful_logout_with_current_connection,
-        main_window=Mock()
-    )
-    vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
-
-    vpn_widget.logout_button_click()
-
-    process_gtk_events()
-
-    controller_mocking_successful_logout_with_current_connection.logout.assert_called_once()
-
-    vpn_widget.close_dialog(end_current_connection=True)
-
-    # Simulate VPN disconnection.
-    vpn_widget.status_update(Disconnected())
-
-    process_gtk_events()
-
-    controller_mocking_successful_logout_with_current_connection.disconnect.assert_called_once()
-    assert controller_mocking_successful_logout_with_current_connection.logout.call_count == 2
-
-
-def test_logout_raises_exception_when_api_is_unreacheable(server_list):
-    controller_mock = Mock()
-
-    logout_future_raises_exception = Future()
-    logout_future_raises_exception.set_exception(ProtonAPINotReachable("test"))
-
-    controller_mock.logout.return_value = logout_future_raises_exception
-
-    controller_mock.is_connection_active = False
-    controller_mock.current_connection_status = Disconnected(
-        StateContext(event=None, connection=None)
-    )
-
-    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
-    vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
-    vpn_widget_logout_on_unreacheable_api_event = Event()
-    vpn_widget.connect(
-        "unreachable-api-during-logout",
-        lambda *_: vpn_widget_logout_on_unreacheable_api_event.set()
-    )
-
-    vpn_widget.logout_button_click()
-
-    process_gtk_events()
-
-    controller_mock.logout.assert_called_once()
-    assert vpn_widget_logout_on_unreacheable_api_event.wait(timeout=0)
-
-
-def test_logout_ensure_logout_button_is_disabled_until_future_is_resolved(server_list):
-    controller_mock = Mock()
-    logout_future = Future()
-    controller_mock.logout.return_value = logout_future
-    controller_mock.is_connection_active = False
-    controller_mock.current_connection_status = Disconnected(
-        StateContext(event=None, connection=None)
-    )
-
-    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
-    vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
-
-    assert vpn_widget.logout_button.is_sensitive()
-
-    vpn_widget.logout_button_click()
-
-    process_gtk_events()
-
-    assert not vpn_widget.logout_button.is_sensitive()
-
-    controller_mock.logout.return_value.set_result(None)
-
-    process_gtk_events()
-
-    assert vpn_widget.logout_button.is_sensitive()
 
 
 def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(

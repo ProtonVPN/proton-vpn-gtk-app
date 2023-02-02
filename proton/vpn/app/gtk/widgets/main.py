@@ -27,12 +27,11 @@ class MainWidget(Gtk.Overlay):
     SESSION_EXPIRED_ERROR_MESSAGE = "Your session is invalid. "\
         "Please login to re-authenticate."
     SESSION_EXPIRED_ERROR_TITLE = "Invalid Session"
-    UNABLE_TO_LOGOUT_TITLE = "Unable to Logout"
-    UNABLE_TO_LOGOUT_MESSAGE = "Please ensure you have internet access."
 
     def __init__(self, controller: Controller, main_window: "MainWindow"):
         super().__init__()
         self.main_widget = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+
         self.loading_widget = LoadingWidget()
         self.add(self.main_widget)
         self.add_overlay(self.loading_widget)
@@ -44,7 +43,7 @@ class MainWidget(Gtk.Overlay):
         exception_handler = ExceptionHandler(main_widget=self)
         notification_bar = NotificationBar()
         self.main_widget.pack_start(notification_bar, expand=False, fill=False, padding=0)
-        self._error_messenger = ErrorMessenger(main_window, notification_bar)
+        self._error_messenger = ErrorMessenger(self._main_window, notification_bar)
 
         self.login_widget = self._create_login_widget()
         self.vpn_widget = self._create_vpn_widget()
@@ -52,6 +51,9 @@ class MainWidget(Gtk.Overlay):
         self.connect("show", lambda *_: self.initialize_visible_widget())
         self.connect("realize", lambda *_: exception_handler.enable())
         self.connect("unrealize", lambda *_: exception_handler.disable())
+        self._main_window.headerbar_widget.connect(
+            "user-logged-out", self._on_user_logged_out
+        )
 
     @property
     def active_widget(self):
@@ -105,10 +107,10 @@ class MainWidget(Gtk.Overlay):
     def _on_user_logged_in(self, _login_widget: LoginWidget):
         self._display_vpn_widget()
 
-    def _on_user_logged_out(self, _vpn_widget: VPNWidget):
+    def _on_user_logged_out(self, *_):
         self._display_login_widget()
 
-    def _hide_loading_widget(self, _):
+    def _hide_loading_widget(self, *_):
         self.loading_widget.hide()
 
     def _create_login_widget(self) -> LoginWidget:
@@ -122,26 +124,18 @@ class MainWidget(Gtk.Overlay):
             main_window=self._main_window
         )
         vpn_widget.connect(
-            "user-logged-out", self._on_user_logged_out
-        )
-        vpn_widget.connect(
             "vpn-widget-ready", self._hide_loading_widget
-        )
-        vpn_widget.connect(
-            "unreachable-api-during-logout",
-            lambda _: self.show_error_message(
-                self.UNABLE_TO_LOGOUT_MESSAGE,
-                True, self.UNABLE_TO_LOGOUT_TITLE
-            )
         )
         return vpn_widget
 
     def _display_vpn_widget(self):
+        self._main_window.headerbar_widget.logout_enabled = True
         self.loading_widget.show()
         self.active_widget = self.vpn_widget
         self.vpn_widget.load(self._controller.user_tier)
 
     def _display_login_widget(self):
+        self._main_window.headerbar_widget.logout_enabled = False
         self.loading_widget.hide()  # Required on session expired while loading VPN widget.
         self.active_widget = self.login_widget
         self.login_widget.reset()

@@ -1,7 +1,7 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.11.1
-%define logo_filename proton-vpn-logo.png
-%define desktop_entry_filename proton-vpn.desktop
+%define version 0.11.2
+%define logo_filename proton-vpn-logo.svg
+%define desktop_entry_filename protonvpn-app.desktop
 %define release 1
 
 Prefix: %{_prefix}
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Feb 02 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.11.2
+- Fix app icon for Wayland
+
 * Mon Jan 30 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.11.1
 - Fix bug report dialog as per customer support guidelines
 

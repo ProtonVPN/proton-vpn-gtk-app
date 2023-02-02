@@ -25,10 +25,10 @@ class MainWindow(Gtk.ApplicationWindow):
     HEIGTH = 600
 
     def __init__(
-        self,
+        self, application: Gtk.Application,
         controller: Controller,
     ):
-        super().__init__()
+        super().__init__(application=application)
 
         self.headerbar_widget = HeaderBarWidget()
         self.bug_report_widget = BugReportWidget
@@ -145,7 +145,7 @@ class App(Gtk.Application):
         be shown to the user.
         """
         if not self.window:
-            self.window = MainWindow(self._controller)
+            self.window = MainWindow(self, self._controller)
             # Process signal connection requests asap.
             self._process_signal_connect_queue()
             # Windows are associated with the application like this.

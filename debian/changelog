@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.12.0) unstable; urgency=medium
+
+  * Add search bar
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 02 Jan 2023 17:00:00 +0100
+
 proton-vpn-gtk-app (0.11.2) unstable; urgency=medium
 
   * Fix app icon for Wayland

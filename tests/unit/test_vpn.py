@@ -1,5 +1,4 @@
 import time
-from concurrent.futures import Future
 from unittest.mock import Mock, patch
 from threading import Event
 

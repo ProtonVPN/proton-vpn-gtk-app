@@ -1,4 +1,4 @@
-from concurrent.futures import ThreadPoolExecutor, Future
+from concurrent.futures import Future
 from threading import Event
 from unittest.mock import Mock, patch
 import time

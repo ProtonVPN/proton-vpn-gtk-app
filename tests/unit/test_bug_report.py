@@ -6,7 +6,6 @@ from unittest.mock import Mock, patch
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.core_api.reports import BugReportForm
 
-from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.report import BugReportWidget
 from tests.unit.utils import process_gtk_events
 

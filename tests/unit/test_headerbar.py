@@ -1,11 +1,7 @@
 from concurrent.futures import Future
 from unittest.mock import Mock, patch
-from threading import Event
-
-import pytest
 
 from proton.session.exceptions import ProtonAPINotReachable
-from proton.vpn.connection.states import Disconnected, Connected, StateContext, Error
 from proton.vpn.app.gtk.widgets.headerbar import HeaderBarWidget
 from proton.vpn.app.gtk import Gtk
 

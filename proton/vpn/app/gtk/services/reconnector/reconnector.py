@@ -123,10 +123,6 @@ class VPNReconnector:
             logger.debug("VPN reconnection not necessary: connection didn't drop.")
             return
 
-        if not self._network_monitor.is_network_up:
-            logger.info("VPN reconnection not possible: network is down.")
-            return
-
         self.schedule_reconnection()
 
     def _on_network_up(self):
@@ -140,10 +136,6 @@ class VPNReconnector:
 
         if not self.did_vpn_drop:
             logger.debug("VPN reconnection not necessary: connection didn't drop.")
-            return
-
-        if not self._session_monitor.is_session_unlocked:
-            logger.info("VPN reconnection not possible: session is locked.")
             return
 
         self.schedule_reconnection()
@@ -162,6 +154,18 @@ class VPNReconnector:
         logger.info(f"Reconnecting (attempt #{self.retry_counter})...")
         connection = self._vpn_connector.current_connection
 
+        if not self._network_monitor.is_network_up:
+            logger.info("VPN reconnection not possible: network is down.")
+            self._increase_retry_counter()
+            self.schedule_reconnection()
+            return False
+
+        if not self._session_monitor.is_session_unlocked:
+            logger.info("VPN reconnection not possible: session is locked.")
+            self._increase_retry_counter()
+            self.schedule_reconnection()
+            return False
+
         vpn_server = self._get_vpn_server(connection.server_id)
         if vpn_server:
             self._vpn_connector.connect(
@@ -169,8 +173,7 @@ class VPNReconnector:
                 connection.protocol,
                 connection.backend
             )
-            self.retry_counter += 1
-            self._retry_src_id = None
+            self._increase_retry_counter()
         else:
             # The server was removed from the server list after the user had connected to it.
             logger.warning(
@@ -202,3 +205,7 @@ class VPNReconnector:
             GLib.source_remove(self._retry_src_id)
             self._retry_src_id = None
         self.retry_counter = 0
+
+    def _increase_retry_counter(self):
+        self.retry_counter += 1
+        self._retry_src_id = None

@@ -16,8 +16,8 @@ class LoadingWidget(Gtk.Box):
         self.pack_start(self._label, expand=True, fill=True, padding=0)
         # Adding the background class (which is a GTK class) gives the default
         # background color to this widget. This is needed as otherwise the widget
-        #  background is transparent, but the intended use of this widget is to
-        #  hide other widgets while an action is ongoing.
+        # background is transparent, but the intended use of this widget is to
+        # hide other widgets while an action is ongoing.
         self.get_style_context().add_class("background")
         self.set_no_show_all(True)
 

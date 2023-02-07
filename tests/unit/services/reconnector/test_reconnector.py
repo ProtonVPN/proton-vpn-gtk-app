@@ -112,14 +112,12 @@ def test_did_vpn_drop_returns_true_only_if_the_current_connection_state_is_error
     assert reconnector.did_vpn_drop is expected_result
 
 
-@pytest.mark.parametrize("did_vpn_drop, is_session_unlocked, reconnection_expected", [
-    (False, False, False),
-    (True, False, False),
-    (False, True, False),
-    (True, True, True)
+@pytest.mark.parametrize("did_vpn_drop, scheduled_reconnection_expected", [
+    (False, False),
+    (True, True)
 ])
-def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_only_if_vpn_connection_dropped_and_session_is_unlocked(
-        did_vpn_drop, is_session_unlocked, reconnection_expected,
+def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_only_if_vpn_connection_dropped(
+        did_vpn_drop, scheduled_reconnection_expected,
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     reconnector = VPNReconnector(
@@ -130,23 +128,19 @@ def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_o
             patch.object(VPNReconnector, "schedule_reconnection"):
         # Mock whether a VPN connection dropped happened or not
         did_vpn_drop_patch.return_value = did_vpn_drop
-
-        session_monitor.is_session_unlocked = is_session_unlocked
 
         # Simulate network up.
         network_monitor.network_up_callback()
 
-        assert reconnector.schedule_reconnection.called is reconnection_expected
+        assert reconnector.schedule_reconnection.called is scheduled_reconnection_expected
 
 
-@pytest.mark.parametrize("did_vpn_drop, is_network_up, reconnection_expected", [
-    (False, False, False),
-    (True, False, False),
-    (False, True, False),
-    (True, True, True)
+@pytest.mark.parametrize("did_vpn_drop, scheduled_reconnection_expected", [
+    (False, False),
+    (True, True)
 ])
-def test_reconnect_is_called_once_user_session_is_unlocked_only_if_vpn_connection_dropped_and_network_is_up(
-        did_vpn_drop, is_network_up, reconnection_expected,
+def test_schedule_reconnection_is_called_once_user_session_is_unlocked_only_if_vpn_connection_dropped(
+        did_vpn_drop, scheduled_reconnection_expected,
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     reconnector = VPNReconnector(
@@ -158,12 +152,10 @@ def test_reconnect_is_called_once_user_session_is_unlocked_only_if_vpn_connectio
         # Mock whether a VPN connection dropped happened or not
         did_vpn_drop_patch.return_value = did_vpn_drop
 
-        network_monitor.is_network_up = is_network_up
-
         # Simulate user session unlocked.
         session_monitor.session_unlocked_callback()
 
-        assert reconnector.schedule_reconnection.called is reconnection_expected
+        assert reconnector.schedule_reconnection.called is scheduled_reconnection_expected
 
 
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
@@ -220,6 +212,57 @@ def test_on_vpn_drop_a_reconnection_attempt_is_scheduled_with_an_exponential_bac
         glib_mock.reset_mock()
 
 
+@pytest.mark.parametrize("is_network_up,is_session_unlocked", [
+    (True, False),
+    (True, False),
+    (False, False)
+])
+@patch("proton.vpn.app.gtk.services.reconnector.reconnector.random")
+@patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
+def test_reconnection_is_rescheduled_if_network_is_down_or_session_is_locked(
+    glib_mock, random_mock,
+    is_network_up, is_session_unlocked,
+    vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+):
+    """
+    The requirements for a reconnection attempt are:
+    1. that there is network connectivity and
+    2. that the user session is unlocked (a requirement imposed by NM).
+    If any of those requirements are not met, then the reconnection should not take place,
+    and it should be rescheduled instead. This is what's tested by this test.
+    """
+    VPNReconnector(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    )
+
+    glib_mock.timeout_add_seconds.return_value = 1
+    random_mock.uniform.return_value = 1  # Get rid of randomness.
+
+    # Simulate VPN drop.
+    vpn_monitor.vpn_drop_callback()
+
+    # Make sure a reconnection attempt is scheduled.
+    glib_mock.timeout_add.assert_called_once()
+    delay_in_ms, reconnect_func = glib_mock.timeout_add.call_args_list[0].args
+    assert delay_in_ms == 1000
+
+    # Simulate network up/down.
+    network_monitor.is_network_up = is_network_up
+    # Simulate session [un]locked
+    session_monitor.is_session_unlocked = is_session_unlocked
+
+    # Simulate GLib running the scheduled reconnection attempt.
+    reconnect_func()
+
+    # Assert that the reconnection did not happen (as network is down and/or session is locked)
+    vpn_connector.connect.assert_not_called()
+
+    # Assert that a new reconnection attempt was scheduled with the expected delay
+    assert glib_mock.timeout_add.call_count == 2
+    delay_in_ms, reconnect_func = glib_mock.timeout_add.call_args_list[1].args
+    assert delay_in_ms == 2000
+
+
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.random")
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
 def test_on_vpn_up_resets_retry_counter_and_removes_pending_scheduled_attempt(
@@ -257,4 +300,3 @@ def test_on_vpn_up_resets_retry_counter_and_removes_pending_scheduled_attempt(
     assert reconnector.retry_counter == 0
     # and the pending scheduled connection has been unscheduled.
     assert not reconnector.is_reconnection_scheduled
-

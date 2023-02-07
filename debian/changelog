@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.13.2) unstable; urgency=medium
+
+  * Fix random reconnection issues
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Wed, 08 Feb 2023 18:52:23 +0100
+
 proton-vpn-gtk-app (0.13.1) unstable; urgency=medium
 
   * Fix several search issues

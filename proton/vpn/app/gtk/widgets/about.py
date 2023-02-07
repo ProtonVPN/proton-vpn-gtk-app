@@ -15,8 +15,8 @@ class AboutWidget(Gtk.AboutDialog):
     VERSION = __version__
     COPYRIGHT = "Proton AG 2023"
     LICENSE = Gtk.License.GPL_3_0
-    WEBSITE = "Proton AG 2023"
-    WEBSITE_LABEL = "Proton AG 2023"
+    WEBSITE = "https://protonvpn.com"
+    WEBSITE_LABEL = "Proton VPN"
     AUTHORS = ["Proton AG"]
 
     def __init__(self):

@@ -29,11 +29,10 @@ class HeaderBarWidget(Gtk.HeaderBar):
     """
     UNABLE_TO_LOGOUT_TITLE = "Unable to Logout"
     UNABLE_TO_LOGOUT_MESSAGE = "Please ensure you have internet access."
-    DISCONNECT_ON_TITLE = "Active connection found"
-    DISCONNECT_ON_QUIT_MESSAGE = "Quitting the application will disconnect the active"\
-        " vpn connection.\n\nDo you want to continue ?"
     DISCONNECT_ON_LOGOUT_MESSAGE = "Logging out of the application will disconnect the active"\
-        " vpn connection.\n\nDo you want to continue ?"
+        " VPN connection.\n\nDo you want to continue?"
+    DISCONNECT_ON_QUIT_MESSAGE = "Quitting the application will disconnect the active" \
+                                 " VPN connection.\n\nDo you want to continue?"
 
     def __init__(self, controller: Controller, main_window: "MainWindow"):
         super().__init__()
@@ -107,7 +106,6 @@ class HeaderBarWidget(Gtk.HeaderBar):
 
         if self._controller.is_connection_active:
             logout_dialog = DisconnectDialog(
-                title=self.DISCONNECT_ON_TITLE,
                 message=self.DISCONNECT_ON_LOGOUT_MESSAGE
             )
             logout_dialog.set_transient_for(self._main_window)
@@ -128,7 +126,6 @@ class HeaderBarWidget(Gtk.HeaderBar):
 
         if self._controller.is_connection_active:
             quit_dialog = DisconnectDialog(
-                title=self.DISCONNECT_ON_TITLE,
                 message=self.DISCONNECT_ON_QUIT_MESSAGE
             )
             quit_dialog.set_transient_for(self._main_window)
@@ -141,9 +138,7 @@ class HeaderBarWidget(Gtk.HeaderBar):
 
         if confirm_quit:
             logger.info("Yes", category="ui", subcategory="dialog", event="quit")
-            # The app should be quitting with self._main_window.app.quit()
-            # and not solely relying if a single window exists.
-            self._main_window.close()
+            self._main_window.destroy()
 
     def _request_logout(self):
         future = self._controller.logout()

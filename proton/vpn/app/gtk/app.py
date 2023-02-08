@@ -26,6 +26,7 @@ class MainWindow(Gtk.ApplicationWindow):
         controller: Controller,
     ):
         super().__init__(application=application)
+        self._controller = controller
 
         self.configure_window()
 
@@ -53,12 +54,16 @@ class MainWindow(Gtk.ApplicationWindow):
         )
 
     def configure_window(self):
-        """Set window resize restrictions.
-        The window should be able to be resized on the vertical axis but not
-        on the horizontal axis.
         """
+        Handle delete-event, set window resize restrictions...
+        """
+        # Handle event emitted when the button to close the window is clicked.
+        self.connect("delete-event", self._on_close_window_button_clicked)
+
+        # The accelerator group is used to then add keyboard shortcuts.
         self._accelerators_group = Gtk.AccelGroup()
         self.add_accel_group(self._accelerators_group)
+
         self.set_border_width(10)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_icon(GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -66,6 +71,8 @@ class MainWindow(Gtk.ApplicationWindow):
             width=128, height=128
         ))
 
+        # The window should be able to be resized on the vertical axis but not
+        # on the horizontal axis.
         self.set_size_request(MainWindow.WIDTH, MainWindow.HEIGTH)
         geometry = Gdk.Geometry()
         geometry.min_width = 0
@@ -77,6 +84,25 @@ class MainWindow(Gtk.ApplicationWindow):
             geometry,
             (Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE)
         )
+
+    def _on_close_window_button_clicked(self, *_) -> bool:
+        """
+        Handles the delete-event event emitted when the user tries to close
+        the window by clicking the x button.
+
+        Instead of letting the window x button close the app, therefore
+        quitting the app, the action is delegated to the Exit entry in
+        the menu bar widget.
+        """
+        self.headerbar_widget.quit_button_click()
+
+        # Returning True when handling the delete-event stops other handlers
+        # from being invoked for this event:
+        # https://docs.gtk.org/gtk3/signal.Widget.delete-event.html
+        # This means that the delete-event is not going to cause the window
+        # to be closed by itself. Instead, the action of quitting the
+        # app is delegated to the Exit entry on the header bar menu.
+        return True
 
 
 class App(Gtk.Application):

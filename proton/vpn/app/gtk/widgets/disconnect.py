@@ -18,15 +18,15 @@ class DisconnectDialog(Gtk.Dialog):
     """
     WIDTH = 150
     HEIGHT = 200
+    TITLE = "Active connection found"
 
     def __init__(
         self,
-        title: str,
         message: str,
         buttons: List[Tuple[str, Gtk.ResponseType]] = None,
     ):
         super().__init__()
-        self.set_title(title)
+        self.set_title(self.TITLE)
         self.set_default_size(self.WIDTH, self.HEIGHT)
 
         if not buttons:

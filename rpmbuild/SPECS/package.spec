@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.13.2
+%define version 0.13.3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,7 +67,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* wo feb 08 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.2
+* Thu Feb 09 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.3
+- Fix crash when connected server would go into mantenance
+
+* Wed Feb 08 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.2
 - Fix random reconnection issues
 
 * Tue Feb 07 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.1

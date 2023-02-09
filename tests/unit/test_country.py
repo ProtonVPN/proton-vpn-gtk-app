@@ -9,6 +9,8 @@ from proton.vpn.servers import ServerList, Country
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.country import CountryRow
 from tests.unit.utils import process_gtk_events
+from proton.vpn.logging import logging
+
 
 FREE_TIER = 0
 PLUS_TIER = 2
@@ -60,7 +62,7 @@ def test_country_row_toggles_servers_when_requested(
     assert not country_row.showing_servers
 
     showing_servers_expected = True
-    for _ in range(2):
+    for _ in country.servers:
         country_row.click_toggle_country_servers_button()
 
         process_gtk_events()
@@ -128,6 +130,65 @@ def test_initialize_currently_connected_country(
 
     assert country_row.connection_state == ConnectionStateEnum.CONNECTED
     assert country_row.server_rows[1].connection_state == ConnectionStateEnum.CONNECTED
+
+
+@pytest.fixture
+def country_with_server_under_maintenance():
+    return Country(code=COUNTRY_CODE, servers=ServerList(apidata={
+        "LogicalServers": [
+            {
+                "ID": 1,
+                "Name": "AR#3",
+                "Status": 0,
+                "Servers": [{"Status": 0}],
+                "ExitCountry": COUNTRY_CODE,
+                "Tier": 1,
+            },
+        ],
+        "LogicalsUpdateTimestamp": time.time(),
+        "LoadsUpdateTimestamp": time.time()
+    }))
+
+
+def test_initialize_currently_connected_server_when_server_is_flagged_for_maintenance_a_warning_is_logged(
+        country_with_server_under_maintenance, mock_controller, caplog
+):
+    """
+    When reloading the server list, all country rows are recreated.
+    If a user is connected to a server that was flagged as under maintenance,
+    we need to ensure that the button for that server is disabled, and replaced
+    by a label displaying that the server is under maintenance.
+    """
+    caplog.set_level(logging.WARNING)
+    country_row = CountryRow(
+        country=country_with_server_under_maintenance,
+        user_tier=PLUS_TIER,
+        controller=mock_controller,
+        connected_server_id=country_with_server_under_maintenance.servers[0].id
+    )
+    for record in caplog.records:
+        assert record.levelname == "WARNING"
+
+
+def test_initialize_currently_connected_server_when_server_is_flagged_for_maintenance_where_button_is_hidden_and_label_is_displayed(
+        country_with_server_under_maintenance, mock_controller, caplog
+):
+    """
+    When reloading the server list, all country rows are recreated.
+    If a user is connected to a server that was flagged as under maintenance,
+    we need to ensure that the button for that server is disabled, and replaced
+    by a label displaying that the server is under maintenance.
+    """
+    caplog.set_level(logging.WARNING)
+    country_row = CountryRow(
+        country=country_with_server_under_maintenance,
+        user_tier=PLUS_TIER,
+        controller=mock_controller,
+        connected_server_id=country_with_server_under_maintenance.servers[0].id
+    )
+
+    assert not country_row.server_rows[0].is_connect_button_visible
+    assert country_row.server_rows[0].is_under_maintenance_label_visible
 
 
 def test_initialize_country_row_showing_country_servers(

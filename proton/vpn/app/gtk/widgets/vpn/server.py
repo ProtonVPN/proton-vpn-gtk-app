@@ -20,6 +20,9 @@ class ServerRow(Gtk.Box):
         self._user_tier = user_tier
         self._controller = controller
         self._connection_state: ConnectionStateEnum = None
+        self._under_maintenance_label = None
+        self._connect_button = None
+
         self._build_row()
 
     @property
@@ -32,7 +35,16 @@ class ServerRow(Gtk.Box):
         """Sets the connection state, modifying the row depending on the state."""
         self._connection_state = connection_state
 
-        if not self.upgrade_required:
+        if (
+            self._connection_state == ConnectionStateEnum.CONNECTED
+            and not self.available
+        ):
+            logger.warning(
+                "Received connected state but server is not available",
+                category="ui", event="conn:state"
+            )
+
+        if self.available:
             # Update the server row according to the connection state.
             method = f"_on_connection_state_{connection_state.name.lower()}"
             if hasattr(self, method):
@@ -50,10 +62,10 @@ class ServerRow(Gtk.Box):
             load_label,
             expand=False, fill=False, padding=10
         )
-
         if self.under_maintenance:
+            self._under_maintenance_label = Gtk.Label(label="(under maintenance)")
             self.pack_end(
-                Gtk.Label(label="(under maintenance)"),
+                self._under_maintenance_label,
                 expand=False, fill=False, padding=10
             )
             return
@@ -95,6 +107,12 @@ class ServerRow(Gtk.Box):
         self._controller.connect_to_server(self._server.name)
 
     @property
+    def available(self) -> bool:
+        """Returns True if the country is available, meaning the user can
+        connect to one of its servers. Otherwise, it returns False."""
+        return not self.upgrade_required and not self.under_maintenance
+
+    @property
     def upgrade_required(self) -> bool:
         """Returns if a plan upgrade is required to connect to server."""
         return self._server.tier > self._user_tier
@@ -128,3 +146,15 @@ class ServerRow(Gtk.Box):
         """Clicks the connect button.
         This method was made available for tests."""
         self._connect_button.clicked()
+
+    @property
+    def is_connect_button_visible(self) -> bool:
+        """Returns if the connect button is visible.
+        This method was made available for tests."""
+        return bool(self._connect_button)
+
+    @property
+    def is_under_maintenance_label_visible(self) -> bool:
+        """Returns if the under maintenance label is visible.
+        This method was made available for tests."""
+        return bool(self._under_maintenance_label)

@@ -74,4 +74,3 @@ def test_connect_button_click_triggers_vpn_connection(plus_logical_server, mock_
     mock_controller.connect_to_server.assert_called_once_with(
         plus_logical_server.name
     )
-

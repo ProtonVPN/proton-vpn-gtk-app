@@ -1,0 +1,80 @@
+"""
+This module defines the login widget, used to authenticate the user.
+"""
+from gi.repository import GObject
+
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk import Gtk
+from proton.vpn import logging
+from proton.vpn.app.gtk.widgets.login.login_form import LoginForm
+from proton.vpn.app.gtk.widgets.login.two_factor_auth_form import TwoFactorAuthForm
+
+logger = logging.getLogger(__name__)
+
+
+class LoginWidget(Gtk.Stack):
+    """Widget used to authenticate the user.
+
+    It inherits from Gtk.Stack and contains 2 widgets stacked on top of the
+    other: the LoginForm and the TwoFactorAuthForm. By default, the LoginForm
+    widget is shown. Once the user introduces the right username and password
+    (and 2FA is enabled) then the TwoFactorAuthForm widget is displayed instead.
+    """
+    def __init__(self, controller: Controller):
+        super().__init__()
+        self._controller = controller
+        self.active_form = None
+
+        self.login_form = LoginForm(controller)
+        self.add_named(self.login_form, "login_form")
+        self.two_factor_auth_form = TwoFactorAuthForm(controller)
+        self.add_named(self.two_factor_auth_form, "2fa_form")
+
+        self.login_form.connect(
+            "user-authenticated",
+            lambda _, two_factor_auth_required:
+            self._on_user_authenticated(two_factor_auth_required)
+        )
+
+        self.two_factor_auth_form.connect(
+            "two-factor-auth-successful",
+            lambda _: self._on_two_factor_auth_successful()
+        )
+
+        self.two_factor_auth_form.connect(
+            "session-expired",
+            lambda _: self._on_session_expired_during_2fa()
+        )
+
+    def _on_user_authenticated(self, two_factor_auth_required: bool):
+        if not two_factor_auth_required:
+            self._signal_user_logged_in()
+        else:
+            self.display_form(self.two_factor_auth_form)
+
+    def _on_two_factor_auth_successful(self):
+        self._signal_user_logged_in()
+
+    def _on_session_expired_during_2fa(self):
+        self.display_form(self.login_form)
+
+    @GObject.Signal
+    def user_logged_in(self):
+        """Signal emitted after a successful login."""
+
+    def _signal_user_logged_in(self):
+        self.emit("user-logged-in")
+
+    def display_form(self, form):
+        """
+        Displays the specified form to the user. That is, either the login
+        form (user/password) or the 2FA form.
+        :param form: The form to be displayed to the user.
+        """
+        self.active_form = form
+        self.set_visible_child(form)
+        form.reset()
+
+    def reset(self):
+        """Resets the widget to its initial state."""
+        self.display_form(self.login_form)

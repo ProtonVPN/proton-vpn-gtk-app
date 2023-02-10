@@ -10,7 +10,7 @@ from proton.vpn.core_api.connection import Subscriber, VPNConnectionHolder
 from proton.vpn.servers.server_types import LogicalServer
 
 from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
-from proton.vpn.app.gtk.widgets.report import BugReportForm
+from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 
 
 class Controller:

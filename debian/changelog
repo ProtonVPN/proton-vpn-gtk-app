@@ -1,6 +1,12 @@
+proton-vpn-gtk-app (0.13.4) unstable; urgency=medium
+
+  * Refactor widget package structure
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Fri, 10 Feb 2023 17:49:06 +0100
+
 proton-vpn-gtk-app (0.13.3) unstable; urgency=medium
 
-  * Fix crash when connected server would go into mantenance
+  * Fix crash when connected server would go into maintenance
 
  -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Thu, 09 Feb 2023 17:00:00 +0100
 

@@ -55,16 +55,15 @@ def test_disable_exception_handler_removes_excepthooks():
 
 
 @pytest.mark.parametrize(
-    "exception,error_message,blocking", [
-        (ProtonAPIError(401, [], {"Code": 0, "Error": "API Error"}), "API Error", False),
-        (ProtonAPINotReachable(""), ExceptionHandler.PROTON_API_NOT_REACHABLE_MESSAGE, False),
-        (Exception("Unexpected error"), ExceptionHandler.EXCEPTION_ERROR_MESSAGE, True),
+    "exception,error_message", [
+        (ProtonAPIError(401, [], {"Code": 0, "Error": "API Error"}), "API Error",),
+        (ProtonAPINotReachable(""), ExceptionHandler.PROTON_API_NOT_REACHABLE_MESSAGE),
     ]
 )
 def test_handle_exceptions_showing_error_messages(
-        exception, error_message, blocking
+        exception, error_message
 ):
-    main_widget_mock = Mock(MainWidget)
+    main_widget_mock = Mock()
     exception_handler = ExceptionHandler(main_widget=main_widget_mock)
 
     exception_handler.handle_exception(
@@ -73,9 +72,31 @@ def test_handle_exceptions_showing_error_messages(
         exc_traceback=None
     )
 
-    main_widget_mock.show_error_message.assert_called_once_with(
-        error_message,
-        blocking=blocking
+    main_widget_mock.notifications.show_error_message.assert_called_once_with(
+        error_message
+    )
+
+
+@pytest.mark.parametrize(
+    "exception,error_title,error_message", [
+        (Exception("Unexpected error"), ExceptionHandler.GENERIC_ERROR_TITLE, ExceptionHandler.GENERIC_ERROR_MESSAGE),
+    ]
+)
+def test_handle_exceptions_showing_error_dialogs(
+        exception, error_title, error_message
+):
+    main_widget_mock = Mock()
+    exception_handler = ExceptionHandler(main_widget=main_widget_mock)
+
+    exception_handler.handle_exception(
+        exc_type=type(exception),
+        exc_value=exception,
+        exc_traceback=None
+    )
+
+    main_widget_mock.notifications.show_error_dialog.assert_called_once_with(
+        title=error_title,
+        message=error_message
     )
 
 

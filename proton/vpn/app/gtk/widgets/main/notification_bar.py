@@ -2,9 +2,18 @@
 Notification bar used to show error messages.
 """
 from __future__ import annotations
+
+from enum import Enum
+
 from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
+
+
+class NotificationType(Enum):
+    """Types of notification messages"""
+    SUCCESS = "success"
+    ERROR = "error"
 
 
 class NotificationBar(Gtk.Revealer):
@@ -17,25 +26,37 @@ class NotificationBar(Gtk.Revealer):
     def __init__(self):
         super().__init__()
         self._clear_error_message_src_id = None
-        self._error_message_label = Gtk.Label()
-        self._error_message_label.set_line_wrap(True)
+        self._notification_label = Gtk.Label()
+        self._notification_label.set_line_wrap(True)
         # set_max_width_chars is required for set_line_wrap to have effect.
-        self._error_message_label.set_max_width_chars(1)
-        self.add(self._error_message_label)
+        self._notification_label.set_max_width_chars(1)
+        self.add(self._notification_label)
 
     @property
-    def error_message(self):
-        """Returns the error message being shown. This property was added for
-        testing purposes."""
-        return self._error_message_label.get_label()
+    def current_message(self):
+        """Returns the notification message being shown."""
+        return self._notification_label.get_label()
 
     def show_error_message(self, error_message: str, hide_after_ms: int = None):
         """
-        Shows the specified error message to the user for a brief period of time.
-        :param error_message: error message to be show.
+        Shows the specified error message to the user for a limited amount of time.
+        :param error_message: error message to be shown.
         :param hide_after_ms: number of ms after which the error message will be hidden.
         The default value is NotificationBar.HIDE_NOTIFICATION_AFTER_MS.
         """
+        self._show_notification(error_message, NotificationType.ERROR, hide_after_ms)
+
+    def show_success_message(self, message: str, hide_after_ms: int = None):
+        """
+        Shows the specified success message to the user for a limited amount of time.
+        :param message: success message to be shown.
+        :param hide_after_ms: number of ms after which the error message will be hidden.
+        The default value is NotificationBar.HIDE_NOTIFICATION_AFTER_MS.
+        """
+        self._show_notification(message, NotificationType.SUCCESS, hide_after_ms)
+
+    def _show_notification(self, message: str, notification_type: NotificationType,
+                           hide_after_ms: int = None):
         hide_after_ms = hide_after_ms or NotificationBar.HIDE_NOTIFICATION_AFTER_MS
         if self._clear_error_message_src_id:
             # Remove the source that will clear the previous error message,
@@ -43,19 +64,17 @@ class NotificationBar(Gtk.Revealer):
             GLib.source_remove(self._clear_error_message_src_id)
             self._clear_error_message_src_id = None
 
-        self._error_message_label.set_label(error_message)
+        self._notification_label.set_label(message)
+        self._notification_label.get_style_context().add_class(notification_type.value)
         self.set_reveal_child(True)
 
         def clear_error_message(*_):
-            self._clear_error_message()
+            self._notification_label.set_label("")
+            self._notification_label.get_style_context().remove_class(notification_type.value)
+            self.set_reveal_child(False)
             self._clear_error_message_src_id = None
             # We need to return False so that this function is only called once:
             # https://lazka.github.io/pgi-docs/#GLib-2.0/functions.html#GLib.timeout_add
             return False
 
         self._clear_error_message_src_id = GLib.timeout_add(hide_after_ms, clear_error_message)
-
-    def _clear_error_message(self):
-        """Hides the error message being shown, if any."""
-        self._error_message_label.set_label("")
-        self.set_reveal_child(False)

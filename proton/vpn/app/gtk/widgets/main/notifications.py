@@ -3,18 +3,18 @@ Error messenger module.
 """
 from gi.repository import GLib
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 
 
-class ErrorMessenger:
-    """The error messenger object serves the purpose of wrapping all
-    types of messages whenever an error occurs."""
+class Notifications:
+    """It wraps all types of notifications to be shown by the app."""
 
     def __init__(
         self, main_window: Gtk.ApplicationWindow,
-        notification_bar: Gtk.Revealer,
+        notification_bar: NotificationBar,
     ):
         self._main_window = main_window
-        self._notification_bar = notification_bar
+        self.notification_bar = notification_bar
         self.error_dialogs = []  # only for testing purposes
 
     def show_error_dialog(self, message: str, title: str):
@@ -39,9 +39,16 @@ class ErrorMessenger:
         error_dialog.destroy()
         self.error_dialogs.remove(error_dialog)
 
-    def show_error_bar(self, error_message: str):
-        """Shows the error within a notification bar."""
+    def show_error_message(self, message: str):
+        """Shows the error message in the notification bar."""
         GLib.idle_add(
-            self._notification_bar.show_error_message,
-            error_message
+            self.notification_bar.show_error_message,
+            message
+        )
+
+    def show_success_message(self, message: str):
+        """Shows a success message in the notification bar."""
+        GLib.idle_add(
+            self.notification_bar.show_success_message,
+            message
         )

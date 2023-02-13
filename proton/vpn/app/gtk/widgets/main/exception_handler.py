@@ -13,8 +13,9 @@ logger = logging.getLogger(__name__)
 
 class ExceptionHandler:
     """Handles generic exceptions before they bubble all the way up."""
-    EXCEPTION_ERROR_MESSAGE = "We're sorry, an unexpected error occurred." \
-                              "Please try later."
+    GENERIC_ERROR_TITLE = "Something went wrong"
+    GENERIC_ERROR_MESSAGE = "We're sorry, an unexpected error occurred." \
+                            "Please try again."
     PROTON_API_NOT_REACHABLE_MESSAGE = "Our servers are not reachable. " \
                                        "Please check your internet connection."
 
@@ -89,9 +90,8 @@ class ExceptionHandler:
             raise exc_value if exc_value else exc_type
 
     def _on_proton_api_not_reachable(self, exc_type, exc_value, exc_traceback):
-        self._main_widget.show_error_message(
+        self._main_widget.notifications.show_error_message(
             self.PROTON_API_NOT_REACHABLE_MESSAGE,
-            blocking=False
         )
         logger.warning(
             "API not reachable.",
@@ -100,7 +100,7 @@ class ExceptionHandler:
         )
 
     def _on_proton_api_error(self, exc_type, exc_value, exc_traceback):
-        self._main_widget.show_error_message(exc_value.error, blocking=False)
+        self._main_widget.notifications.show_error_message(exc_value.error)
         logger.error(
             exc_value.error,
             category="APP", event="ERROR",
@@ -108,9 +108,9 @@ class ExceptionHandler:
         )
 
     def _on_exception(self, exc_type, exc_value, exc_traceback):
-        self._main_widget.show_error_message(
-            self.EXCEPTION_ERROR_MESSAGE,
-            blocking=True
+        self._main_widget.notifications.show_error_dialog(
+            title=self.GENERIC_ERROR_TITLE,
+            message=self.GENERIC_ERROR_MESSAGE,
         )
         logger.critical(
             "Unexpected error.",

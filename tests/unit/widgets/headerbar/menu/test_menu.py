@@ -15,7 +15,11 @@ class TestReportBugMenuEntry:
         bug_report_dialog_mock = Mock()
         bug_report_dialog_patch.return_value = bug_report_dialog_mock
 
-        menu = Menu(controller=Mock(), main_window=Mock())
+        menu = Menu(
+            controller=Mock(),
+            main_window=Mock(),
+            notifications=Mock()
+        )
         menu.bug_report_button_click()
 
         bug_report_dialog_mock.run.assert_called_once()
@@ -29,7 +33,11 @@ class TestAboutMenuEntry:
         about_dialog_mock = Mock()
         about_dialog_patch.return_value = about_dialog_mock
 
-        menu = Menu(controller=Mock(), main_window=Mock())
+        menu = Menu(
+            controller=Mock(),
+            main_window=Mock(),
+            notifications=Mock()
+        )
         menu.about_button_click()
 
         process_gtk_events()
@@ -50,7 +58,8 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock()
+            main_window=Mock(),
+            notifications=Mock()
         )
 
         menu.logout_button_click()
@@ -66,7 +75,11 @@ class TestLogoutMenuEntry:
         logout_future_raises_exception.set_exception(ProtonAPINotReachable("test"))
         controller_mock.logout.return_value = logout_future_raises_exception
 
-        menu = Menu(controller=controller_mock, main_window=Mock())
+        menu = Menu(
+            controller=controller_mock,
+            main_window=Mock(),
+            notifications=Mock()
+        )
 
         menu.logout_button_click()
 
@@ -85,15 +98,19 @@ class TestLogoutMenuEntry:
         logout_future_raises_exception.set_exception(ProtonAPINotReachable("test"))
         controller_mock.logout.return_value = logout_future_raises_exception
 
-        menu = Menu(controller=controller_mock, main_window=main_window_mock)
+        menu = Menu(
+            controller=controller_mock,
+            main_window=main_window_mock,
+            notifications=Mock()
+        )
         menu.logout_button_click()
 
         process_gtk_events()
 
         controller_mock.logout.assert_called_once()
-        main_window_mock.main_widget.show_error_message.assert_called_once_with(
+        main_window_mock.main_widget.notifications.show_error_dialog.assert_called_once_with(
             menu.UNABLE_TO_LOGOUT_MESSAGE,
-            True, menu.UNABLE_TO_LOGOUT_TITLE
+            menu.UNABLE_TO_LOGOUT_TITLE
         )
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
@@ -113,7 +130,8 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock()
+            main_window=Mock(),
+            notifications=Mock()
         )
 
         menu.logout_button_click()
@@ -141,7 +159,8 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock()
+            main_window=Mock(),
+            notifications=Mock()
         )
 
         menu.logout_button_click()
@@ -161,7 +180,9 @@ class TestQuitMenuEntry:
         controller_mock.is_connection_active = False
 
         menu = Menu(
-            controller=controller_mock, main_window=main_window_mock
+            controller=controller_mock,
+            main_window=main_window_mock,
+            notifications=Mock()
         )
 
         menu.quit_button_click()
@@ -183,7 +204,9 @@ class TestQuitMenuEntry:
         disconnect_dialog_patch.return_value = quit_dialog_mock
 
         menu = Menu(
-            controller=controller_mock, main_window=main_window_mock
+            controller=controller_mock,
+            main_window=main_window_mock,
+            notifications=Mock()
         )
 
         menu.quit_button_click()
@@ -202,7 +225,9 @@ class TestQuitMenuEntry:
         disconnect_dialog_patch.return_value = quit_dialog_mock
 
         menu = Menu(
-            controller=controller_mock, main_window=main_window_mock
+            controller=controller_mock,
+            main_window=main_window_mock,
+            notifications=Mock()
         )
 
         menu.quit_button_click()

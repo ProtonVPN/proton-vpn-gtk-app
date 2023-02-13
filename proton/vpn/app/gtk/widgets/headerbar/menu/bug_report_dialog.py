@@ -14,6 +14,7 @@ from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.core_api.reports import BugReportForm
 from proton.vpn.app.gtk import __version__
 from proton.vpn import logging
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.controller import Controller
@@ -28,9 +29,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     EMAIL_REGEX = re.compile(
         r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
     )
-    BUG_REPORT_SENDING_MESSAGE = "Sending bug report..."
-    BUG_REPORT_SUCCESS_MESSAGE = "Report sent successfully\n"\
-                                 "(this window will close automatically)"
+    BUG_REPORT_SENDING_MESSAGE = "Reporting your issue..."
+    BUG_REPORT_SUCCESS_MESSAGE = "Your issue has been reported"
     BUG_REPORT_NETWORK_ERROR_MESSAGE = "Proton services could not be reached.\n" \
                                        "Please try again."
     BUG_REPORT_UNEXPECTED_ERROR_MESSAGE = "Something went wrong. " \
@@ -40,9 +40,10 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     BUG_REPORT_CLIENT = "Linux GUI"
     BUG_REPORT_VERSION = __version__
 
-    def __init__(self, controller: Controller):
+    def __init__(self, controller: Controller, notifications: Notifications):
         super().__init__()
-        self.controller = controller
+        self._controller = controller
+        self._notifications = notifications
 
         self.set_title("Report an Issue")
         self.set_default_size(BugReportDialog.WIDTH, BugReportDialog.HEIGHT)
@@ -93,13 +94,18 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             report_form.attachments.append(LogCollector.get_app_log(logger))
 
         self._disable_form()
-        future = self.controller.submit_bug_report(report_form)
+        future = self._controller.submit_bug_report(report_form)
         future.add_done_callback(
             lambda future: GLib.idle_add(
                 self._on_report_submission_result,
                 future
             )
         )
+
+        # Prevent that the window closes before receiving the API response,
+        # as by default Gtk.Dialog closes after the response signal is emitted.
+        # https://lazka.github.io/pgi-docs/#GObject-2.0/functions.html#GObject.signal_stop_emission_by_name
+        self.stop_emission_by_name("response")
 
     def _on_report_submission_result(self, future: Future):
         try:
@@ -119,11 +125,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             self._enable_form()
             logger.exception("Unexpected error submitting bug report.")
         else:
-            self.status_label = self.BUG_REPORT_SUCCESS_MESSAGE
-            GLib.timeout_add_seconds(
-                interval=3,
-                function=self.close
-            )
+            self._notifications.show_success_message(self.BUG_REPORT_SUCCESS_MESSAGE)
+            self.close()
 
         return False
 
@@ -236,10 +239,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         )
 
     def click_on_submit_button(self):
-        """This method emulates the click on the 'Submit' button.
-        This method is used mainly for testing purposes.
-        """
-        self._on_response(self, Gtk.ResponseType.OK)
+        """Clicks the Submit button."""
+        self.get_widget_for_response(Gtk.ResponseType.OK).clicked()
 
 
 class LogCollector:  # pylint: disable=too-few-public-methods

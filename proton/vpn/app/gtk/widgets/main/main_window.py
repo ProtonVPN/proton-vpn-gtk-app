@@ -8,6 +8,8 @@ from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar.headerbar import HeaderBar
+from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -25,10 +27,20 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.configure_window()
 
-        self.header_bar = HeaderBar(controller, self)
+        notifications = Notifications(main_window=self, notification_bar=NotificationBar())
+
+        self.header_bar = HeaderBar(
+            controller=controller,
+            main_window=self,
+            notifications=notifications
+        )
         self.set_titlebar(self.header_bar)
 
-        self.main_widget = MainWidget(controller=controller, main_window=self)
+        self.main_widget = MainWidget(
+            controller=controller,
+            main_window=self,
+            notifications=notifications
+        )
         self.add(self.main_widget)
 
     def add_keyboard_shortcut(self, target_widget: Gtk.Widget, target_signal: str, shortcut: str):

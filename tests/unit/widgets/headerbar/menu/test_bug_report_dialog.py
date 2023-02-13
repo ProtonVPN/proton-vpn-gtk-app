@@ -16,7 +16,8 @@ def test_bug_report_widget_delegates_submission_to_controller_when_submit_button
     future = Future()
     future.set_result(None)
     controller_mock.submit_bug_report.return_value = future
-    bug_report_widget = BugReportDialog(controller_mock)
+    notification_mock = Mock()
+    bug_report_widget = BugReportDialog(controller=controller_mock, notifications=notification_mock)
 
     expected_report_form = BugReportForm(
         username="test_user",
@@ -46,13 +47,15 @@ def test_bug_report_widget_delegates_submission_to_controller_when_submit_button
 
     process_gtk_events()
 
-    assert bug_report_widget.status_label == bug_report_widget.BUG_REPORT_SUCCESS_MESSAGE
+    notification_mock.show_success_message.assert_called_once_with(
+        bug_report_widget.BUG_REPORT_SUCCESS_MESSAGE
+    )
 
 
 @patch("proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog.LogCollector")
 def test_bug_report_widget_does_not_check_logs_when_logs_checkbox_is_unchecked(log_collector_mock):
     controller_mock = Mock()
-    bug_report_widget = BugReportDialog(controller_mock)
+    bug_report_widget = BugReportDialog(controller=controller_mock, notifications=Mock())
 
     bug_report_widget.username_entry.set_text("Username")
     bug_report_widget.email_entry.set_text("me@proton.ch")
@@ -74,7 +77,7 @@ def test_bug_report_widget_does_not_check_logs_when_logs_checkbox_is_unchecked(l
 @patch("proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog.LogCollector")
 def test_bug_report_widget_shows_error_message_when_api_is_not_reachable(_log_collector_mock):
     controller_mock = Mock()
-    bug_report_widget = BugReportDialog(controller_mock)
+    bug_report_widget = BugReportDialog(controller=controller_mock, notifications=Mock())
 
     future = Future()
     future.set_exception(ProtonAPINotReachable("Forced error"))
@@ -90,7 +93,7 @@ def test_bug_report_widget_shows_error_message_when_api_is_not_reachable(_log_co
 @patch("proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog.LogCollector")
 def test_bug_report_widget_shows_error_message_on_api_error(_log_collector_mock):
     controller_mock = Mock()
-    bug_report_widget = BugReportDialog(controller_mock)
+    bug_report_widget = BugReportDialog(controller=controller_mock, notifications=Mock())
 
     future = Future()
     api_error = ProtonAPIError(
@@ -109,7 +112,7 @@ def test_bug_report_widget_shows_error_message_on_api_error(_log_collector_mock)
 @patch("proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog.LogCollector")
 def test_bug_report_widget_shows_error_message_on_unexpected_errors_reaching_api(_log_collector_mock):
     controller_mock = Mock()
-    bug_report_widget = BugReportDialog(controller_mock)
+    bug_report_widget = BugReportDialog(controller=controller_mock, notifications=Mock())
 
     future = Future()
     future.set_exception(RuntimeError("Forced error"))

@@ -23,6 +23,9 @@ class TwoFactorAuthForm(Gtk.Box):
         self._error = Gtk.Label(label="")
         self.add(self._error)
 
+        # pylint: disable=R0801
+        self.pack_start(ProtonVPNLogo(), expand=False, fill=True, padding=0)
+
         self._2fa_code_entry = Gtk.Entry()
         self._2fa_code_entry.set_placeholder_text("Insert your 2FA code here")
         self.pack_start(

@@ -11,7 +11,7 @@ from proton.vpn.app.gtk.widgets.login.login_widget import LoginWidget
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
-from proton.vpn.app.gtk.widgets.main.error_messenger import ErrorMessenger
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.app import MainWindow
@@ -28,7 +28,8 @@ class MainWidget(Gtk.Overlay):
         "Please login to re-authenticate."
     SESSION_EXPIRED_ERROR_TITLE = "Invalid Session"
 
-    def __init__(self, controller: Controller, main_window: "MainWindow"):
+    def __init__(self, controller: Controller, main_window: "MainWindow",
+                 notifications: Notifications = None):
         super().__init__()
         self.main_widget = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
@@ -41,10 +42,13 @@ class MainWidget(Gtk.Overlay):
         self._main_window = main_window
 
         exception_handler = ExceptionHandler(main_widget=self)
-        notification_bar = NotificationBar()
-        self.main_widget.pack_start(notification_bar, expand=False, fill=False, padding=0)
-        self._error_messenger = ErrorMessenger(self._main_window, notification_bar)
-
+        self.notifications = notifications or Notifications(
+            main_window, NotificationBar()
+        )
+        self.main_widget.pack_start(
+            self.notifications.notification_bar,
+            expand=False, fill=False, padding=0
+        )
         self.login_widget = self._create_login_widget()
         self.vpn_widget = self._create_vpn_widget()
 
@@ -91,16 +95,16 @@ class MainWidget(Gtk.Overlay):
         confirmation from the user or not.
         """
         if blocking:
-            self._error_messenger.show_error_dialog(error_message, error_title)
+            self.notifications.show_error_dialog(error_message, error_title)
         else:
-            self._error_messenger.show_error_bar(error_message)
+            self.notifications.show_error_message(error_message)
 
     def session_expired(self):
         """This method is called by the exception handler once the session
         expires."""
-        self.show_error_message(
-            self.SESSION_EXPIRED_ERROR_MESSAGE,
-            True, self.SESSION_EXPIRED_ERROR_TITLE
+        self.notifications.show_error_dialog(
+            title=self.SESSION_EXPIRED_ERROR_TITLE,
+            message=self.SESSION_EXPIRED_ERROR_MESSAGE
         )
         self._display_login_widget()
 

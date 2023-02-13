@@ -66,7 +66,7 @@ class App(Gtk.Application):
         was made available for testing purposes.
         :return: The list of currently opened error message dialogs.
         """
-        return self.window.main_widget._error_messenger.error_dialogs  # pylint: disable=W0212
+        return self.window.main_widget.notifications.error_dialogs  # pylint: disable=W0212
 
     @GObject.Signal(name="app-ready")
     def app_ready(self):

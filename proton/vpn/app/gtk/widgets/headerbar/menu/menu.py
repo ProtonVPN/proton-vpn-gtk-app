@@ -14,6 +14,7 @@ from proton.vpn.app.gtk.controller import Controller
 
 from proton.session.exceptions import ProtonAPINotReachable
 from proton.vpn import logging
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,8 @@ if TYPE_CHECKING:
 class Menu(Gio.Menu):
     """App menu shown in the header bar."""
 
+    # pylint: disable=too-many-instance-attributes
+
     UNABLE_TO_LOGOUT_TITLE = "Unable to Logout"
     UNABLE_TO_LOGOUT_MESSAGE = "Please ensure you have internet access."
     DISCONNECT_ON_LOGOUT_MESSAGE = "Logging out of the application will disconnect the active" \
@@ -32,10 +35,16 @@ class Menu(Gio.Menu):
                                  " VPN connection.\n\nDo you want to continue?"
 
     """Custom menu widget that is displayed in the header bar."""
-    def __init__(self, controller: Controller, main_window: "MainWindow"):
+    def __init__(
+            self,
+            controller: Controller,
+            main_window: "MainWindow",
+            notifications: Notifications
+    ):
         super().__init__()
         self._main_window = main_window
         self._controller = controller
+        self._notifications = notifications
 
         self.bug_report_action = Gio.SimpleAction.new("report", None)
         self.about_action = Gio.SimpleAction.new("about", None)
@@ -85,7 +94,7 @@ class Menu(Gio.Menu):
         )
 
     def _on_report_an_issue_clicked(self, *_):
-        bug_dialog = BugReportDialog(self._controller)
+        bug_dialog = BugReportDialog(self._controller, self._notifications)
         bug_dialog.set_transient_for(self._main_window)
         # run() blocks the main loop, and only exist once the `::response` signal
         # is emitted.
@@ -164,9 +173,9 @@ class Menu(Gio.Menu):
                 category="app", subcategory="logout", event="fail"
             )
             self.logout_enabled = True
-            self._main_window.main_widget.show_error_message(
+            self._main_window.main_widget.notifications.show_error_dialog(
                 self.UNABLE_TO_LOGOUT_MESSAGE,
-                True, self.UNABLE_TO_LOGOUT_TITLE
+                self.UNABLE_TO_LOGOUT_TITLE
             )
 
     def bug_report_button_click(self):

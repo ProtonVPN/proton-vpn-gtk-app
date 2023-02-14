@@ -7,6 +7,7 @@ from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ class TwoFactorAuthForm(Gtk.Box):
 
         self._2fa_code_entry = Gtk.Entry()
         self._2fa_code_entry.set_placeholder_text("Insert your 2FA code here")
+        self._2fa_code_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
         self.pack_start(
             self._2fa_code_entry, expand=False, fill=False, padding=0
         )
@@ -46,8 +48,6 @@ class TwoFactorAuthForm(Gtk.Box):
 
         self._2fa_spinner = Gtk.Spinner()
         self.pack_start(self._2fa_spinner, expand=False, fill=False, padding=0)
-
-        self.reset()
 
     def _on_2fa_submission_button_clicked(self, _):
         logger.info("Clicked on login", category="UI", subcategory="LOGIN-2FA", event="CLICK")
@@ -83,7 +83,6 @@ class TwoFactorAuthForm(Gtk.Box):
 
     def _signal_two_factor_auth_successful(self):
         self.emit("two-factor-auth-successful")
-        self.reset()
 
     @GObject.Signal
     def two_factor_auth_successful(self):
@@ -97,9 +96,7 @@ class TwoFactorAuthForm(Gtk.Box):
         """Resets the state of the login/2fa forms."""
         self.error_message = ""
         self.two_factor_auth_code = ""
-        # Avoid that the focus is on the text entry fields because when that's
-        # the case, the text entry placeholder is not shown. Find a better way.
-        self._2fa_submission_button.grab_focus()
+        self._2fa_code_entry.grab_focus()
 
     @property
     def error_message(self):

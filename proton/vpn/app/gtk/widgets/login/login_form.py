@@ -11,6 +11,7 @@ from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.assets import ASSETS_PATH
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
 
 logger = logging.getLogger(__name__)
 
@@ -30,11 +31,11 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self._error = Gtk.Label(label="")
         self.add(self._error)
 
-        proton_vpn_logo = ProtonVPNLogo()
-        self.pack_start(proton_vpn_logo, expand=False, fill=True, padding=0)
+        self.pack_start(ProtonVPNLogo(), expand=False, fill=True, padding=0)
 
         self._username_entry = Gtk.Entry()
         self._username_entry.set_placeholder_text("Username")
+        self._username_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
         self.pack_start(self._username_entry, expand=False, fill=False, padding=0)
 
         self._password_entry = PasswordEntry()
@@ -66,8 +67,6 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self.pack_start(self._login_spinner, expand=False, fill=False, padding=0)
 
         self.pack_end(LoginLinks(), expand=False, fill=False, padding=0)
-
-        self.reset()
 
     def _on_press_enter(self, _):
         if not self._login_button.get_property("sensitive"):
@@ -109,7 +108,6 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
 
     def _signal_user_authenticated(self, two_factor_auth_required: bool):
         self.emit("user-authenticated", two_factor_auth_required)
-        self.reset()
 
     @GObject.Signal(name="user-authenticated", arg_types=(bool,))
     def user_authenticated(self, two_factor_auth_required: bool):
@@ -127,9 +125,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self.error_message = ""
         self.username = ""
         self.password = ""
-        # Avoid that the focus is on the text entry fields because when that's
-        # the case, the text entry placeholder is not shown. Find a better way.
-        self._login_button.grab_focus()
+        self._username_entry.grab_focus()
 
     @property
     def username(self):
@@ -197,6 +193,7 @@ class PasswordEntry(Gtk.Entry):
     """
     def __init__(self):
         super().__init__()
+        self.set_input_purpose(Gtk.InputPurpose.PASSWORD)
         self.set_visibility(False)
         # Load icon to hide the password.
         eye_dirpath = ASSETS_PATH / "icons" / "eye"
@@ -242,19 +239,6 @@ class PasswordEntry(Gtk.Entry):
             if is_text_visible
             else self._hide_pixbuff
         )
-
-
-class ProtonVPNLogo(Gtk.Image):
-    """Proton VPN logo shown in the login widget."""
-    def __init__(self):
-        super().__init__()
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=str(ASSETS_PATH / "proton-vpn-logo.svg"),
-            width=300,
-            height=300,
-            preserve_aspect_ratio=True
-        )
-        self.set_from_pixbuf(pixbuf)
 
 
 class LoginLinks(Gtk.Box):

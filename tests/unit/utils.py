@@ -39,7 +39,8 @@ def raise_main_loop_exceptions(func):
             # so that tests are aware they happened.
             if exceptions:
                 exc_type, exc_value, exc_traceback = exceptions[0]
-                raise exc_type(exc_value).with_traceback(exc_traceback)
+
+                raise exc_value.with_traceback(exc_traceback)
 
     return wrapper
 

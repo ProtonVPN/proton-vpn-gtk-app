@@ -9,7 +9,9 @@ from dataclasses import dataclass
 
 from gi.repository import GLib, GObject
 
-from proton.session.exceptions import ProtonError
+from proton.session.exceptions import (
+    ProtonAPINotReachable, ProtonAPINotAvailable,
+)
 from proton.vpn.servers.list import ServerList
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.client_config import ClientConfig
@@ -215,15 +217,11 @@ class VPNDataRefresher(GObject.Object):
         return future
 
     def _on_client_config_retrieved(self, future_client_config: Future):
-        try:
-            new_client_config = future_client_config.result()
-        except ProtonError as error:
-            logger.warning(
-                f"Client config update failed: {error}",
-                category="app", subcategory="clientconfig", event="get")
-            if not self.client_config:
-                raise
-            return
+        new_client_config = self._handle_api_response(
+            future=future_client_config,
+            log_message="Client config update failed",
+            subcategory="clientconfig"
+        )
 
         if not new_client_config:
             # Client config cache did not exist.
@@ -241,15 +239,11 @@ class VPNDataRefresher(GObject.Object):
             )
 
     def _on_server_list_retrieved(self, future_server_list: Future):
-        try:
-            server_list = future_server_list.result()
-        except ProtonError as error:
-            logger.warning(
-                f"Server list update failed: {error}",
-                category="app", subcategory="servers", event="get")
-            if not self.server_list:
-                raise
-            return
+        server_list = self._handle_api_response(
+            future=future_server_list,
+            log_message="Server list update failed",
+            subcategory="servers"
+        )
 
         if not server_list:
             # Server list cache did not exist.
@@ -265,6 +259,22 @@ class VPNDataRefresher(GObject.Object):
                 "Skipping server list update because it's already up to date.",
                 category="app", subcategory="servers", event="reload"
             )
+
+    def _handle_api_response(self, future: Future, log_message: str, subcategory: str):
+        data = None
+
+        try:
+            data = future.result()
+        except (
+            ProtonAPINotReachable,
+            ProtonAPINotAvailable
+        ) as error:
+            logger.warning(
+                f"{log_message}: {error}",
+                category="app", subcategory=f"{subcategory}", event="get"
+            )
+
+        return data
 
     def _emit_signal_once_all_required_vpn_data_is_available(self):
         if not self._state.api_data_retrieval_complete and self.is_vpn_data_ready:

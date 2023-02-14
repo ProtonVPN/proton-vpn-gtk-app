@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.13.4
+%define version 0.13.5
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,7 +67,13 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* vr feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
+* Tue feb 14 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.13.5
+- Fix: Logout from app if session is invalid when contacting the API
+
+* Fri feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
+- Refactor widget package structure
+
+* Fri feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
 - Refactor widget package structure
 
 * Thu Feb 09 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.3

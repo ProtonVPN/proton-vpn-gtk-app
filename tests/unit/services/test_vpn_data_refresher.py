@@ -1,11 +1,13 @@
 from concurrent.futures import Future
 from threading import Event
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 import time
 
 import pytest
-from proton.session.exceptions import ProtonError
-
+from proton.session.exceptions import (
+    ProtonError, ProtonAPINotAvailable, ProtonAPIError,
+    ProtonAPINotReachable, ProtonAPIUnexpectedError
+)
 from proton.vpn.core_api.client_config import ClientConfig, DEFAULT_CLIENT_CONFIG
 from proton.vpn.servers.list import ServerList
 
@@ -218,11 +220,15 @@ def test_get_fresh_client_config_raises_error_when_api_request_fails_and_it_was_
         process_gtk_events()
 
 
-def test_get_fresh_server_list_fails_silently_when_api_request_fails_but_it_was_retrieved_previously(
-        thread_pool_executor, caplog
+@pytest.mark.parametrize("excp", [
+    ProtonAPINotReachable,
+    ProtonAPINotAvailable
+])
+def test_get_fresh_server_list_fails_silently_when_the_api_could_not_be_reached(
+        excp, thread_pool_executor, caplog
 ):
     mock_api = Mock()
-    mock_api.servers.get_fresh_server_list.side_effect = ProtonError("Expected error")
+    mock_api.servers.get_fresh_server_list.side_effect = excp("Expected error")
     state = VPNDataRefresherState(server_list=Mock())
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api, state)
@@ -235,11 +241,15 @@ def test_get_fresh_server_list_fails_silently_when_api_request_fails_but_it_was_
     assert "Server list update failed" in warnings[0].message
 
 
-def test_get_fresh_client_config_fails_silently_when_api_request_fails_but_it_was_retrieved_previously(
-        thread_pool_executor, caplog
+@pytest.mark.parametrize("excp", [
+    ProtonAPINotReachable,
+    ProtonAPINotAvailable
+])
+def test_get_fresh_client_config_fails_silently_when_the_api_could_not_be_reached(
+        excp, thread_pool_executor, caplog
 ):
     mock_api = Mock()
-    mock_api.get_fresh_client_config.side_effect = ProtonError("Expected error")
+    mock_api.get_fresh_client_config.side_effect = excp("Expected error")
     state = VPNDataRefresherState(client_config=Mock())
 
     vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api, state)

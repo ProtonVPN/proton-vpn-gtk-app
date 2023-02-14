@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.13.5) unstable; urgency=medium
+
+  * Fix: Logout from app if session is invalid when contacting the API
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 14 Feb 2023 12:00:00 +0100
+ 
 proton-vpn-gtk-app (0.13.4) unstable; urgency=medium
 
   * Refactor widget package structure

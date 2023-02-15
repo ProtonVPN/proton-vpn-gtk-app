@@ -1,3 +1,10 @@
+proton-vpn-gtk-app (0.13.6) unstable; urgency=medium
+
+  * Fix focus issues on login widget
+  * Wait that the bug report is sent before closing the window
+
+ -- Josep Llaneras <josep.llaneras@proton.ch> Wed, 15 Feb 2023 12:26:23 +0100
+
 proton-vpn-gtk-app (0.13.5) unstable; urgency=medium
 
   * Fix: Logout from app if session is invalid when contacting the API

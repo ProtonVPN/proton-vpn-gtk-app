@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.14.0) unstable; urgency=medium
+
+  * Feature: Add option to enter recovery code if 2fa is enabled
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Wed, 15 Feb 2023 16:00:00 +0100
+
 proton-vpn-gtk-app (0.13.6) unstable; urgency=medium
 
   * Fix focus issues on login widget

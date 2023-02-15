@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.13.6
+%define version 0.14.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,17 +67,20 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Feb 15 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.14.0
+- Feature: Add option to enter recovery code if 2fa is enabled
+
 * Wed Feb 15 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.6
 - Fix focus issues on login widget
 - Wait that the bug report is sent before closing the window
 
-* Tue feb 14 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.13.5
+* Tue Feb 14 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.13.5
 - Fix: Logout from app if session is invalid when contacting the API
 
-* Fri feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
+* Fri Feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
 - Refactor widget package structure
 
-* Fri feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
+* Fri Feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
 - Refactor widget package structure
 
 * Thu Feb 09 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.3

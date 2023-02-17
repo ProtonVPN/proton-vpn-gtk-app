@@ -1,225 +1,231 @@
+proton-vpn-gtk-app (0.15.0) unstable; urgency=medium
+
+  * Use tray indicator if possible
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 20 Feb 2023 16:27:49 +0100
+
 proton-vpn-gtk-app (0.14.0) unstable; urgency=medium
 
   * Feature: Add option to enter recovery code if 2fa is enabled
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Wed, 15 Feb 2023 16:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 15 Feb 2023 16:00:00 +0100
 
 proton-vpn-gtk-app (0.13.6) unstable; urgency=medium
 
   * Fix focus issues on login widget
   * Wait that the bug report is sent before closing the window
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Wed, 15 Feb 2023 12:26:23 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 15 Feb 2023 12:26:23 +0100
 
 proton-vpn-gtk-app (0.13.5) unstable; urgency=medium
 
   * Fix: Logout from app if session is invalid when contacting the API
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 14 Feb 2023 12:00:00 +0100
- 
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 14 Feb 2023 12:00:00 +0100
+
 proton-vpn-gtk-app (0.13.4) unstable; urgency=medium
 
   * Refactor widget package structure
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Fri, 10 Feb 2023 17:49:06 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 10 Feb 2023 17:49:06 +0100
 
 proton-vpn-gtk-app (0.13.3) unstable; urgency=medium
 
   * Fix crash when connected server would go into maintenance
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Thu, 09 Feb 2023 17:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 09 Feb 2023 17:00:00 +0100
 
 proton-vpn-gtk-app (0.13.2) unstable; urgency=medium
 
   * Fix random reconnection issues
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Wed, 08 Feb 2023 18:52:23 +0100
- 
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 08 Feb 2023 18:52:23 +0100
+
 proton-vpn-gtk-app (0.13.1) unstable; urgency=medium
 
   * Fix several search issues
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Tue, 07 Feb 2023 17:56:52 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 07 Feb 2023 17:56:52 +0100
 
 proton-vpn-gtk-app (0.13.0) unstable; urgency=medium
 
   * Move logout to menu and refactor code
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 07 Jan 2023 12:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 07 Jan 2023 12:00:00 +0100
 
 proton-vpn-gtk-app (0.12.0) unstable; urgency=medium
 
   * Add search bar
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 06 Jan 2023 17:00:00 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 06 Jan 2023 17:00:00 +0100
 
 proton-vpn-gtk-app (0.11.2) unstable; urgency=medium
 
   * Fix app icon for Wayland
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Thu, 02 Feb 2023 16:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 02 Feb 2023 16:00:00 +0100
 
 proton-vpn-gtk-app (0.11.1) unstable; urgency=medium
 
   * Fix bug report dialog as per customer support guidelines
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Mon, 30 Jan 2023 16:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 30 Jan 2023 16:00:00 +0100
 
 proton-vpn-gtk-app (0.11.0) unstable; urgency=medium
 
   * Feature: About dialog
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Mon, 30 Jan 2023 16:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 30 Jan 2023 16:00:00 +0100
 
 proton-vpn-gtk-app (0.10.4) unstable; urgency=medium
 
   * Display pop-up when unable to reach API during logout
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Thu, 26 Jan 2023 16:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 26 Jan 2023 16:00:00 +0100
 
 proton-vpn-gtk-app (0.10.3) unstable; urgency=medium
 
   * Add window icon
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Thu, 26 Jan 2023 10:13:18 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Thu, 26 Jan 2023 10:13:18 +0100
 
 proton-vpn-gtk-app (0.10.2) unstable; urgency=medium
 
   * Submit bug report using proton-core
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 23 Jan 2023 12:07:29 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 23 Jan 2023 12:07:29 +0100
 
 proton-vpn-gtk-app (0.10.1) unstable; urgency=medium
 
   * Fix: Bug report feature
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Mon, 23 Jan 2023 09:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 23 Jan 2023 09:00:00 +0100
 
 proton-vpn-gtk-app (0.10.0) unstable; urgency=medium
 
   * Feature: Add issue report submission dialog
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 17 Jan 2023 12:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 17 Jan 2023 12:00:00 +0100
 
 proton-vpn-gtk-app (0.9.5) unstable; urgency=medium
 
   * Load VPN server details from persisted connection
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Fri, 13 Jan 2023 17:47:04 +0000
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 13 Jan 2023 17:47:04 +0000
 
 proton-vpn-gtk-app (0.9.4) unstable; urgency=medium
 
   * Fail silently when the server list or the client config could not be updated
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Wed, 11 Jan 2023 19:00:00 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 11 Jan 2023 19:00:00 +0100
 
 proton-vpn-gtk-app (0.9.3) unstable; urgency=medium
 
   * Fix quick connect widget glitch when opening the app twice
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Fri, 06 Jan 2023 18:30:00 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 06 Jan 2023 18:30:00 +0100
 
 proton-vpn-gtk-app (0.9.2) unstable; urgency=medium
 
   * Attempt to reconnect after user session has been unlocked from suspend
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Thu, 29 Dec 2022 15:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 29 Dec 2022 15:00:00 +0100
 
 proton-vpn-gtk-app (0.9.1) unstable; urgency=medium
 
   * Do not show popups on connection errors
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Thu, 22 Dec 2022 18:22:51 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Thu, 22 Dec 2022 18:22:51 +0100
 
 proton-vpn-gtk-app (0.9.0) unstable; urgency=medium
 
   * Add unit tests and improve API data handling
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 20 Dec 2022 15:00:00 +0100
- 
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 20 Dec 2022 15:00:00 +0100
+
 proton-vpn-gtk-app (0.8.0) unstable; urgency=medium
 
   * Reconnect to VPN when network connectivity is detected
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Wed, 14 Dec 2022 11:50:41 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 14 Dec 2022 11:50:41 +0100
 
 proton-vpn-gtk-app (0.7.2) unstable; urgency=medium
 
   * Fix app crash after starting the app with a persisted connection
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Tue, 06 Dec 2022 15:56:26 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 06 Dec 2022 15:56:26 +0100
 
 proton-vpn-gtk-app (0.7.1) unstable; urgency=medium
 
   * Fix issue where current connection was not properly being detected
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Tue, 06 Dec 2022 11:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 06 Dec 2022 11:00:00 +0100
 
 proton-vpn-gtk-app (0.7.0) unstable; urgency=medium
 
   * Get server name/id from connection status update
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 05 Dec 2022 18:42:13 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 05 Dec 2022 18:42:13 +0100
 
 proton-vpn-gtk-app (0.6.6) unstable; urgency=medium
 
   * Ensure that UI is updated after logout/login
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Fri, 02 Dec 2022 16:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 02 Dec 2022 16:00:00 +0100
 
 proton-vpn-gtk-app (0.6.5) unstable; urgency=medium
 
   * Check if the current connection is active before disconnecting
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Tue, 15 Nov 2022 16:15:54 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 15 Nov 2022 16:15:54 +0100
 
 proton-vpn-gtk-app (0.6.4) unstable; urgency=medium
 
   * Display error dialog whenever a connection fails to be established
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Mon, 15 Nov 2022 16:00:00 +0100
- 
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 15 Nov 2022 16:00:00 +0100
+
 proton-vpn-gtk-app (0.6.3) unstable; urgency=medium
 
   * Add Proton VPN logging library
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Fri, 11 Nov 2022 17:00:00 +0100
- 
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 11 Nov 2022 17:00:00 +0100
+
 proton-vpn-gtk-app (0.6.2) unstable; urgency=medium
 
   * Ensure that vpn connection is stopped before logging out the user, if there is one
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> Mon, 07 Nov 2022 16:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 07 Nov 2022 16:00:00 +0100
 
 proton-vpn-gtk-app (0.6.1) unstable; urgency=medium
 
   * Fix bug happening when connecting to a server without disconnecting first from the previous one
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Fri, 04 Nov 2022 18:00:00 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 04 Nov 2022 18:00:00 +0100
 
 proton-vpn-gtk-app (0.6.0) unstable; urgency=medium
 
   * Show the login screen when the session expired
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 31 Oct 2022 13:00:00 +0100
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 31 Oct 2022 13:00:00 +0100
 
 proton-vpn-gtk-app (0.5.1) unstable; urgency=medium
 
   * Fix several bugs in the server list widget
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Tue, 04 Oct 2022 15:37:54 +0200
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 04 Oct 2022 15:37:54 +0200
 
 proton-vpn-gtk-app (0.5.0) unstable; urgency=medium
 
   * Add "Connect" button on country rows
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Wed, 28 Sep 2022 13:17:09 +0200
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 28 Sep 2022 13:17:09 +0200
 
 proton-vpn-gtk-app (0.4.1) unstable; urgency=medium
 
   * Cleanup server list after logout
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Mon, 26 Sep 2022 17:53:11 +0200
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 26 Sep 2022 17:53:11 +0200
 
 proton-vpn-gtk-app (0.4.0) unstable; urgency=medium
 
@@ -231,7 +237,7 @@ proton-vpn-gtk-app (0.3.1) unstable; urgency=medium
 
   * Fix crash when connecting to free server
 
- -- Josep Llaneras <josep.llaneras@proton.ch> Fri, 23 Sep 2022 11:22:36 +0200
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 23 Sep 2022 11:22:36 +0200
 
 proton-vpn-gtk-app (0.3.0) unstable; urgency=medium
 

@@ -18,25 +18,31 @@ class MainWindow(Gtk.ApplicationWindow):
     WIDTH = 400
     HEIGTH = 600
 
+    # pylint: disable=too-many-arguments
     def __init__(
             self, application: Gtk.Application,
             controller: Controller,
+            notifications: Notifications = None,
+            header_bar: HeaderBar = None,
+            main_widget: MainWidget = None
     ):
         super().__init__(application=application)
         self._controller = controller
 
-        self.configure_window()
+        self._configure_window()
 
-        notifications = Notifications(main_window=self, notification_bar=NotificationBar())
+        notifications = notifications or Notifications(
+            main_window=self, notification_bar=NotificationBar()
+        )
 
-        self.header_bar = HeaderBar(
+        self.header_bar = header_bar or HeaderBar(
             controller=controller,
             main_window=self,
             notifications=notifications
         )
         self.set_titlebar(self.header_bar)
 
-        self.main_widget = MainWidget(
+        self.main_widget = main_widget or MainWidget(
             controller=controller,
             main_window=self,
             notifications=notifications
@@ -60,12 +66,10 @@ class MainWindow(Gtk.ApplicationWindow):
             key, modifier, Gtk.AccelFlags.VISIBLE
         )
 
-    def configure_window(self):
+    def _configure_window(self):
         """
         Handle delete-event, set window resize restrictions...
         """
-        # Handle event emitted when the button to close the window is clicked.
-        self.connect("delete-event", self._on_close_window_button_clicked)
 
         # The accelerator group is used to then add keyboard shortcuts.
         self._accelerators_group = Gtk.AccelGroup()
@@ -92,21 +96,56 @@ class MainWindow(Gtk.ApplicationWindow):
             (Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE)
         )
 
-    def _on_close_window_button_clicked(self, *_) -> bool:
-        """
-        Handles the delete-event event emitted when the user tries to close
-        the window by clicking the x button.
+    def configure_close_button_behaviour(self, tray_indicator_enabled: bool):
+        """Configures the behaviour of the button to close the window
+        (the x button), depending on if the tray indicator is used or not."""
+        if tray_indicator_enabled:
+            self.configure_close_button_to_hide_window()
+        else:
+            self.configure_close_button_to_trigger_quit_menu_entry()
 
-        Instead of letting the window x button close the app, therefore
-        quitting the app, the action is delegated to the Exit entry in
-        the menu bar widget.
-        """
-        self.header_bar.menu.quit_button_click()
+    def configure_close_button_to_hide_window(self):
+        """Configures the x (close window) button so that when clicked,
+        the window is hidden instead closed."""
+        def on_close_button_clicked_then_hide_window(*_) -> bool:
+            """
+            Instead of letting the window x button close the app, therefore
+            quitting the app, the action is delegated to the Exit entry in
+            the menu bar widget.
+            """
+            self.hide()
 
-        # Returning True when handling the delete-event stops other handlers
-        # from being invoked for this event:
-        # https://docs.gtk.org/gtk3/signal.Widget.delete-event.html
-        # This means that the delete-event is not going to cause the window
-        # to be closed by itself. Instead, the action of quitting the
-        # app is delegated to the Exit entry on the header bar menu.
-        return True
+            # Returning True when handling the delete-event stops other handlers
+            # from being invoked for this event, therefore preventing the default
+            # behaviour:
+            # https://docs.gtk.org/gtk3/signal.Widget.delete-event.html
+            return True
+
+        # Handle the event emitted when the user tries to close the window.
+        self.connect(
+            "delete-event",
+            on_close_button_clicked_then_hide_window
+        )
+
+    def configure_close_button_to_trigger_quit_menu_entry(self):
+        """Configures the x (close window) button so that when clicked,
+        the Exit menu entry is triggered instead."""
+        def on_close_button_clicked_then_click_quit_menu_entry(*_) -> bool:
+            """
+            Instead of letting the x button close the app, therefore
+            quitting the app, the action is delegated to the Exit entry in
+            the menu bar widget, which may request confirmation to the user.
+            """
+            self.header_bar.menu.quit_button_click()
+
+            # Returning True when handling the delete-event stops other handlers
+            # from being invoked for this event, therefore preventing the default
+            # behaviour:
+            # https://docs.gtk.org/gtk3/signal.Widget.delete-event.html
+            return True
+
+        # Handle the event emitted when the user tries to close the window.
+        self.connect(
+            "delete-event",
+            on_close_button_clicked_then_click_quit_menu_entry
+        )

@@ -54,7 +54,7 @@ class Menu(Gio.Menu):
         self.append_item(Gio.MenuItem.new("Report an Issue", "win.report"))
         self.append_item(Gio.MenuItem.new("About", "win.about"))
         self.append_item(Gio.MenuItem.new("Logout", "win.logout"))
-        self.append_item(Gio.MenuItem.new("Exit", "win.quit"))
+        self.append_item(Gio.MenuItem.new("Quit", "win.quit"))
 
         self._setup_actions()
 

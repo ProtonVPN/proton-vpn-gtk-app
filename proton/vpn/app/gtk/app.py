@@ -2,12 +2,13 @@
 This module defines the main App class.
 """
 from concurrent.futures import ThreadPoolExecutor
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from gi.repository import GObject, Gtk
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn import logging
+from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 
 logger = logging.getLogger(__name__)
@@ -40,6 +41,7 @@ class App(Gtk.Application):
             thread_pool_executor=thread_pool_executor
         )
         self.window = None
+        self.tray_indicator = None
         self._signal_connect_queue = []
 
     def do_activate(self):  # pylint: disable=W0221
@@ -54,6 +56,12 @@ class App(Gtk.Application):
             # Windows are associated with the application like this.
             # When the last one is closed, the application shuts down.
             self.add_window(self.window)
+            # The behaviour of the button to close the window is configured
+            # depending on whether the tray indicator is shown or not.
+            self.tray_indicator = self._build_tray_indicator_if_possible(self.window)
+            self.window.configure_close_button_behaviour(
+                tray_indicator_enabled=(self.tray_indicator is not None)
+            )
             self.window.show_all()
 
         self.window.present()
@@ -138,3 +146,13 @@ class App(Gtk.Application):
             assert isinstance(obj, GObject.Object), \
                 f"{type(obj)} does not inherit from GObject.Object."
             obj.connect(signal_name, callback)
+
+    @staticmethod
+    def _build_tray_indicator_if_possible(main_window: MainWindow) -> Optional[TrayIndicator]:
+        """Returns a tray indicator instance if the required dependencies
+        are met, otherwise None is returned instead. """
+        try:
+            return TrayIndicator(main_window=main_window)
+        except TrayIndicatorNotSupported as error:
+            logger.info(f"{error}")
+            return None

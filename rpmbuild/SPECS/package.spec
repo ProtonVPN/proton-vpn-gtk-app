@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.14.0
+%define version 0.15.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -38,6 +38,7 @@ Requires: python3-proton-vpn-logger
 Requires: python3-proton-vpn-network-manager-openvpn
 Requires: python3-proton-keyring-linux-secretservice
 Requires: python3-dbus
+Suggests: libappindicator-gtk3
 
 %{?python_disable_dependency_generator}
 
@@ -67,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Mon Feb 20 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.15.0
+- Use tray indicator if possible
+
 * Wed Feb 15 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.14.0
 - Feature: Add option to enter recovery code if 2fa is enabled
 

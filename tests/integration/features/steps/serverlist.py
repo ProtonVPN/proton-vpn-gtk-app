@@ -24,8 +24,6 @@ from behave import given, when, then, fixture, use_fixture
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.session import ClientTypeMetadata
 
-from tests.integration.features.steps.login import VPNPLUS_USERNAME, VPNPLUS_PASSWORD
-
 
 def before_feature_serverlist(context, feature):
     """Called before running the tests for the Server List feature from
@@ -36,8 +34,8 @@ def before_feature_serverlist(context, feature):
 @fixture
 def logged_in_session(context):
     context.api = ProtonVPNAPI(ClientTypeMetadata("gui", "4.0.0"))
-    result = context.api.login(username=VPNPLUS_USERNAME, password=VPNPLUS_PASSWORD)
-    assert result.success, f"Unable to login with {VPNPLUS_USERNAME}."
+    result = context.api.login(username=context.free_user_name, password=context.free_user_password)
+    assert result.success, f"Unable to login with {context.free_user_name}."
     yield context.api
     context.api.logout()
 

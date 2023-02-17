@@ -21,16 +21,25 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import logging
-import os
 
-from tests.integration.features.fixtures import before_each_scenario
+from tests.integration.features.fixtures import before_each_scenario, create_atlas_users, delete_atlas_users, \
+    configure_atlas_environment
 from tests.integration.features.steps.login import before_login_scenario, \
     after_login_scenario
 from tests.integration.features.steps.serverlist import before_feature_serverlist
 
 logging.basicConfig(level=logging.INFO)
 
-os.environ["PROTON_API_ENVIRONMENT"] = "atlas"
+
+def before_all(context):
+    """Hook that behave runs before all tests."""
+    configure_atlas_environment()
+    create_atlas_users(context)
+
+
+def after_all(context):
+    """Hook that behave runs after all tests."""
+    delete_atlas_users(context)
 
 
 def before_feature(context, feature):

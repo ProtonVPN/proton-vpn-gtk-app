@@ -19,9 +19,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-
-import os
-import requests
 import threading
 
 from gi.repository import GLib
@@ -33,23 +30,13 @@ from proton.sso import ProtonSSO
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.session import ClientTypeMetadata
 
-VPNPLUS_USERNAME = "vpnplus"
-VPNPLUS_PASSWORD = "12341234"
-VPNFREE_USERNAME = "vpnfree"
-VPNFREE_PASSWORD = "12341234"
-
 
 def before_login_scenario(context, scenario):
     """Called before every login scenario from environment.py."""
-
-    # Atlas users used to test the login feature are likely to get banned
-    # due to the high number of logins.
-    unban_atlas_users()
-
     if not hasattr(context, "username"):
         # Default to vpnfree user.
-        context.username = VPNFREE_USERNAME
-        context.password = VPNFREE_PASSWORD
+        context.username = context.free_user_name
+        context.password = context.free_user_password
 
 
 def set_username_password_threadsafe(login_form, username, password):
@@ -70,22 +57,6 @@ def submit_2fa_code_threadsafe(two_factor_auth_form, two_factor_auth_code):
     GLib.idle_add(two_factor_auth_form.submit_two_factor_auth)
 
 
-def unban_atlas_users():
-    unban_atlas_users_url = os.environ.get("UNBAN_ATLAS_USERS_URL")
-    if not unban_atlas_users_url:
-        print("UNBAN_ATLAS_USERS_URL was not set.")
-        return
-    try:
-        # Disable proxy as CI pipeline runs the tests with proxychains.
-        proxies = {
-            "http": None,
-            "https": None
-        }
-        requests.get(unban_atlas_users_url, timeout=3, proxies=proxies)
-    except Exception as e:
-        print(f"{unban_atlas_users_url} -> {e}")
-
-
 def after_login_scenario(context, scenario):
     """Called after every login scenario from environment.py"""
     ProtonVPNAPI(ClientTypeMetadata("gui", "4.0.0")).logout()
@@ -93,8 +64,8 @@ def after_login_scenario(context, scenario):
 
 @given("a user without 2FA enabled")
 def step_impl(context):
-    context.username = VPNPLUS_USERNAME
-    context.password = VPNPLUS_PASSWORD
+    context.username = context.free_user_name
+    context.password = context.free_user_password
 
 
 @given("the user is not logged in")
@@ -199,9 +170,9 @@ def step_impl(context):
 
 @given("a user with 2FA enabled")
 def step_impl(context):
-    context.username = "twofa"
-    context.password = "a"
-    context.two_factor_auth_shared_secret = "4R5YJICSS6N72KNN3YRTEGLJCEKIMSKJ"
+    context.username = context.two_factor_user_name
+    context.password = context.two_factor_user_password
+    context.two_factor_auth_shared_secret = context.two_factor_user_2fa_secret
 
 
 @when("a correct 2FA code is submitted")

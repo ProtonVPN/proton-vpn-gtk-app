@@ -21,6 +21,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import os
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Event
 from typing import Dict
@@ -29,9 +30,45 @@ from unittest.mock import Mock
 from behave import fixture, use_fixture
 
 from proton.vpn.app.gtk.app import App
-from proton.vpn.core_api.session import ClientTypeMetadata
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.services import VPNReconnector
+from tests.integration.features.atlas_utils import AtlasUsers
+
+
+def configure_atlas_environment():
+    current_env = os.environ.get("PROTON_API_ENVIRONMENT")
+    if not current_env:
+        current_env = "atlas"
+        os.environ["PROTON_API_ENVIRONMENT"] = "atlas"
+    if not current_env.startswith("atlas"):
+        raise RuntimeError(f"Unexpected PROTON_API_ENVIRONMENT env var: {current_env}")
+
+
+def create_atlas_users(context):
+    print("Creating atlas users...")
+    atlas_users = AtlasUsers()
+    context.atlas_users = atlas_users
+
+    user = atlas_users.create()
+    print(f"{user=}")
+    context.free_user_id = user["Dec_ID"]
+    context.free_user_name = user["Name"]
+    context.free_user_password = user["Password"]
+
+    secret = "A" * 32
+    two_factor_auth_user = atlas_users.create(two_factor_auth_secret=secret)
+    print(f"{two_factor_auth_user=}")
+    context.two_factor_user_id = two_factor_auth_user["Dec_ID"]
+    context.two_factor_user_name = two_factor_auth_user["Name"]
+    context.two_factor_user_password = two_factor_auth_user["Password"]
+    context.two_factor_user_2fa_secret = secret
+    print("Atlas users created.")
+
+
+def delete_atlas_users(context):
+    print("Deleting atlas users...")
+    context.atlas_users.cleanup()
+    print("Atlas users deleted.")
 
 
 def before_each_scenario(context, scenario):

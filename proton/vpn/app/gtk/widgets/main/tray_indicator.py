@@ -69,6 +69,7 @@ class TrayIndicator:
         menu.append(toggle_entry)
         self._main_window.connect("show", lambda _: toggle_entry.set_label("Hide"))
         self._main_window.connect("hide", lambda _: toggle_entry.set_label("Show"))
+        toggle_entry.show()
 
         quit_entry = Gtk.MenuItem(label="Quit")
         quit_entry.connect("activate", self._on_exit_app_menu_entry_clicked)

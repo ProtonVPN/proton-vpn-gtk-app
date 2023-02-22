@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.15.1) unstable; urgency=medium
+
+  * Display show/hide menu entry on the tray indicator
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 22 Feb 2023 10:27:05 +0100
+
 proton-vpn-gtk-app (0.15.0) unstable; urgency=medium
 
   * Use tray indicator if possible

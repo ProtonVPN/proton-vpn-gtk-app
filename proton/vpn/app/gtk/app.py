@@ -58,7 +58,9 @@ class App(Gtk.Application):
             self.add_window(self.window)
             # The behaviour of the button to close the window is configured
             # depending on whether the tray indicator is shown or not.
-            self.tray_indicator = self._build_tray_indicator_if_possible(self.window)
+            self.tray_indicator = self._build_tray_indicator_if_possible(
+                self._controller, self.window
+            )
             self.window.configure_close_button_behaviour(
                 tray_indicator_enabled=(self.tray_indicator is not None)
             )
@@ -148,11 +150,13 @@ class App(Gtk.Application):
             obj.connect(signal_name, callback)
 
     @staticmethod
-    def _build_tray_indicator_if_possible(main_window: MainWindow) -> Optional[TrayIndicator]:
+    def _build_tray_indicator_if_possible(
+        controller: Controller, main_window: MainWindow
+    ) -> Optional[TrayIndicator]:
         """Returns a tray indicator instance if the required dependencies
         are met, otherwise None is returned instead. """
         try:
-            return TrayIndicator(main_window=main_window)
+            return TrayIndicator(controller, main_window)
         except TrayIndicatorNotSupported as error:
             logger.info(f"{error}")
             return None

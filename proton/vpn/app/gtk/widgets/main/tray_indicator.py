@@ -1,15 +1,21 @@
 """
 This module defines the application indicator shown in the system tray.
 """
+from collections import namedtuple
 import gi
+from gi.repository import GLib
+
 
 from proton.vpn import logging
-
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.connection import states
 from proton.vpn.app.gtk.assets.icons import ICONS_PATH
+from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 
 logger = logging.getLogger(__name__)
+
+IconType = namedtuple("IconType", ["file_path", "description"])
 
 
 def _import_app_indicator():
@@ -43,8 +49,9 @@ class TrayIndicatorNotSupported(Exception):
 class TrayIndicator:
     """App indicator shown in the system tray."""
 
-    def __init__(self, main_window: MainWindow):
+    def __init__(self, controller: Controller, main_window: MainWindow):
         AppIndicator = _import_app_indicator()  # pylint: disable=invalid-name
+        self._controller = controller
         self._main_window = main_window
         self._indicator = AppIndicator.Indicator.new(
             id="proton-vpn-app",
@@ -52,13 +59,35 @@ class TrayIndicator:
             category=AppIndicator.IndicatorCategory.APPLICATION_STATUS
         )
         self._indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)
-        self._indicator.set_icon_full(
-            icon_name=str(ICONS_PATH / "proton-vpn-sign.svg"),
-            icon_desc="Proton VPN"
-        )
-
         self._menu = self._build_menu()
         self._indicator.set_menu(self._menu)
+        self.icons = {
+            state: IconType(
+                str(ICONS_PATH / f"vpn-{state.__name__.lower()}.svg"),
+                f"VPN {state.__name__.lower()}"
+            ) for state in [states.Disconnected, states.Connected, states.Error]
+        }
+
+        self.status_update(self._controller.current_connection_status)
+        self._controller.register_connection_status_subscriber(self)
+
+    def status_update(self, connection_status):
+        """This method is called whenever the VPN connection status changes."""
+        logger.debug(
+            f"Tray widget received connection status update: "
+            f"{connection_status.state.name}."
+        )
+        icon_type = self.icons.get(type(connection_status))
+        if not icon_type:
+            return
+
+        def update_icon(_icon_type):
+            self._indicator.set_icon_full(
+                _icon_type.file_path,
+                _icon_type.description
+            )
+
+        GLib.idle_add(update_icon, icon_type)
 
     def _build_menu(self) -> Gtk.Menu:
         menu = Gtk.Menu()
@@ -95,3 +124,8 @@ class TrayIndicator:
     def activate_quit_menu_entry(self):
         """Triggers the activation/click of the Quit menu entry."""
         self._menu.get_children()[1].emit("activate")
+
+    def get_icon_description(self) -> str:
+        """Gets the description for the icon.
+        """
+        return self._indicator.get_icon_desc()

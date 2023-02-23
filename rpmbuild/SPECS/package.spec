@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.15.1
+%define version 0.16.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Feb 23 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.16.0
+- Update tray indicator icon based on vpn connection status
+
 * Wed Feb 22 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.15.1
 - Display show/hide menu entry on the tray indicator
 

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.17.0) unstable; urgency=medium
+
+  * Feature: Connect or disconnect from tray
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 24 Feb 2023 14:00:00 +0100
+
 proton-vpn-gtk-app (0.16.0) unstable; urgency=medium
 
   * Update tray indicator icon based on vpn connection status

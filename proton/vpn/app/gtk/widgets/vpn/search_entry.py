@@ -22,6 +22,7 @@ class SearchEntry(Gtk.SearchEntry):
         super().__init__()
         self._server_list_widget = server_list_widget
         self._server_list_widget.connect("ui-updated", lambda _: self.reset())
+        self.set_placeholder_text("Press Ctrl+F to search")
         self.connect("search-changed", self._filter_list)
         self.connect("request-focus", lambda _: self.grab_focus())
         self.connect("unrealize", lambda _: self.reset())

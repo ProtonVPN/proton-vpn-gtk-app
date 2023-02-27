@@ -45,7 +45,7 @@ class TrayIndicatorNotSupported(Exception):
 # pylint: disable=too-few-public-methods too-many-instance-attributes
 class TrayIndicator:
     """App indicator shown in the system tray.
-    
+
     Worth to point out that the `Disconnected` status handling is a bit special,
     since whenever we receive this status we always check if the user is logged
     in or not. This is mainly due to the following reason:
@@ -57,19 +57,19 @@ class TrayIndicator:
         see `_on_connection_disconnected` for implementation details.
     """
     DISCONNECTED_ICON = str(
-        ICONS_PATH / f"vpn-{states.Disconnected.__name__.lower()}.svg"
+        ICONS_PATH / f"state-{states.Disconnected.__name__.lower()}.svg"
     )
     DISCONNECTED_ICON_DESCRIPTION = str(
         f"VPN {states.Disconnected.__name__.lower()}"
     )
     CONNECTED_ICON = str(
-        ICONS_PATH / f"vpn-{states.Connected.__name__.lower()}.svg"
+        ICONS_PATH / f"state-{states.Connected.__name__.lower()}.svg"
     )
     CONNECTED_ICON_DESCRIPTION = str(
         f"VPN {states.Connected.__name__.lower()}"
     )
     ERROR_ICON = str(
-        ICONS_PATH / f"vpn-{states.Error.__name__.lower()}.svg"
+        ICONS_PATH / f"state-{states.Error.__name__.lower()}.svg"
     )
     ERROR_ICON_DESCRIPTION = str(
         f"VPN {states.Error.__name__.lower()}"
@@ -204,7 +204,7 @@ class TrayIndicator:
         self._main_window.header_bar.menu.quit_button_click()
 
     def _on_connect_button_clicked(self, _):
-        logger.info("Connect to VPN ISO#NUMBER", category="ui.tray", event="connect")
+        logger.info("Connect to fastest server", category="ui.tray", event="connect")
         self._controller.connect_to_fastest_server()
 
     def _on_disconnect_button_clicked(self, _):

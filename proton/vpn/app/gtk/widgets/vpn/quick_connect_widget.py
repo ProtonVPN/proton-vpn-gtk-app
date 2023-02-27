@@ -80,7 +80,7 @@ class QuickConnectWidget(Gtk.Box):
         self._on_connection_state_disconnected()
 
     def _on_connect_button_clicked(self, _):
-        logger.info("Connect to VPN ISO#NUMBER", category="ui", event="connect")
+        logger.info("Connect to fastest server", category="ui.tray", event="connect")
         self._connect_button.set_sensitive(False)
         self._controller.connect_to_fastest_server()
 

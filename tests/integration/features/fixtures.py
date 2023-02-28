@@ -11,6 +11,7 @@ from unittest.mock import Mock
 from behave import fixture, use_fixture
 
 from proton.vpn.app.gtk.app import App
+from proton.vpn.core_api.session import ClientTypeMetadata
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.services import VPNReconnector
 

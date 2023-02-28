@@ -8,6 +8,7 @@ import urllib
 
 from proton.sso import ProtonSSO
 from proton.vpn.core_api.api import ProtonVPNAPI
+from proton.vpn.core_api.session import ClientTypeMetadata
 from keyring.backends import SecretService
 from behave import given, when, then
 import pyotp
@@ -44,7 +45,7 @@ def unban_atlas_users():
 
 def after_login_scenario(context, scenario):
     """Called after every login scenario from environment.py"""
-    ProtonVPNAPI().logout()
+    ProtonVPNAPI(ClientTypeMetadata("gui", "4.0.0")).logout()
 
 
 @given("a user without 2FA enabled")

@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, Future
 
 from proton.vpn.connection import VPNConnection, states
 from proton.vpn.core_api.api import ProtonVPNAPI
+from proton.vpn.core_api.session import ClientTypeMetadata
 from proton.vpn.core_api.connection import Subscriber, VPNConnectionHolder
 from proton.vpn.servers.server_types import LogicalServer
 
@@ -25,7 +26,12 @@ class Controller:
         vpn_reconnector: VPNReconnector = None,
     ):
         self._thread_pool = thread_pool_executor
-        self._api = api or ProtonVPNAPI()
+        # Version for now has to be hardcoded to 4.0.0 mainly due to the fact of
+        # how API is treating versions. Once we go public the GUI package version
+        # will get updated to 4.0.0
+        self._api = api or ProtonVPNAPI(ClientTypeMetadata(
+            type="gui", version="4.0.0"
+        ))
         self._connection_subscriber = Subscriber()
         self._api.connection.register(self._connection_subscriber)
         self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(

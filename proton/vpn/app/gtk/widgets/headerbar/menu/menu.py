@@ -147,7 +147,7 @@ class Menu(Gio.Menu):
 
         if confirm_quit:
             logger.info("Yes", category="ui", subcategory="dialog", event="quit")
-            self._main_window.destroy()
+            self._main_window.quit()
 
     def _request_logout(self):
         future = self._controller.logout()
@@ -156,8 +156,8 @@ class Menu(Gio.Menu):
         )
 
     def _on_logout_result(self, future: Future):
-        """Callback when attempting to logout.
-        Mainly used to emit if a sucessful logout has happened, or if a
+        """Callback when attempting to log out.
+        Mainly used to emit if a successful logout has happened, or if a
             connection is found at logout, to display the dialog to the user.
         """
         try:
@@ -179,25 +179,17 @@ class Menu(Gio.Menu):
             )
 
     def bug_report_button_click(self):
-        """Button to simulate bug report click.
-        This method was made available mainly for testing purposes.
-        """
+        """Clicks the bug report menu entry."""
         self._on_report_an_issue_clicked(self.bug_report_action)
 
     def about_button_click(self):
-        """Button to simulate about click.
-        This method was made available mainly for testing purposes.
-        """
+        """Clicks the about menu entry."""
         self._on_about_clicked(self.about_action)
 
     def logout_button_click(self):
-        """Button to simulate quit click.
-        This method was made available mainly for testing purposes.
-        """
+        """Clicks the logout menu entry."""
         self._on_logout_clicked(self.logout_action)
 
     def quit_button_click(self):
-        """Button to simulate logout click.
-        This method was made available mainly for testing purposes.
-        """
+        """Clicks the quit menu entry."""
         self._on_quit_clicked(self.quit_action)

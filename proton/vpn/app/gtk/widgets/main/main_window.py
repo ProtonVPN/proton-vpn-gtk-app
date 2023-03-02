@@ -28,6 +28,7 @@ class MainWindow(Gtk.ApplicationWindow):
     ):
         super().__init__(application=application)
         self._controller = controller
+        self._close_window_handler_id = None
 
         self._configure_window()
 
@@ -100,9 +101,9 @@ class MainWindow(Gtk.ApplicationWindow):
         """Configures the behaviour of the button to close the window
         (the x button), depending on if the tray indicator is used or not."""
         if tray_indicator_enabled:
-            self.configure_close_button_to_hide_window()
+            self._close_window_handler_id = self.configure_close_button_to_hide_window()
         else:
-            self.configure_close_button_to_trigger_quit_menu_entry()
+            self._close_window_handler_id = self.configure_close_button_to_trigger_quit_menu_entry()
 
     def configure_close_button_to_hide_window(self):
         """Configures the x (close window) button so that when clicked,
@@ -122,10 +123,17 @@ class MainWindow(Gtk.ApplicationWindow):
             return True
 
         # Handle the event emitted when the user tries to close the window.
-        self.connect(
+        return self.connect(
             "delete-event",
             on_close_button_clicked_then_hide_window
         )
+
+    def quit(self):
+        """Closes the main window, which quites the app."""
+        if self._close_window_handler_id:
+            self.disconnect(self._close_window_handler_id)
+
+        self.close()
 
     def configure_close_button_to_trigger_quit_menu_entry(self):
         """Configures the x (close window) button so that when clicked,
@@ -145,7 +153,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return True
 
         # Handle the event emitted when the user tries to close the window.
-        self.connect(
+        return self.connect(
             "delete-event",
             on_close_button_clicked_then_click_quit_menu_entry
         )

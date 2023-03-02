@@ -189,7 +189,7 @@ class TestQuitMenuEntry:
 
         process_gtk_events()
 
-        main_window_mock.destroy.assert_called_once()
+        main_window_mock.quit.assert_called_once()
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
     def test_quit_menu_entry_closes_app_window_when_clicked_only_after_user_dialog_confirmation_while_connected_to_vpn(
@@ -210,7 +210,7 @@ class TestQuitMenuEntry:
         )
 
         menu.quit_button_click()
-        main_window_mock.destroy.assert_called_once()
+        main_window_mock.quit.assert_called_once()
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
     def test_quit_menu_entry_does_nothing_when_clicked_if_user_cancels_confirmation_dialog_while_connected_to_vpn(
@@ -231,4 +231,4 @@ class TestQuitMenuEntry:
         )
 
         menu.quit_button_click()
-        main_window_mock.destroy.assert_not_called()
+        main_window_mock.quit.assert_not_called()

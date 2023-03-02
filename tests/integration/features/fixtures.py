@@ -76,5 +76,5 @@ def stop_app(app: App, app_thread: Thread):
         dialog_closed = dialog_closed_event.wait(timeout=1)
         assert dialog_closed, "Error dialog could not be closed."
 
-    app.window.close()
+    app.quit_safely()
     app_thread.join()

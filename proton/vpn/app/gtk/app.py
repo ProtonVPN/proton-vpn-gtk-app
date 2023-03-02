@@ -82,6 +82,10 @@ class App(Gtk.Application):
     def app_ready(self):
         """Signal emitted when the app is ready for interaction."""
 
+    def quit_safely(self):
+        """Quits the app safely by clicking on the quit entry in the header bar menu."""
+        self.window.header_bar.menu.quit_button_click()
+
     def queue_signal_connect(self, signal_spec: str, callback: Callable):
         """Queues a request to connect a callback to a signal.
 

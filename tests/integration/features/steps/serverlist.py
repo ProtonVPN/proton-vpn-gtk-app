@@ -17,7 +17,7 @@ def before_feature_serverlist(context, feature):
 
 @fixture
 def logged_in_session(context):
-    context.api = ProtonVPNAPI(ClientTypeMetadata("gui", "4.0.0")).logout()
+    context.api = ProtonVPNAPI(ClientTypeMetadata("gui", "4.0.0"))
     result = context.api.login(username=VPNPLUS_USERNAME, password=VPNPLUS_PASSWORD)
     assert result.success, f"Unable to login with {VPNPLUS_USERNAME}."
     yield context.api

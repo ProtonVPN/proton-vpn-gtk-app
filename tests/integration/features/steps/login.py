@@ -3,8 +3,9 @@ Fixtures and steps for the Login feature.
 """
 
 import os
+import requests
 import threading
-import urllib
+
 
 from proton.sso import ProtonSSO
 from proton.vpn.core_api.api import ProtonVPNAPI
@@ -33,14 +34,19 @@ def before_login_scenario(context, scenario):
 
 
 def unban_atlas_users():
-    env = os.environ.get("PROTON_API_ENVIRONMENT")
-    if "atlas" in env:
-        atlas_env = f"{env.split(':')[1]}." if ":" in env else None
-        try:
-            urllib.request.urlopen(f"https://account.{atlas_env}proton.black/api/internal/quark/jail:unban",
-                                   timeout=3)
-        except:
-            pass
+    unban_atlas_users_url = os.environ.get("UNBAN_ATLAS_USERS_URL")
+    if not unban_atlas_users_url:
+        print("UNBAN_ATLAS_USERS_URL was not set.")
+        return
+    try:
+        # Disable proxy as CI pipeline runs the tests with proxychains.
+        proxies = {
+            "http": None,
+            "https": None
+        }
+        requests.get(unban_atlas_users_url, timeout=3, proxies=proxies)
+    except Exception as e:
+        print(f"{unban_atlas_users_url} -> {e}")
 
 
 def after_login_scenario(context, scenario):

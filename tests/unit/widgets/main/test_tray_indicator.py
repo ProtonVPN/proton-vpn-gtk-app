@@ -16,29 +16,36 @@ def test_tray_indicator_not_supported_error_is_raised_if_required_runtime_indica
         TrayIndicator(controller=Mock(), main_window=Mock())
 
 
-def test_toggle_app_visibility_menu_entry_click_shows_app_window_when_it_was_hidden():
+@pytest.fixture
+def controller_mock():
+    controller = Mock()
+    controller.app_configuration.tray_pinned_servers = None
+    return controller
+    
+
+def test_toggle_app_visibility_menu_entry_activate_shows_app_window_when_it_was_hidden(controller_mock):
     main_window = Mock()
     main_window.get_visible.return_value = False
-    tray_indicator = TrayIndicator(controller=Mock(), main_window=main_window, native_indicator=Mock())
+    tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=Mock())
     tray_indicator.activate_toggle_app_visibility_menu_entry()
     process_gtk_events()
     main_window.show.assert_called_once()
 
 
 
-def test_toggle_app_visibility_menu_entry_click_hides_app_window_when_it_was_shown():
+def test_toggle_app_visibility_menu_entry_activate_hides_app_window_when_it_was_shown(controller_mock):
     main_window = Mock()
     main_window.get_visible.return_value = True
-    tray_indicator = TrayIndicator(controller=Mock(), main_window=main_window, native_indicator=Mock())
+    tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=Mock())
     tray_indicator.activate_toggle_app_visibility_menu_entry()
     process_gtk_events()
     main_window.hide.assert_called_once()
 
 
-def test_quit_menu_entry_click_triggers_quit_header_bar_menu_entry():
+def test_quit_menu_entry_activate_triggers_quit_header_bar_menu_entry(controller_mock):
     main_window = Mock()
     main_window.get_visible.return_value = True
-    tray_indicator = TrayIndicator(controller=Mock(), main_window=main_window, native_indicator=Mock())
+    tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=Mock())
     tray_indicator.activate_quit_menu_entry()
     process_gtk_events()
     main_window.header_bar.menu.quit_button_click.assert_called_once()
@@ -52,7 +59,7 @@ def test_quit_menu_entry_click_triggers_quit_header_bar_menu_entry():
     ]
 )
 def test_tray_indicator_icon_is_set_to_expected_state_icon_when_initializing_indicator(
-    initial_state, icon, description
+    initial_state, icon, description, controller_mock
 ):
     """This test asserts that when the tray is initialized in any of the given states,
     the tray icon will reflect those states."""
@@ -60,7 +67,6 @@ def test_tray_indicator_icon_is_set_to_expected_state_icon_when_initializing_ind
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.current_connection_status = initial_state
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
@@ -76,7 +82,7 @@ def test_tray_indicator_icon_is_set_to_expected_state_icon_when_initializing_ind
     ]
 )
 def test_tray_indicator_icon_is_updated_when_vpn_connection_switches_states(
-    new_state, icon, description
+    new_state, icon, description, controller_mock
 ):
     """This test asserts that when the tray is initialized with a state, whenever a switch occurs from the
     current state to another state, the tray icon will reflect those states changes."""
@@ -84,7 +90,6 @@ def test_tray_indicator_icon_is_updated_when_vpn_connection_switches_states(
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.current_connection_status = states.Disconnected()
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
@@ -99,13 +104,12 @@ def test_tray_indicator_icon_is_updated_when_vpn_connection_switches_states(
     "new_state", [states.Connecting, states.Disconnecting]
 )
 def test_tray_indicator_icon_remains_with_the_same_icon_when_status_updates_have_no_match_for_any_of_the_existing_icon_states(
-   new_state
+   new_state, controller_mock
 ):
     indicator_mock = Mock()
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.current_connection_status = states.Disconnected()
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
@@ -116,32 +120,30 @@ def test_tray_indicator_icon_remains_with_the_same_icon_when_status_updates_have
     assert indicator_mock.set_icon_full.call_count == 1
 
 
-def test_assert_connection_related_entries_are_not_displayed_when_user_is_not_logged_in():
+def test_assert_connection_related_entries_are_not_displayed_when_user_is_not_logged_in(controller_mock):
     """This test asserts that when the tray is initialized and when the user is not logged in,
     none of the entries should be displayed to the user, as those require a valid session."""
     indicator_mock = Mock()
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.current_connection_status = states.Disconnected()
     controller_mock.user_logged_in = False
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
     process_gtk_events()
 
-    assert not tray_indicator.is_connect_button_displayed
-    assert not tray_indicator.is_disconnect_button_displayed
+    assert not tray_indicator.display_connect_entry
+    assert not tray_indicator.display_disconnect_entry
 
 
-def test_assert_connection_related_entries_are_properly_displayed_when_user_has_logged_in():
+def test_assert_connection_related_entries_are_properly_displayed_when_user_has_logged_in(controller_mock):
     """This test asserts that when the tray is initialized, the user is logged in and there is no vpn connection.
     the connect entry is made visible to the user while the disconnect entry is hidden."""
     indicator_mock = Mock()
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.user_logged_in = False
     controller_mock.current_connection_status = states.Disconnected()
 
@@ -153,19 +155,23 @@ def test_assert_connection_related_entries_are_properly_displayed_when_user_has_
     process_gtk_events()
 
 
-    assert tray_indicator.is_connect_button_displayed
-    assert not tray_indicator.is_disconnect_button_displayed    
+    assert tray_indicator.display_connect_entry
+    assert not tray_indicator.display_disconnect_entry    
 
 
 @pytest.mark.parametrize(
-    "initial_state, connect_button_view_state, disconnect_button_view_state",
+    "initial_state, connect_entry_view_state, disconnect_entry_view_state",
     [
         (states.Disconnected(), True, False),
+        (states.Disconnected(), True, False),
+        (states.Connected(), False, True),
         (states.Connected(), False, True),
     ]
 )
 def test_assert_connection_related_entries_are_properly_displayed_when_initializing_indicator(
-    initial_state, connect_button_view_state, disconnect_button_view_state
+    initial_state,
+    connect_entry_view_state, disconnect_entry_view_state,
+    controller_mock
 ):
     """This test asserts that when the tray is initialized, the user is logged in and there is no vpn connection.
     the connect entry is made visible to the user while the disconnect entry is hidden."""
@@ -173,23 +179,21 @@ def test_assert_connection_related_entries_are_properly_displayed_when_initializ
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = initial_state
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
     process_gtk_events()
 
-    assert tray_indicator.is_connect_button_displayed == connect_button_view_state
-    assert tray_indicator.is_disconnect_button_displayed == disconnect_button_view_state
+    assert tray_indicator.display_connect_entry == connect_entry_view_state
+    assert tray_indicator.display_disconnect_entry == disconnect_entry_view_state
 
 
-def test_assert_connection_related_entries_are_hidden_when_user_has_logged_out():
+def test_assert_connection_related_entries_are_hidden_when_user_has_logged_out(controller_mock):
     indicator_mock = Mock()
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = states.Disconnected()
 
@@ -200,25 +204,38 @@ def test_assert_connection_related_entries_are_hidden_when_user_has_logged_out()
     logged_out_callback()
     process_gtk_events()
 
-    assert not tray_indicator.is_connect_button_displayed
-    assert not tray_indicator.is_disconnect_button_displayed
+    assert not tray_indicator.display_connect_entry
+    assert not tray_indicator.display_disconnect_entry
 
 
 @pytest.mark.parametrize(
     "initial_state, new_state,\
-    connect_button_final_view_state, disconnect_button_final_view_state,\
-    connect_button_enabled, disconnect_button_enabled",
+    connect_entry_final_view_state, disconnect_entry_final_view_state,\
+    connect_entry_enabled, disconnect_entry_enabled",
     [
-        (states.Disconnected(), states.Connected(), False, True, True, True),
-        (states.Connected(), states.Disconnected(), True, False, True, True),
-        (states.Disconnected(), states.Connecting(), True, False, False, True),
-        (states.Connected(), states.Disconnecting(), False, True, True, False),
+        (
+            states.Disconnected(), states.Connected(),
+            False, True, True, True
+        ),
+        (
+            states.Connected(), states.Disconnected(), 
+            True, False, True, True
+        ),
+        (
+            states.Disconnected(), states.Connecting(),
+            True, False, False, True
+        ),
+        (
+            states.Connected(), states.Disconnecting(),
+            False, True, True, False
+        ),
     ]
 )
 def test_assert_connection_related_entries_are_properly_displayed_when_vpn_connection_switches_states(
     initial_state, new_state,
-    connect_button_final_view_state, disconnect_button_final_view_state,
-    connect_button_enabled, disconnect_button_enabled
+    connect_entry_final_view_state, disconnect_entry_final_view_state,
+    connect_entry_enabled, disconnect_entry_enabled,
+    controller_mock
 ):
     """This test asserts that when switching states, that the connect entry is displayed when the connection status
     switches to disconnected/disconnecting state, and that the disconnect entry is displayed when the connection status
@@ -231,7 +248,6 @@ def test_assert_connection_related_entries_are_properly_displayed_when_vpn_conne
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = initial_state
 
@@ -241,39 +257,54 @@ def test_assert_connection_related_entries_are_properly_displayed_when_vpn_conne
     tray_indicator.status_update(new_state)
     process_gtk_events()
 
-    assert tray_indicator.is_connect_button_displayed == connect_button_final_view_state
-    assert tray_indicator.is_disconnect_button_displayed == disconnect_button_final_view_state
-    assert tray_indicator.enable_connect_entry == connect_button_enabled
-    assert tray_indicator.enable_disconnect_entry == disconnect_button_enabled
+    assert tray_indicator.display_connect_entry == connect_entry_final_view_state
+    assert tray_indicator.display_disconnect_entry == disconnect_entry_final_view_state
+    assert tray_indicator.enable_connect_entry == connect_entry_enabled
+    assert tray_indicator.enable_disconnect_entry == disconnect_entry_enabled
 
 
-def test_connect_entry_connects_to_vpn_when_clicked():
+def test_connect_entry_connects_to_vpn_when_activated(controller_mock):
     indicator_mock = Mock()
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = states.Disconnected()
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
     process_gtk_events()
 
-    tray_indicator.connect_button_click()
+    tray_indicator.active_connect_entry()
     controller_mock.connect_to_fastest_server.assert_called_once()
 
 
-def test_disconnect_entry_disconnects_from_vpn_when_user_is_connected():
+def test_connect_pinned_server_entry_connects_to_vpn_when_activated(controller_mock):
     indicator_mock = Mock()
     main_window = Mock()
     main_window.get_visible.return_value = True
 
-    controller_mock = Mock()
+    pinned_server = "TEST#30"
+    controller_mock.user_logged_in = True
+    controller_mock.current_connection_status = states.Disconnected()
+    controller_mock.app_configuration.tray_pinned_servers = [pinned_server]
+
+    tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
+    process_gtk_events()
+
+    tray_indicator.activate_top_most_pinned_server_entry()
+    controller_mock.connect_to_server.assert_called_once_with(pinned_server)
+
+
+def test_disconnect_entry_disconnects_from_vpn_when_user_is_connected(controller_mock):
+    indicator_mock = Mock()
+    main_window = Mock()
+    main_window.get_visible.return_value = True
+
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = states.Connected()
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
     process_gtk_events()
 
-    tray_indicator.disconnect_button_click()
+    tray_indicator.activate_disconnect_entry()
     controller_mock.disconnect.assert_called_once()

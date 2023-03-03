@@ -8,10 +8,12 @@ from proton.vpn.connection import VPNConnection, states
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.session import ClientTypeMetadata
 from proton.vpn.core_api.connection import Subscriber, VPNConnectionHolder
+from proton.vpn.core_api.cache_handler import CacheHandler
 from proton.vpn.servers.server_types import LogicalServer
 
 from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
+from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
 
 
 class Controller:
@@ -24,7 +26,8 @@ class Controller:
         api: ProtonVPNAPI = None,
         vpn_data_refresher: VPNDataRefresher = None,
         vpn_reconnector: VPNReconnector = None,
-    ):
+        app_config: AppConfig = None
+    ):  # pylint: disable=too-many-arguments
         self._thread_pool = thread_pool_executor
         # Version for now has to be hardcoded to 4.0.0 mainly due to the fact of
         # how API is treating versions. Once we go public the GUI package version
@@ -40,6 +43,7 @@ class Controller:
         self.reconnector = vpn_reconnector or VPNReconnector(
             self._api.connection, self.vpn_data_refresher
         )
+        self._app_config = app_config
 
     def login(self, username: str, password: str) -> Future:
         """
@@ -175,3 +179,22 @@ class Controller:
     def vpn_connector(self) -> VPNConnectionHolder:
         """Returns the VPN connector"""
         return self._api.connection
+
+    @property
+    def app_configuration(self) -> AppConfig:
+        """Return object with app specific configurations."""
+        if self._app_config is not None:
+            return self._app_config
+
+        cache_handler = CacheHandler(APP_CONFIG)
+        app_config = cache_handler.load()
+
+        if app_config is None:
+            self._app_config = AppConfig.default()
+            cache_handler.save(
+                self._app_config.to_dict()
+            )
+        else:
+            self._app_config = AppConfig.from_dict(app_config)
+
+        return self._app_config

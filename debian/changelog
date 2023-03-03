@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.17.2) unstable; urgency=medium
+
+  * Close app window safely when the "Quit" menu entry is selected
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 03 Mar 2023 09:59:39 +0100
+
 proton-vpn-gtk-app (0.17.1) unstable; urgency=medium
 
   * Implement new appversion format

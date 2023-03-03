@@ -6,13 +6,14 @@ import os
 import requests
 import threading
 
+from gi.repository import GLib
+from keyring.backends import SecretService
+from behave import given, when, then
+import pyotp
 
 from proton.sso import ProtonSSO
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.session import ClientTypeMetadata
-from keyring.backends import SecretService
-from behave import given, when, then
-import pyotp
 
 VPNPLUS_USERNAME = "vpnplus"
 VPNPLUS_PASSWORD = "12341234"
@@ -31,6 +32,24 @@ def before_login_scenario(context, scenario):
         # Default to vpnfree user.
         context.username = VPNFREE_USERNAME
         context.password = VPNFREE_PASSWORD
+
+
+def set_username_password_threadsafe(login_form, username, password):
+    """Sets the username and password form fields in a thread-safe manner."""
+    def set_username_and_password():
+        login_form.username = username
+        login_form.password = password
+
+    GLib.idle_add(set_username_and_password)
+
+
+def submit_2fa_code_threadsafe(two_factor_auth_form, two_factor_auth_code):
+    """Sets the 2FA code form field and submits it in a thread-safe manner."""
+    def set_2fa_code():
+        two_factor_auth_form.two_factor_auth_code = two_factor_auth_code
+
+    GLib.idle_add(set_2fa_code)
+    GLib.idle_add(two_factor_auth_form.submit_two_factor_auth)
 
 
 def unban_atlas_users():
@@ -76,15 +95,21 @@ def step_impl(context):
 @when("the correct username and password are introduced in the login form")
 def step_impl(context):
     login_form = context.app.window.main_widget.login_widget.login_form
-    login_form.username = context.username
-    login_form.password = context.password
+    set_username_password_threadsafe(
+        login_form=login_form,
+        username=context.username,
+        password=context.password
+    )
 
 
 @when("the wrong password is introduced")
 def step_impl(context):
     login_form = context.app.window.main_widget.login_widget.login_form
-    login_form.username = context.username
-    login_form.password = "wrong password"
+    set_username_password_threadsafe(
+        login_form=login_form,
+        username=context.username,
+        password="wrong password"
+    )
 
 
 @when("the login form is submitted")
@@ -114,14 +139,17 @@ def step_impl(context):
         lambda _: context.user_logged_in_event.set()
     )
 
-    login_form.submit_login()
+    GLib.idle_add(login_form.submit_login)
 
 
 @when("the login data is not provided")
 def step_impl(context):
     login_form = context.app.window.main_widget.login_widget.login_form
-    login_form.username = ""
-    login_form.password = context.password
+    set_username_password_threadsafe(
+        login_form=login_form,
+        username="",
+        password=context.password
+    )
 
 
 @then("the user should be logged in")
@@ -167,10 +195,8 @@ def step_impl(context):
     assert context.two_factor_auth_required
 
     two_factor_auth_form = context.app.window.main_widget.login_widget.two_factor_auth_form
-    two_factor_auth_form.two_factor_auth_code = pyotp.TOTP(
-        context.two_factor_auth_shared_secret
-    ).now()
-    two_factor_auth_form.submit_two_factor_auth()
+    two_factor_auth_code = pyotp.TOTP(context.two_factor_auth_shared_secret).now()
+    submit_2fa_code_threadsafe(two_factor_auth_form, two_factor_auth_code)
 
 
 @then('the user should be notified with the error message: "{error_message}"')

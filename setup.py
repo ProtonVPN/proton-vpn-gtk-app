@@ -4,15 +4,13 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name="proton-vpn-gtk-app",
-    version="0.18.0",
+    version="0.19.0",
     description="Proton VPN GTK app",
     author="Proton AG",
     author_email="contact@protonmail.com",
     url="https://github.com/ProtonVPN/proton-vpn-gtk-app",
     install_requires=[
         "proton-vpn-api-core",
-        "proton-keyring-linux-secretservice",
-        "proton-vpn-network-manager-openvpn",
         "proton-vpn-logger",
         "pygobject",
         "pycairo",
@@ -21,6 +19,8 @@ setup(
     extras_require={
         "development": [
             "proton-core-internal",
+            "proton-keyring-linux-secretservice",
+            "proton-vpn-network-manager-openvpn",
             "behave",
             "pyotp",
             "pytest",

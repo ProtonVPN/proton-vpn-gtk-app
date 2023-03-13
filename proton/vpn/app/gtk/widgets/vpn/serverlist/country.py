@@ -16,7 +16,6 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerRow
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.enums import ServerFeatureEnum
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -34,6 +33,9 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.upgrade_required = upgrade_required
         self.under_maintenance = all(not server.enabled for server in country.servers)
         self._controller = controller
+
+        self._collapsed_img = Gtk.Image.new_from_icon_name("pan-down-symbolic", Gtk.IconSize.BUTTON)
+        self._expanded_img = Gtk.Image.new_from_icon_name("pan-up-symbolic", Gtk.IconSize.BUTTON)
 
         self._connection_state = None
 
@@ -94,8 +96,8 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     def show_country_servers(self, show_country_servers: bool):
         """Sets whether the country servers should be shown or not."""
         self._show_country_servers = show_country_servers
-        self._toggle_button.set_label(
-            "-" if self.show_country_servers else "+"
+        self._toggle_button.set_image(
+            self._expanded_img if self.show_country_servers else self._collapsed_img
         )
         self._toggle_button.set_tooltip_text(
             f"Hide all servers from {self.country_name}" if self.show_country_servers else

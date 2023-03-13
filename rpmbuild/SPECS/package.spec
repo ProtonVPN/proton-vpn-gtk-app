@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.19.3
+%define version 0.20.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Mon Apr 04 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.20.0
+- Use stock icon to show when a country row is expanded/collapsed
+
 * Mon Apr 03 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.19.3
 - Adapt to VPN connection refactoring
 

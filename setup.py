@@ -4,7 +4,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name="proton-vpn-gtk-app",
-    version="0.19.3",
+    version="0.20.0",
     description="Proton VPN GTK app",
     author="Proton AG",
     author_email="contact@protonmail.com",
@@ -21,7 +21,7 @@ setup(
             "proton-core-internal",
             "proton-keyring-linux-secretservice",
             "proton-vpn-network-manager-openvpn",
-            "proton-vpn-killswitch-network-manager"
+            "proton-vpn-killswitch-network-manager",
             "behave",
             "pyotp",
             "pytest",

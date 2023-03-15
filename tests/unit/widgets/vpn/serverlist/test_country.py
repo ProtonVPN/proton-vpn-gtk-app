@@ -10,6 +10,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.country import CountryRow
 from tests.unit.utils import process_gtk_events
 from proton.vpn.logging import logging
+from proton.vpn.servers.enums import ServerFeatureEnum
 
 
 FREE_TIER = 0
@@ -254,3 +255,44 @@ def test_country_widget_shows_user_tier_servers_first(
 
     assert len(country_row.server_rows) == 2
     assert country_row.server_rows[0].server_tier == user_tier
+
+
+@pytest.fixture
+def country_servers_with_secure_core():
+    return ServerList(apidata={
+        "LogicalServers": [
+            {
+                "ID": 1,
+                "Name": "AR#1",
+                "Status": 1,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": COUNTRY_CODE,
+                "Features": 8,
+                "Tier": 1,
+            },
+            {
+                "ID": 2,
+                "Name": "AR#2",
+                "Status": 1,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": COUNTRY_CODE,
+                "Features": 1,
+                "Tier": 2,
+            },
+        ],
+        "LogicalsUpdateTimestamp": time.time(),
+        "LoadsUpdateTimestamp": time.time()
+    })
+
+
+def test_assert_country_widget_only_contains_non_secure_core_servers(
+    country_servers_with_secure_core, mock_controller
+):
+    country_row = CountryRow(
+        country=Country(code=COUNTRY_CODE, servers=country_servers_with_secure_core),
+        user_tier=PLUS_TIER,
+        controller=mock_controller,
+    )
+
+    assert len(country_row.server_rows) == 1
+    assert country_row.server_rows[0].server_label == "AR#1"

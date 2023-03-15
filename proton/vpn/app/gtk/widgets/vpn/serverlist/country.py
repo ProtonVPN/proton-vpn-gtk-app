@@ -13,6 +13,8 @@ from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerRow
+from proton.vpn.servers.server_types import LogicalServer
+from proton.vpn.servers.enums import ServerFeatureEnum
 
 
 logger = logging.getLogger(__name__)
@@ -215,6 +217,13 @@ class CountryRow(Gtk.Box):
             ordered_servers.extend(free_servers)
 
         for server in ordered_servers:
+            # 15/03-2023
+            # Servers with Secure-Core are currently being filtered out
+            # because there isn't a way to get the domain/subject of the server,
+            # for TLS authentication.
+            if ServerFeatureEnum.SECURE_CORE in server.features:
+                continue
+
             server_row = ServerRow(
                 server=server,
                 user_tier=user_tier,
@@ -284,7 +293,7 @@ class CountryRow(Gtk.Box):
         return normalize(self.country_name)
 
     @staticmethod
-    def _group_servers_by_tier(country_servers) -> Tuple[List]:
+    def _group_servers_by_tier(country_servers) -> Tuple[List[LogicalServer]]:
         free_servers = []
         plus_servers = []
         for server in country_servers:

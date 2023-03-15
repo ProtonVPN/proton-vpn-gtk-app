@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.19.0
+%define version 0.19.1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Mar 15 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.19.1
+- Hide secure-core servers from server list
+
 * Wed Mar 08 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.19.0
 - Remove connection and keyring backend dependencies
 

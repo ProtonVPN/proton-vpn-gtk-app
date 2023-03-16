@@ -15,7 +15,7 @@ class Notifications:
     ):
         self._main_window = main_window
         self.notification_bar = notification_bar
-        self.error_dialogs = []  # only for testing purposes
+        self.error_dialog = None
 
     def show_error_dialog(self, message: str, title: str):
         """Show an error dialog to the user."""
@@ -26,18 +26,23 @@ class Notifications:
     def _generate_and_show_dialog(self, title: str, message: str):
         """Generates and displays a pop-up dialog to the user, blocking
         the rest of the UI."""
-        error_dialog = Gtk.MessageDialog(
+        if self.error_dialog:
+            self.error_dialog.destroy()
+            self.error_dialog = None
+
+        self.error_dialog = Gtk.MessageDialog(
             transient_for=self._main_window,
             flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
             message_type=Gtk.MessageType.ERROR,
             buttons=Gtk.ButtonsType.OK,
             text=title,
         )
-        self.error_dialogs.append(error_dialog)
-        error_dialog.format_secondary_text(message)
-        error_dialog.run()
-        error_dialog.destroy()
-        self.error_dialogs.remove(error_dialog)
+        self.error_dialog.set_modal(True)
+        self.error_dialog.format_secondary_text(message)
+        # .run() blocks code execution until a button on the dialog is clicked,
+        # so followed code will only be run after the .run() method has returned.
+        self.error_dialog.run()
+        self.error_dialog.destroy()
 
     def show_error_message(self, message: str):
         """Shows the error message in the notification bar."""

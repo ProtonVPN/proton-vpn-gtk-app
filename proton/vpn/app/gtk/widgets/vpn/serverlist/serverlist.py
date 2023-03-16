@@ -118,7 +118,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
         )
 
         self._update_country_rows()
-
         self._state.new_server_list_handler_id = self._controller.vpn_data_refresher.connect(
             "new-server-list", self._on_server_list_update
         )

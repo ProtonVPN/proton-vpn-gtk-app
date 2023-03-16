@@ -2,7 +2,7 @@
 This module defines the main App class.
 """
 from concurrent.futures import ThreadPoolExecutor
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 
 from gi.repository import GObject, Gtk
 
@@ -70,13 +70,12 @@ class App(Gtk.Application):
         self.emit("app-ready")
 
     @property
-    def error_dialogs(self) -> List[Gtk.MessageDialog]:
+    def error_dialog(self) -> Gtk.MessageDialog:
         """
         Gives access to currently opened error message dialogs. This method
         was made available for testing purposes.
-        :return: The list of currently opened error message dialogs.
         """
-        return self.window.main_widget.notifications.error_dialogs  # pylint: disable=W0212
+        return self.window.main_widget.notifications.error_dialog  # pylint: disable=W0212
 
     @GObject.Signal(name="app-ready")
     def app_ready(self):

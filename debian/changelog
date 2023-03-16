@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.19.2) unstable; urgency=medium
+
+  * Display last received error message via popup when multiple errors are to be displayed, instead of stacking them
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 16 Mar 2023 11:00:00 +0100
+
 proton-vpn-gtk-app (0.19.1) unstable; urgency=medium
 
   * Hide secure-core servers from server list

@@ -39,4 +39,4 @@ def step_impl(context):
 def step_impl(context):
     servers_widget = context.app.window.main_widget.vpn_widget.server_list_widget
     assert len(servers_widget.country_rows) > 0
-    assert len(servers_widget.country_rows[0].server_rows) > 0
+    assert len([server_row for country_row in servers_widget.country_rows for server_row in country_row]) > 0

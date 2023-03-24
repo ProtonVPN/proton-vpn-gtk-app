@@ -114,7 +114,7 @@ class TrayIndicator:
         """This method is called whenever the VPN connection status changes."""
         logger.debug(
             f"Tray widget received connection status update: "
-            f"{connection_status.state.name}."
+            f"{type(connection_status).__name__}."
         )
 
         update_ui_method = f"_on_connection_{type(connection_status).__name__.lower()}"

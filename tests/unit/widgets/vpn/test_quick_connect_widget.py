@@ -20,7 +20,7 @@ def test_quick_connect_widget_updates_state_according_to_connection_status_updat
 
     process_gtk_events()
 
-    assert quick_connect_widget.connection_state == connection_state.state
+    assert quick_connect_widget.connection_state == connection_state.type
 
 
 def test_quick_connect_widget_connects_to_fastest_server_when_connect_button_is_clicked():

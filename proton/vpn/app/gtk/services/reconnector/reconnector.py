@@ -8,7 +8,7 @@ from gi.repository import GLib
 
 from proton.vpn import logging
 from proton.vpn.connection import states, VPNConnection
-from proton.vpn.core_api.connection import VPNConnectionHolder
+from proton.vpn.core_api.connection import VPNConnectorWrapper
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
@@ -35,7 +35,7 @@ class VPNReconnector:
     # pylint: disable=too-many-arguments
     def __init__(
             self,
-            vpn_connector: VPNConnectionHolder,
+            vpn_connector: VPNConnectorWrapper,
             vpn_data_refresher: "VPNDataRefresher",
             vpn_monitor: VPNMonitor = None,
             network_monitor: NetworkMonitor = None,
@@ -83,10 +83,7 @@ class VPNReconnector:
     @property
     def did_vpn_drop(self) -> bool:
         """Returns True if the VPN connection dropped or False otherwise."""
-        if not self._current_connection:
-            return False
-
-        return isinstance(self._current_connection.status, states.Error)
+        return isinstance(self._vpn_connector.current_state, states.Error)
 
     def schedule_reconnection(self) -> bool:
         """Schedules a reconnection attempt.

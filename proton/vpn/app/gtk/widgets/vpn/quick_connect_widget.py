@@ -56,9 +56,9 @@ class QuickConnectWidget(Gtk.Box):
         if hasattr(self, method):
             getattr(self, method)()
 
-    def connection_status_update(self, connection_status):
+    def connection_status_update(self, connection_state):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
-        self.connection_state = connection_status.state
+        self.connection_state = connection_state.type
 
     def _on_connection_state_connected(self):
         self._connect_button.hide()

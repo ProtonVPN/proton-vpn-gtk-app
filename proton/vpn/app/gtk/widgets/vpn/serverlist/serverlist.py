@@ -159,7 +159,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
         connected_server_id = None
         if self._controller.is_connection_active:
-            connected_server_id = self._controller.current_connection.server_id
+            connected_server_id = self._controller.current_server_id
 
         new_country_rows = {}
         for country in countries:

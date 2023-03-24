@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, Future
 from proton.vpn.connection import VPNConnection, states
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.session import ClientTypeMetadata
-from proton.vpn.core_api.connection import Subscriber, VPNConnectionHolder
+from proton.vpn.core_api.connection import VPNConnectorWrapper
 from proton.vpn.core_api.cache_handler import CacheHandler
 from proton.vpn.servers.server_types import LogicalServer
 
@@ -35,8 +35,6 @@ class Controller:
         self._api = api or ProtonVPNAPI(ClientTypeMetadata(
             type="gui", version="4.0.0"
         ))
-        self._connection_subscriber = Subscriber()
-        self._api.connection.register(self._connection_subscriber)
         self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
             self._thread_pool, self._api
         )
@@ -140,13 +138,15 @@ class Controller:
         return self._api.connection.current_connection
 
     @property
-    def current_connection_status(self) -> states.BaseState:
+    def current_connection_status(self) -> states.State:
         """Returns the current VPN connection status. If there is not a
         current VPN connection, then the Disconnected state is returned."""
-        if self.is_connection_active:
-            return self.current_connection.status
+        return self._api.connection.current_state
 
-        return states.Disconnected()
+    @property
+    def current_server_id(self) -> str:
+        """Returns the server id of the current connection."""
+        return self._api.connection.current_server_id
 
     @property
     def is_connection_active(self) -> bool:
@@ -176,7 +176,7 @@ class Controller:
         self._api.connection.unregister(subscriber)
 
     @property
-    def vpn_connector(self) -> VPNConnectionHolder:
+    def vpn_connector(self) -> VPNConnectorWrapper:
         """Returns the VPN connector"""
         return self._api.connection
 

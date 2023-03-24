@@ -3,13 +3,13 @@ from unittest.mock import Mock
 import pytest
 
 from proton.vpn.connection import states
-from proton.vpn.core_api.connection import VPNConnectionHolder
+from proton.vpn.core_api.connection import VPNConnectorWrapper
 
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 
 
 def test_enable_registers_monitor_to_connection_state_updated():
-    vpn_connector = Mock(VPNConnectionHolder)
+    vpn_connector = Mock(VPNConnectorWrapper)
     monitor = VPNMonitor(vpn_connector)
 
     monitor.enable()
@@ -18,7 +18,7 @@ def test_enable_registers_monitor_to_connection_state_updated():
 
 
 def test_disable_unregisters_monitor_from_connection_state_updates():
-    vpn_connector = Mock(VPNConnectionHolder)
+    vpn_connector = Mock(VPNConnectorWrapper)
     monitor = VPNMonitor(vpn_connector)
 
     monitor.disable()
@@ -36,7 +36,7 @@ def test_disable_unregisters_monitor_from_connection_state_updates():
 def test_status_update_only_triggers_vpn_drop_callback_on_error_connection_state(
         state, vpn_drop_callback_called
 ):
-    vpn_connector = Mock(VPNConnectionHolder)
+    vpn_connector = Mock(VPNConnectorWrapper)
     monitor = VPNMonitor(vpn_connector)
     monitor.vpn_drop_callback = Mock()
 
@@ -55,7 +55,7 @@ def test_status_update_only_triggers_vpn_drop_callback_on_error_connection_state
 def test_status_update_only_triggers_vpn_up_callback_on_connected_connection_state(
         state, vpn_up_callback_called
 ):
-    vpn_connector = Mock(VPNConnectionHolder)
+    vpn_connector = Mock(VPNConnectorWrapper)
     monitor = VPNMonitor(vpn_connector)
     monitor.vpn_up_callback = Mock()
 

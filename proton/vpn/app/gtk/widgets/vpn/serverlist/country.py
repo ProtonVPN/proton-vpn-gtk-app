@@ -320,12 +320,12 @@ class CountryRow(Gtk.Box):
                 f"Unable to get server row for {server_id}."
             ) from error
 
-    def connection_status_update(self, connection_status):
+    def connection_status_update(self, connection_state):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
-        self._country_header.connection_state = connection_status.state
-        server_id = connection_status.context.connection.server_id
+        self._country_header.connection_state = connection_state.type
+        server_id = connection_state.context.connection.server_id
         server = self._get_server_row(server_id)
-        server.connection_state = connection_status.state
+        server.connection_state = connection_state.type
 
     def click_connect_button(self):
         """Clicks the button to connect to the country.

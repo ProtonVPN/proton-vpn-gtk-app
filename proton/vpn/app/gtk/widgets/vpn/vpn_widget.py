@@ -93,16 +93,16 @@ class VPNWidget(Gtk.Box):
     def _on_unrealize(self, _widget):
         self.unload()
 
-    def status_update(self, connection_status):
+    def status_update(self, connection_state):
         """This method is called whenever the VPN connection status changes."""
         logger.debug(
             f"VPN widget received connection status update: "
-            f"{connection_status.state.name}."
+            f"{type(connection_state).__name__}."
         )
 
         def update_widget():
             for widget in self.connection_status_subscribers:
-                widget.connection_status_update(connection_status)
+                widget.connection_status_update(connection_state)
 
         GLib.idle_add(update_widget)
 

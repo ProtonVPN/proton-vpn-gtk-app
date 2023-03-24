@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch, PropertyMock
 import pytest
 
 from proton.vpn.connection import states
-from proton.vpn.core_api.connection import VPNConnectionHolder
+from proton.vpn.core_api.connection import VPNConnectorWrapper
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
@@ -14,7 +14,7 @@ from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 
 @pytest.fixture
 def vpn_connector():
-    return Mock(VPNConnectionHolder)
+    return Mock(VPNConnectorWrapper)
 
 
 @pytest.fixture
@@ -97,13 +97,13 @@ def test_did_vpn_drop_returns_false_if_there_is_not_a_vpn_connection(
 
 
 @pytest.mark.parametrize("state", [
-    state() for state in states.BaseState.__subclasses__()
+    state() for state in states.State.__subclasses__()
 ])
 def test_did_vpn_drop_returns_true_only_if_the_current_connection_state_is_error(
         state,
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
-    vpn_connector.current_connection.status = state
+    vpn_connector.current_state = state
     reconnector = VPNReconnector(
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
     )

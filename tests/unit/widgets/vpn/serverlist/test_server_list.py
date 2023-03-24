@@ -208,4 +208,4 @@ def test_server_list_widget_updates_country_rows_on_connection_status_update(
     )
     servers_widget.connection_status_update(connection_state)
     process_gtk_events()
-    assert servers_widget.country_rows[0].connection_state == connection_state.state
+    assert servers_widget.country_rows[0].connection_state == connection_state.type

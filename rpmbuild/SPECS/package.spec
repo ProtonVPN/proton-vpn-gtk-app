@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.19.2
+%define version 0.19.3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Mon Apr 03 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.19.3
+- Adapt to VPN connection refactoring
+
 * Thu Mar 16 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.19.2
 - Display last received error message via popup when multiple errors are to be displayed, instead of stacking them
 

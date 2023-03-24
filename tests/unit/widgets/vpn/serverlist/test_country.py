@@ -97,8 +97,8 @@ def test_country_row_updates_server_rows_on_connection_status_update(
 
     process_gtk_events()
 
-    assert country_row.connection_state == connection_state.state
-    assert country_row.server_rows[0].connection_state == connection_state.state
+    assert country_row.connection_state == connection_state.type
+    assert country_row.server_rows[0].connection_state == connection_state.type
 
 
 def test_connect_button_click_triggers_vpn_connection_to_country(country, mock_controller):

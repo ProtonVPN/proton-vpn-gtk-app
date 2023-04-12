@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.20.0
+%define version 0.20.1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -29,7 +29,6 @@ BuildRequires: python3-dbus
 BuildRequires: python3-proton-vpn-api-core
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: python3-dbus
-BuildRequires: NetworkManager
 BuildRequires: librsvg2
 
 Requires: gtk3
@@ -38,7 +37,6 @@ Requires: python3-dbus
 Requires: python3-proton-vpn-api-core
 Requires: python3-proton-vpn-logger
 Requires: python3-dbus
-Requires: NetworkManager
 Requires: librsvg2
 Suggests: libappindicator-gtk3
 
@@ -68,6 +66,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Apr 14 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.20.1
+- Fix reconnection after implementing IPv6 leak protection
+
 * Mon Apr 04 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.20.0
 - Use stock icon to show when a country row is expanded/collapsed
 

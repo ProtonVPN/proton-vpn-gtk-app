@@ -12,6 +12,9 @@ from proton.vpn.core_api.cache_handler import CacheHandler
 from proton.vpn.servers.server_types import LogicalServer
 
 from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
+from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
+from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
+from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
 
@@ -39,7 +42,11 @@ class Controller:
             self._thread_pool, self._api
         )
         self.reconnector = vpn_reconnector or VPNReconnector(
-            self._api.connection, self.vpn_data_refresher
+            vpn_connector=self._api.connection,
+            vpn_data_refresher=self.vpn_data_refresher,
+            vpn_monitor=VPNMonitor(vpn_connector=self._api.connection),
+            network_monitor=NetworkMonitor(pool=thread_pool_executor),
+            session_monitor=SessionMonitor()
         )
         self._app_config = app_config
 

@@ -1,4 +1,5 @@
 import sys
+from concurrent.futures import Future
 
 from gi.repository import GLib
 
@@ -53,7 +54,7 @@ def process_gtk_events():
 
 
 @raise_main_loop_exceptions
-def run_main_loop(main_loop, timeout_in_seconds=5):
+def run_main_loop(main_loop, timeout_in_ms=5000):
     timeout_occurred = False
 
     def signal_timeout_and_quit_main_loop():
@@ -61,8 +62,29 @@ def run_main_loop(main_loop, timeout_in_seconds=5):
         timeout_occurred = True
         main_loop.quit()
 
-    GLib.timeout_add_seconds(timeout_in_seconds, signal_timeout_and_quit_main_loop)
+    GLib.timeout_add(timeout_in_ms, signal_timeout_and_quit_main_loop)
     main_loop.run()
 
     if timeout_occurred:
-        raise RuntimeError(f"Timeout occurred after {timeout_in_seconds} seconds.")
+        raise RuntimeError(f"Timeout occurred after {timeout_in_ms} seconds.")
+
+
+class DummyThreadPoolExecutor:
+    """
+    Dummy thread pool executor implementation.
+
+    It exposes the same interface but tasks submitted to this pool are
+    just executed synchronously.
+    """
+    def submit(self, fn, *args, **kwargs):
+        future = Future()
+        try:
+            result = fn(*args, **kwargs)
+            future.set_result(result)
+            return future
+        except Exception as exception:
+            future.set_exception(exception)
+
+        return future
+
+

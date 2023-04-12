@@ -1,64 +1,70 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
-import pytest
-
-import gi
-gi.require_version("NM", "1.0")
-from gi.repository import NM
+from gi.repository import GLib
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
+from tests.unit.utils import run_main_loop, DummyThreadPoolExecutor, process_gtk_events
 
 
-def test_enable_connects_to_nm_client_state_changes():
-    nm_client = Mock()
-    monitor = NetworkMonitor(nm_client)
+def test_enable_runs_check_network_state_async_periodically():
+    monitor = NetworkMonitor(DummyThreadPoolExecutor(), polling_interval_ms=10)
 
-    monitor.enable()
+    main_loop = GLib.MainLoop()
 
-    nm_client.connect.assert_called_once_with("notify::state", monitor._on_network_state_changed)
+    with patch.object(monitor, "check_network_state_async") as patched_check_network_state:
+        def quit_main_loop_after_2_connectivity_checks():
+            if patched_check_network_state.call_count > 2:
+                main_loop.quit()
+        patched_check_network_state.side_effect = quit_main_loop_after_2_connectivity_checks
 
+        monitor.enable()
 
-def test_disable_does_not_disconnect_from_nm_client_if_enabled_was_not_called_before():
-    nm_client = Mock()
-    monitor = NetworkMonitor(nm_client)
+        run_main_loop(main_loop, timeout_in_ms=1000)
 
-    monitor.disable()
-
-    nm_client.disconnect.assert_not_called()
-
-
-def test_disable_unhooks_monitor_from_network_manager_state_changes():
-    nm_client = Mock()
-    nm_client.connect.return_value = 23
-    monitor = NetworkMonitor(nm_client)
-
-    monitor.enable()
-    monitor.disable()
-
-    nm_client.disconnect.assert_called_once_with(23)
+    assert monitor.is_enabled
+    assert patched_check_network_state.call_count > 1
 
 
-@pytest.mark.parametrize("nm_state,is_network_up", [
-    (NM.State.CONNECTED_GLOBAL, True),
-    (NM.State.CONNECTED_LOCAL, False)
-])
-def test_is_network_up_returns_true_if_network_manager_state_is_connected_global(
-        nm_state, is_network_up
+@patch("proton.vpn.app.gtk.services.reconnector.network_monitor.check_for_network_connectivity")
+def test_check_network_state_async_calls_network_up_callback_when_network_connectivity_is_detected(
+        check_for_network_connectivity_mock
 ):
-    nm_client = Mock()
-    nm_client.get_state.return_value = nm_state
-    monitor = NetworkMonitor(nm_client)
-
-    monitor.is_network_up is is_network_up
-
-
-def test_network_up_callback_is_called_once_network_manager_state_is_connected_global():
-    nm_client = Mock()
-    nm_client.get_state.return_value = NM.State.CONNECTED_GLOBAL
-    monitor = NetworkMonitor(nm_client)
+    monitor = NetworkMonitor(DummyThreadPoolExecutor(), polling_interval_ms=10)
     monitor.network_up_callback = Mock()
 
-    # Simulate NM notifying the monitor about a state change
-    monitor._on_network_state_changed(nm_client, "state")
+    for connectivity_check_result, network_up_callback_should_be_called in [
+        (False, False),  # No connectivity detected -> callback shouldn't be called.
+        (True, True),    # Connectivity detected -> callback should be called.
+        (True, False),   # Connectivity still detected -> callback should NOT be called.
+        (False, False),  # No connectivity detected -> callback shouldn't be called.
+        (True, True)     # Connectivity detected again -> callback should be called
+    ]:
+        check_for_network_connectivity_mock.return_value = connectivity_check_result
+        future = monitor.check_network_state_async()
+        future.result()
+        process_gtk_events()
 
-    monitor.network_up_callback.assert_called_once()
+        assert monitor.network_up_callback.called == network_up_callback_should_be_called
+        monitor.network_up_callback.reset_mock()
+
+
+def test_disable_stops_running_network_state_async_periodically():
+    monitor = NetworkMonitor(DummyThreadPoolExecutor(), polling_interval_ms=10)
+
+    main_loop = GLib.MainLoop()
+
+    with patch.object(monitor, "check_network_state_async") as patched_check_network_state:
+        def disable_monitor_after_2_connectivity_checks():
+            if patched_check_network_state.call_count == 2:
+                monitor.disable()
+                # Quit main loop 20 ms after the second network check.
+                GLib.timeout_add(interval=20, function=main_loop.quit)
+        patched_check_network_state.side_effect = disable_monitor_after_2_connectivity_checks
+
+        monitor.enable()
+
+        run_main_loop(main_loop, timeout_in_ms=1000)
+
+    assert not monitor.is_enabled
+    # Since the monitor was disabled after the second network check, only 2 network checks should have been done.
+    assert patched_check_network_state.call_count == 2

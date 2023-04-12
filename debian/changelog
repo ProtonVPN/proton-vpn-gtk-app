@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.20.1) unstable; urgency=medium
+
+  * Fix reconnection after implementing IPv6 leak protection
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 14 Apr 2023 09:51:08 +0200
+
 proton-vpn-gtk-app (0.20.0) unstable; urgency=medium
 
   * Use stock icon to show when a country row is expanded/collapsed

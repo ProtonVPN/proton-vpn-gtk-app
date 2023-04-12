@@ -37,23 +37,22 @@ class VPNReconnector:
             self,
             vpn_connector: VPNConnectorWrapper,
             vpn_data_refresher: "VPNDataRefresher",
-            vpn_monitor: VPNMonitor = None,
-            network_monitor: NetworkMonitor = None,
-            session_monitor: SessionMonitor = None
+            vpn_monitor: VPNMonitor,
+            network_monitor: NetworkMonitor,
+            session_monitor: SessionMonitor
     ):
         self._vpn_connector = vpn_connector
+        self._vpn_data_refresher = vpn_data_refresher
 
-        self._vpn_monitor = vpn_monitor or VPNMonitor(vpn_connector)
+        self._vpn_monitor = vpn_monitor
         self._vpn_monitor.vpn_drop_callback = self._on_vpn_drop
         self._vpn_monitor.vpn_up_callback = self._on_vpn_up
 
-        self._network_monitor = network_monitor or NetworkMonitor()
+        self._network_monitor = network_monitor
         self._network_monitor.network_up_callback = self._on_network_up
 
         self._session_monitor = session_monitor or SessionMonitor()
         self._session_monitor.session_unlocked_callback = self._on_session_unlocked
-
-        self._vpn_data_refresher = vpn_data_refresher
 
         self._retry_src_id = None
         self.retry_counter = 0

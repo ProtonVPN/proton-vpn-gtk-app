@@ -14,31 +14,12 @@ from proton.vpn.servers.list import ServerList
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.services.vpn_data_refresher import VPNDataRefresherState
 
-from tests.unit.utils import process_gtk_events
-
-
-class FakeThreadPoolExecutor:
-    """
-    Fake thread pool executor implementation.
-
-    It exposes the same interface but tasks submitted to this pool are
-    just executed synchronously.
-    """
-    def submit(self, fn, *args, **kwargs):
-        future = Future()
-        try:
-            result = fn(*args, **kwargs)
-            future.set_result(result)
-            return future
-        except Exception as exception:
-            future.set_exception(exception)
-
-        return future
+from tests.unit.utils import process_gtk_events, DummyThreadPoolExecutor
 
 
 @pytest.fixture
 def thread_pool_executor():
-    return FakeThreadPoolExecutor()
+    return DummyThreadPoolExecutor()
 
 
 @pytest.fixture

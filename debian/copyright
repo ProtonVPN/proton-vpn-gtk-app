@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Source: https://github.com/ProtonVPN/
+Upstream-Name: proton-vpn-gtk-app
+
+Files:
+ *
+Copyright: 2023 Proton AG <opensource@proton.me>
+License: GPL-3
+ The full text of the GPL version 3 is distributed in
+ /usr/share/common-licenses/GPL-3 on Debian systems.

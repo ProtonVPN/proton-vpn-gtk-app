@@ -50,6 +50,7 @@ class MainWidget(Gtk.Overlay):
                  notifications: Notifications = None):
         super().__init__()
         self.main_widget = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.main_widget.set_name("main-widget")
 
         self.loading_widget = LoadingWidget()
         self.add(self.main_widget)

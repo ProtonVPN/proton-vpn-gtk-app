@@ -50,7 +50,8 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
     RECOVERY_REQUIRED_CHARACTERS = 8
 
     def __init__(self, controller: Controller):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
+        self.set_name("two-factor-auth-form")
         self._display_2fa_mode = True
         self._controller = controller
 
@@ -76,7 +77,8 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
         )
 
         self._submission_button = Gtk.Button()
-        self._submission_button.get_style_context().add_class("suggested-action")
+        self._submission_button.set_halign(Gtk.Align.CENTER)
+        self._submission_button.get_style_context().add_class("primary")
         self._submission_button.set_property("sensitive", False)
         self._submission_button.connect(
             "clicked", self._on_submission_button_clicked
@@ -86,9 +88,11 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
         )
 
         self._toggle_authentication_mode_button = Gtk.Button(label="")
+        self._toggle_authentication_mode_button.set_halign(Gtk.Align.CENTER)
         self._toggle_authentication_mode_button.connect(
             "clicked", self._on_toggle_authentication_mode_clicked
         )
+        self._toggle_authentication_mode_button.get_style_context().add_class("transparent-primary")
         self.pack_start(
             self._toggle_authentication_mode_button,
             expand=False, fill=False, padding=5
@@ -180,10 +184,9 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
         if self._display_2fa_mode:
             required_characers = self.TWOFA_REQUIRED_CHARACTERS
 
-        self._submission_button.set_property(
-            "sensitive",
-            len(self.code.strip()) == required_characers
-        )
+        do_characters_satisfy_req = len(self.code.strip()) == required_characers
+
+        self._submission_button.set_property("sensitive", do_characters_satisfy_req)
 
     @GObject.Signal
     def two_factor_auth_successful(self):

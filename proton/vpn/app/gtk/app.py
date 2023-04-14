@@ -22,12 +22,13 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, Optional
 
-from gi.repository import GObject, Gtk
+from gi.repository import GObject, Gtk, Gdk
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn import logging
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
+from proton.vpn.app.gtk.assets.style import STYLE_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +62,23 @@ class App(Gtk.Application):
         self.window = None
         self.tray_indicator = None
         self._signal_connect_queue = []
+
+    def do_startup(self):  # pylint: disable=arguments-differ
+        """Default GTK method.
+
+        Runs at application startup, to load
+        any necessary UI elements.
+        """
+        Gtk.Application.do_startup(self)
+        css_provider = Gtk.CssProvider()
+        css_provider.load_from_path(str(STYLE_PATH / "main.css"))
+
+        screen = Gdk.Screen.get_default()
+        Gtk.StyleContext.add_provider_for_screen(
+            screen,
+            css_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
 
     def do_activate(self):  # pylint: disable=W0221
         """

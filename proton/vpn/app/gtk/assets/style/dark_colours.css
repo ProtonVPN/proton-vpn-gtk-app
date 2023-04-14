@@ -1,0 +1,94 @@
+/* Primary colour 
+
+Used for non-interactive elements.
+*/
+@define-color primary #8A6EFF;
+
+/* Interaction-norm 
+
+Used for button-norm, links and other interactive elements.
+*/
+@define-color interaction-norm #6D4AFF;
+@define-color interaction-norm-hover #7C5CFF;
+@define-color interaction-norm-active #8A6EFF;
+
+/* Interaction-norm-accent */
+@define-color interaction-norm-accent #8A6EFF;
+@define-color interaction-norm-accent-hover #A898ED;
+@define-color interaction-norm-accent-active #BBABFF;
+
+/* Text 
+
+Text and icon colors.
+*/
+@define-color text-norm #FFFFFF;
+@define-color text-weak #A7A4B5;
+@define-color text-hint #6D697D;
+@define-color text-disabled #5B576B;
+@define-color text-invert #1C1B24;
+
+/* Field 
+
+Used for input fields, selects and selection controls.
+*/
+@define-color field-norm #5B576B;
+@define-color field-hover #6D697D;
+@define-color field-disabled #3F3B4C;
+
+/* Border 
+
+Used as separators in tables and lists,
+for section lines and for containers.
+*/
+@define-color border-norm #4A4658;
+@define-color border-weak #343140;
+
+/* Background 
+
+Used for main layout areas and components.
+*/
+@define-color background-norm #1C1B24;
+@define-color background-weak #292733;
+@define-color background-strong #3F3B4C;
+
+/* Interaction-weak 
+
+Used for button-weak.
+*/
+@define-color interaction-weak #4A4658;
+@define-color interaction-weak-hover #5B576B;
+@define-color interaction-weak-active #6D697D;
+
+/* Interaction-default 
+
+Used for button-ghost and interactions that have
+distinct visible background.
+E.g. sidenavigation and toolbar.
+*/
+@define-color interaction-default transparent;
+@define-color interaction-default-hover rgba(91,87,107,0.2);
+@define-color interaction-default-active rgba(91,87,107,0.4);
+
+/* Signal
+
+Used for banners, form-validation, buttons and meter-bars.
+*/
+@define-color signal-danger #F5385A;
+@define-color signal-danger-hover #FF5473;
+@define-color signal-danger-active #DC3251;
+
+@define-color signal-warning #FF9900;
+@define-color signal-warning-hover #FFB800;
+@define-color signal-warning-active #FF8419;
+
+@define-color signal-success #1EA885;
+@define-color signal-success-hover #1EA885;
+@define-color signal-success-active #198F71;
+
+@define-color signal-info #239ECE;
+@define-color signal-info-hover #27B1E8;
+@define-color signal-info-active #1F83B5;
+
+/* Shadows */
+@define-color shadow #1C1B24;
+

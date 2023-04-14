@@ -45,6 +45,7 @@ class MainWindow(Gtk.ApplicationWindow):
             main_widget: MainWidget = None
     ):
         super().__init__(application=application)
+        self.get_settings().props.gtk_application_prefer_dark_theme = True
         self._controller = controller
         self._close_window_handler_id = None
 
@@ -91,6 +92,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         # The accelerator group is used to then add keyboard shortcuts.
+        self.set_name("main-window")
         self._accelerators_group = Gtk.AccelGroup()
         self.add_accel_group(self._accelerators_group)
 

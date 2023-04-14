@@ -60,14 +60,18 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
     def __init__(self, controller: Controller, notifications: Notifications):
         super().__init__()
+        self.set_name("bug-report-dialog")
         self._controller = controller
         self._notifications = notifications
 
         self.set_title("Report an Issue")
         self.set_default_size(BugReportDialog.WIDTH, BugReportDialog.HEIGHT)
 
-        self.add_button("_Cancel", Gtk.ResponseType.CANCEL)
-        self.add_button("_Submit", Gtk.ResponseType.OK)
+        cancel_button = self.add_button("_Cancel", Gtk.ResponseType.CANCEL)
+        submit_button = self.add_button("_Submit", Gtk.ResponseType.OK)
+
+        cancel_button.get_style_context().add_class("transparent-danger-small")
+        submit_button.get_style_context().add_class("transparent-primary-small")
 
         self.connect("response", self._on_response)
         self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member

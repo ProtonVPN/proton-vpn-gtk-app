@@ -43,9 +43,9 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
 
     """
     def __init__(self, controller: Controller):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
+        self.set_name("login-form")
         self._controller = controller
-
         self._error = Gtk.Label(label="")
         self.add(self._error)
 
@@ -62,7 +62,8 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
 
         self._login_button = Gtk.Button(label="Login")
         self._login_button.connect("clicked", self._on_login_button_clicked)
-        self._login_button.get_style_context().add_class("suggested-action")
+        self._login_button.get_style_context().add_class("primary")
+        self._login_button.set_halign(Gtk.Align.CENTER)
         # By default, the button should never be clickable, as username and
         # password fields are empty and users need to actively provide an input
         # to unlock the login button.
@@ -123,7 +124,9 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         """Toggles login button state based on username and password lengths."""
         is_username_provided = len(self.username.strip()) > 0
         is_password_provided = len(self.password.strip()) > 0
-        self._login_button.set_property("sensitive", is_username_provided and is_password_provided)
+        is_data_provided = is_username_provided and is_password_provided
+
+        self._login_button.set_property("sensitive", is_data_provided)
 
     def _signal_user_authenticated(self, two_factor_auth_required: bool):
         self.emit("user-authenticated", two_factor_auth_required)

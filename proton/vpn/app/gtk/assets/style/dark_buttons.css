@@ -1,0 +1,88 @@
+@import "dark_colours.css";
+
+/* Button Definition */
+button.link label {
+    color: @interaction-norm;
+}
+
+button.primary,
+button.transparent-danger, button.transparent-primary,
+button.transparent-danger-small, button.transparent-primary-small {
+    border-radius: 8px;
+    transition: all .115s ease-in-out;
+    border: 2px solid;
+}
+
+button.primary:not(:disabled){
+    background-image: image(@interaction-norm);
+	background-color: @interaction-norm;
+	border-color: @interaction-norm;
+}
+
+button.primary,
+button.transparent-danger, button.transparent-primary{
+    padding: 10px 50px;
+}
+
+button.primary label,
+button.transparent-danger-small label, button.transparent-primary-small label,
+button.transparent-danger label, button.transparent-primary label{
+    color: @text-norm;
+}
+
+button.transparent-danger-small:not(:disabled),
+button.transparent-primary-small:not(:disabled),
+button.transparent-danger:not(:disabled),
+button.transparent-primary:not(:disabled)
+{
+    border-color: @interaction-weak;
+    background-color: transparent;
+}
+
+
+/* ---- Hover State ---- */
+button.primary:hover,
+button.transparent-primary:hover,
+button.transparent-primary-small:hover {
+    border-color: @interaction-norm-hover;
+    background-color: @interaction-norm-hover;
+    background-image: image(@interaction-norm-hover);
+}
+
+button.transparent-danger:hover,
+button.transparent-danger-small:hover {
+    border-color: @signal-danger;
+    background-color: @signal-danger;
+    background-image: image(@signal-danger);
+}
+
+
+/* ---- Active State ---- */
+button.primary:active,
+button.transparent-primary:active,
+button.transparent-primary-small:active {
+    border-color: @interaction-norm-active;
+    background-color: @interaction-norm-active;
+    background-image: image(@interaction-norm-active);
+}
+
+button.transparent-danger:active,
+button.transparent-danger-small:active{
+    border-color: @signal-danger-active;
+    background-color: @signal-danger-active;
+    background-image: image(@signal-danger-active);
+}
+
+
+/* ---- Disabled State ---- */
+#login-form button:disabled, #two-factor-auth-form button:disabled,
+#bug-report-dialog button:disabled {
+    transition: all .115s ease-in-out;
+    background-color: transparent;
+    border-color: @interaction-weak;
+}
+
+#login-form button:disabled label, #two-factor-auth-form button:disabled label,
+#bug-report-dialog button:disabled label {
+    color: @text-disabled;
+}

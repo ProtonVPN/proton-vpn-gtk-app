@@ -171,8 +171,7 @@ class VPNWidget(Gtk.Box):
 
     def unload(self):
         """Unloads the widget and resets its state."""
-        if self._controller.is_connection_active:
-            self._controller.disconnect()
+        self._controller.disconnect()
 
         self._controller.unregister_connection_status_subscriber(self)
 

@@ -140,7 +140,7 @@ class TestLogoutMenuEntry:
         logout_future.set_result(None)
 
         controller_mock.logout.return_value = logout_future
-        controller_mock.is_connection_active = True
+        controller_mock.is_connection_disconnected = False
 
         disconnect_dialog_mock = Mock()
         disconnect_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
@@ -169,7 +169,7 @@ class TestLogoutMenuEntry:
         logout_future.set_result(None)
 
         controller_mock.logout.return_value = logout_future
-        controller_mock.is_connection_active = True
+        controller_mock.is_connection_disconnected = False
 
         disconnect_dialog_mock = Mock()
         disconnect_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
@@ -195,7 +195,7 @@ class TestQuitMenuEntry:
     def test_quit_menu_entry_closes_app_window_when_clicked_while_not_connected_to_vpn(self):
         main_window_mock = Mock()
         controller_mock = Mock()
-        controller_mock.is_connection_active = False
+        controller_mock.is_connection_disconnected = True
 
         menu = Menu(
             controller=controller_mock,
@@ -215,7 +215,7 @@ class TestQuitMenuEntry:
     ):
         main_window_mock = Mock()
         controller_mock = Mock()
-        controller_mock.is_connection_active = True
+        controller_mock.is_connection_disconnected = False
 
         quit_dialog_mock = Mock()
         quit_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
@@ -236,7 +236,7 @@ class TestQuitMenuEntry:
     ):
         main_window_mock = Mock()
         controller_mock = Mock()
-        controller_mock.is_connection_active = True
+        controller_mock.is_connection_disconnected = False
 
         quit_dialog_mock = Mock()
         quit_dialog_mock.run.return_value = Gtk.ResponseType.NO.real

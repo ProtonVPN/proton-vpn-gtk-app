@@ -175,8 +175,18 @@ class Controller:
 
     @property
     def is_connection_active(self) -> bool:
-        """Returns whether the current connection is in connecting/connected state or not."""
+        """
+        Returns whether the current connection is active or not.
+
+        A connection is considered active in the connecting, connected
+        and disconnecting states.
+        """
         return self._api.connection.is_connection_active
+
+    @property
+    def is_connection_disconnected(self) -> bool:
+        """Returns whether the current connection is in disconnected state or not."""
+        return isinstance(self._api.connection.current_state, states.Disconnected)
 
     def submit_bug_report(self, bug_report: BugReportForm) -> Future:
         """Submits an issue report.

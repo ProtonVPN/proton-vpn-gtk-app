@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.20.1
+%define version 0.20.2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -66,6 +66,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Apr 14 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.20.2
+- Remove IPv6 leak protection when quitting the app while in error state
+
 * Fri Apr 14 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.20.1
 - Fix reconnection after implementing IPv6 leak protection
 

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.20.2) unstable; urgency=medium
+
+  * Remove IPv6 leak protection when quitting the app while in error state
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 14 Apr 2023 17:00:12 +0200
+
 proton-vpn-gtk-app (0.20.1) unstable; urgency=medium
 
   * Fix reconnection after implementing IPv6 leak protection

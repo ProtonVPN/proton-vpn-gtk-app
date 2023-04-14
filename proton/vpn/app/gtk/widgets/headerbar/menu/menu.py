@@ -47,9 +47,9 @@ class Menu(Gio.Menu):
 
     UNABLE_TO_LOGOUT_TITLE = "Unable to Logout"
     UNABLE_TO_LOGOUT_MESSAGE = "Please ensure you have internet access."
-    DISCONNECT_ON_LOGOUT_MESSAGE = "Logging out of the application will disconnect the active" \
+    DISCONNECT_ON_LOGOUT_MESSAGE = "Logging out of the application will cancel the current" \
                                    " VPN connection.\n\nDo you want to continue?"
-    DISCONNECT_ON_QUIT_MESSAGE = "Quitting the application will disconnect the active" \
+    DISCONNECT_ON_QUIT_MESSAGE = "Quitting the application will cancel the current" \
                                  " VPN connection.\n\nDo you want to continue?"
 
     """Custom menu widget that is displayed in the header bar."""
@@ -131,7 +131,7 @@ class Menu(Gio.Menu):
         self.logout_enabled = False
         confirm_logout = True
 
-        if self._controller.is_connection_active:
+        if not self._controller.is_connection_disconnected:
             logout_dialog = DisconnectDialog(
                 message=self.DISCONNECT_ON_LOGOUT_MESSAGE
             )
@@ -151,7 +151,7 @@ class Menu(Gio.Menu):
     def _on_quit_clicked(self, *_):
         confirm_quit = True
 
-        if self._controller.is_connection_active:
+        if not self._controller.is_connection_disconnected:
             quit_dialog = DisconnectDialog(
                 message=self.DISCONNECT_ON_QUIT_MESSAGE
             )

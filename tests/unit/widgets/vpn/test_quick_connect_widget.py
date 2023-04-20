@@ -16,42 +16,68 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import Mock
 
 import pytest
+from gi.repository import GLib
 
+from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
-from proton.vpn.connection.states import Disconnected, Connected
-from tests.unit.utils import process_gtk_events
+from proton.vpn.connection.states import Disconnected, Connected, Connecting, Error
+from tests.unit.utils import process_gtk_events, run_main_loop
 
 
-@pytest.mark.parametrize(
-    "connection_state", [(Connected()), (Disconnected())]
-)
-def test_quick_connect_widget_updates_state_according_to_connection_status_update(connection_state):
-    mock_controller = Mock()
-    quick_connect_widget = QuickConnectWidget(controller=mock_controller)
+@pytest.mark.parametrize("connection_state, connect_button_visible, disconnect_button_visible, disconnect_button_label", [
+    (Disconnected(), True, False, None),
+    (Connecting(), False, True, "Cancel Connection"),
+    (Connected(), False, True, "Disconnect"),
+    (Error(), False, True, "Cancel Reconnection")
+])
+def test_quick_connect_widget_changes_button_according_to_connection_state_changes(
+        connection_state, connect_button_visible, disconnect_button_visible, disconnect_button_label
+):
+    quick_connect_widget = QuickConnectWidget(controller=Mock())
+    window = Gtk.Window()
+    window.add(quick_connect_widget)
+    main_loop = GLib.MainLoop()
 
-    quick_connect_widget.connection_status_update(connection_state)
+    def run():
+        window.show_all()
 
-    process_gtk_events()
+        quick_connect_widget.connection_status_update(connection_state)
 
-    assert quick_connect_widget.connection_state == connection_state.type
+        try:
+            assert quick_connect_widget.connection_state is connection_state
+            assert quick_connect_widget.connect_button.get_visible() is connect_button_visible
+            assert quick_connect_widget.disconnect_button.get_visible() is disconnect_button_visible
+            if disconnect_button_label:
+                assert quick_connect_widget.disconnect_button.get_label() == disconnect_button_label
+        finally:
+            main_loop.quit()
+
+    GLib.idle_add(run)
+    run_main_loop(main_loop)
 
 
 def test_quick_connect_widget_connects_to_fastest_server_when_connect_button_is_clicked():
-    mock_api = Mock()
+    api_mock = Mock()
+    controller = Controller(thread_pool_executor=Mock(), api=api_mock)
+    quick_connect_widget = QuickConnectWidget(controller=controller)
 
-    with ThreadPoolExecutor() as thread_pool_executor:
-        controller = Controller(thread_pool_executor, mock_api)
+    quick_connect_widget.connect_button.clicked()
+    process_gtk_events()
 
-        quick_connect_widget = QuickConnectWidget(controller=controller)
+    api_mock.servers.get_fastest_server.assert_called_once()
+    api_mock.connection.connect.assert_called_once()
 
-        quick_connect_widget.connect_button_click()
 
-        process_gtk_events()
+def test_quick_connect_widget_disconnects_from_current_server_when_disconnect_is_clicked():
+    api_mock = Mock()
+    controller = Controller(thread_pool_executor=Mock(), api=api_mock)
+    quick_connect_widget = QuickConnectWidget(controller=controller)
 
-        mock_api.servers.get_fastest_server.assert_called_once()
-        mock_api.connection.connect.assert_called_once()
+    quick_connect_widget.disconnect_button.clicked()
+    process_gtk_events()
+
+    api_mock.connection.disconnect.assert_called_once()

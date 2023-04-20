@@ -158,6 +158,14 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     def _on_connect_button_clicked(self, _connect_button: Gtk.Button):
         self._controller.connect_to_country(self.country_code)
 
+    def _on_connection_state_disconnected(self):
+        """Flags this server as "not connected"."""
+        self._connect_button.set_sensitive(True)
+        self._connect_button.set_tooltip_text(
+            f"Connect to {self.country_name}"
+        )
+        self._connect_button.set_label("Connect")
+
     def _on_connection_state_connecting(self):
         """Flags this server as "connecting"."""
         self._connect_button.set_label("Connecting...")
@@ -174,17 +182,12 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         )
         self._connect_button.set_label("Connected")
 
+    def _on_connection_state_disconnecting(self):
+        pass
+
     def _on_connection_state_error(self):
         """Flags this server as "error"."""
         self._on_connection_state_disconnected()
-
-    def _on_connection_state_disconnected(self):
-        """Flags this server as "not connected"."""
-        self._connect_button.set_sensitive(True)
-        self._connect_button.set_tooltip_text(
-            f"Connect to {self.country_name}"
-        )
-        self._connect_button.set_label("Connect")
 
     def click_toggle_country_servers_button(self):
         """Clicks the button to toggle the country servers.

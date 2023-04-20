@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.20.5) unstable; urgency=medium
+
+  * Allow cancelling connection/reconnection
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 21 Apr 2023 17:05:50 +0200
+
 proton-vpn-gtk-app (0.20.4) unstable; urgency=medium
 
   * Update accent colours

@@ -107,6 +107,12 @@ class ServerRow(Gtk.Box):
             self._connect_button.get_style_context().add_class("secondary")
             self.pack_end(self._connect_button, expand=False, fill=False, padding=10)
 
+    def _on_connection_state_disconnected(self):
+        """Flags this server as "not connected"."""
+        self._connect_button.set_sensitive(True)
+        self._connect_button.set_tooltip_text(f"Connect to {self.server_label}")
+        self._connect_button.set_label("Connect")
+
     def _on_connection_state_connecting(self):
         """Flags this server as "connecting"."""
         self._connect_button.set_label("Connecting...")
@@ -119,11 +125,8 @@ class ServerRow(Gtk.Box):
         self._connect_button.set_tooltip_text(f"Connected to {self.server_label}")
         self._connect_button.set_label("Connected")
 
-    def _on_connection_state_disconnected(self):
-        """Flags this server as "not connected"."""
-        self._connect_button.set_sensitive(True)
-        self._connect_button.set_tooltip_text(f"Connect to {self.server_label}")
-        self._connect_button.set_label("Connect")
+    def _on_connection_state_disconnecting(self):
+        pass
 
     def _on_connection_state_error(self):
         """Flags this server as "not connected"."""

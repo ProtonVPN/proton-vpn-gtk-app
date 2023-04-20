@@ -55,6 +55,7 @@ class Notifications:
             buttons=Gtk.ButtonsType.OK,
             text=title,
         )
+
         self.error_dialog.set_modal(True)
         self.error_dialog.format_secondary_text(message)
         # .run() blocks code execution until a button on the dialog is clicked,

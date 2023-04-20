@@ -19,9 +19,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from gi.repository import Pango
+
 from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
+from proton.vpn.app.gtk.widgets.vpn.serverlist.under_maintenance import UnderMaintenance
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
 
@@ -38,7 +41,7 @@ class ServerRow(Gtk.Box):
         self._user_tier = user_tier
         self._controller = controller
         self._connection_state: ConnectionStateEnum = None
-        self._under_maintenance_label = None
+        self._under_maintenance_icon = None
         self._connect_button = None
 
         self._build_row()
@@ -70,6 +73,8 @@ class ServerRow(Gtk.Box):
 
     def _build_row(self):
         self._server_label = Gtk.Label(label=self._server.name)
+        # Some test server names are very long.
+        self._server_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.pack_start(
             self._server_label,
             expand=False, fill=False, padding=10
@@ -81,11 +86,13 @@ class ServerRow(Gtk.Box):
             expand=False, fill=False, padding=10
         )
         if self.under_maintenance:
-            self._under_maintenance_label = Gtk.Label(label="(under maintenance)")
+            self._under_maintenance_icon = UnderMaintenance(self._server.name)
             self.pack_end(
-                self._under_maintenance_label,
+                self._under_maintenance_icon,
                 expand=False, fill=False, padding=10
             )
+            self._server_label.set_property("sensitive", False)
+            load_label.set_property("sensitive", False)
             return
 
         if self.upgrade_required:
@@ -97,6 +104,7 @@ class ServerRow(Gtk.Box):
             self._connect_button = Gtk.Button(label="Connect")
             self._connect_button.set_tooltip_text(f"Connect to {self.server_label}")
             self._connect_button.connect("clicked", self._on_connect_button_clicked)
+            self._connect_button.get_style_context().add_class("secondary")
             self.pack_end(self._connect_button, expand=False, fill=False, padding=10)
 
     def _on_connection_state_connecting(self):
@@ -172,7 +180,7 @@ class ServerRow(Gtk.Box):
         return bool(self._connect_button)
 
     @property
-    def is_under_maintenance_label_visible(self) -> bool:
-        """Returns if the under maintenance label is visible.
+    def is_under_maintenance_icon_visible(self) -> bool:
+        """Returns if the under maintenance icon is visible.
         This method was made available for tests."""
-        return bool(self._under_maintenance_label)
+        return bool(self._under_maintenance_icon)

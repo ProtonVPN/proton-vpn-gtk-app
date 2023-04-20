@@ -63,6 +63,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self._login_button = Gtk.Button(label="Login")
         self._login_button.connect("clicked", self._on_login_button_clicked)
         self._login_button.get_style_context().add_class("primary")
+        self._login_button.get_style_context().add_class("spaced")
         self._login_button.set_halign(Gtk.Align.CENTER)
         # By default, the button should never be clickable, as username and
         # password fields are empty and users need to actively provide an input

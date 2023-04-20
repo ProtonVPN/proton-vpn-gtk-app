@@ -25,6 +25,7 @@ from __future__ import annotations
 from typing import List, Tuple
 from gi.repository import GObject
 from proton.vpn.app.gtk.utils.search import normalize
+from proton.vpn.app.gtk.widgets.vpn.serverlist.under_maintenance import UnderMaintenance
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers import Country
 from proton.vpn import logging
@@ -52,6 +53,8 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.under_maintenance = all(not server.enabled for server in country.servers)
         self._controller = controller
 
+        self._connect_button = None
+
         self._collapsed_img = Gtk.Image.new_from_icon_name("pan-down-symbolic", Gtk.IconSize.BUTTON)
         self._expanded_img = Gtk.Image.new_from_icon_name("pan-up-symbolic", Gtk.IconSize.BUTTON)
 
@@ -70,8 +73,15 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.set_spacing(10)
 
         self._toggle_button = Gtk.Button()
+        self._toggle_button.get_style_context().add_class("secondary")
         self._toggle_button.connect("clicked", self._on_toggle_button_clicked)
         self.pack_end(self._toggle_button, expand=False, fill=False, padding=0)
+
+        if self.under_maintenance:
+            under_maintenance_icon = UnderMaintenance(self.country_name)
+            self.pack_end(under_maintenance_icon, expand=False, fill=False, padding=0)
+            country_name_label.set_property("sensitive", False)
+            return
 
         if self.upgrade_required:
             upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
@@ -80,14 +90,10 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             )
             upgrade_button.set_uri("https://account.protonvpn.com/")
             self.pack_end(upgrade_button, expand=False, fill=False, padding=0)
-
-        if self.under_maintenance:
-            under_maintenance_label = Gtk.Label(label="(under maintenance)")
-            self.pack_end(under_maintenance_label, expand=False, fill=False, padding=0)
-
-        if self.available:
+        else:
             self._connect_button = Gtk.Button()
             self._connect_button.connect("clicked", self._on_connect_button_clicked)
+            self._connect_button.get_style_context().add_class("secondary")
             self.pack_end(self._connect_button, expand=False, fill=False, padding=0)
 
     @GObject.Signal(name="toggle-country-servers")

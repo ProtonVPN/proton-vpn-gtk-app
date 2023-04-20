@@ -70,8 +70,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         cancel_button = self.add_button("_Cancel", Gtk.ResponseType.CANCEL)
         submit_button = self.add_button("_Submit", Gtk.ResponseType.OK)
 
-        cancel_button.get_style_context().add_class("transparent-danger-small")
-        submit_button.get_style_context().add_class("transparent-primary-small")
+        cancel_button.get_style_context().add_class("danger")
+        submit_button.get_style_context().add_class("primary")
 
         self.connect("response", self._on_response)
         self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member

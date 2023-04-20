@@ -36,11 +36,13 @@ class QuickConnectWidget(Gtk.Box):
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self._connect_button = Gtk.Button(label="Quick Connect")
+        self._connect_button.get_style_context().add_class("primary")
         self._connect_button.connect(
             "clicked", self._on_connect_button_clicked)
         self._connect_button.set_no_show_all(True)
         self.pack_start(self._connect_button, expand=False, fill=False, padding=0)
         self._disconnect_button = Gtk.Button(label="Disconnect")
+        self._disconnect_button.get_style_context().add_class("danger")
         self._disconnect_button.connect(
             "clicked", self._on_disconnect_button_clicked)
         self._disconnect_button.set_no_show_all(True)

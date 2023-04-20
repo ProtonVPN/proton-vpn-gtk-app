@@ -88,11 +88,11 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
         )
 
         self._toggle_authentication_mode_button = Gtk.Button(label="")
+        self._toggle_authentication_mode_button.get_style_context().add_class("secondary")
         self._toggle_authentication_mode_button.set_halign(Gtk.Align.CENTER)
         self._toggle_authentication_mode_button.connect(
             "clicked", self._on_toggle_authentication_mode_clicked
         )
-        self._toggle_authentication_mode_button.get_style_context().add_class("transparent-primary")
         self.pack_start(
             self._toggle_authentication_mode_button,
             expand=False, fill=False, padding=5

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.20.4) unstable; urgency=medium
+
+  * Update accent colours
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 21 Apr 2023 17:00:12 +0200
+ 
 proton-vpn-gtk-app (0.20.3) unstable; urgency=medium
 
   * Update UI style on Login

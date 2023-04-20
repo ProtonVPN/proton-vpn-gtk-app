@@ -1,5 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.20.3
+%define version 0.20.4
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -66,6 +66,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Apr 21 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.20.4
+- Update accent colours
+
 * Wed Apr 19 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.20.3
 - Update UI style on Login
 

@@ -189,14 +189,14 @@ def test_initialize_currently_connected_server_when_server_is_flagged_for_mainte
         assert record.levelname == "WARNING"
 
 
-def test_initialize_currently_connected_server_when_server_is_flagged_for_maintenance_where_button_is_hidden_and_label_is_displayed(
+def test_initialize_currently_connected_server_when_server_is_flagged_for_maintenance_where_button_is_hidden_and_icon_is_displayed(
         country_with_server_under_maintenance, mock_controller, caplog
 ):
     """
     When reloading the server list, all country rows are recreated.
     If a user is connected to a server that was flagged as under maintenance,
     we need to ensure that the button for that server is disabled, and replaced
-    by a label displaying that the server is under maintenance.
+    by an icon displaying that the server is under maintenance.
     """
     caplog.set_level(logging.WARNING)
     country_row = CountryRow(
@@ -207,7 +207,7 @@ def test_initialize_currently_connected_server_when_server_is_flagged_for_mainte
     )
 
     assert not country_row.server_rows[0].is_connect_button_visible
-    assert country_row.server_rows[0].is_under_maintenance_label_visible
+    assert country_row.server_rows[0].is_under_maintenance_icon_visible
 
 
 def test_initialize_country_row_showing_country_servers(

@@ -20,8 +20,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import List, Tuple
-
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
 
@@ -38,23 +36,16 @@ class DisconnectDialog(Gtk.Dialog):
     HEIGHT = 200
     TITLE = "Active connection found"
 
-    def __init__(
-        self,
-        message: str,
-        buttons: List[Tuple[str, Gtk.ResponseType]] = None,
-    ):
+    def __init__(self, message: str):
         super().__init__()
         self.set_title(self.TITLE)
         self.set_default_size(self.WIDTH, self.HEIGHT)
 
-        if not buttons:
-            buttons = [
-                ("_Yes", Gtk.ResponseType.YES),
-                ("_No", Gtk.ResponseType.NO)
-            ]
+        yes_button = self.add_button("_Yes", Gtk.ResponseType.YES)
+        no_button = self.add_button("_No", Gtk.ResponseType.NO)
 
-        for button_tuple in buttons:
-            self.add_button(button_tuple[0], button_tuple[1])
+        no_button.get_style_context().add_class("primary")
+        yes_button.get_style_context().add_class("danger")
 
         label = Gtk.Label(label=message)
 

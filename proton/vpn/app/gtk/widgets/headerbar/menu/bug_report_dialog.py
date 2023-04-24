@@ -22,10 +22,12 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 import io
-from concurrent.futures import Future
 import re
+import subprocess
+from tempfile import NamedTemporaryFile
+from concurrent.futures import Future, ThreadPoolExecutor
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from gi.repository import Gtk, GLib
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
@@ -58,11 +60,17 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     BUG_REPORT_CLIENT = "Linux GUI"
     BUG_REPORT_VERSION = __version__
 
-    def __init__(self, controller: Controller, notifications: Notifications):
+    def __init__(
+        self, controller: Controller,
+        notifications: Notifications, log_collector: LogCollector = None
+    ):
         super().__init__()
         self.set_name("bug-report-dialog")
         self._controller = controller
         self._notifications = notifications
+        self._log_collector = log_collector or LogCollector(
+            self._controller.thread_pool_executor
+        )
 
         self.set_title("Report an Issue")
         self.set_default_size(BugReportDialog.WIDTH, BugReportDialog.HEIGHT)
@@ -92,13 +100,32 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     def _on_response(self, _: BugReportDialog, response: Gtk.ResponseType):
         """Upon any of the button being clicked in the dialog,
         it's responde is evaluated.
+
+        It first starts the background process to generate the logs and only after
+        those are finished being generated, we instantiate `BugReportForm` will
+        all the available data.
         """
         if response != Gtk.ResponseType.OK:
             self.close()
             return
 
         self.status_label = self.BUG_REPORT_SENDING_MESSAGE
+        if self.send_logs_checkbox.get_active():
+            logs_future = self._log_collector.get_logs()
+            logs_future.add_done_callback(
+                lambda _logs_future: GLib.idle_add(
+                    self._submit_bug_report, _logs_future.result()
+                )
+            )
+        else:
+            GLib.idle_add(self._submit_bug_report, [])
 
+        # Prevent that the window closes before receiving the API response,
+        # as by default Gtk.Dialog closes after the response signal is emitted.
+        # https://lazka.github.io/pgi-docs/#GObject-2.0/functions.html#GObject.signal_stop_emission_by_name
+        self.stop_emission_by_name("response")
+
+    def _submit_bug_report(self, logs: List[io.IOBase]):
         report_form = BugReportForm(
             username=self.username_entry.get_text(),
             email=self.email_entry.get_text(),
@@ -110,26 +137,18 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             ),
             client_version=self.BUG_REPORT_VERSION,
             client=self.BUG_REPORT_CLIENT,
+            attachments=logs
         )
-
-        if self.send_logs_checkbox.get_active():
-            report_form.attachments.append(LogCollector.get_app_log(logger))
-
         self._disable_form()
         future = self._controller.submit_bug_report(report_form)
         future.add_done_callback(
             lambda future: GLib.idle_add(
                 self._on_report_submission_result,
-                future
+                future, report_form
             )
         )
 
-        # Prevent that the window closes before receiving the API response,
-        # as by default Gtk.Dialog closes after the response signal is emitted.
-        # https://lazka.github.io/pgi-docs/#GObject-2.0/functions.html#GObject.signal_stop_emission_by_name
-        self.stop_emission_by_name("response")
-
-    def _on_report_submission_result(self, future: Future):
+    def _on_report_submission_result(self, future: Future, report_form: BugReportForm):
         try:
             future.result()
         except ProtonAPINotReachable:
@@ -149,6 +168,9 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         else:
             self._notifications.show_success_message(self.BUG_REPORT_SUCCESS_MESSAGE)
             self.close()
+        finally:
+            for attachment in report_form.attachments:
+                attachment.close()
 
         return False
 
@@ -268,12 +290,47 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 class LogCollector:  # pylint: disable=too-few-public-methods
     """Collects all necessary logs needed for the report tool."""
 
-    @staticmethod
-    def get_app_log(_logger: logger) -> io.IOBase:
+    def __init__(self, thread_pool_executor: ThreadPoolExecutor):
+        self._thread_pool_executor = thread_pool_executor
+
+    def get_logs(self) -> Future:
+        """
+        Generates and returns all available logs asynchronously.
+        The future result is a List of file objects.
+        """
+        logs_future = Future()
+
+        app_log = self._get_app_log()
+        nm_log_future = self._generate_network_manager_log()
+        nm_log_future.add_done_callback(
+            lambda f: logs_future.set_result([app_log, f.result()])
+        )
+
+        return logs_future
+
+    def _get_app_log(self) -> io.IOBase:
         """Get app log"""
-        root_logger = _logger.logger.root
+        root_logger = logger.logger.root
         for handler in root_logger.handlers:
             if handler.__class__.__name__ == "RotatingFileHandler":
                 return open(handler.baseFilename, "rb")
 
         raise RuntimeError("App logs not found.")
+
+    def _generate_network_manager_log(self) -> Future:
+        """Generate Network Manager logs"""
+        def run_subprocess():
+            with NamedTemporaryFile(
+                prefix="NetworkManager-", suffix=".log", delete=False
+            ) as temp_file:
+                args = [
+                    "journalctl", "-u", "NetworkManager", "--no-pager",
+                    "--utc", "--since=-1d", "--no-hostname"
+                ]
+                process = subprocess.run(args, stdout=temp_file, check=False)
+                if process.returncode == 0:
+                    return open(temp_file.name, "rb")
+
+                raise RuntimeError("Network Manager logs could not be generated.")
+
+        return self._thread_pool_executor.submit(run_subprocess)

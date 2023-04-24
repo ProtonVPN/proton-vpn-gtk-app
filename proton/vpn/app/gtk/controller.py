@@ -49,7 +49,7 @@ class Controller:
         vpn_reconnector: VPNReconnector = None,
         app_config: AppConfig = None
     ):  # pylint: disable=too-many-arguments
-        self._thread_pool = thread_pool_executor
+        self.thread_pool_executor = thread_pool_executor
         # Version for now has to be hardcoded to 4.0.0 mainly due to the fact of
         # how API is treating versions. Once we go public the GUI package version
         # will get updated to 4.0.0
@@ -57,7 +57,7 @@ class Controller:
             type="gui", version="4.0.0"
         ))
         self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
-            self._thread_pool, self._api
+            self.thread_pool_executor, self._api
         )
         self.reconnector = vpn_reconnector or VPNReconnector(
             vpn_connector=self._api.connection,
@@ -75,7 +75,7 @@ class Controller:
         :param password:
         :return: A Future object wrapping the result of the login API call.
         """
-        return self._thread_pool.submit(
+        return self.thread_pool_executor.submit(
             self._api.login,
             username, password
         )
@@ -86,7 +86,7 @@ class Controller:
         :param code: The 2FA code.
         :return: A Future object wrapping the result of the 2FA verification.
         """
-        return self._thread_pool.submit(
+        return self.thread_pool_executor.submit(
             self._api.submit_2fa_code,
             code
         )
@@ -96,7 +96,7 @@ class Controller:
         Logs the user out.
         :return: A future to be able to track the logout completion.
         """
-        return self._thread_pool.submit(self._api.logout)
+        return self.thread_pool_executor.submit(self._api.logout)
 
     @property
     def user_logged_in(self) -> bool:
@@ -191,7 +191,7 @@ class Controller:
     def submit_bug_report(self, bug_report: BugReportForm) -> Future:
         """Submits an issue report.
         :return: A Future object wrapping the result of the API."""
-        return self._thread_pool.submit(
+        return self.thread_pool_executor.submit(
             self._api.submit_bug_report,
             bug_report
         )

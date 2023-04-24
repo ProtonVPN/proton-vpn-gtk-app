@@ -7,33 +7,31 @@ button.primary:not(:disabled) {
     color: @text-norm;
 }
 
-button.secondary:not(:disabled), button.danger:not(:disabled) {
-	background-color: transparent;
-	border-color: @interaction-weak;
-	color: @text-norm;
-}
-
 button.secondary:hover, button.primary:hover {
 	background-color: @interaction-norm-hover;
 	background-image: image(@interaction-norm-hover);
 	border-color: @interaction-norm-hover;
+	color: @text-norm;
 }
 
 button.danger:hover {
 	border-color: @signal-danger;
     background-color: @signal-danger;
 	background-image: image(@signal-danger);
+	color: @text-norm;
 }
 
 button.secondary:active, button.primary:active {
 	background-image: image(@interaction-norm-active);
 	border-color: @interaction-norm-active;
+	color: @text-norm;
 }
 
 button.danger:active {
 	border-color: @signal-danger-active;
     background-color: @signal-danger-active;
 	background-image: image(@signal-danger-active);
+	color: @text-norm;
 }
 
 button.spaced label {

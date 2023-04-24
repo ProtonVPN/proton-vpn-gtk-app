@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.20.6) unstable; urgency=medium
+
+  * Fix UI colors for light theme
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 24 Apr 2023 10:35:30 +0200
+
 proton-vpn-gtk-app (0.20.5) unstable; urgency=medium
 
   * Allow cancelling connection/reconnection

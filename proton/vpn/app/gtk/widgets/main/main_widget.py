@@ -49,11 +49,11 @@ class MainWidget(Gtk.Overlay):
     def __init__(self, controller: Controller, main_window: "MainWindow",
                  notifications: Notifications = None):
         super().__init__()
-        self.main_widget = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.main_widget.set_name("main-widget")
+        self.layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.layout.set_name("main-widget")
 
         self.loading_widget = LoadingWidget()
-        self.add(self.main_widget)
+        self.add(self.layout)
         self.add_overlay(self.loading_widget)
 
         self._active_widget = None
@@ -64,7 +64,7 @@ class MainWidget(Gtk.Overlay):
         self.notifications = notifications or Notifications(
             main_window, NotificationBar()
         )
-        self.main_widget.pack_start(
+        self.layout.pack_start(
             self.notifications.notification_bar,
             expand=False, fill=False, padding=0
         )
@@ -88,9 +88,9 @@ class MainWidget(Gtk.Overlay):
         """Sets the active widget. That is, the widget to be shown
         to the user."""
         if self._active_widget:
-            self.main_widget.remove(self._active_widget)
+            self.layout.remove(self._active_widget)
         self._active_widget = widget
-        self.main_widget.pack_start(self._active_widget, expand=True, fill=True, padding=0)
+        self.layout.pack_start(self._active_widget, expand=True, fill=True, padding=0)
 
     def initialize_visible_widget(self):
         """
@@ -137,7 +137,7 @@ class MainWidget(Gtk.Overlay):
         self.loading_widget.hide()
 
     def _create_login_widget(self) -> LoginWidget:
-        login_widget = LoginWidget(self._controller)
+        login_widget = LoginWidget(self._controller, self.notifications)
         login_widget.connect("user-logged-in", self._on_user_logged_in)
         return login_widget
 

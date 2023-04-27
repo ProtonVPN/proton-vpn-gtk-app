@@ -27,6 +27,7 @@ from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,9 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
     Implements the UI for two-factor authentication. Once the right 2FA code
     is provided, it emits the `two-factor-auth-successful` signal.
     """
+    SESSION_EXPIRED_MESSAGE = "Session expired. Please login again."
+    INCORRECT_TWOFA_CODE_MESSAGE = "Incorrect 2FA code."
+
     TWOFA_ENTRY_PLACEHOLDER = "Enter your 2FA code here"
     TWOFA_HELP_LABEL = "Enter the 6-digit code."
     TWOFA_BUTTON_LABEL = "Submit 2FA code"
@@ -49,14 +53,12 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
     TWOFA_REQUIRED_CHARACTERS = 6
     RECOVERY_REQUIRED_CHARACTERS = 8
 
-    def __init__(self, controller: Controller):
+    def __init__(self, controller: Controller, notifications: Notifications):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
         self.set_name("two-factor-auth-form")
         self._display_2fa_mode = True
         self._controller = controller
-
-        self._error = Gtk.Label()
-        self.add(self._error)
+        self._notifications = notifications
 
         # pylint: disable=R0801
         self.pack_start(ProtonVPNLogo(), expand=False, fill=True, padding=0)
@@ -136,16 +138,16 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
             self._spinner.stop()
 
         if not result.authenticated:
-            self.error_message = "Session expired. Please login again."
+            self._notifications.show_error_message(self.SESSION_EXPIRED_MESSAGE)
             logger.debug(
-                self.error_message, category="APP",
+                self.SESSION_EXPIRED_MESSAGE, category="APP",
                 subcategory="LOGIN-2FA", event="RESULT"
             )
             self.emit("session-expired")
         elif result.twofa_required:
-            self.error_message = "Wrong 2FA code."
+            self._notifications.show_error_message(self.INCORRECT_TWOFA_CODE_MESSAGE)
             logger.debug(
-                self.error_message, category="APP",
+                self.INCORRECT_TWOFA_CODE_MESSAGE, category="APP",
                 subcategory="LOGIN-2FA", event="RESULT"
             )
         else:  # authenticated and 2FA not required
@@ -198,7 +200,7 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
 
     def reset(self):
         """Resets the state of the login/2fa forms."""
-        self.error_message = ""
+        self._notifications.hide_message()
         self.two_factor_auth_code = ""
         self._code_entry.grab_focus()
 
@@ -211,16 +213,6 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
     def code(self, newvalue):
         """Sets the content of `code_entry`"""
         return self._code_entry.set_text(newvalue)
-
-    @property
-    def error_message(self):
-        """Returns the current error message."""
-        return self._error.get_text()
-
-    @error_message.setter
-    def error_message(self, message: str):
-        """Sets an error message and shows it to the user."""
-        self._error.set_text(message)
 
     @property
     def two_factor_auth_code(self):

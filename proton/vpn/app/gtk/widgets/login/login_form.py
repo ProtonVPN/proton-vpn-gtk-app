@@ -30,6 +30,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.assets import ASSETS_PATH
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
 logger = logging.getLogger(__name__)
 
@@ -42,12 +43,14 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
     TwoFactorAuthForm.
 
     """
-    def __init__(self, controller: Controller):
+    INVALID_USERNAME_MESSAGE = "Invalid username."
+    INCORRECT_CREDENTIALS_MESSAGE = "Incorrect credentials."
+
+    def __init__(self, controller: Controller, notifications: Notifications):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
         self.set_name("login-form")
         self._controller = controller
-        self._error = Gtk.Label(label="")
-        self.add(self._error)
+        self._notifications = notifications
 
         self.pack_start(ProtonVPNLogo(), expand=False, fill=True, padding=0)
 
@@ -107,7 +110,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         try:
             result = future.result()
         except ValueError as error:
-            self.error_message = "Invalid username."
+            self._notifications.show_error_message(self.INVALID_USERNAME_MESSAGE)
             logger.debug(error, category="APP", subcategory="LOGIN", event="RESULT")
             self.emit("login-error")
             return
@@ -117,9 +120,12 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         if result.authenticated:
             self._signal_user_authenticated(result.twofa_required)
         else:
-            self.error_message = "Wrong credentials."
+            self._notifications.show_error_message(self.INCORRECT_CREDENTIALS_MESSAGE)
+            logger.debug(
+                self.INCORRECT_CREDENTIALS_MESSAGE, category="APP",
+                subcategory="LOGIN", event="RESULT"
+            )
             self.emit("login-error")
-            logger.debug(self.error_message, category="APP", subcategory="LOGIN", event="RESULT")
 
     def _on_entry_changed(self, _):
         """Toggles login button state based on username and password lengths."""
@@ -145,13 +151,18 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
 
     def reset(self):
         """Resets the state of the login/2fa forms."""
-        self.error_message = ""
+        self._notifications.hide_message()
         self.username = ""
         self.password = ""
         self._username_entry.grab_focus()
 
     @property
-    def username(self):
+    def error_message(self) -> str:
+        """Return the contents of the error message in the notification bar."""
+        return self._notifications.notification_bar.current_message
+
+    @property
+    def username(self) -> str:
         """Returns the username introduced in the login form."""
         return self._username_entry.get_text()
 
@@ -161,7 +172,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self._username_entry.set_text(username)
 
     @property
-    def password(self):
+    def password(self) -> str:
         """Returns the password introduced in the login form."""
         return self._password_entry.get_text()
 
@@ -171,17 +182,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self._password_entry.set_text(password)
 
     @property
-    def error_message(self):
-        """Returns the current error message."""
-        return self._error.get_text()
-
-    @error_message.setter
-    def error_message(self, message: str):
-        """Sets an error message and shows it to the user."""
-        self._error.set_text(message)
-
-    @property
-    def is_login_button_clickable(self):
+    def is_login_button_clickable(self) -> bool:
         """Check if the login button is clickable or not.
         This property was made available mainly for testing purposes."""
         return self._login_button.get_property("sensitive")

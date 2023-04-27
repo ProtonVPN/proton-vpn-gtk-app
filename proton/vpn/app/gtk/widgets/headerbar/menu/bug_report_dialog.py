@@ -34,10 +34,11 @@ from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.core_api.reports import BugReportForm
 from proton.vpn.app.gtk import __version__
 from proton.vpn import logging
-from proton.vpn.app.gtk.widgets.main.notifications import Notifications
+from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.controller import Controller
+    from proton.vpn.app.gtk.app import MainWindow
 
 logger = logging.getLogger(__name__)
 
@@ -61,13 +62,14 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     BUG_REPORT_VERSION = __version__
 
     def __init__(
-        self, controller: Controller,
-        notifications: Notifications, log_collector: LogCollector = None
+        self, controller: Controller, main_window: MainWindow,
+        notification_bar: NotificationBar = None, log_collector: LogCollector = None
     ):
         super().__init__()
         self.set_name("bug-report-dialog")
         self._controller = controller
-        self._notifications = notifications
+        self._main_window = main_window
+        self.notification_bar = notification_bar or NotificationBar()
         self._log_collector = log_collector or LogCollector(
             self._controller.thread_pool_executor
         )
@@ -89,13 +91,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
     @property
     def status_label(self) -> str:
-        """Returns submission status"""
-        return self._submission_status_label.get_text()
-
-    @status_label.setter
-    def status_label(self, newvalue: str):
-        self._submission_status_label.set_text(newvalue if newvalue else "")
-        self._submission_status_label.set_property("visible", bool(newvalue))
+        """Returns the current message of the notification bar."""
+        return self.notification_bar.current_message
 
     def _on_response(self, _: BugReportDialog, response: Gtk.ResponseType):
         """Upon any of the button being clicked in the dialog,
@@ -109,7 +106,9 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             self.close()
             return
 
-        self.status_label = self.BUG_REPORT_SENDING_MESSAGE
+        # Time here has to be long to account for network issues or when API is not
+        # reacheable.
+        self.notification_bar.show_info_message(self.BUG_REPORT_SENDING_MESSAGE, 60000)
         if self.send_logs_checkbox.get_active():
             logs_future = self._log_collector.get_logs()
             logs_future.add_done_callback(
@@ -153,20 +152,26 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             future.result()
         except ProtonAPINotReachable:
             logger.warning("Report submission failed: API not reachable.")
-            self.status_label = self.BUG_REPORT_NETWORK_ERROR_MESSAGE
+            self.notification_bar.show_error_message(
+                self.BUG_REPORT_NETWORK_ERROR_MESSAGE
+            )
             self._enable_form()
         except ProtonAPIError as exc:
             # ProtonAPIError is raised when the backend considers the email
             # address is not valid (some addresses like test@test.com are banned).
             logger.warning(f"Proton API error: {exc}")
-            self.status_label = exc.error
+            self.notification_bar.show_error_message(exc.error)
             self._enable_form()
         except Exception:  # pylint: disable=broad-except
-            self.status_label = self.BUG_REPORT_UNEXPECTED_ERROR_MESSAGE
+            self.notification_bar.show_error_message(
+                self.BUG_REPORT_UNEXPECTED_ERROR_MESSAGE
+            )
             self._enable_form()
             logger.exception("Unexpected error submitting bug report.")
         else:
-            self._notifications.show_success_message(self.BUG_REPORT_SUCCESS_MESSAGE)
+            self._main_window.main_widget.notifications.show_success_message(
+                self.BUG_REPORT_SUCCESS_MESSAGE
+            )
             self.close()
         finally:
             for attachment in report_form.attachments:
@@ -214,17 +219,13 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
     def _generate_fields(self):  # pylint: disable=too-many-statements
         """Generates the necessary fields for the report."""
-        fields_vbox = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        layout = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        layout.set_border_width(0)
 
-        self._submission_status_label = Gtk.Label.new(None)
-        self._submission_status_label.set_name("error_label")
-        self._submission_status_label.set_no_show_all(True)  # pylint: disable=no-member
-        self._submission_status_label.set_justify(Gtk.Justification.CENTER)
-        self._submission_status_label.set_line_wrap(True)
-        # set_max_width_chars is required for set_line_wrap to have effect.
-        self._submission_status_label.set_max_width_chars(1)
-        self._submission_status_label.set_property("margin-bottom", 10)
-        fields_vbox.add(self._submission_status_label)  # pylint: disable=no-member
+        layout.add(self.notification_bar)
+        content = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        content.set_name("bug-report-content")
+        layout.add(content)
 
         username_label = Gtk.Label.new("Username")
         username_label.set_halign(Gtk.Align.START)
@@ -232,8 +233,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.username_entry.set_property("margin-bottom", 10)
         self.username_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
         self.username_entry.set_name("username")
-        fields_vbox.add(username_label)  # pylint: disable=no-member
-        fields_vbox.add(self.username_entry)  # pylint: disable=no-member
+        content.add(username_label)  # pylint: disable=no-member
+        content.add(self.username_entry)  # pylint: disable=no-member
 
         email_label = Gtk.Label.new("Email")
         email_label.set_halign(Gtk.Align.START)
@@ -241,8 +242,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.email_entry.set_property("margin-bottom", 10)
         self.email_entry.set_input_purpose(Gtk.InputPurpose.EMAIL)
         self.email_entry.set_name("email")
-        fields_vbox.add(email_label)  # pylint: disable=no-member
-        fields_vbox.add(self.email_entry)  # pylint: disable=no-member
+        content.add(email_label)  # pylint: disable=no-member
+        content.add(self.email_entry)  # pylint: disable=no-member
 
         description_label = Gtk.Label.new("Description")
         description_label.set_halign(Gtk.Align.START)
@@ -259,17 +260,17 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         scrolled_window_textview.set_property("margin-bottom", 10)
         scrolled_window_textview.set_min_content_height(100)
         scrolled_window_textview.add(self.description_textview)  # pylint: disable=no-member
-        fields_vbox.add(description_label)  # pylint: disable=no-member
-        fields_vbox.add(scrolled_window_textview)  # pylint: disable=no-member
+        content.add(description_label)  # pylint: disable=no-member
+        content.add(scrolled_window_textview)  # pylint: disable=no-member
 
         self.send_logs_checkbox = Gtk.CheckButton.new_with_label("Send error logs")
         self.send_logs_checkbox.set_active(True)
         self.send_logs_checkbox.set_name("send_logs")
-        fields_vbox.add(self.send_logs_checkbox)  # pylint: disable=no-member
+        content.add(self.send_logs_checkbox)  # pylint: disable=no-member
 
         # By default Gtk.Dialog has a vertical box child (Gtk.Box) `vbox`
-        self.vbox.add(fields_vbox)  # pylint: disable=no-member
-        self.vbox.set_border_width(20)  # pylint: disable=no-member
+        self.vbox.add(layout)  # pylint: disable=no-member
+        self.vbox.set_border_width(0)  # pylint: disable=no-member
         self.vbox.set_spacing(20)  # pylint: disable=no-member
 
         self.username_entry.connect(

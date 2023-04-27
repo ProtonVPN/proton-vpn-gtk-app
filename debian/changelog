@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (0.20.8) unstable; urgency=medium
+
+  * Standardize how error messages are displayed
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 27 Apr 2023 17:00:00 +0100
+
 proton-vpn-gtk-app (0.20.7) unstable; urgency=medium
 
   * Implement Network Manager logs

@@ -35,8 +35,7 @@ class TestReportBugMenuEntry:
 
         menu = Menu(
             controller=Mock(),
-            main_window=Mock(),
-            notifications=Mock()
+            main_window=Mock()
         )
         menu.bug_report_button_click()
 
@@ -53,8 +52,7 @@ class TestAboutMenuEntry:
 
         menu = Menu(
             controller=Mock(),
-            main_window=Mock(),
-            notifications=Mock()
+            main_window=Mock()
         )
         menu.about_button_click()
 
@@ -76,8 +74,7 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock(),
-            notifications=Mock()
+            main_window=Mock()
         )
 
         menu.logout_button_click()
@@ -95,8 +92,7 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock(),
-            notifications=Mock()
+            main_window=Mock()
         )
 
         menu.logout_button_click()
@@ -118,8 +114,7 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=main_window_mock,
-            notifications=Mock()
+            main_window=main_window_mock
         )
         menu.logout_button_click()
 
@@ -148,8 +143,7 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock(),
-            notifications=Mock()
+            main_window=Mock()
         )
 
         menu.logout_button_click()
@@ -177,8 +171,7 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock(),
-            notifications=Mock()
+            main_window=Mock()
         )
 
         menu.logout_button_click()
@@ -199,8 +192,7 @@ class TestQuitMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=main_window_mock,
-            notifications=Mock()
+            main_window=main_window_mock
         )
 
         menu.quit_button_click()
@@ -223,8 +215,7 @@ class TestQuitMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=main_window_mock,
-            notifications=Mock()
+            main_window=main_window_mock
         )
 
         menu.quit_button_click()
@@ -244,8 +235,7 @@ class TestQuitMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=main_window_mock,
-            notifications=Mock()
+            main_window=main_window_mock
         )
 
         menu.quit_button_click()

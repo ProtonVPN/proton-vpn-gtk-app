@@ -76,3 +76,9 @@ class Notifications:
             self.notification_bar.show_success_message,
             message
         )
+
+    def hide_message(self):
+        """Hides the revealed content."""
+        GLib.idle_add(
+            self.notification_bar.clear
+        )

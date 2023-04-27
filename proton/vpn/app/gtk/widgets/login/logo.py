@@ -31,6 +31,5 @@ class ProtonVPNLogo(Gtk.Image):
             height=300,
             preserve_aspect_ratio=True
         )
-        self.set_margin_top(25)
-        self.set_margin_bottom(25)
+        self.set_name("login-logo")
         self.set_from_pixbuf(pixbuf)

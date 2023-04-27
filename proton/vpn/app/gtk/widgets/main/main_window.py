@@ -57,8 +57,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.header_bar = header_bar or HeaderBar(
             controller=controller,
-            main_window=self,
-            notifications=notifications
+            main_window=self
         )
         self.set_titlebar(self.header_bar)
 
@@ -96,7 +95,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self._accelerators_group = Gtk.AccelGroup()
         self.add_accel_group(self._accelerators_group)
 
-        self.set_border_width(10)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_icon(GdkPixbuf.Pixbuf.new_from_file_at_size(
             filename=str(ICONS_PATH / "proton-vpn-sign.svg"),
@@ -116,6 +114,8 @@ class MainWindow(Gtk.ApplicationWindow):
             geometry,
             (Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE)
         )
+
+        self.set_border_width(0)
 
     def configure_close_button_behaviour(self, tray_indicator_enabled: bool):
         """Configures the behaviour of the button to close the window

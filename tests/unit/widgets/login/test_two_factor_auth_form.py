@@ -42,7 +42,10 @@ def controller_mocking_successful_2fa():
 def test_two_factor_auth_form_signals_successful_2fa(
         controller_mocking_successful_2fa
 ):
-    two_factor_auth_form = TwoFactorAuthForm(controller_mocking_successful_2fa)
+    two_factor_auth_form = TwoFactorAuthForm(
+        controller=controller_mocking_successful_2fa,
+        notifications=Mock()
+    )
     two_factor_auth_successful_callback = Mock()
     two_factor_auth_form.connect(
         "two-factor-auth-successful", two_factor_auth_successful_callback
@@ -75,12 +78,17 @@ def controller_mocking_wrong_2fa_code():
 def test_two_factor_auth_form_shows_error_when_submitting_wrong_2fa_code(
         controller_mocking_wrong_2fa_code
 ):
-    two_factor_auth_form = TwoFactorAuthForm(controller_mocking_wrong_2fa_code)
+    notifications_mock = Mock()
+
+    two_factor_auth_form = TwoFactorAuthForm(
+        controller=controller_mocking_wrong_2fa_code,
+        notifications=notifications_mock
+    )
     two_factor_auth_form.submit_two_factor_auth()
 
     process_gtk_events()
 
-    assert two_factor_auth_form.error_message == "Wrong 2FA code."
+    notifications_mock.show_error_message.assert_called_once_with(TwoFactorAuthForm.INCORRECT_TWOFA_CODE_MESSAGE)
 
 
 @pytest.fixture
@@ -100,18 +108,21 @@ def controller_mocking_expired_session_before_submitting_2fa_code():
 def test_two_factor_auth_form_shows_error_when_session_expires_before_submitting_2fa_code(
         controller_mocking_expired_session_before_submitting_2fa_code
 ):
+    notifications_mock = Mock()
+
     two_factor_auth_form = TwoFactorAuthForm(
-        controller_mocking_expired_session_before_submitting_2fa_code
+        controller=controller_mocking_expired_session_before_submitting_2fa_code,
+        notifications=notifications_mock
     )
     two_factor_auth_form.submit_two_factor_auth()
 
     process_gtk_events()
 
-    assert two_factor_auth_form.error_message == "Session expired. Please login again."
+    notifications_mock.show_error_message.assert_called_once_with(TwoFactorAuthForm.SESSION_EXPIRED_MESSAGE)
 
 
 def test_two_factor_auth_form_toggle_authentication_mode_when_clicking_on_toggle_authentication_mode_button():
-    two_factor_auth_form = TwoFactorAuthForm(Mock())
+    two_factor_auth_form = TwoFactorAuthForm(Mock(), Mock())
 
     assert two_factor_auth_form.code_entry_placeholder == two_factor_auth_form.TWOFA_ENTRY_PLACEHOLDER
     assert two_factor_auth_form.help_label == two_factor_auth_form.TWOFA_HELP_LABEL
@@ -134,7 +145,7 @@ def test_two_factor_auth_form_toggle_authentication_mode_when_clicking_on_toggle
 
 
 def test_submit_button_enables_when_amount_of_required_characters_are_provided_for_twofa_authentication_mode():
-    two_factor_auth_form = TwoFactorAuthForm(Mock())
+    two_factor_auth_form = TwoFactorAuthForm(Mock(), Mock())
 
     assert not two_factor_auth_form.submission_button_enabled
     assert not two_factor_auth_form.code
@@ -144,7 +155,7 @@ def test_submit_button_enables_when_amount_of_required_characters_are_provided_f
 
 
 def test_submit_button_disables_when_amount_of_required_characters_are_provided_for_twofa_and_toggle_authentication_mode_is_clicked():
-    two_factor_auth_form = TwoFactorAuthForm(Mock())
+    two_factor_auth_form = TwoFactorAuthForm(Mock(), Mock())
 
     two_factor_auth_form.code = "123456"
     assert two_factor_auth_form.submission_button_enabled
@@ -155,7 +166,7 @@ def test_submit_button_disables_when_amount_of_required_characters_are_provided_
 
 
 def test_submit_button_enables_when_amount_of_required_characters_are_provided_for_recovery_authentication_mode():
-    two_factor_auth_form = TwoFactorAuthForm(Mock())
+    two_factor_auth_form = TwoFactorAuthForm(Mock(), Mock())
 
     two_factor_auth_form.toggle_authentication_button_click()
 
@@ -164,7 +175,7 @@ def test_submit_button_enables_when_amount_of_required_characters_are_provided_f
 
 
 def test_submit_button_disables_when_amount_of_required_characters_are_provided_for_recovery_and_toggle_authentication_mode_is_clicked():
-    two_factor_auth_form = TwoFactorAuthForm(Mock())
+    two_factor_auth_form = TwoFactorAuthForm(Mock(), Mock())
 
     two_factor_auth_form.toggle_authentication_button_click()
 

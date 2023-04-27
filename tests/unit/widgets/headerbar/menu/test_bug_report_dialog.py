@@ -23,24 +23,27 @@ from unittest.mock import Mock, patch
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.core_api.reports import BugReportForm
+from proton.vpn.app.gtk import Gtk
 
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportDialog
+from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from tests.unit.utils import process_gtk_events
 
 
 def test_bug_report_widget_delegates_submission_to_controller_when_submit_button_is_clicked():
     controller_mock = Mock()
     log_collector_mock = Mock()
+    main_window_mock = Mock()
     get_logs_future = Future()
     future = Future()
     future.set_result(None)
     controller_mock.submit_bug_report.return_value = future
-    notification_mock = Mock()
     attachment1 = StringIO("App log contents.")
     attachment2 = StringIO("NM log contents.")
+
     bug_report_widget = BugReportDialog(
         controller=controller_mock,
-        notifications=notification_mock,
+        main_window=main_window_mock,
         log_collector=log_collector_mock
     )
 
@@ -75,7 +78,7 @@ def test_bug_report_widget_delegates_submission_to_controller_when_submit_button
 
     process_gtk_events()
 
-    notification_mock.show_success_message.assert_called_once_with(
+    main_window_mock.main_widget.notifications.show_success_message.assert_called_once_with(
         bug_report_widget.BUG_REPORT_SUCCESS_MESSAGE
     )
 
@@ -84,8 +87,8 @@ def test_bug_report_widget_does_not_check_logs_when_logs_checkbox_is_unchecked()
     controller_mock = Mock()
     log_collector_mock = Mock()
     bug_report_widget = BugReportDialog(
-        controller=controller_mock, notifications=Mock(),
-        log_collector=log_collector_mock
+        controller=controller_mock, main_window=Mock(),
+        log_collector=log_collector_mock,
     )
 
     bug_report_widget.username_entry.set_text("Username")
@@ -108,7 +111,7 @@ def test_bug_report_widget_does_not_check_logs_when_logs_checkbox_is_unchecked()
 def test_bug_report_widget_shows_error_message_when_api_is_not_reachable():
     controller_mock = Mock()
     bug_report_widget = BugReportDialog(
-        controller=controller_mock, notifications=Mock(),
+        controller=controller_mock, main_window=Mock(),
         log_collector=Mock()
     )
     bug_report_widget.send_logs_checkbox.set_active(False)  # Checkbox to send logs is unchecked.
@@ -128,7 +131,7 @@ def test_bug_report_widget_shows_error_message_on_api_error():
     controller_mock = Mock()
     get_logs_future = Future()
     bug_report_widget = BugReportDialog(
-        controller=controller_mock, notifications=Mock(),
+        controller=controller_mock, main_window=Mock(),
         log_collector=Mock()
     )
     bug_report_widget.send_logs_checkbox.set_active(False)  # Checkbox to send logs is unchecked.
@@ -150,7 +153,7 @@ def test_bug_report_widget_shows_error_message_on_api_error():
 def test_bug_report_widget_shows_error_message_on_unexpected_errors_reaching_api():
     controller_mock = Mock()
     bug_report_widget = BugReportDialog(
-        controller=controller_mock, notifications=Mock(),
+        controller=controller_mock, main_window=Mock(),
         log_collector=Mock()
     )
 

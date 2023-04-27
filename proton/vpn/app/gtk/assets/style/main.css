@@ -1,2 +1,40 @@
 @import "dark_colours.css";
 @import "dark_buttons.css";
+
+
+label.info {
+    background-color: @signal-info;
+	background-image: image(@signal-info);
+	color: @text-norm;
+    text-shadow: None;
+    padding: 5px;
+}
+
+label.error {
+    background-color: @signal-danger;
+	background-image: image(@signal-danger);
+	color: @text-norm;
+    text-shadow: None;
+    padding: 5px;
+}
+
+label.success {
+    background-color: @signal-success;
+    background-image: image(@signal-success);
+	color: @text-norm;
+    text-shadow: None;
+    padding: 5px;
+}
+
+#vpn-widget, #login-widget {
+    margin: 10px;
+}
+
+#login-logo{
+    margin-top: 75px;
+    margin-bottom: 40px;
+}
+
+#bug-report-content, #bug-report-dialog buttonbox {
+ margin: 20px;   
+}

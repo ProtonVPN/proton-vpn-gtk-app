@@ -5,6 +5,7 @@ button.primary:not(:disabled) {
 	background-image: image(@interaction-norm);
 	border-color: @interaction-norm;
     color: @text-norm;
+	text-shadow: none;
 }
 
 button.secondary:hover, button.primary:hover {
@@ -12,6 +13,7 @@ button.secondary:hover, button.primary:hover {
 	background-image: image(@interaction-norm-hover);
 	border-color: @interaction-norm-hover;
 	color: @text-norm;
+	text-shadow: none;
 }
 
 button.danger:hover {
@@ -19,12 +21,14 @@ button.danger:hover {
     background-color: @signal-danger;
 	background-image: image(@signal-danger);
 	color: @text-norm;
+	text-shadow: none;
 }
 
 button.secondary:active, button.primary:active {
 	background-image: image(@interaction-norm-active);
 	border-color: @interaction-norm-active;
 	color: @text-norm;
+	text-shadow: none;
 }
 
 button.danger:active {
@@ -32,6 +36,7 @@ button.danger:active {
     background-color: @signal-danger-active;
 	background-image: image(@signal-danger-active);
 	color: @text-norm;
+	text-shadow: none;
 }
 
 button.spaced label {

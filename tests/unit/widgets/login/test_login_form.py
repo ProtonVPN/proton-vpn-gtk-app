@@ -42,7 +42,10 @@ def controller_mocking_successful_login():
 def test_login_form_signals_when_the_user_is_authenticated(
         controller_mocking_successful_login
 ):
-    login_form = LoginForm(controller_mocking_successful_login)
+    login_form = LoginForm(
+        controller=controller_mocking_successful_login,
+        notifications=Mock()
+    )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
 
@@ -64,7 +67,10 @@ def test_login_form_signals_when_the_user_is_authenticated(
 def test_login_form_authenticates_user_when_pressing_enter_on_username_field(
         controller_mocking_successful_login
 ):
-    login_form = LoginForm(controller_mocking_successful_login)
+    login_form = LoginForm(
+        controller=controller_mocking_successful_login,
+        notifications=Mock()
+    )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
 
@@ -80,7 +86,10 @@ def test_login_form_authenticates_user_when_pressing_enter_on_username_field(
 def test_login_form_authenticates_user_when_pressing_enter_on_password_field(
         controller_mocking_successful_login
 ):
-    login_form = LoginForm(controller_mocking_successful_login)
+    login_form = LoginForm(
+        controller=controller_mocking_successful_login,
+        notifications=Mock()
+    )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
 
@@ -96,7 +105,10 @@ def test_login_form_authenticates_user_when_pressing_enter_on_password_field(
 def test_login_form_does_not_authenticate_user_when_pressing_enter_on_username_field_with_missing_username(
         controller_mocking_successful_login
 ):
-    login_form = LoginForm(controller_mocking_successful_login)
+    login_form = LoginForm(
+        controller=controller_mocking_successful_login,
+        notifications=Mock()
+    )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
 
@@ -112,7 +124,10 @@ def test_login_form_does_not_authenticate_user_when_pressing_enter_on_username_f
 def test_login_form_does_not_authenticate_user_when_pressing_enter_on_username_field_with_missing_password(
         controller_mocking_successful_login
 ):
-    login_form = LoginForm(controller_mocking_successful_login)
+    login_form = LoginForm(
+        controller=controller_mocking_successful_login,
+        notifications=Mock()
+    )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
 
@@ -141,14 +156,19 @@ def controller_mocking_invalid_username():
 def test_login_form_shows_error_when_submitting_an_invalid_username(
         controller_mocking_invalid_username
 ):
-    login_form = LoginForm(controller_mocking_invalid_username)
+    notifications_mock = Mock()
+
+    login_form = LoginForm(
+        controller=controller_mocking_invalid_username,
+        notifications=notifications_mock
+    )
     login_form.username = "MockInvalidUsername"
     login_form.password = "MockPassword"
     login_form.submit_login()
 
     process_gtk_events()
 
-    assert login_form.error_message == "Invalid username."
+    notifications_mock.show_error_message.assert_called_once_with(LoginForm.INVALID_USERNAME_MESSAGE)
 
 
 @pytest.fixture
@@ -167,11 +187,15 @@ def controller_mocking_invalid_credentials():
 def test_login_form_shows_error_when_submitting_wrong_credentials(
         controller_mocking_invalid_credentials
 ):
-    login_form = LoginForm(controller_mocking_invalid_credentials)
+    notifications_mock = Mock()
+
+    login_form = LoginForm(
+        controller=controller_mocking_invalid_credentials,
+        notifications=notifications_mock)
     login_form.username = "MockUser"
     login_form.password = "MockPassword"
     login_form.submit_login()
 
     process_gtk_events()
 
-    assert login_form.error_message == "Wrong credentials."
+    notifications_mock.show_error_message.assert_called_once_with(LoginForm.INCORRECT_CREDENTIALS_MESSAGE)

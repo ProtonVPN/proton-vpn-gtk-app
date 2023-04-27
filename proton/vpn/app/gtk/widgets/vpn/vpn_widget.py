@@ -67,6 +67,7 @@ class VPNWidget(Gtk.Box):
     def __init__(self, controller: Controller, main_window: "MainWindow"):
         super().__init__(spacing=10)
 
+        self.set_name("vpn-widget")
         self._state = VPNWidgetState()
         self._controller = controller
 

@@ -26,7 +26,7 @@ from proton.vpn.servers import ServerList, Country
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.country import CountryRow
-from tests.unit.utils import process_gtk_events
+from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.logging import logging
 from proton.vpn.servers.enums import ServerFeatureEnum
 

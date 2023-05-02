@@ -25,7 +25,7 @@ from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
-from tests.unit.utils import process_gtk_events
+from tests.unit.testing_utils import process_gtk_events
 
 
 PLUS_TIER = 2

@@ -16,16 +16,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-import time
+import pytest
 
-from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
-from tests.unit.testing_utils import process_gtk_events
+from proton.vpn.app.gtk.utils import semver
 
 
-def test_notification_bar_shows_error_message_and_hides_it_automatically():
-    notification_bar = NotificationBar()
-    notification_bar.show_error_message("My error message.", hide_after_ms=100)
-    assert notification_bar.current_message == "My error message."
-    time.sleep(0.2)
-    process_gtk_events()
-    assert notification_bar.current_message == ""
+@pytest.mark.parametrize("pep440_version, expected_semver_version", [
+    ("1.2.3", "1.2.3"),
+    ("1.2.3a4", "1.2.3-alpha.4"),
+    ("1.2.3b4", "1.2.3-beta.4"),
+    ("1.2.3rc4", "1.2.3-rc.4"),
+    ("1.2.3a4.dev5+abc", "1.2.3-alpha.4-dev.5+abc")
+])
+def test_from_pep440(pep440_version, expected_semver_version):
+    result = semver.from_pep440(pep440_version)
+    assert result == expected_semver_version

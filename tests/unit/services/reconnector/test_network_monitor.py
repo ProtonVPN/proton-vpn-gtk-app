@@ -20,7 +20,7 @@ from unittest.mock import Mock, patch
 from gi.repository import GLib
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
-from tests.unit.utils import run_main_loop, DummyThreadPoolExecutor, process_gtk_events
+from tests.unit.testing_utils import run_main_loop, DummyThreadPoolExecutor, process_gtk_events
 
 
 def test_enable_runs_check_network_state_async_periodically():

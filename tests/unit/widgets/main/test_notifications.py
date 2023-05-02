@@ -19,7 +19,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from unittest.mock import Mock, patch
 
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
-from tests.unit.utils import process_gtk_events
+from tests.unit.testing_utils import process_gtk_events
 
 
 ERROR_MESSAGE = "Error message to be displayed"

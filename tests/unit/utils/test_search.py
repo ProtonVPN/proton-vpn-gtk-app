@@ -16,16 +16,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-import time
-
-from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
-from tests.unit.testing_utils import process_gtk_events
+from proton.vpn.app.gtk.utils.search import normalize
 
 
-def test_notification_bar_shows_error_message_and_hides_it_automatically():
-    notification_bar = NotificationBar()
-    notification_bar.show_error_message("My error message.", hide_after_ms=100)
-    assert notification_bar.current_message == "My error message."
-    time.sleep(0.2)
-    process_gtk_events()
-    assert notification_bar.current_message == ""
+def test_normalize():
+    input_string = "CH-PT#1 "
+    normalized_string = normalize(input_string)
+    assert normalized_string == "ch-pt#1"

@@ -24,7 +24,7 @@ from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerRow
 
-from tests.unit.utils import process_gtk_events
+from tests.unit.testing_utils import process_gtk_events
 
 FREE_TIER = 0
 PLUS_TIER = 2

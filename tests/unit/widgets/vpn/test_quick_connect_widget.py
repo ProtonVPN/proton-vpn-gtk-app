@@ -25,7 +25,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
 from proton.vpn.connection.states import Disconnected, Connected, Connecting, Error
-from tests.unit.utils import process_gtk_events, run_main_loop
+from tests.unit.testing_utils import process_gtk_events, run_main_loop
 
 
 @pytest.mark.parametrize("connection_state, connect_button_visible, disconnect_button_visible, disconnect_button_label", [

@@ -23,7 +23,7 @@ from proton.session.exceptions import ProtonAPINotReachable
 from proton.vpn.app.gtk.widgets.headerbar.menu.menu import Menu
 from proton.vpn.app.gtk import Gtk
 
-from tests.unit.utils import process_gtk_events
+from tests.unit.testing_utils import process_gtk_events
 
 
 class TestReportBugMenuEntry:

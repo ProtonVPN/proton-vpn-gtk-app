@@ -21,6 +21,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from concurrent.futures import ThreadPoolExecutor, Future
+from importlib import metadata
 
 from proton.vpn.connection import VPNConnection, states
 from proton.vpn.core_api.api import ProtonVPNAPI
@@ -33,6 +34,7 @@ from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
+from proton.vpn.app.gtk.utils import semver
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
 
@@ -50,11 +52,8 @@ class Controller:
         app_config: AppConfig = None
     ):  # pylint: disable=too-many-arguments
         self.thread_pool_executor = thread_pool_executor
-        # Version for now has to be hardcoded to 4.0.0 mainly due to the fact of
-        # how API is treating versions. Once we go public the GUI package version
-        # will get updated to 4.0.0
         self._api = api or ProtonVPNAPI(ClientTypeMetadata(
-            type="gui", version="4.0.0"
+            type="gui", version=semver.from_pep440(self.app_version)
         ))
         self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
             self.thread_pool_executor, self._api
@@ -233,3 +232,8 @@ class Controller:
             self._app_config = AppConfig.from_dict(app_config)
 
         return self._app_config
+
+    @property
+    def app_version(self) -> str:
+        """Returns the current app version."""
+        return metadata.version("proton-vpn-gtk-app")

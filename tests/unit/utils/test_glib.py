@@ -21,7 +21,7 @@ from unittest.mock import Mock, call
 from proton.vpn.app.gtk.utils import glib
 from gi.repository import GLib
 from proton.vpn.app.gtk.utils.search import normalize
-from tests.unit.utils import process_gtk_events, run_main_loop
+from tests.unit.testing_utils import process_gtk_events, run_main_loop
 
 
 def test_run_once():
@@ -53,9 +53,3 @@ def test_run_periodically():
 
     assert mock.call_count == expected_number_of_calls
     assert mock.mock_calls == [call("arg1", arg2="arg2") for _ in range(expected_number_of_calls)]
-
-
-def test_normalize():
-    input_string = "CH-PT#1 "
-    normalized_string = normalize(input_string)
-    assert normalized_string == "ch-pt#1"

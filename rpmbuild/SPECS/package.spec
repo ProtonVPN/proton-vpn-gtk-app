@@ -1,8 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 0.20.8
+%define version 4.0.0
+%define upstream_version 4.0.0a1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 1
+%define release 0.1.a1
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -14,7 +15,7 @@ Group: ProtonVPN
 License: GPLv3
 Vendor: Proton Technologies AG <opensource@proton.me>
 URL: https://github.com/ProtonVPN/%{unmangled_name}
-Source0: %{unmangled_name}-%{version}.tar.gz
+Source0: %{unmangled_name}-%{upstream_version}.tar.gz
 Source3: %{desktop_entry_filename}
 Source4: %{logo_filename}
 BuildArch: noarch
@@ -30,6 +31,7 @@ BuildRequires: python3-proton-vpn-api-core
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: python3-dbus
 BuildRequires: librsvg2
+BuildRequires: python3-packaging
 
 Requires: gtk3
 Requires: python3-gobject
@@ -38,6 +40,7 @@ Requires: python3-proton-vpn-api-core
 Requires: python3-proton-vpn-logger
 Requires: python3-dbus
 Requires: librsvg2
+Requires: python3-packaging
 Suggests: libappindicator-gtk3
 
 %{?python_disable_dependency_generator}
@@ -46,7 +49,7 @@ Suggests: libappindicator-gtk3
 Package %{unmangled_name}.
 
 %prep
-%setup -n %{unmangled_name}-%{version} -n %{unmangled_name}-%{version}
+%setup -n %{unmangled_name}-%{upstream_version}
 
 %build
 python3 setup.py build
@@ -60,12 +63,15 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 
 %files -f INSTALLED_FILES
 %{python3_sitelib}/proton/
-%{python3_sitelib}/proton_vpn_gtk_app-%{version}*.egg-info/
+%{python3_sitelib}/proton_vpn_gtk_app-%{upstream_version}*.egg-info/
 %{_datadir}/applications/%{desktop_entry_filename}
 %{_datadir}/icons/hicolor/scalable/apps/%{logo_filename}
 %defattr(-,root,root)
 
 %changelog
+* Tue May 02 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.1a1
+- Send app version to REST API
+
 * Thu Apr 27 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.20.8
 - Standardize how error messages are displayed
 
@@ -90,7 +96,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Fri Apr 14 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.20.1
 - Fix reconnection after implementing IPv6 leak protection
 
-* Mon Apr 04 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.20.0
+* Tue Apr 04 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.20.0
 - Use stock icon to show when a country row is expanded/collapsed
 
 * Mon Apr 03 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.19.3

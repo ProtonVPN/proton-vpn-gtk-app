@@ -26,7 +26,7 @@ from proton.vpn.servers import ServerList
 
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
-from tests.unit.utils import process_gtk_events, run_main_loop
+from tests.unit.testing_utils import process_gtk_events, run_main_loop
 
 PLUS_TIER = 2
 FREE_TIER = 0

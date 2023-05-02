@@ -19,15 +19,13 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from concurrent.futures import Future
 from io import StringIO
 
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.core_api.reports import BugReportForm
-from proton.vpn.app.gtk import Gtk
 
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportDialog
-from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
-from tests.unit.utils import process_gtk_events
+from tests.unit.testing_utils import process_gtk_events
 
 
 def test_bug_report_widget_delegates_submission_to_controller_when_submit_button_is_clicked():

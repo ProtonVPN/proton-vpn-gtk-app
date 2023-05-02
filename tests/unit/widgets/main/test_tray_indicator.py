@@ -21,7 +21,7 @@ from unittest.mock import patch, Mock
 import pytest
 
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicatorNotSupported, TrayIndicator
-from tests.unit.utils import process_gtk_events
+from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.connection import states
 
 

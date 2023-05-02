@@ -32,7 +32,7 @@ from proton.vpn.servers.list import ServerList
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.services.vpn_data_refresher import VPNDataRefresherState
 
-from tests.unit.utils import process_gtk_events, DummyThreadPoolExecutor
+from tests.unit.testing_utils import process_gtk_events, DummyThreadPoolExecutor
 
 
 @pytest.fixture

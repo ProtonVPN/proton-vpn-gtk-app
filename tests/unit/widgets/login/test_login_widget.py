@@ -19,7 +19,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from unittest.mock import Mock
 
 from proton.vpn.app.gtk.widgets.login.login_widget import LoginWidget
-from tests.unit.utils import process_gtk_events
+from tests.unit.testing_utils import process_gtk_events
 
 
 def test_login_widget_signals_user_logged_in_when_user_is_authenticated_and_2fa_is_not_required():

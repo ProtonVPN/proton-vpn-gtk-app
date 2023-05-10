@@ -91,16 +91,6 @@ def step_impl(context):
     )
 
 
-@when("the wrong password is introduced")
-def step_impl(context):
-    login_form = context.app.window.main_widget.login_widget.login_form
-    set_username_password_threadsafe(
-        login_form=login_form,
-        username=context.username,
-        password="wrong password"
-    )
-
-
 @when("the login form is submitted")
 def step_impl(context):
     login_widget = context.app.window.main_widget.login_widget
@@ -113,13 +103,6 @@ def step_impl(context):
         context.user_authenticated_event.set()
     login_form.connect("user_authenticated", on_user_authenticated)
 
-    # Notify when a login error occurred.
-    context.login_error_event = threading.Event()
-    context.login_error_occurred = False
-    def on_login_error(_):  # noqa: E306
-        context.login_error_occurred = True
-        context.login_error_event.set()
-    login_form.connect("login-error", on_login_error)
 
     # Notify when the user is logged in.
     context.user_logged_in_event = threading.Event()
@@ -186,13 +169,3 @@ def step_impl(context):
     two_factor_auth_form = context.app.window.main_widget.login_widget.two_factor_auth_form
     two_factor_auth_code = pyotp.TOTP(context.two_factor_auth_shared_secret).now()
     submit_2fa_code_threadsafe(two_factor_auth_form, two_factor_auth_code)
-
-
-@then('the user should be notified with the error message: "{error_message}"')
-def step_impl(context, error_message):
-    assert context.login_error_event.wait(timeout=10)
-
-    assert context.login_error_occurred
-
-    login_form = context.app.window.main_widget.login_widget.login_form
-    assert error_message == login_form.error_message

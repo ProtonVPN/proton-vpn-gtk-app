@@ -28,6 +28,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
+from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,7 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
     Implements the UI for two-factor authentication. Once the right 2FA code
     is provided, it emits the `two-factor-auth-successful` signal.
     """
+    LOGGING_IN_MESSAGE = "Logging in..."
     SESSION_EXPIRED_MESSAGE = "Session expired. Please login again."
     INCORRECT_TWOFA_CODE_MESSAGE = "Incorrect 2FA code."
 
@@ -53,12 +55,16 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
     TWOFA_REQUIRED_CHARACTERS = 6
     RECOVERY_REQUIRED_CHARACTERS = 8
 
-    def __init__(self, controller: Controller, notifications: Notifications):
+    def __init__(
+        self, controller: Controller,
+        notifications: Notifications, loading_widget: LoadingWidget
+    ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
         self.set_name("two-factor-auth-form")
         self._display_2fa_mode = True
         self._controller = controller
         self._notifications = notifications
+        self._loading_widget = loading_widget
 
         # pylint: disable=R0801
         self.pack_start(ProtonVPNLogo(), expand=False, fill=True, padding=0)
@@ -105,9 +111,6 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
         self._code_entry.connect(
             "activate", lambda _: self._submission_button.clicked())
 
-        self._spinner = Gtk.Spinner()
-        self.pack_start(self._spinner, expand=False, fill=False, padding=0)
-
         self._display_2fa_ui()
         self.reset()
 
@@ -123,7 +126,7 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
 
     def _on_submission_button_clicked(self, _):
         logger.info("Clicked on login", category="UI", subcategory="LOGIN-2FA", event="CLICK")
-        self._spinner.start()
+        self._loading_widget.show(self.LOGGING_IN_MESSAGE)
         future = self._controller.submit_2fa_code(
             self.two_factor_auth_code
         )
@@ -135,7 +138,7 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
         try:
             result = future.result()
         finally:
-            self._spinner.stop()
+            self._loading_widget.hide()
 
         if not result.authenticated:
             self._notifications.show_error_message(self.SESSION_EXPIRED_MESSAGE)

@@ -27,6 +27,7 @@ from proton.vpn import logging
 from proton.vpn.app.gtk.widgets.login.login_form import LoginForm
 from proton.vpn.app.gtk.widgets.login.two_factor_auth_form import TwoFactorAuthForm
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
+from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
 
 logger = logging.getLogger(__name__)
 
@@ -39,16 +40,21 @@ class LoginWidget(Gtk.Stack):
     widget is shown. Once the user introduces the right username and password
     (and 2FA is enabled) then the TwoFactorAuthForm widget is displayed instead.
     """
-    def __init__(self, controller: Controller, notifications: Notifications):
+    def __init__(
+        self, controller: Controller,
+        notifications: Notifications, loading_widget: LoadingWidget
+    ):
         super().__init__()
 
         self.set_name("login-widget")
         self._controller = controller
         self.active_form = None
 
-        self.login_form = LoginForm(controller, notifications)
+        self.login_form = LoginForm(controller, notifications, loading_widget)
         self.add_named(self.login_form, "login_form")
-        self.two_factor_auth_form = TwoFactorAuthForm(controller, notifications)
+        self.two_factor_auth_form = TwoFactorAuthForm(
+            controller, notifications, loading_widget
+        )
         self.add_named(self.two_factor_auth_form, "2fa_form")
 
         self.login_form.connect(

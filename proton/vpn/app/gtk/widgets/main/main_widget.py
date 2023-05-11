@@ -46,15 +46,17 @@ class MainWidget(Gtk.Overlay):
         "Please login to re-authenticate."
     SESSION_EXPIRED_ERROR_TITLE = "Invalid Session"
 
-    def __init__(self, controller: Controller, main_window: "MainWindow",
-                 notifications: Notifications = None):
+    def __init__(
+        self, controller: Controller, main_window: "MainWindow",
+        loading_widget: LoadingWidget, notifications: Notifications = None
+    ):
         super().__init__()
         self.layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.layout.set_name("main-widget")
 
-        self.loading_widget = LoadingWidget()
+        self._loading_widget = loading_widget
         self.add(self.layout)
-        self.add_overlay(self.loading_widget)
+        self.add_overlay(self._loading_widget)
 
         self._active_widget = None
         self._controller = controller
@@ -134,10 +136,12 @@ class MainWidget(Gtk.Overlay):
         self._display_login_widget()
 
     def _hide_loading_widget(self, *_):
-        self.loading_widget.hide()
+        self._loading_widget.hide()
 
     def _create_login_widget(self) -> LoginWidget:
-        login_widget = LoginWidget(self._controller, self.notifications)
+        login_widget = LoginWidget(
+            self._controller, self.notifications, self._loading_widget
+        )
         login_widget.connect("user-logged-in", self._on_user_logged_in)
         return login_widget
 
@@ -153,13 +157,13 @@ class MainWidget(Gtk.Overlay):
 
     def _display_vpn_widget(self):
         self._main_window.header_bar.menu.logout_enabled = True
-        self.loading_widget.show()
+        self._loading_widget.show("Loading app...")
         self.active_widget = self.vpn_widget
         self.vpn_widget.load(self._controller.user_tier)
 
     def _display_login_widget(self):
         self._main_window.header_bar.menu.logout_enabled = False
-        self.loading_widget.hide()  # Required on session expired while loading VPN widget.
+        self._loading_widget.hide()  # Required on session expired while loading VPN widget.
         self.active_widget = self.login_widget
         self.login_widget.reset()
         self.login_widget.show_all()

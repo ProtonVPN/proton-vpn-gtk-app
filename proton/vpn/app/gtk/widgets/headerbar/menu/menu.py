@@ -29,6 +29,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugRepor
 from proton.vpn.app.gtk.widgets.headerbar.menu.about_dialog import AboutDialog
 from proton.vpn.app.gtk.widgets.headerbar.menu.disconnect_dialog import DisconnectDialog
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
 
 from proton.session.exceptions import ProtonAPINotReachable
 from proton.vpn import logging
@@ -39,27 +40,31 @@ if TYPE_CHECKING:
     from proton.vpn.app.gtk.app import MainWindow
 
 
-class Menu(Gio.Menu):
+class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
     """App menu shown in the header bar."""
 
-    UNABLE_TO_LOGOUT_TITLE = "Unable to Logout"
-    UNABLE_TO_LOGOUT_MESSAGE = "Please ensure you have internet access."
+    LOGOUT_LOADING_MESSAGE = "Logging out..."
+    UNABLE_TO_LOGOUT_MESSAGE = "Unable to logout, please ensure you have internet access."
     DISCONNECT_ON_LOGOUT_MESSAGE = "Logging out of the application will cancel the current" \
                                    " VPN connection.\n\nDo you want to continue?"
     DISCONNECT_ON_QUIT_MESSAGE = "Quitting the application will cancel the current" \
                                  " VPN connection.\n\nDo you want to continue?"
 
-    def __init__(self, controller: Controller, main_window: "MainWindow"):
+    def __init__(
+        self, controller: Controller,
+        main_window: "MainWindow", loading_widget: LoadingWidget
+    ):
         super().__init__()
         self._main_window = main_window
         self._controller = controller
+        self._loading_widget = loading_widget
 
         self.bug_report_action = Gio.SimpleAction.new("report", None)
         self.about_action = Gio.SimpleAction.new("about", None)
         self.logout_action = Gio.SimpleAction.new("logout", None)
         self.quit_action = Gio.SimpleAction.new("quit", None)
 
-        self.append_item(Gio.MenuItem.new("Report an Issue", "win.report"))
+        self.append_item(Gio.MenuItem.new("Report an issue", "win.report"))
         self.append_item(Gio.MenuItem.new("About", "win.about"))
         self.append_item(Gio.MenuItem.new("Logout", "win.logout"))
         self.append_item(Gio.MenuItem.new("Quit", "win.quit"))
@@ -136,6 +141,7 @@ class Menu(Gio.Menu):
 
         if confirm_logout:
             logger.info("Yes", category="ui", subcategory="dialog", event="logout")
+            self._loading_widget.show(self.LOGOUT_LOADING_MESSAGE)
             self._request_logout()
 
     def _on_quit_clicked(self, *_):
@@ -180,11 +186,12 @@ class Menu(Gio.Menu):
                 getattr(e, 'message', repr(e)),
                 category="app", subcategory="logout", event="fail"
             )
-            self.logout_enabled = True
-            self._main_window.main_widget.notifications.show_error_dialog(
-                self.UNABLE_TO_LOGOUT_MESSAGE,
-                self.UNABLE_TO_LOGOUT_TITLE
+            self._main_window.main_widget.notifications.show_error_message(
+                self.UNABLE_TO_LOGOUT_MESSAGE
             )
+        finally:
+            self.logout_enabled = True
+            self._loading_widget.hide()
 
     def bug_report_button_click(self):
         """Clicks the bug report menu entry."""

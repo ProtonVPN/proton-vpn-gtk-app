@@ -35,7 +35,8 @@ class TestReportBugMenuEntry:
 
         menu = Menu(
             controller=Mock(),
-            main_window=Mock()
+            main_window=Mock(),
+            loading_widget=Mock()
         )
         menu.bug_report_button_click()
 
@@ -52,7 +53,8 @@ class TestAboutMenuEntry:
 
         menu = Menu(
             controller=Mock(),
-            main_window=Mock()
+            main_window=Mock(),
+            loading_widget=Mock()
         )
         menu.about_button_click()
 
@@ -74,7 +76,8 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock()
+            main_window=Mock(),
+            loading_widget=Mock()
         )
 
         menu.logout_button_click()
@@ -82,6 +85,50 @@ class TestLogoutMenuEntry:
         process_gtk_events()
 
         controller_mock.logout.assert_called_once()
+
+    def test_logout_menu_entry_display_loading_widget_when_clicked(self):
+        logout_future = Future()
+        logout_future.set_result(None)
+        loading_widget_mock = Mock()
+        controller_mock = Mock()
+        controller_mock.logout.return_value = logout_future
+        controller_mock.is_connection_active = False
+
+        menu = Menu(
+            controller=controller_mock,
+            main_window=Mock(),
+            loading_widget=loading_widget_mock
+        )
+
+        menu.logout_button_click()
+
+        loading_widget_mock.show.assert_called_once_with(menu.LOGOUT_LOADING_MESSAGE)
+
+        process_gtk_events()
+
+        loading_widget_mock.hide.assert_called_once()
+
+    def test_logout_menu_entry_hides_loading_widget_when_clicked_and_logout_fails(self):
+        controller_mock = Mock()
+        controller_mock.is_connection_active = False
+        logout_future_raises_exception = Future()
+        logout_future_raises_exception.set_exception(ProtonAPINotReachable("test"))
+        controller_mock.logout.return_value = logout_future_raises_exception
+        loading_widget_mock = Mock()
+
+        menu = Menu(
+            controller=controller_mock,
+            main_window=Mock(),
+            loading_widget=loading_widget_mock
+        )
+
+        menu.logout_button_click()
+
+        loading_widget_mock.show.assert_called_once_with(menu.LOGOUT_LOADING_MESSAGE)
+
+        process_gtk_events()
+
+        loading_widget_mock.hide.assert_called_once()
 
     def test_logout_menu_entry_is_enabled_again_after_after_it_is_clicked_and_logout_fails(self):
         controller_mock = Mock()
@@ -92,7 +139,8 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock()
+            main_window=Mock(),
+            loading_widget=Mock()
         )
 
         menu.logout_button_click()
@@ -114,16 +162,16 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=main_window_mock
+            main_window=main_window_mock,
+            loading_widget=Mock()
         )
         menu.logout_button_click()
 
         process_gtk_events()
 
         controller_mock.logout.assert_called_once()
-        main_window_mock.main_widget.notifications.show_error_dialog.assert_called_once_with(
-            menu.UNABLE_TO_LOGOUT_MESSAGE,
-            menu.UNABLE_TO_LOGOUT_TITLE
+        main_window_mock.main_widget.notifications.show_error_message.assert_called_once_with(
+            menu.UNABLE_TO_LOGOUT_MESSAGE
         )
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
@@ -143,7 +191,8 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock()
+            main_window=Mock(),
+            loading_widget=Mock()
         )
 
         menu.logout_button_click()
@@ -171,7 +220,8 @@ class TestLogoutMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=Mock()
+            main_window=Mock(),
+            loading_widget=Mock()
         )
 
         menu.logout_button_click()
@@ -192,7 +242,8 @@ class TestQuitMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=main_window_mock
+            main_window=main_window_mock,
+            loading_widget=Mock()
         )
 
         menu.quit_button_click()
@@ -215,7 +266,8 @@ class TestQuitMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=main_window_mock
+            main_window=main_window_mock,
+            loading_widget=Mock()
         )
 
         menu.quit_button_click()
@@ -235,7 +287,8 @@ class TestQuitMenuEntry:
 
         menu = Menu(
             controller=controller_mock,
-            main_window=main_window_mock
+            main_window=main_window_mock,
+            loading_widget=Mock()
         )
 
         menu.quit_button_click()

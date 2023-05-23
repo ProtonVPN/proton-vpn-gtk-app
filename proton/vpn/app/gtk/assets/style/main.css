@@ -38,3 +38,15 @@ label.success {
 #bug-report-content, #bug-report-dialog buttonbox {
  margin: 20px;   
 }
+
+#server-load.signal-danger {
+    color: @signal-danger
+}
+
+#server-load.signal-warning {
+    color: @signal-warning
+}
+
+#server-load.signal-success {
+    color: @signal-success
+}

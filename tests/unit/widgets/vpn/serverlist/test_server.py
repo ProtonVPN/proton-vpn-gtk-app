@@ -18,10 +18,13 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from unittest.mock import Mock
 import pytest
+from proton.vpn.servers.enums import ServerFeatureEnum
 
 from proton.vpn.servers.server_types import LogicalServer
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import UnderMaintenanceIcon, P2PIcon, StreamingIcon, \
+    SmartRoutingIcon, TORIcon
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerRow
 
 from tests.unit.testing_utils import process_gtk_events
@@ -35,6 +38,7 @@ def plus_logical_server():
     return LogicalServer(data={
         "Name": "IS#1",
         "Status": 1,
+        "Load": 50,
         "Servers": [
             {
                 "ID": "OYB-3pMQQA2Z2Qnp5s5nIvTV…x9DCAUM9uXfM2ZUFjzPXw==",
@@ -77,7 +81,24 @@ def test_server_row_signals_server_under_maintenance(
         server=unavailable_logical_server, user_tier=PLUS_TIER, controller=mock_controller
     )
 
-    assert server_row.under_maintenance
+    assert server_row.is_icon_displayed(UnderMaintenanceIcon)
+
+
+def test_server_row_displays_server_feature_icons(mock_controller):
+    logical_server = Mock()
+    logical_server.name = "AR#1"
+    logical_server.load = 5
+    logical_server.enabled = True
+    logical_server.features = {ServerFeatureEnum.P2P, ServerFeatureEnum.TOR, ServerFeatureEnum.STREAMING}
+    logical_server.tier = PLUS_TIER
+    logical_server.host_country = "us"
+
+    server_row = ServerRow(server=logical_server, user_tier=PLUS_TIER, controller=mock_controller)
+
+    assert server_row.is_icon_displayed(SmartRoutingIcon)
+    assert server_row.is_icon_displayed(P2PIcon)
+    assert server_row.is_icon_displayed(TORIcon)
+    assert server_row.is_icon_displayed(StreamingIcon)
 
 
 def test_connect_button_click_triggers_vpn_connection(plus_logical_server, mock_controller):

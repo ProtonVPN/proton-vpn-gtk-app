@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.0.0~a3) unstable; urgency=medium
+
+  * Add server feature icons
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Thu, 25 May 2023 11:23:28 +0200
+
 proton-vpn-gtk-app (4.0.0~a2) unstable; urgency=medium
 
   * Display loading widget during login/logout with a custom message

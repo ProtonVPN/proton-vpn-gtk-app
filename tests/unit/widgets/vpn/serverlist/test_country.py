@@ -26,9 +26,9 @@ from proton.vpn.servers import ServerList, Country
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.country import CountryRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import UnderMaintenanceIcon
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.logging import logging
-from proton.vpn.servers.enums import ServerFeatureEnum
 
 
 FREE_TIER = 0
@@ -44,6 +44,7 @@ def country_servers():
                 "ID": 1,
                 "Name": "AR#1",
                 "Status": 1,
+                "Load": 50,
                 "Servers": [{"Status": 1}],
                 "ExitCountry": COUNTRY_CODE,
                 "Tier": 1,
@@ -52,6 +53,7 @@ def country_servers():
                 "ID": 2,
                 "Name": "AR#2",
                 "Status": 1,
+                "Load": 50,
                 "Servers": [{"Status": 1}],
                 "ExitCountry": COUNTRY_CODE,
                 "Tier": 2,
@@ -159,6 +161,7 @@ def country_with_server_under_maintenance():
                 "ID": 1,
                 "Name": "AR#3",
                 "Status": 0,
+                "Load": 0,
                 "Servers": [{"Status": 0}],
                 "ExitCountry": COUNTRY_CODE,
                 "Tier": 1,
@@ -207,7 +210,7 @@ def test_initialize_currently_connected_server_when_server_is_flagged_for_mainte
     )
 
     assert not country_row.server_rows[0].is_connect_button_visible
-    assert country_row.server_rows[0].is_under_maintenance_icon_visible
+    assert country_row.server_rows[0].is_icon_displayed(UnderMaintenanceIcon)
 
 
 def test_initialize_country_row_showing_country_servers(
@@ -237,6 +240,7 @@ def free_and_plus_servers():
                 "ID": 1,
                 "Name": "JP#9",
                 "Status": 1,
+                "Load": 50,
                 "Servers": [{"Status": 1}],
                 "ExitCountry": "JP",
                 "Tier": PLUS_TIER,
@@ -246,6 +250,7 @@ def free_and_plus_servers():
                 "ID": 2,
                 "Name": "JP-FREE#10",
                 "Status": 1,
+                "Load": 50,
                 "Servers": [{"Status": 1}],
                 "ExitCountry": "JP",
                 "Tier": FREE_TIER,
@@ -283,6 +288,7 @@ def country_servers_with_secure_core():
                 "ID": 1,
                 "Name": "AR#1",
                 "Status": 1,
+                "Load": 50,
                 "Servers": [{"Status": 1}],
                 "ExitCountry": COUNTRY_CODE,
                 "Features": 8,
@@ -292,6 +298,7 @@ def country_servers_with_secure_core():
                 "ID": 2,
                 "Name": "AR#2",
                 "Status": 1,
+                "Load": 50,
                 "Servers": [{"Status": 1}],
                 "ExitCountry": COUNTRY_CODE,
                 "Features": 1,

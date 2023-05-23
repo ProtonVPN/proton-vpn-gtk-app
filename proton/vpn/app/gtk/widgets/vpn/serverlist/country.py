@@ -22,15 +22,18 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import annotations
 
-from typing import List, Tuple
-from gi.repository import GObject
+from typing import List, Tuple, Set
+from gi.repository import Atk, GObject
+
+from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn.app.gtk.utils.search import normalize
-from proton.vpn.app.gtk.widgets.vpn.serverlist.under_maintenance import UnderMaintenance
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers import Country
 from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
+    SmartRoutingIcon, P2PIcon, TORIcon, UnderMaintenanceIcon
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerRow
 from proton.vpn.servers.server_types import LogicalServer
 from proton.vpn.servers.enums import ServerFeatureEnum
@@ -40,36 +43,41 @@ logger = logging.getLogger(__name__)
 
 class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Header with the country name shown at the beginning of each CountryRow."""
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             country: Country,
+            under_maintenance: bool,
             upgrade_required: bool,
+            server_features: Set[ServerFeatureEnum],
+            smart_routing: bool,
+            connection_state: ConnectionStateEnum,
             controller: Controller,
             show_country_servers: bool = False
     ):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self._country = country
-        self.upgrade_required = upgrade_required
-        self.under_maintenance = all(not server.enabled for server in country.servers)
+        self._under_maintenance = under_maintenance
+        self._upgrade_required = upgrade_required
+        self._server_features = server_features
         self._controller = controller
 
+        self._country_name_label = None
         self._connect_button = None
 
         self._collapsed_img = Gtk.Image.new_from_icon_name("pan-down-symbolic", Gtk.IconSize.BUTTON)
         self._expanded_img = Gtk.Image.new_from_icon_name("pan-up-symbolic", Gtk.IconSize.BUTTON)
 
-        self._connection_state = None
-
-        self._build_ui()
+        self._build_ui(connection_state, smart_routing)
 
         # The following setters needs to be called after the UI has been built
         # as they need to modify some UI widgets.
         self.show_country_servers = show_country_servers
-        self.connection_state = ConnectionStateEnum.DISCONNECTED
+        self._connection_state = connection_state
 
-    def _build_ui(self):
-        country_name_label = Gtk.Label(label=self.country_name)
-        self.pack_start(country_name_label, expand=False, fill=False, padding=0)
+    def _build_ui(self, connected: bool, smart_routing: bool):
+        self._country_name_label = Gtk.Label(label=self.country_name)
+        self.pack_start(self._country_name_label, expand=False, fill=False, padding=0)
         self.set_spacing(10)
 
         self._toggle_button = Gtk.Button()
@@ -77,24 +85,72 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._toggle_button.connect("clicked", self._on_toggle_button_clicked)
         self.pack_end(self._toggle_button, expand=False, fill=False, padding=0)
 
-        if self.under_maintenance:
-            under_maintenance_icon = UnderMaintenance(self.country_name)
+        if self._under_maintenance:
+            under_maintenance_icon = UnderMaintenanceIcon(self.country_name)
             self.pack_end(under_maintenance_icon, expand=False, fill=False, padding=0)
-            country_name_label.set_property("sensitive", False)
+            self._country_name_label.set_property("sensitive", False)
             return
 
-        if self.upgrade_required:
-            upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
-            upgrade_button.set_tooltip_text(
-                f"Upgrade to connect to {self.country_name}"
-            )
-            upgrade_button.set_uri("https://account.protonvpn.com/")
-            self.pack_end(upgrade_button, expand=False, fill=False, padding=0)
+        if self._upgrade_required:
+            button = self._build_upgrade_required_link_button()
+            self.pack_end(button, expand=False, fill=False, padding=0)
         else:
-            self._connect_button = Gtk.Button()
-            self._connect_button.connect("clicked", self._on_connect_button_clicked)
-            self._connect_button.get_style_context().add_class("secondary")
+            button = self._build_connect_button()
+            self._connect_button = button
             self.pack_end(self._connect_button, expand=False, fill=False, padding=0)
+
+        button_relationships = [(self._country_name_label, Atk.RelationType.LABELLED_BY)]
+
+        country_row_icons = []
+        if smart_routing:
+            country_row_icons.append(SmartRoutingIcon())
+
+        server_feature_icons = self._build_server_feature_icons()
+        country_row_icons.extend(server_feature_icons)
+        for icon in country_row_icons:
+            button_relationships.append((icon, Atk.RelationType.DESCRIBED_BY))
+            self.pack_end(icon, expand=False, fill=False, padding=0)
+
+        accessibility.add_widget_relationships(button, button_relationships)
+
+        if connected:
+            self.connection_state = ConnectionStateEnum.CONNECTED
+        else:
+            self.connection_state = ConnectionStateEnum.DISCONNECTED
+
+    @property
+    def under_maintenance(self) -> bool:
+        """Indicates whether all the servers for this country are under maintenance or not."""
+        return self._under_maintenance
+
+    @property
+    def upgrade_required(self):
+        """Indicates whether the user needs to upgrade to have access to this country or not."""
+        return self._upgrade_required
+
+    def _build_upgrade_required_link_button(self) -> Gtk.LinkButton:
+        upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
+        upgrade_button.set_uri("https://account.protonvpn.com/")
+        return upgrade_button
+
+    def _build_connect_button(self) -> Gtk.Button:
+        connect_button = Gtk.Button()
+        connect_button.connect("clicked", self._on_connect_button_clicked)
+        connect_button.get_style_context().add_class("secondary")
+        return connect_button
+
+    def _build_server_feature_icons(self) -> List[Gtk.Image]:
+        server_feature_icons = []
+        if ServerFeatureEnum.P2P in self._server_features:
+            server_feature_icons.append(P2PIcon())
+        if ServerFeatureEnum.TOR in self._server_features:
+            server_feature_icons.append(TORIcon())
+        return server_feature_icons
+
+    @property
+    def server_features(self) -> Set[ServerFeatureEnum]:
+        """Returns the set of features supported by the servers in this country."""
+        return self._server_features
 
     @GObject.Signal(name="toggle-country-servers")
     def toggle_country_servers(self):
@@ -161,25 +217,16 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     def _on_connection_state_disconnected(self):
         """Flags this server as "not connected"."""
         self._connect_button.set_sensitive(True)
-        self._connect_button.set_tooltip_text(
-            f"Connect to {self.country_name}"
-        )
         self._connect_button.set_label("Connect")
 
     def _on_connection_state_connecting(self):
         """Flags this server as "connecting"."""
         self._connect_button.set_label("Connecting...")
-        self._connect_button.set_tooltip_text(
-            f"Connecting to {self.country_name}..."
-        )
         self._connect_button.set_sensitive(False)
 
     def _on_connection_state_connected(self):
         """Flags this server as "connected"."""
         self._connect_button.set_sensitive(False)
-        self._connect_button.set_tooltip_text(
-            f"Connected to {self.country_name}"
-        )
         self._connect_button.set_label("Connected")
 
     def _on_connection_state_disconnecting(self):
@@ -200,7 +247,7 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._connect_button.clicked()
 
 
-class CountryRow(Gtk.Box):
+class CountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Row containing all servers from a country."""
 
     # pylint: disable=too-many-arguments
@@ -217,23 +264,15 @@ class CountryRow(Gtk.Box):
         self._indexed_server_rows = {}
 
         free_servers, plus_servers = self._group_servers_by_tier(country.servers)
-        self._is_free_country = len(free_servers) > 0
         is_free_user = user_tier == 0
-        self._upgrade_required = (is_free_user and not country.is_free)
 
-        self._country_header = CountryHeader(
-            country=country,
-            upgrade_required=self.upgrade_required,
-            controller=controller,
-            show_country_servers=show_country_servers
-        )
-        self.pack_start(self._country_header, expand=False, fill=False, padding=5)
-        self._country_header.connect(
-            "toggle-country-servers", self._on_toggle_country_servers
-        )
+        # Properties initialized after building all server rows.
+        self._is_free_country = None
+        self._upgrade_required = None
+        self._country_features = set()
+        self._under_maintenance = None
 
         self._server_rows_revealer = Gtk.Revealer()
-        self.pack_start(self._server_rows_revealer, expand=False, fill=False, padding=5)
         server_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._server_rows_revealer.add(server_rows_container)
 
@@ -245,6 +284,12 @@ class CountryRow(Gtk.Box):
             ordered_servers.extend(plus_servers)
             ordered_servers.extend(free_servers)
 
+        # The country is set under maintenance until the opposite is proven.
+        self._under_maintenance = True
+        # The country connection state is set as disconnected until the opposite is proven.
+        country_connection_state = ConnectionStateEnum.DISCONNECTED
+        # Smart routing is assumed to be used until the opposite is proven.
+        smart_routing_country = True
         for server in ordered_servers:
             # 15/03-2023
             # Servers with Secure-Core are currently being filtered out
@@ -252,6 +297,15 @@ class CountryRow(Gtk.Box):
             # for TLS authentication.
             if ServerFeatureEnum.SECURE_CORE in server.features:
                 continue
+
+            self._country_features.update(server.features)
+            self._is_free_country = self._is_free_country or server.tier == 0
+            # The country is under maintenance if (1) that was the case up until now and
+            # (2) the current server is also under maintenance (i.e. is not enabled).
+            self._under_maintenance = (self._under_maintenance and not server.enabled)
+            # A country is flagged as a "Smart rouging" location if *all* servers are
+            # actually physically located in a neighbouring country.
+            smart_routing_country = smart_routing_country and server.host_country is not None
 
             server_row = ServerRow(
                 server=server,
@@ -267,8 +321,27 @@ class CountryRow(Gtk.Box):
 
             # If we are currently connected to a server then set its row state to "connected".
             if connected_server_id == server.id:
-                self._country_header.connection_state = ConnectionStateEnum.CONNECTED
-                server_row.connection_state = ConnectionStateEnum.CONNECTED
+                country_connection_state = server_row.connection_state = \
+                    ConnectionStateEnum.CONNECTED
+
+        self._upgrade_required = is_free_user and not self._is_free_country
+
+        self._country_header = CountryHeader(
+            country=country,
+            under_maintenance=self._under_maintenance,
+            upgrade_required=self._upgrade_required,
+            server_features=self._country_features,
+            smart_routing=smart_routing_country,
+            connection_state=country_connection_state,
+            controller=controller,
+            show_country_servers=show_country_servers
+        )
+        self._country_header.connect(
+            "toggle-country-servers", self._on_toggle_country_servers
+        )
+
+        self.pack_start(self._country_header, expand=False, fill=False, padding=5)
+        self.pack_start(self._server_rows_revealer, expand=False, fill=False, padding=5)
 
         if show_country_servers:
             self._server_rows_revealer.set_reveal_child(True)

@@ -19,18 +19,41 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from gi.repository import Pango
+from typing import List
 
+from gi.repository import Pango, Atk
+from proton.vpn.servers.enums import ServerFeatureEnum
+
+from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.servers.server_types import LogicalServer
-from proton.vpn.app.gtk.widgets.vpn.serverlist.under_maintenance import UnderMaintenance
+from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
+    UnderMaintenanceIcon, SmartRoutingIcon, StreamingIcon, \
+    P2PIcon, TORIcon
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
 
 from proton.vpn.app.gtk.controller import Controller
 
 logger = logging.getLogger(__name__)
+
+
+class ServerLoad(Gtk.Label):
+    """Displays the current CPU load of a server."""
+    def __init__(self, load: int):
+        super().__init__(label=f"{load}%")
+        self.set_name("server-load")
+        help_text = f"Server load is at {load}%"
+        self.set_tooltip_text(help_text)
+        self.get_accessible().set_name(help_text)
+        style_context = self.get_style_context()
+        if load > 90:
+            style_context.add_class("signal-danger")
+        elif load > 75:
+            style_context.add_class("signal-warning")
+        else:
+            style_context.add_class("signal-success")
 
 
 class ServerRow(Gtk.Box):
@@ -41,7 +64,7 @@ class ServerRow(Gtk.Box):
         self._user_tier = user_tier
         self._controller = controller
         self._connection_state: ConnectionStateEnum = None
-        self._under_maintenance_icon = None
+        self._icons_displayed = []
         self._connect_button = None
 
         self._build_row()
@@ -80,32 +103,64 @@ class ServerRow(Gtk.Box):
             expand=False, fill=False, padding=10
         )
 
-        load_label = Gtk.Label(label=f"{self._server.load}%")
-        self.pack_start(
-            load_label,
-            expand=False, fill=False, padding=10
-        )
         if self.under_maintenance:
-            self._under_maintenance_icon = UnderMaintenance(self._server.name)
+            under_maintenance_icon = UnderMaintenanceIcon(self._server.name)
             self.pack_end(
-                self._under_maintenance_icon,
+                under_maintenance_icon,
                 expand=False, fill=False, padding=10
             )
+            self._icons_displayed.append(under_maintenance_icon)
             self._server_label.set_property("sensitive", False)
-            load_label.set_property("sensitive", False)
             return
 
         if self.upgrade_required:
-            upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
-            upgrade_button.set_tooltip_text(f"Upgrade to connect to {self.server_label}")
-            upgrade_button.set_uri("https://account.protonvpn.com/")
-            self.pack_end(upgrade_button, expand=False, fill=False, padding=10)
+            button = self._build_upgrade_link_button()
+            self.pack_end(button, expand=False, fill=False, padding=10)
         else:
-            self._connect_button = Gtk.Button(label="Connect")
-            self._connect_button.set_tooltip_text(f"Connect to {self.server_label}")
-            self._connect_button.connect("clicked", self._on_connect_button_clicked)
-            self._connect_button.get_style_context().add_class("secondary")
+            self._connect_button = self._build_connect_button()
+            button = self._connect_button
             self.pack_end(self._connect_button, expand=False, fill=False, padding=10)
+
+        button_relationships = [(self._server_label, Atk.RelationType.LABELLED_BY)]
+
+        server_load = ServerLoad(self._server.load)
+        button_relationships.append((server_load, Atk.RelationType.DESCRIBED_BY))
+        self.pack_end(server_load, expand=False, fill=False, padding=10)
+
+        server_row_icons = []
+        smart_routing = self._server.host_country is not None
+        if smart_routing:
+            server_row_icons.append(SmartRoutingIcon())
+
+        server_feature_icons = self._build_server_feature_icons()
+        server_row_icons.extend(server_feature_icons)
+        for icon in server_row_icons:
+            button_relationships.append((icon, Atk.RelationType.DESCRIBED_BY))
+            self.pack_end(icon, expand=False, fill=False, padding=0)
+            self._icons_displayed.append(icon)
+
+        accessibility.add_widget_relationships(button, button_relationships)
+
+    def _build_connect_button(self):
+        connect_button = Gtk.Button(label="Connect")
+        connect_button.connect("clicked", self._on_connect_button_clicked)
+        connect_button.get_style_context().add_class("secondary")
+        return connect_button
+
+    def _build_upgrade_link_button(self):
+        upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
+        upgrade_button.set_uri("https://account.protonvpn.com/")
+        return upgrade_button
+
+    def _build_server_feature_icons(self) -> List[Gtk.Image]:
+        server_feature_icons = []
+        if self._server.tier > 0:
+            server_feature_icons.append(StreamingIcon())
+        if ServerFeatureEnum.P2P in self._server.features:
+            server_feature_icons.append(P2PIcon())
+        if ServerFeatureEnum.TOR in self._server.features:
+            server_feature_icons.append(TORIcon())
+        return server_feature_icons
 
     def _on_connection_state_disconnected(self):
         """Flags this server as "not connected"."""
@@ -182,8 +237,11 @@ class ServerRow(Gtk.Box):
         This method was made available for tests."""
         return bool(self._connect_button)
 
-    @property
-    def is_under_maintenance_icon_visible(self) -> bool:
-        """Returns if the under maintenance icon is visible.
-        This method was made available for tests."""
-        return bool(self._under_maintenance_icon)
+    def is_icon_displayed(self, icon_class):
+        """Returns True if an instance of the specified icon class is displayed
+        or False otherwise."""
+        filtered_icons = [
+            icon for icon in self._icons_displayed
+            if isinstance(icon, icon_class)
+        ]
+        return bool(filtered_icons)

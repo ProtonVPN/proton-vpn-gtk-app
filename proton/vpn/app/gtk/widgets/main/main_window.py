@@ -19,10 +19,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from pathlib import Path
 
-from gi.repository import Gdk, Gtk, GdkPixbuf
+from gi.repository import Gdk, Gtk
 
-from proton.vpn.app.gtk.assets.icons import ICONS_PATH
+from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar.headerbar import HeaderBar
@@ -102,10 +103,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.add_accel_group(self._accelerators_group)
 
         self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_icon(GdkPixbuf.Pixbuf.new_from_file_at_size(
-            filename=str(ICONS_PATH / "proton-vpn-sign.svg"),
-            width=128, height=128
-        ))
+        self.set_icon(
+            icons.get(Path("proton-vpn-sign.svg"), width=128, height=128)
+        )
 
         # The window should be able to be resized on the vertical axis but not
         # on the horizontal axis.

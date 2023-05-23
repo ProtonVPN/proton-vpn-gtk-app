@@ -21,13 +21,14 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from concurrent.futures import Future
+from pathlib import Path
 
-from gi.repository import GdkPixbuf, GLib, GObject
+from gi.repository import GLib, GObject
 
 from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.assets import ASSETS_PATH
+from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
@@ -223,18 +224,18 @@ class PasswordEntry(Gtk.Entry):
         self.set_input_purpose(Gtk.InputPurpose.PASSWORD)
         self.set_visibility(False)
         # Load icon to hide the password.
-        eye_dirpath = ASSETS_PATH / "icons" / "eye"
-        hide_fp = str(eye_dirpath / "hide.svg")
-        self._hide_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=hide_fp,
+        eye_dirpath = Path("eye")
+        hide_fp = eye_dirpath / "hide.svg"
+        self._hide_pixbuff = icons.get(
+            hide_fp,
             width=18,
             height=18,
             preserve_aspect_ratio=True
         )
         # Load icon to show the password.
-        show_fp = str(eye_dirpath / "show.svg")
-        self._show_pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=show_fp,
+        show_fp = eye_dirpath / "show.svg"
+        self._show_pixbuff = icons.get(
+            show_fp,
             width=18,
             height=18,
             preserve_aspect_ratio=True

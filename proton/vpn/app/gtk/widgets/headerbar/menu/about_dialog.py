@@ -19,10 +19,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from gi.repository import GdkPixbuf
+from pathlib import Path
+
 from proton.vpn.app.gtk import Gtk
 
-from proton.vpn.app.gtk.assets.icons import ICONS_PATH
+from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk import __version__
 
 
@@ -50,7 +51,4 @@ class AboutDialog(Gtk.AboutDialog):
         self._set_icon()
 
     def _set_icon(self):
-        self.set_logo(GdkPixbuf.Pixbuf.new_from_file_at_size(
-            filename=str(ICONS_PATH / "proton-vpn-sign.svg"),
-            width=80, height=80
-        ))
+        self.set_logo(icons.get(Path("proton-vpn-sign.svg"), width=80, height=80))

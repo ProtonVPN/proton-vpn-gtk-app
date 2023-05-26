@@ -147,13 +147,13 @@ def test_unload_resets_widget_state():
     3. disables the reconnector and
     4. disables the VPN data refresher
     """
-    mock_controller = Mock()
-    mock_controller.is_connection_active = True
+    controller_mock = Mock()
+    controller_mock.is_connection_active = True
 
-    vpn_widget = VPNWidget(controller=mock_controller, main_window=Mock())
+    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
     vpn_widget.unload()
 
-    mock_controller.disconnect.assert_called_once()  # (1)
-    mock_controller.unregister_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (2)
-    mock_controller.reconnector.disable.assert_called_once()  # (3)
-    mock_controller.vpn_data_refresher.disable.assert_called_once()  # (4)
+    controller_mock.disconnect.assert_called_once()  # (1)
+    controller_mock.unregister_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (2)
+    controller_mock.reconnector.disable.assert_called_once()  # (3)
+    controller_mock.vpn_data_refresher.disable.assert_called_once()  # (4)

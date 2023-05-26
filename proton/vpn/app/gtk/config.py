@@ -20,13 +20,15 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
+from typing import Optional
 from dataclasses import dataclass, asdict
 import os
 
 from proton.utils.environment import VPNExecutionEnvironment
 
 DEFAULT_APP_CONFIG = {
-    "tray_pinned_servers": []
+    "tray_pinned_servers": [],
+    "connect_at_app_startup": None
 }
 
 APP_CONFIG = os.path.join(
@@ -40,12 +42,14 @@ class AppConfig:
     """Contains configurations that are app specific.
     """
     tray_pinned_servers: list
+    connect_at_app_startup: Optional[str]
 
     @staticmethod
     def from_dict(data: dict) -> AppConfig:
         """Creates and returns `AppConfig` from the provided dict."""
         return AppConfig(
-            tray_pinned_servers=data.get("tray_pinned_servers", [])
+            tray_pinned_servers=data.get("tray_pinned_servers", []),
+            connect_at_app_startup=data.get("connect_at_app_startup")
         )
 
     def to_dict(self) -> dict:
@@ -56,5 +60,6 @@ class AppConfig:
     def default() -> AppConfig:
         """Creates and returns `AppConfig` from default app configurations."""
         return AppConfig(
-            tray_pinned_servers=DEFAULT_APP_CONFIG["tray_pinned_servers"]
+            tray_pinned_servers=DEFAULT_APP_CONFIG["tray_pinned_servers"],
+            connect_at_app_startup=DEFAULT_APP_CONFIG["connect_at_app_startup"]
         )

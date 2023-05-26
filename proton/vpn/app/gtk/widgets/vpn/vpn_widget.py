@@ -22,6 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
+import time
 
 from gi.repository import GObject, GLib
 
@@ -58,6 +59,7 @@ class VPNWidgetState:
     is_widget_ready: bool = False
     user_tier: int = None
     vpn_data_ready_handler_id: int = None
+    load_start_time: int = None
 
 
 # pylint: disable=too-many-instance-attributes
@@ -69,6 +71,7 @@ class VPNWidget(Gtk.Box):
 
         self.set_name("vpn-widget")
         self._state = VPNWidgetState()
+        self._state.load_start_time = time.time()
         self._controller = controller
 
         self.connection_status_widget = VPNConnectionStatusWidget()
@@ -79,6 +82,7 @@ class VPNWidget(Gtk.Box):
 
         self.server_list_widget = ServerListWidget(self._controller)
         self.pack_end(self.server_list_widget, expand=True, fill=True, padding=0)
+        self.server_list_widget.connect("ui-updated", self._on_server_list_updated)
 
         self.search_widget = SearchEntry(self.server_list_widget)
         main_window.add_keyboard_shortcut(
@@ -142,40 +146,43 @@ class VPNWidget(Gtk.Box):
         to download the required data to display the widget. Once the required
         data has been downloaded, the widget will be automatically displayed.
         """
+        self._state.load_start_time = time.time()
         self._state.user_tier = user_tier
-        self._controller.vpn_data_refresher.connect(
+        self._state.vpn_data_ready_handler_id = self._controller.vpn_data_refresher.connect(
             "vpn-data-ready", self._on_vpn_data_ready
         )
-
         self._controller.vpn_data_refresher.enable()
 
     def display(self, user_tier: int, server_list: ServerList):
         """Displays the widget once all necessary data from API has been acquired."""
         self.server_list_widget.display(user_tier=user_tier, server_list=server_list)
 
-        # Initialize connection status subscribers with current connection status.
-        self.status_update(self._controller.current_connection_status)
-
         # The VPN widget subscribes to connection status updates, and then
         # passes on these connection status updates to child widgets
         self._controller.register_connection_status_subscriber(self)
 
-        self._controller.reconnector.enable()
-
-        self.show_all()
-        self.emit("vpn-widget-ready")
-        self._state.is_widget_ready = True
-        logger.info(
-            "VPN widget is ready",
-            category="app", subcategory="vpn", event="widget_ready"
-        )
+    def _on_server_list_updated(self, *_):
+        if not self._state.is_widget_ready:
+            self.show_all()
+            # Only update the status at this point as widgets are already generated
+            self.status_update(self._controller.current_connection_status)
+            self._controller.reconnector.enable()
+            self.emit("vpn-widget-ready")
+            self._state.is_widget_ready = True
+            logger.info(
+                f"VPN widget is ready "
+                f"(load time: {time.time()-self._state.load_start_time:.2f} seconds)",
+                category="app", subcategory="vpn", event="widget_ready"
+            )
 
     def unload(self):
         """Unloads the widget and resets its state."""
         self._controller.disconnect()
+        self._controller.vpn_data_refresher.disconnect(
+            self._state.vpn_data_ready_handler_id
+        )
 
         self._controller.unregister_connection_status_subscriber(self)
-
         self._controller.reconnector.disable()
         self._controller.vpn_data_refresher.disable()
 

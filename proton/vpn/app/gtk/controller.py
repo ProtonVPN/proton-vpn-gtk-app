@@ -39,7 +39,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugRepor
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
 
 
-class Controller:
+class Controller:  # pylint: disable=too-many-public-methods
     """The C in the MVC pattern."""
     connection_protocol = "openvpn-udp"
 
@@ -109,6 +109,28 @@ class Controller:
     def user_tier(self):
         """Returns user tier."""
         return self._api.get_user_tier()
+
+    def run_startup_actions(self, _):
+        """Runs any startup actions that are necessary once the app has loaded."""
+        if (
+            self.user_logged_in
+            and self.app_configuration.connect_at_app_startup
+        ):
+            self.autoconnect()
+
+    def autoconnect(self):
+        """Connects to a server from app configuration.
+            This method is intended to be called at app startup.
+        """
+        connect_at_app_startup = self.app_configuration.connect_at_app_startup
+
+        # Temporary hack for parsing. Should be improved
+        if connect_at_app_startup == "fastest":
+            self.connect_to_fastest_server()
+        elif "#" in connect_at_app_startup:
+            self.connect_to_server(connect_at_app_startup)
+        else:
+            self.connect_to_country(connect_at_app_startup)
 
     def connect_to_country(self, country_code: str):
         """

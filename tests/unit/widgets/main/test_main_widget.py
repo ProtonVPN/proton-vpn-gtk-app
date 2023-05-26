@@ -17,12 +17,14 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from unittest.mock import Mock
+import pytest
 
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from tests.unit.testing_utils import process_gtk_events
 
 
 def test_main_widget_initially_shows_login_widget_if_the_user_did_not_log_in_yet():
@@ -109,6 +111,43 @@ def test_main_widget_switches_to_login_widget_when_session_expired():
     assert main_window_mock.header_bar.menu.logout_enabled is False
 
 
-def test_hide_loading_widget_after_vpn_widget_is_ready():
-    """The main widget should hide the loading widget whenever the vpn
-    widget is ready."""
+def test_run_start_actions_when_user_is_not_logged_in_and_start_the_app_with_login_widget():
+    """This tests mainly the scenario where the user logs in for the first time
+    and we ensure that after a successfull login, auto-connect is not triggered."""
+    controller_mock = Mock()
+    controller_mock.user_logged_in = False
+
+    notifications_mock = Mock()
+    notifications_mock.notification_bar = NotificationBar()
+
+    main_widget = MainWidget(
+        controller=controller_mock,
+        main_window=Mock(),
+        loading_widget=LoadingWidget(),
+        notifications=notifications_mock
+    )
+    main_widget.initialize_visible_widget()
+
+    main_widget.login_widget.emit("user-logged-in")
+
+    main_widget.vpn_widget.emit("vpn-widget-ready")
+    assert not controller_mock.run_startup_actions.called
+
+
+def test_run_start_actions_when_user_is_logged_in_and_start_the_app_with_vpn_widget():
+    controller_mock = Mock()
+    controller_mock.user_logged_in = True
+
+    notifications_mock = Mock()
+    notifications_mock.notification_bar = NotificationBar()
+
+    main_widget = MainWidget(
+        controller=controller_mock,
+        main_window=Mock(),
+        loading_widget=LoadingWidget(),
+        notifications=notifications_mock
+    )
+    main_widget.initialize_visible_widget()
+    main_widget.vpn_widget.emit("vpn-widget-ready")
+
+    controller_mock.run_startup_actions.assert_called_once()

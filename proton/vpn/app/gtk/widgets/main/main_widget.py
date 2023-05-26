@@ -30,6 +30,7 @@ from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
+from proton.vpn.app.gtk.util import connect_once
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.app import MainWindow
@@ -100,6 +101,11 @@ class MainWidget(Gtk.Overlay):
         login widget depending on whether the user is authenticated or not.
         """
         if self._controller.user_logged_in:
+            connect_once(
+                self.vpn_widget,
+                "vpn-widget-ready",
+                self._controller.run_startup_actions
+            )
             self._display_vpn_widget()
         else:
             self._display_login_widget()
@@ -153,6 +159,7 @@ class MainWidget(Gtk.Overlay):
         vpn_widget.connect(
             "vpn-widget-ready", self._hide_loading_widget
         )
+
         return vpn_widget
 
     def _display_vpn_widget(self):

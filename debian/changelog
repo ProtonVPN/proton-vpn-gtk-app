@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.0.0~a4) unstable; urgency=medium
+
+  * Add auto-connect on app startup feature
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 26 May 2023 17:00:00 +0200
+
 proton-vpn-gtk-app (4.0.0~a3) unstable; urgency=medium
 
   * Add server feature icons

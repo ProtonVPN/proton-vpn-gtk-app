@@ -47,9 +47,15 @@ class AppConfig:
     @staticmethod
     def from_dict(data: dict) -> AppConfig:
         """Creates and returns `AppConfig` from the provided dict."""
+        connect_at_app_startup = data.get("connect_at_app_startup")
+
         return AppConfig(
             tray_pinned_servers=data.get("tray_pinned_servers", []),
-            connect_at_app_startup=data.get("connect_at_app_startup")
+            connect_at_app_startup=(
+                connect_at_app_startup.upper()
+                if connect_at_app_startup
+                else None
+            )
         )
 
     def to_dict(self) -> dict:

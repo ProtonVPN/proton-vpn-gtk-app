@@ -155,20 +155,21 @@ class VPNWidget(Gtk.Box):
 
     def display(self, user_tier: int, server_list: ServerList):
         """Displays the widget once all necessary data from API has been acquired."""
-        self.server_list_widget.display(user_tier=user_tier, server_list=server_list)
+        self.show_all()
 
         # The VPN widget subscribes to connection status updates, and then
         # passes on these connection status updates to child widgets
         self._controller.register_connection_status_subscriber(self)
+        self._controller.reconnector.enable()
+
+        self.server_list_widget.display(user_tier=user_tier, server_list=server_list)
 
     def _on_server_list_updated(self, *_):
         if not self._state.is_widget_ready:
-            self.show_all()
             # Only update the status at this point as widgets are already generated
             self.status_update(self._controller.current_connection_status)
-            self._controller.reconnector.enable()
-            self.emit("vpn-widget-ready")
             self._state.is_widget_ready = True
+            self.emit("vpn-widget-ready")
             logger.info(
                 f"VPN widget is ready "
                 f"(load time: {time.time()-self._state.load_start_time:.2f} seconds)",

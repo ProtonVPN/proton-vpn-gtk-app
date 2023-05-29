@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
 %define version 4.0.0
-%define upstream_version 4.0.0a4
+%define upstream_version 4.0.0a5
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.4.a4
+%define release 0.5.a5
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -69,6 +69,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri May 29 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.5.a5
+- Ensure UI updates smoothly after starting with auto-connect
+
 * Fri May 26 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.4.a4
 - Add auto-connect on app startup feature
 

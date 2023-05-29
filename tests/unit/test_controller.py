@@ -7,7 +7,7 @@ from proton.vpn.app.gtk.controller import Controller
 @pytest.mark.parametrize(
     "connect_at_app_startup_value, app_start_on_login_widget, method_name, call_arg",
     [
-        ("fastest", True, "connect_to_fastest_server", None),
+        ("FASTEST", True, "connect_to_fastest_server", None),
         ("PT", False,  "connect_to_country", None),
         ("PT#1", True,  "connect_to_server", "PT#1"),
         ("PT", True,  "connect_to_country", "PT"),

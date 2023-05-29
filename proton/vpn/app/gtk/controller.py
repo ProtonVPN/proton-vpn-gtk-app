@@ -23,6 +23,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from concurrent.futures import ThreadPoolExecutor, Future
 from importlib import metadata
 
+from proton.vpn import logging
+
 from proton.vpn.connection import VPNConnection, states
 from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.session import ClientTypeMetadata
@@ -37,6 +39,8 @@ from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 from proton.vpn.app.gtk.utils import semver
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
+
+logger = logging.getLogger(__name__)
 
 
 class Controller:  # pylint: disable=too-many-public-methods
@@ -112,6 +116,10 @@ class Controller:  # pylint: disable=too-many-public-methods
 
     def run_startup_actions(self, _):
         """Runs any startup actions that are necessary once the app has loaded."""
+        logger.info(
+            "Running startup actions",
+            category="app", subcategory="startup", event="startup_actions"
+        )
         if (
             self.user_logged_in
             and self.app_configuration.connect_at_app_startup
@@ -125,7 +133,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         connect_at_app_startup = self.app_configuration.connect_at_app_startup
 
         # Temporary hack for parsing. Should be improved
-        if connect_at_app_startup == "fastest":
+        if connect_at_app_startup == "FASTEST":
             self.connect_to_fastest_server()
         elif "#" in connect_at_app_startup:
             self.connect_to_server(connect_at_app_startup)

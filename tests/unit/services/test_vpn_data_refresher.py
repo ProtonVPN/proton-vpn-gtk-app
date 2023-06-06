@@ -16,17 +16,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from concurrent.futures import Future
 from threading import Event
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, call
 import time
 
 import pytest
 from proton.session.exceptions import (
-    ProtonError, ProtonAPINotAvailable, ProtonAPIError,
-    ProtonAPINotReachable, ProtonAPIUnexpectedError
+    ProtonError, ProtonAPINotAvailable,
+    ProtonAPINotReachable,
 )
-from proton.vpn.core_api.client_config import ClientConfig, DEFAULT_CLIENT_CONFIG
+from proton.vpn.core_api.client_config import ClientConfig
 from proton.vpn.servers.list import ServerList
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
@@ -42,7 +41,7 @@ def thread_pool_executor():
 
 @pytest.fixture
 def expected_client_config():
-    return ClientConfig.from_dict(DEFAULT_CLIENT_CONFIG)
+    return ClientConfig.default()
 
 
 @pytest.fixture
@@ -127,6 +126,7 @@ def test_enable_notifies_subscribers_when_vpn_data_is_ready(
         thread_pool_executor, expected_client_config, expected_server_list
 ):
     mock_api = Mock()
+    mock_api.vpn_account = Mock()
     mock_api.get_cached_client_config.return_value = None
     mock_api.get_fresh_client_config.return_value = expected_client_config
     mock_api.servers.get_cached_server_list.return_value = None
@@ -152,6 +152,41 @@ def test_enable_notifies_subscribers_when_vpn_data_is_ready(
     assert vpn_data_ready_event.wait(timeout=0)
     assert received_server_list is expected_server_list
     assert received_client_config is expected_client_config
+
+
+def test_enable_refreshes_vpn_account_if_it_was_not_loaded_yet(
+    thread_pool_executor, expected_client_config, expected_server_list
+):
+    """
+    The VPN account is normally retrieved from our REST APIs after login.
+    However, if the retrieval failed or the persisted VPN account is invalid
+    then the VPN data refresher should retrieve the VPN account before doing
+    anything else.
+    """
+    mock_api = Mock()
+    mock_api.vpn_account = None
+    mock_api.get_cached_client_config.return_value = expected_client_config
+    mock_api.get_fresh_client_config.return_value = expected_client_config
+    mock_api.servers.get_cached_server_list.return_value = expected_server_list
+    mock_api.servers.get_fresh_server_list.return_value = expected_server_list
+
+    vpn_data_refresher = VPNDataRefresher(thread_pool_executor, mock_api)
+    vpn_data_ready_event = Event()
+    vpn_data_refresher.connect("vpn-data-ready", lambda *_: vpn_data_ready_event.set())
+
+    vpn_data_refresher.enable()
+
+    process_gtk_events()
+
+    assert vpn_data_ready_event.wait(timeout=0)
+    # Assert that refresh_vpn_account was called before refreshing other data.
+    assert mock_api.mock_calls == [
+        call.refresh_vpn_account(),  # <==
+        call.get_cached_client_config(),
+        call.servers.get_cached_server_list(),
+        call.get_fresh_client_config(force_refresh=False),
+        call.servers.get_fresh_server_list(force_refresh=False)
+    ]
 
 
 @patch("proton.vpn.app.gtk.services.vpn_data_refresher.GLib.timeout_add")

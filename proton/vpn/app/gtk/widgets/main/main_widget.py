@@ -166,7 +166,7 @@ class MainWidget(Gtk.Overlay):
         self._main_window.header_bar.menu.logout_enabled = True
         self._loading_widget.show("Loading app...")
         self.active_widget = self.vpn_widget
-        self.vpn_widget.load(self._controller.user_tier)
+        self.vpn_widget.load()
 
     def _display_login_widget(self):
         self._main_window.header_bar.menu.logout_enabled = False

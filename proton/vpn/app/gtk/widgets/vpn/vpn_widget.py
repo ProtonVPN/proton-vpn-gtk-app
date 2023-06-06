@@ -136,9 +136,9 @@ class VPNWidget(Gtk.Box):
             _client_config: ClientConfig
     ):
         if not self._state.is_widget_ready:
-            self.display(self._state.user_tier, server_list)
+            self.display(self._controller.user_tier, server_list)
 
-    def load(self, user_tier: int):
+    def load(self):
         """
         Starts loading the widget.
 
@@ -147,7 +147,6 @@ class VPNWidget(Gtk.Box):
         data has been downloaded, the widget will be automatically displayed.
         """
         self._state.load_start_time = time.time()
-        self._state.user_tier = user_tier
         self._state.vpn_data_ready_handler_id = self._controller.vpn_data_refresher.connect(
             "vpn-data-ready", self._on_vpn_data_ready
         )
@@ -155,6 +154,8 @@ class VPNWidget(Gtk.Box):
 
     def display(self, user_tier: int, server_list: ServerList):
         """Displays the widget once all necessary data from API has been acquired."""
+        self._state.user_tier = user_tier
+
         self.show_all()
 
         # The VPN widget subscribes to connection status updates, and then

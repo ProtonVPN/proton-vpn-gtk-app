@@ -121,11 +121,38 @@ class VPNDataRefresher(GObject.Object):
 
     def enable(self):
         """Start retrieving data periodically from Proton's REST API."""
+        if self._api.vpn_account:
+            self._enable()
+        else:
+            # The VPN account is normally loaded straight after the user logs in. However,
+            # could happen that it's not loaded in any of the following scenarios:
+            # a) After a successful authentication, the HTTP requests to retrieve
+            #    the VPN account failed, so it was never stored in the keyring.
+            # b) The VPN account stored in the keyring does not have the expected format.
+            #    This can happen if we introduce a breaking change or if the keyring
+            #    data is messed up because the user changes it, or it gets corrupted.
+            self._refresh_vpn_account_and_then_enable()
+
+    def _enable(self):
         self._enable_client_config_refresh()
         self._enable_server_list_refresh()
         logger.info(
             "VPN data refresher service enabled.",
             category="app", subcategory="vpn_data_refresher", event="enable"
+        )
+
+    def _refresh_vpn_account_and_then_enable(self):
+        logger.warning("Refreshing VPN account since it was not found...")
+        on_vpn_account_ready_future = self._thread_pool.submit(
+            self._api.refresh_vpn_account
+        )
+
+        def on_vpn_account_ready(future):
+            future.result()
+            self._enable()
+
+        on_vpn_account_ready_future.add_done_callback(
+            lambda f: GLib.idle_add(on_vpn_account_ready, f)
         )
 
     def disable(self):

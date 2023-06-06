@@ -76,17 +76,17 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
         thread_pool_executor=Mock(),
         proton_vpn_api=Mock()
     )
+    controller_mock.user_tier = PLUS_TIER
 
     vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
     with patch.object(vpn_widget, "display"):
-        vpn_widget.load(user_tier=PLUS_TIER)
+        vpn_widget.load()
 
         # Simulate vpn-data-ready signal from VPNDataRefresher.
         controller_mock.vpn_data_refresher.emit("vpn-data-ready", server_list, client_config)
 
         process_gtk_events()
 
-        assert vpn_widget.user_tier == PLUS_TIER
         vpn_widget.display.assert_called_with(PLUS_TIER, server_list)
 
 

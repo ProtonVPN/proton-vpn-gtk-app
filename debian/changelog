@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.0.0~a6) unstable; urgency=medium
+
+  * Retrieve VPN account if it wasn't retrieved yet
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 06 Jun 2023 17:19:11 +0200
+
 proton-vpn-gtk-app (4.0.0~a5) unstable; urgency=medium
 
   * Ensure UI updates smoothly after starting with auto-connect

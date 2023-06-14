@@ -19,15 +19,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import List
+from __future__ import annotations
+from typing import List, Optional
 
 from gi.repository import Pango, Atk
-from proton.vpn.servers.enums import ServerFeatureEnum
 
 from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
-from proton.vpn.servers.server_types import LogicalServer
+from proton.vpn.session.servers import LogicalServer, ServerFeatureEnum
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
     UnderMaintenanceIcon, SmartRoutingIcon, StreamingIcon, \
     P2PIcon, TORIcon
@@ -39,23 +39,7 @@ from proton.vpn.app.gtk.controller import Controller
 logger = logging.getLogger(__name__)
 
 
-class ServerLoad(Gtk.Label):
-    """Displays the current CPU load of a server."""
-    def __init__(self, load: int):
-        super().__init__(label=f"{load}%")
-        self.set_name("server-load")
-        help_text = f"Server load is at {load}%"
-        self.set_tooltip_text(help_text)
-        self.get_accessible().set_name(help_text)
-        style_context = self.get_style_context()
-        if load > 90:
-            style_context.add_class("signal-danger")
-        elif load > 75:
-            style_context.add_class("signal-warning")
-        else:
-            style_context.add_class("signal-success")
-
-
+# pylint: disable=too-many-instance-attributes
 class ServerRow(Gtk.Box):
     """Displays a single server as a row in the server list."""
     def __init__(self, server: LogicalServer, user_tier: int, controller: Controller):
@@ -64,8 +48,11 @@ class ServerRow(Gtk.Box):
         self._user_tier = user_tier
         self._controller = controller
         self._connection_state: ConnectionStateEnum = None
+        self._server_details: Optional[Gtk.Box] = None
         self._icons_displayed = []
-        self._connect_button = None
+        self._under_maintenance_icon: Optional[UnderMaintenanceIcon] = None
+        self._server_load: Optional[ServerLoad] = None
+        self._connect_button: Optional[Gtk.Button] = None
 
         self._build_row()
 
@@ -103,29 +90,54 @@ class ServerRow(Gtk.Box):
             expand=False, fill=False, padding=10
         )
 
-        if self.under_maintenance:
-            under_maintenance_icon = UnderMaintenanceIcon(self._server.name)
+        self._show_under_maintenance_icon_or_server_details(self._server.enabled)
+
+    def _show_under_maintenance_icon_or_server_details(self, server_enabled: bool):
+        if server_enabled:
+            self._show_server_details()
+        else:
+            self._show_under_maintenance_icon()
+
+    def _show_under_maintenance_icon(self):
+        if self._server_details:
+            self._server_details.hide()
+
+        if not self._under_maintenance_icon:
+            self._under_maintenance_icon = UnderMaintenanceIcon(self._server.name)
             self.pack_end(
-                under_maintenance_icon,
+                self._under_maintenance_icon,
                 expand=False, fill=False, padding=10
             )
-            self._icons_displayed.append(under_maintenance_icon)
-            self._server_label.set_property("sensitive", False)
-            return
 
+        self._under_maintenance_icon.show()
+        self._server_label.set_property("sensitive", False)
+
+    def _show_server_details(self):
+        if self._under_maintenance_icon:
+            self._under_maintenance_icon.hide()
+
+        if not self._server_details:
+            self._server_details = self._build_server_details()
+            self.pack_end(self._server_details, expand=False, fill=False, padding=0)
+
+        self._server_details.show()
+        self._server_label.set_property("sensitive", True)
+
+    def _build_server_details(self) -> Gtk.Box:
+        server_details = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         if self.upgrade_required:
             button = self._build_upgrade_link_button()
-            self.pack_end(button, expand=False, fill=False, padding=10)
+            server_details.pack_end(button, expand=False, fill=False, padding=10)
         else:
             self._connect_button = self._build_connect_button()
             button = self._connect_button
-            self.pack_end(self._connect_button, expand=False, fill=False, padding=10)
+            server_details.pack_end(self._connect_button, expand=False, fill=False, padding=10)
 
         button_relationships = [(self._server_label, Atk.RelationType.LABELLED_BY)]
 
-        server_load = ServerLoad(self._server.load)
-        button_relationships.append((server_load, Atk.RelationType.DESCRIBED_BY))
-        self.pack_end(server_load, expand=False, fill=False, padding=10)
+        self._server_load = ServerLoad(self._server.load)
+        button_relationships.append((self._server_load, Atk.RelationType.DESCRIBED_BY))
+        server_details.pack_end(self._server_load, expand=False, fill=False, padding=10)
 
         server_row_icons = []
         smart_routing = self._server.host_country is not None
@@ -136,10 +148,12 @@ class ServerRow(Gtk.Box):
         server_row_icons.extend(server_feature_icons)
         for icon in server_row_icons:
             button_relationships.append((icon, Atk.RelationType.DESCRIBED_BY))
-            self.pack_end(icon, expand=False, fill=False, padding=0)
+            server_details.pack_end(icon, expand=False, fill=False, padding=0)
             self._icons_displayed.append(icon)
 
         accessibility.add_widget_relationships(button, button_relationships)
+
+        return server_details
 
     def _build_connect_button(self):
         connect_button = Gtk.Button(label="Connect")
@@ -212,7 +226,7 @@ class ServerRow(Gtk.Box):
         return self._server.id
 
     @property
-    def server_tier(self) -> str:
+    def server_tier(self) -> int:
         """Returns the server tier."""
         return self._server.tier
 
@@ -235,13 +249,61 @@ class ServerRow(Gtk.Box):
     def is_connect_button_visible(self) -> bool:
         """Returns if the connect button is visible.
         This method was made available for tests."""
-        return bool(self._connect_button)
+        return self._connect_button.is_visible()
 
-    def is_icon_displayed(self, icon_class):
+    @property
+    def server_load_label(self) -> str:
+        """Returns the text shown as server load."""
+        return self._server_load.get_text()
+
+    @property
+    def under_maintenance_icon_visible(self) -> bool:
+        """Whether the under maintenance icon is shown or not."""
+        return self._under_maintenance_icon and self._under_maintenance_icon.is_visible()
+
+    def is_server_feature_icon_displayed(self, icon_class):
         """Returns True if an instance of the specified icon class is displayed
         or False otherwise."""
+        if not self._server_details.is_visible():
+            return False
+
         filtered_icons = [
-            icon for icon in self._icons_displayed
-            if isinstance(icon, icon_class)
+            child for child in self._server_details.get_children()
+            if isinstance(child, icon_class)
         ]
+
         return bool(filtered_icons)
+
+    def update_server_load(self):
+        """Redraws the row after a server load update."""
+        # The server status may have changed
+        self._show_under_maintenance_icon_or_server_details(self._server.enabled)
+        if self._server.enabled:
+            self._server_load.set_load(self._server.load)
+
+
+class ServerLoad(Gtk.Label):
+    """Displays the server load shown in a server row."""
+    def __init__(self, load: int):
+        super().__init__()
+        self.set_name("server-load")
+
+        self.set_load(load)
+
+    def set_load(self, load: int):
+        """Sets the load percentage to be displayed."""
+        self.set_label(f"{load}%")
+        help_text = f"Server load is at {load}%"
+        self.set_tooltip_text(help_text)
+        self.get_accessible().set_name(help_text)
+        style_context = self.get_style_context()
+
+        for cls in "signal-danger", "signal-warning", "signal-success":
+            style_context.remove_class(cls)
+
+        if load > 90:
+            style_context.add_class("signal-danger")
+        elif load > 75:
+            style_context.add_class("signal-warning")
+        else:
+            style_context.add_class("signal-success")

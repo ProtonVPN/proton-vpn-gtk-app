@@ -22,7 +22,7 @@ from unittest.mock import Mock
 from gi.repository import GLib
 import pytest
 
-from proton.vpn.servers import ServerList
+from proton.vpn.session.servers import ServerList, LogicalServer
 
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
@@ -31,10 +31,10 @@ from tests.unit.testing_utils import process_gtk_events, run_main_loop
 PLUS_TIER = 2
 FREE_TIER = 0
 
-
 @pytest.fixture
-def server_list():
-    return ServerList(apidata={
+def api_data():
+    return {
+        "Code": 1000,
         "LogicalServers": [
             {
                 "ID": 2,
@@ -84,10 +84,16 @@ def server_list():
                 "Tier": PLUS_TIER,
 
             },
-        ],
-        "LogicalsUpdateTimestamp": time(),
-        "LoadsUpdateTimestamp": time()
-    })
+        ]
+    }
+
+
+@pytest.fixture
+def server_list(api_data):
+    return ServerList(
+        user_tier=PLUS_TIER,
+        logicals=[LogicalServer(server) for server in api_data["LogicalServers"]]
+    )
 
 
 @pytest.fixture

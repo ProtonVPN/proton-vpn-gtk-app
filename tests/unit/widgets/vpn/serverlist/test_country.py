@@ -22,7 +22,7 @@ from unittest.mock import Mock
 import pytest
 
 from proton.vpn.connection.states import ConnectionStateEnum, Connecting, Connected, Disconnected
-from proton.vpn.servers import ServerList, Country
+from proton.vpn.session.servers import ServerList, Country, LogicalServer
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.country import CountryRow
@@ -38,7 +38,7 @@ COUNTRY_CODE = "AR"
 
 @pytest.fixture
 def country_servers():
-    return ServerList(apidata={
+    api_data = {
         "LogicalServers": [
             {
                 "ID": 1,
@@ -58,10 +58,12 @@ def country_servers():
                 "ExitCountry": COUNTRY_CODE,
                 "Tier": 2,
             },
-        ],
-        "LogicalsUpdateTimestamp": time.time(),
-        "LoadsUpdateTimestamp": time.time()
-    })
+        ]
+    }
+    return ServerList(
+        user_tier=PLUS_TIER,
+        logicals=[LogicalServer(server) for server in api_data["LogicalServers"]]
+    )
 
 
 @pytest.fixture
@@ -155,7 +157,7 @@ def test_initialize_currently_connected_country(
 
 @pytest.fixture
 def country_with_server_under_maintenance():
-    return Country(code=COUNTRY_CODE, servers=ServerList(apidata={
+    api_data = {
         "LogicalServers": [
             {
                 "ID": 1,
@@ -166,10 +168,13 @@ def country_with_server_under_maintenance():
                 "ExitCountry": COUNTRY_CODE,
                 "Tier": 1,
             },
-        ],
-        "LogicalsUpdateTimestamp": time.time(),
-        "LoadsUpdateTimestamp": time.time()
-    }))
+        ]
+    }
+    logicals=[LogicalServer(server) for server in api_data["LogicalServers"]]
+    return Country(
+        code=COUNTRY_CODE,
+        servers=ServerList(user_tier=PLUS_TIER, logicals=logicals)
+    )
 
 
 def test_initialize_currently_connected_server_when_server_is_flagged_for_maintenance_a_warning_is_logged(
@@ -182,7 +187,7 @@ def test_initialize_currently_connected_server_when_server_is_flagged_for_mainte
     by a label displaying that the server is under maintenance.
     """
     caplog.set_level(logging.WARNING)
-    country_row = CountryRow(
+    CountryRow(
         country=country_with_server_under_maintenance,
         user_tier=PLUS_TIER,
         controller=mock_controller,
@@ -190,27 +195,6 @@ def test_initialize_currently_connected_server_when_server_is_flagged_for_mainte
     )
     for record in caplog.records:
         assert record.levelname == "WARNING"
-
-
-def test_initialize_currently_connected_server_when_server_is_flagged_for_maintenance_where_button_is_hidden_and_icon_is_displayed(
-        country_with_server_under_maintenance, mock_controller, caplog
-):
-    """
-    When reloading the server list, all country rows are recreated.
-    If a user is connected to a server that was flagged as under maintenance,
-    we need to ensure that the button for that server is disabled, and replaced
-    by an icon displaying that the server is under maintenance.
-    """
-    caplog.set_level(logging.WARNING)
-    country_row = CountryRow(
-        country=country_with_server_under_maintenance,
-        user_tier=PLUS_TIER,
-        controller=mock_controller,
-        connected_server_id=country_with_server_under_maintenance.servers[0].id
-    )
-
-    assert not country_row.server_rows[0].is_connect_button_visible
-    assert country_row.server_rows[0].is_icon_displayed(UnderMaintenanceIcon)
 
 
 def test_initialize_country_row_showing_country_servers(
@@ -232,9 +216,10 @@ def test_initialize_country_row_showing_country_servers(
 
     assert country_row.showing_servers
 
+
 @pytest.fixture
 def free_and_plus_servers():
-    return ServerList(apidata={
+    api_response = {
         "LogicalServers": [
             {
                 "ID": 1,
@@ -257,7 +242,8 @@ def free_and_plus_servers():
 
             },
         ]
-    })
+    }
+    return [LogicalServer(server) for server in api_response["LogicalServers"]]
 
 
 @pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])
@@ -268,6 +254,7 @@ def test_country_widget_shows_user_tier_servers_first(
     Free users should have free servers listed first.
     Plus users should have plus servers listed first.
     """
+    servers = ServerList(user_tier=user_tier, logicals=free_and_plus_servers)
     country = Country(code="jp", servers=free_and_plus_servers)
 
     country_row = CountryRow(
@@ -282,7 +269,7 @@ def test_country_widget_shows_user_tier_servers_first(
 
 @pytest.fixture
 def country_servers_with_secure_core():
-    return ServerList(apidata={
+    api_response = {
         "LogicalServers": [
             {
                 "ID": 1,
@@ -292,7 +279,7 @@ def country_servers_with_secure_core():
                 "Servers": [{"Status": 1}],
                 "ExitCountry": COUNTRY_CODE,
                 "Features": 8,
-                "Tier": 1,
+                "Tier": FREE_TIER,
             },
             {
                 "ID": 2,
@@ -302,12 +289,14 @@ def country_servers_with_secure_core():
                 "Servers": [{"Status": 1}],
                 "ExitCountry": COUNTRY_CODE,
                 "Features": 1,
-                "Tier": 2,
+                "Tier": PLUS_TIER,
             },
-        ],
-        "LogicalsUpdateTimestamp": time.time(),
-        "LoadsUpdateTimestamp": time.time()
-    })
+        ]
+    }
+    return ServerList(
+        user_tier=PLUS_TIER,
+        logicals=[LogicalServer(server) for server in api_response["LogicalServers"]]
+    )
 
 
 def test_assert_country_widget_only_contains_non_secure_core_servers(
@@ -321,3 +310,4 @@ def test_assert_country_widget_only_contains_non_secure_core_servers(
 
     assert len(country_row.server_rows) == 1
     assert country_row.server_rows[0].server_label == "AR#1"
+

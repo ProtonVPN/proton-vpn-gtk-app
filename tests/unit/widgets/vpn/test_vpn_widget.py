@@ -21,9 +21,9 @@ from unittest.mock import Mock, patch
 from threading import Event
 
 import pytest
+from proton.vpn.session.client_config import ClientConfig
 
-from proton.vpn.servers.list import ServerList
-from proton.vpn.core_api.client_config import DEFAULT_CLIENT_CONFIG, ClientConfig
+from proton.vpn.session.servers import ServerList
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
@@ -37,7 +37,7 @@ FREE_TIER = 0
 
 @pytest.fixture
 def server_list():
-    return ServerList(apidata={
+    return ServerList.from_dict({
         "LogicalServers": [
             {
                 "ID": 1,
@@ -58,25 +58,26 @@ def server_list():
                 "Tier": PLUS_TIER,
             },
         ],
-        "LogicalsUpdateTimestamp": time.time(),
-        "LoadsUpdateTimestamp": time.time()
+        "MaxTier": PLUS_TIER
     })
 
 
 @pytest.fixture
 def client_config():
-    return ClientConfig.from_dict(DEFAULT_CLIENT_CONFIG)
+    return ClientConfig.default()
 
 
 def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
         server_list, client_config
 ):
     controller_mock = Mock()
+    api_mock = Mock()
     controller_mock.vpn_data_refresher = VPNDataRefresher(
         thread_pool_executor=Mock(),
-        proton_vpn_api=Mock()
+        proton_vpn_api=api_mock
     )
     controller_mock.user_tier = PLUS_TIER
+    api_mock.client_config.seconds_until_expiration = 10
 
     vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
     with patch.object(vpn_widget, "display"):

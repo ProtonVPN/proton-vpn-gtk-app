@@ -19,6 +19,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from proton.vpn.app.gtk.utils.country_codes import get_country_name_by_code
-
-__all__ = ["get_country_name_by_code"]

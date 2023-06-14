@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
 %define version 4.0.0
-%define upstream_version 4.0.0a6
+%define upstream_version 4.0.0a7
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.6.a6
+%define release 0.7.a7
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -27,7 +27,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.12.0
+BuildRequires: python3-proton-vpn-api-core
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: python3-dbus
 BuildRequires: librsvg2
@@ -36,7 +36,7 @@ BuildRequires: python3-packaging
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.12.0
+Requires: python3-proton-vpn-api-core
 Requires: python3-proton-vpn-logger
 Requires: python3-dbus
 Requires: librsvg2
@@ -69,7 +69,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Tue Jun 06 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.6-a6
+* Mon Jun 19 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.7.a7
+- VPN data refresh fix
+
+* Tue Jun 06 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.6.a6
 - Retrieve VPN account if it wasn't retrieved yet
 
 * Fri May 29 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.5.a5

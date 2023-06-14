@@ -68,7 +68,7 @@ def test_quick_connect_widget_connects_to_fastest_server_when_connect_button_is_
     quick_connect_widget.connect_button.clicked()
     process_gtk_events()
 
-    api_mock.servers.get_fastest_server.assert_called_once()
+    api_mock.server_list.get_fastest.assert_called_once()
     api_mock.connection.connect.assert_called_once()
 
 

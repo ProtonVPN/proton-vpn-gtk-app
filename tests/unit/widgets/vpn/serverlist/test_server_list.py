@@ -20,7 +20,7 @@ import time
 from unittest.mock import Mock
 
 import pytest
-from proton.vpn.servers.list import ServerList
+from proton.vpn.session.servers import ServerList
 from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
@@ -36,7 +36,7 @@ SERVER_LIST_TIMESTAMP = time.time()
 
 @pytest.fixture
 def unsorted_server_list():
-    return ServerList(apidata={
+    return ServerList.from_dict({
         "LogicalServers": [
             {
                 "ID": 2,
@@ -87,12 +87,11 @@ def unsorted_server_list():
 
             },
         ],
-        "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
-        "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP
+        "MaxTier": PLUS_TIER
     })
 
 
-SERVER_LIST = ServerList(apidata={
+SERVER_LIST = ServerList.from_dict({
     "LogicalServers": [
         {
             "ID": 1,
@@ -113,12 +112,11 @@ SERVER_LIST = ServerList(apidata={
             "Tier": PLUS_TIER,
         },
     ],
-    "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP,
-    "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP
+    "MaxTier": PLUS_TIER
 })
 
 
-SERVER_LIST_UPDATED = ServerList(apidata={
+SERVER_LIST_UPDATED = ServerList.from_dict({
     "LogicalServers": [
         {
             "ID": 1,
@@ -141,8 +139,7 @@ SERVER_LIST_UPDATED = ServerList(apidata={
 
         },
     ],
-    "LogicalsUpdateTimestamp": SERVER_LIST_TIMESTAMP + 1,
-    "LoadsUpdateTimestamp": SERVER_LIST_TIMESTAMP + 1
+    "MaxTier": PLUS_TIER
 })
 
 
@@ -182,7 +179,8 @@ def test_unload_disconnects_from_server_list_updates_and_removes_country_rows():
 
     server_list_widget.unload()
 
-    mock_controller.vpn_data_refresher.disconnect.assert_called_once()
+    # Disconnects from new-server-list and new-server-loads signals.
+    assert mock_controller.vpn_data_refresher.disconnect.call_count == 2
 
 
 @pytest.mark.parametrize(

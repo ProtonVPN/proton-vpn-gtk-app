@@ -30,7 +30,7 @@ from proton.vpn.core_api.api import ProtonVPNAPI
 from proton.vpn.core_api.session import ClientTypeMetadata
 from proton.vpn.core_api.connection import VPNConnectorWrapper
 from proton.vpn.core_api.cache_handler import CacheHandler
-from proton.vpn.servers.server_types import LogicalServer
+from proton.vpn.session.servers import LogicalServer
 
 from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
@@ -147,7 +147,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
-        server = self._api.servers.get_server_by_country_code(country_code)
+        server = self._api.server_list.get_fastest_in_country(country_code)
         self._connect_to_vpn(server)
 
     def connect_to_fastest_server(self):
@@ -156,7 +156,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
-        server = self._api.servers.get_fastest_server()
+        server = self._api.server_list.get_fastest()
         self._connect_to_vpn(server)
 
     def connect_to_server(self, server_name: str = None):
@@ -166,7 +166,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
-        server = self._api.servers.get_vpn_server_by_name(servername=server_name)
+        server = self._api.server_list.get_by_name(server_name)
         self._connect_to_vpn(server)
 
     def _connect_to_vpn(self, server: LogicalServer):

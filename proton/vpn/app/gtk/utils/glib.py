@@ -30,23 +30,23 @@ def run_once(function: Callable, *args, priority=GLib.PRIORITY_DEFAULT, **kwargs
     in pygobject.
     https://docs.gtk.org/glib/func.idle_add_once.html.
     """
-    def wrapper():
+    def wrapper_function():
         function(*args, **kwargs)
         # Returning a falsy value is required so that GLib does not keep
         # running the function over and over again.
         return False
 
-    return GLib.idle_add(wrapper, priority=priority)
+    return GLib.idle_add(wrapper_function, priority=priority)
 
 
 def run_periodically(function, *args, interval_ms: int, **kwargs) -> int:
     """
-    Runs a function periodically on the GLibs main loop.
+    Runs a function periodically on the GLib main loop.
 
     :param function: function to be called periodically
     :param *args: arguments to be passed to the function.
     :param interval_ms: interval at which the function should be called.
-    :param **kwargs: keyword arguments to be passzed to the function.
+    :param **kwargs: keyword arguments to be passed to the function.
     """
     run_once(function, *args, **kwargs)
 
@@ -56,3 +56,30 @@ def run_periodically(function, *args, interval_ms: int, **kwargs) -> int:
         return True
 
     return GLib.timeout_add(interval_ms, wrapper_function)
+
+
+def run_after_ms(function, *args, delay_ms: int, **kwargs) -> int:
+    """
+    Runs a function after the specified delay (in ms) on the GLib main loop.
+
+    :param function: function to be called.
+    :param *args: arguments to be passed to the function.
+    :param delay_ms: amount of milliseconds to wait before the function is called.
+    :param **kwargs: keyword arguments to be passed to the function.
+    """
+    def wrapper_function():
+        function(*args, **kwargs)
+        # Returning a falsy value is required so that GLib does not keep
+        # running the function over and over again.
+        return False
+
+    return GLib.timeout_add(delay_ms, wrapper_function)
+
+
+def run_after_seconds(function, *args, delay_seconds: int, **kwargs) -> int:
+    """
+    Runs a function after the specified delay (in seconds) on the GLib main loop.
+
+    See :func:`run_after_ms`.
+    """
+    return run_after_ms(function, *args, delay_ms=delay_seconds*1000, **kwargs)

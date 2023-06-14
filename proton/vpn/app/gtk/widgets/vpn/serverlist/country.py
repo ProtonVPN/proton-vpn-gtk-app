@@ -28,15 +28,15 @@ from gi.repository import Atk, GObject
 from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
-from proton.vpn.servers import Country
+from proton.vpn.session.servers import Country
 from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
     SmartRoutingIcon, P2PIcon, TORIcon, UnderMaintenanceIcon
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerRow
-from proton.vpn.servers.server_types import LogicalServer
-from proton.vpn.servers.enums import ServerFeatureEnum
+from proton.vpn.session.servers import LogicalServer
+from proton.vpn.session.servers import ServerFeatureEnum
 
 logger = logging.getLogger(__name__)
 
@@ -60,22 +60,25 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._under_maintenance = under_maintenance
         self._upgrade_required = upgrade_required
         self._server_features = server_features
+        self._smart_routing = smart_routing
         self._controller = controller
 
         self._country_name_label = None
+        self._under_maintenance_icon = None
         self._connect_button = None
+        self._country_details = None
 
         self._collapsed_img = Gtk.Image.new_from_icon_name("pan-down-symbolic", Gtk.IconSize.BUTTON)
         self._expanded_img = Gtk.Image.new_from_icon_name("pan-up-symbolic", Gtk.IconSize.BUTTON)
 
-        self._build_ui(connection_state, smart_routing)
+        self._build_ui(connection_state)
 
         # The following setters needs to be called after the UI has been built
         # as they need to modify some UI widgets.
         self.show_country_servers = show_country_servers
         self._connection_state = connection_state
 
-    def _build_ui(self, connected: bool, smart_routing: bool):
+    def _build_ui(self, connected: bool):
         self._country_name_label = Gtk.Label(label=self.country_name)
         self.pack_start(self._country_name_label, expand=False, fill=False, padding=0)
         self.set_spacing(10)
@@ -85,38 +88,71 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._toggle_button.connect("clicked", self._on_toggle_button_clicked)
         self.pack_end(self._toggle_button, expand=False, fill=False, padding=0)
 
+        self._show_under_maintenance_icon_or_country_details()
+
+        if connected:
+            self.connection_state = ConnectionStateEnum.CONNECTED
+        else:
+            self.connection_state = ConnectionStateEnum.DISCONNECTED
+
+    def update_under_maintenance_status(self, under_maintenance: bool):
+        """Shows or hides the under maintenance status for the country."""
+        self._under_maintenance = under_maintenance
+        self._show_under_maintenance_icon_or_country_details()
+
+    def _show_under_maintenance_icon_or_country_details(self):
         if self._under_maintenance:
-            under_maintenance_icon = UnderMaintenanceIcon(self.country_name)
-            self.pack_end(under_maintenance_icon, expand=False, fill=False, padding=0)
-            self._country_name_label.set_property("sensitive", False)
-            return
+            self._show_under_maintenance_icon()
+        else:
+            self._show_country_details()
+
+    def _show_under_maintenance_icon(self):
+        if self._country_details:
+            self._country_details.hide()
+
+        if not self._under_maintenance_icon:
+            self._under_maintenance_icon = UnderMaintenanceIcon(self.country_name)
+            self.pack_end(self._under_maintenance_icon, expand=False, fill=False, padding=0)
+
+        self._country_name_label.set_property("sensitive", False)
+
+    def _show_country_details(self):
+        if self._under_maintenance_icon:
+            self._under_maintenance_icon.hide()
+
+        if not self._country_details:
+            self._country_details = self._build_country_details()
+            self.pack_end(self._country_details, expand=False, fill=False, padding=0)
+
+        self._country_details.show()
+        self._country_name_label.set_property("sensitive", True)
+
+    def _build_country_details(self):
+        country_details = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
         if self._upgrade_required:
             button = self._build_upgrade_required_link_button()
-            self.pack_end(button, expand=False, fill=False, padding=0)
+            country_details.pack_end(button, expand=False, fill=False, padding=0)
         else:
             button = self._build_connect_button()
             self._connect_button = button
-            self.pack_end(self._connect_button, expand=False, fill=False, padding=0)
+            country_details.pack_end(self._connect_button, expand=False, fill=False, padding=0)
 
         button_relationships = [(self._country_name_label, Atk.RelationType.LABELLED_BY)]
 
         country_row_icons = []
-        if smart_routing:
+        if self._smart_routing:
             country_row_icons.append(SmartRoutingIcon())
 
         server_feature_icons = self._build_server_feature_icons()
         country_row_icons.extend(server_feature_icons)
         for icon in country_row_icons:
             button_relationships.append((icon, Atk.RelationType.DESCRIBED_BY))
-            self.pack_end(icon, expand=False, fill=False, padding=0)
+            country_details.pack_end(icon, expand=False, fill=False, padding=5)
 
         accessibility.add_widget_relationships(button, button_relationships)
 
-        if connected:
-            self.connection_state = ConnectionStateEnum.CONNECTED
-        else:
-            self.connection_state = ConnectionStateEnum.DISCONNECTED
+        return country_details
 
     @property
     def under_maintenance(self) -> bool:
@@ -433,3 +469,16 @@ class CountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         """Clicks the button to connect to the country.
         This method was made available for tests."""
         self._country_header.click_connect_button()
+
+    def update_server_loads(self):
+        """Refreshes the UI after new server loads were retrieved."""
+        # Start by setting the country under maintenance until the opposite is proven.
+        self._under_maintenance = True
+        for server_row in self._indexed_server_rows.values():
+            server_row.update_server_load()
+            self._under_maintenance = (
+                    self._under_maintenance and server_row.under_maintenance
+            )
+        self._country_header.update_under_maintenance_status(
+            self._under_maintenance
+        )

@@ -35,8 +35,8 @@ from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidg
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
-from proton.vpn.core_api.client_config import ClientConfig
-from proton.vpn.servers.list import ServerList
+from proton.vpn.session.client_config import ClientConfig
+from proton.vpn.session.servers import ServerList
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.app import MainWindow

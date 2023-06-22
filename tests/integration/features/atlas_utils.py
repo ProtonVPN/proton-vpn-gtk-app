@@ -1,5 +1,5 @@
 import os
-import time
+import random
 from typing import Dict
 
 import requests
@@ -28,7 +28,8 @@ class AtlasUsers:
 
     def create(self, two_factor_auth_secret: str = None) -> Dict:
         """Creates a new user. If a 2FA secret is passed then 2FA is enabled."""
-        username = f"vpnlinux{int(time.time())}"
+        random_hash = random.getrandbits(64)
+        username = f"vpnlinux{random_hash}"
         url = f"{self._base_url}/quark/raw::user:create?-N={username}&--gen-keys=Curve25519&-f=json"
         if two_factor_auth_secret:
             url = f"{url}&-ts={two_factor_auth_secret}"

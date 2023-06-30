@@ -23,6 +23,7 @@ from unittest.mock import Mock, patch
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
+from tests.unit.testing_utils import process_gtk_events
 
 
 class HeaderBarMock(Gtk.HeaderBar):
@@ -47,6 +48,7 @@ def dummy_app(main_window):
     def show_window(app):
         app.add_window(main_window)
         main_window.show()
+        process_gtk_events()
 
     app = Gtk.Application()
     app.connect("activate", show_window)
@@ -57,9 +59,12 @@ def test_close_button_triggers_quit_menu_entry_when_tray_indicator_is_not_used(d
     main_window.configure_close_button_behaviour(tray_indicator_enabled=False)
 
     main_window.connect("show", lambda _: main_window.close())
-    GLib.idle_add(dummy_app.quit)
+    
+    GLib.timeout_add(interval=50, function=dummy_app.quit)
+    process_gtk_events()
 
     dummy_app.run()
+    process_gtk_events()
 
     main_window.header_bar.menu.quit_button_click.assert_called_once()
 
@@ -68,9 +73,11 @@ def test_close_button_hides_window_when_tray_indicator_is_used(dummy_app, main_w
     main_window.configure_close_button_behaviour(tray_indicator_enabled=True)
 
     main_window.connect("show", lambda _: main_window.close())
-    GLib.idle_add(dummy_app.quit)
+    GLib.timeout_add(interval=50, function=dummy_app.quit)
+    process_gtk_events()
 
     with patch.object(main_window, "hide"):
         dummy_app.run()
+        process_gtk_events()
 
         main_window.hide.assert_called_once()

@@ -36,6 +36,7 @@ from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
+from proton.vpn.core_api.settings import Settings
 from proton.vpn.app.gtk.utils import semver
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
@@ -53,7 +54,8 @@ class Controller:  # pylint: disable=too-many-public-methods
         api: ProtonVPNAPI = None,
         vpn_data_refresher: VPNDataRefresher = None,
         vpn_reconnector: VPNReconnector = None,
-        app_config: AppConfig = None
+        app_config: AppConfig = None,
+        settings: Settings = None
     ):  # pylint: disable=too-many-arguments
         self.thread_pool_executor = thread_pool_executor
         self._api = api or ProtonVPNAPI(ClientTypeMetadata(
@@ -70,6 +72,7 @@ class Controller:  # pylint: disable=too-many-public-methods
             session_monitor=SessionMonitor()
         )
         self._app_config = app_config
+        self._settings = settings
 
     def login(self, username: str, password: str) -> Future:
         """
@@ -267,3 +270,14 @@ class Controller:  # pylint: disable=too-many-public-methods
     def app_version(self) -> str:
         """Returns the current app version."""
         return metadata.version("proton-vpn-gtk-app")
+
+    def get_settings(self) -> Settings:
+        """Returns general settings."""
+        if self._settings is None:
+            self._settings = self._api.settings
+
+        return self._settings
+
+    def save_settings(self) -> None:
+        """Saves current settings to disk"""
+        self._api.settings = self._settings

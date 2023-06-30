@@ -30,6 +30,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.about_dialog import AboutDialog
 from proton.vpn.app.gtk.widgets.headerbar.menu.disconnect_dialog import DisconnectDialog
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings import SettingsWindow
 
 from proton.session.exceptions import ProtonAPINotReachable
 from proton.vpn import logging
@@ -59,12 +60,14 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self._controller = controller
         self._loading_widget = loading_widget
 
+        self.settings_action = Gio.SimpleAction.new("settings", None)
         self.bug_report_action = Gio.SimpleAction.new("report", None)
         self.about_action = Gio.SimpleAction.new("about", None)
         self.logout_action = Gio.SimpleAction.new("logout", None)
         self.quit_action = Gio.SimpleAction.new("quit", None)
 
         self.append_item(Gio.MenuItem.new("Report an issue", "win.report"))
+        self.append_item(Gio.MenuItem.new("Settings", "win.settings"))
         self.append_item(Gio.MenuItem.new("About", "win.about"))
         self.append_item(Gio.MenuItem.new("Logout", "win.logout"))
         self.append_item(Gio.MenuItem.new("Quit", "win.quit"))
@@ -87,12 +90,16 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
 
     def _setup_actions(self):
         # Add actions to Gtk.ApplicationWindow
+        self._main_window.add_action(self.settings_action)
         self._main_window.add_action(self.bug_report_action)
         self._main_window.add_action(self.about_action)
         self._main_window.add_action(self.logout_action)
         self._main_window.add_action(self.quit_action)
 
         # Connect actions to callbacks
+        self.settings_action.connect(
+            "activate", self._on_settings_clicked
+        )
         self.bug_report_action.connect(
             "activate", self._on_report_an_issue_clicked
         )
@@ -105,6 +112,10 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self.quit_action.connect(
             "activate", self._on_quit_clicked
         )
+
+    def _on_settings_clicked(self,  *_):
+        settings_window = SettingsWindow(self._controller)
+        settings_window.present()
 
     def _on_report_an_issue_clicked(self, *_):
         bug_dialog = BugReportDialog(self._controller, self._main_window)

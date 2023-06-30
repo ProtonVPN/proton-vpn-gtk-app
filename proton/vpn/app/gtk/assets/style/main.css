@@ -50,3 +50,13 @@ label.success {
 #server-load.signal-success {
     color: @signal-success
 }
+
+.setting-category {
+    margin-top: 20px
+}
+
+.setting-item {
+    border: 1px solid rgba(155, 155, 155, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+}

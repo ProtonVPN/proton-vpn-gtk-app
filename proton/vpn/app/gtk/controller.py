@@ -23,6 +23,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from concurrent.futures import ThreadPoolExecutor, Future
 from importlib import metadata
 
+from typing import Optional
+
 from proton.vpn import logging
 
 from proton.vpn.connection import VPNConnection, states
@@ -46,7 +48,7 @@ logger = logging.getLogger(__name__)
 
 class Controller:  # pylint: disable=too-many-public-methods
     """The C in the MVC pattern."""
-    connection_protocol = "openvpn-udp"
+    DEFAULT_BACKEND = "linuxnetworkmanager"
 
     def __init__(
         self,
@@ -178,7 +180,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         )
         self._api.connection.connect(
             vpn_server,
-            protocol=self.connection_protocol
+            protocol=self.get_settings().protocol,
         )
 
     def disconnect(self):
@@ -281,3 +283,9 @@ class Controller:  # pylint: disable=too-many-public-methods
     def save_settings(self) -> None:
         """Saves current settings to disk"""
         self._api.settings = self._settings
+
+    def get_available_protocols(self) -> Optional[str]:
+        """Returns a list of available protocol to use."""
+        return self._api.connection.get_available_protocols_for_backend(
+            self.DEFAULT_BACKEND
+        )

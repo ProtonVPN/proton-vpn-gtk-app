@@ -64,10 +64,11 @@ class SettingsWindow(Gtk.Window):
 class ConnectionSettings(Gtk.Box):
     """Settings related to connection are all grouped under this class."""
 
+    PROTOCOL_LABEL = "Protocol"
     VPN_ACCELERATOR_LABEL = "VPN Accelerator"
     VPN_ACCELERATOR_DESCRIPTION = "Increase your connection speed by up to 400% "\
         "with performance enhancing technologies."
-    RECONNECT_MESSAGE = "\nPlease establish a new VPN connection for "\
+    RECONNECT_MESSAGE = "Please establish a new VPN connection for "\
         "changes to take effect."
 
     def __init__(self, controller: Controller, notification_bar: NotificationBar):
@@ -79,12 +80,14 @@ class ConnectionSettings(Gtk.Box):
         self.set_spacing(15)
 
         self.vpn_accelerator_switch = None
+        self.protocol_combobox = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
         under this category."""
         self.get_style_context().add_class("setting-category")
         self._build_widget_title()
+        self._build_protocol()
         self._build_vpn_accelerator()
 
     @property
@@ -99,6 +102,18 @@ class ConnectionSettings(Gtk.Box):
         self._controller.get_settings().features.vpn_accelerator = newvalue
         self._controller.save_settings()
 
+    @property
+    def protocol(self) -> bool:
+        """Shortcut property that returns the current `protocol` setting"""
+        return self._controller.get_settings().protocol
+
+    @protocol.setter
+    def protocol(self, newvalue: bool):
+        """Shortcut property that sets the new `protocol` setting and
+        stores to disk."""
+        self._controller.get_settings().protocol = newvalue
+        self._controller.save_settings()
+
     def _build_widget_title(self):
         """Builds and adds the title label of this category to the widget."""
         title_label = Gtk.Label(label="Connection")
@@ -109,7 +124,7 @@ class ConnectionSettings(Gtk.Box):
 
     def _build_vpn_accelerator(self):
         """Builds and adds the `vpn_accelerator` setting to the widget."""
-        def _update_setting(_, new_value: bool):
+        def on_switch_state(_, new_value: bool):
             self.vpn_accelerator = new_value
             if self._controller.is_connection_active:
                 self._notification_bar.show_info_message(
@@ -128,7 +143,7 @@ class ConnectionSettings(Gtk.Box):
         self.vpn_accelerator_switch = Gtk.Switch()
         self.vpn_accelerator_switch.set_halign(Gtk.Align.END)
         self.vpn_accelerator_switch.set_state(self.vpn_accelerator)
-        self.vpn_accelerator_switch.connect("state-set", _update_setting)
+        self.vpn_accelerator_switch.connect("state-set", on_switch_state)
 
         description = Gtk.Label(label=self.VPN_ACCELERATOR_DESCRIPTION)
         description.set_line_wrap(True)
@@ -138,5 +153,41 @@ class ConnectionSettings(Gtk.Box):
         setting_grid.attach(label, 0, 0, 1, 1)
         setting_grid.attach(self.vpn_accelerator_switch, 1, 0, 1, 1)
         setting_grid.attach(description, 0, 1, 2, 1)
+
+        self.pack_start(setting_grid, False, False, 0)
+
+    def _build_protocol(self):
+        """Builds and adds the `protocol` setting to the widget."""
+        def on_combobox_changed(combobox):
+            model = combobox.get_model()
+            treeiter = combobox.get_active_iter()
+            protocol = model[treeiter][0]
+            self.protocol = protocol
+            if self._controller.is_connection_active:
+                self._notification_bar.show_info_message(
+                    f"{self.RECONNECT_MESSAGE}"
+                )
+
+        setting_grid = Gtk.Grid()
+        setting_grid.get_style_context().add_class("setting-item")
+        setting_grid.set_halign(Gtk.Align.FILL)
+        setting_grid.set_row_spacing(10)
+        setting_grid.set_column_spacing(200)
+
+        label = Gtk.Label(label=self.PROTOCOL_LABEL)
+        label.set_halign(Gtk.Align.START)
+
+        available_protocols = self._controller.get_available_protocols()
+        self.protocol_combobox = Gtk.ComboBoxText()
+
+        for protocol in available_protocols:
+            self.protocol_combobox.append(protocol, protocol)
+
+        self.protocol_combobox.set_entry_text_column(1)
+        self.protocol_combobox.set_active_id(self.protocol)
+        self.protocol_combobox.connect("changed", on_combobox_changed)
+
+        setting_grid.attach(label, 0, 0, 1, 1)
+        setting_grid.attach(self.protocol_combobox, 1, 0, 1, 1)
 
         self.pack_start(setting_grid, False, False, 0)

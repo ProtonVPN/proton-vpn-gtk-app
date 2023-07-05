@@ -4,17 +4,23 @@ from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings import SettingsWindow, ConnectionSettings
 
 
+DUMMY_PROTOCOL = "dummy-protocol"
+
 @pytest.fixture
 def mocked_objects():
     controller_mock = Mock(name="controller")
     settings_mock = Mock(name="settings")
 
+    controller_mock.get_available_protocols.return_value = [DUMMY_PROTOCOL]
     controller_mock.get_settings.return_value = settings_mock
 
     features_mock = Mock(name="features")
     type(settings_mock).features = features_mock
 
-    yield controller_mock, features_mock
+    protocol_mock = PropertyMock(return_value=DUMMY_PROTOCOL)
+    type(settings_mock).protocol = protocol_mock
+
+    yield controller_mock, settings_mock, features_mock
 
 
 
@@ -48,8 +54,31 @@ class TestSettingsWindow:
 
 class TestConnectionSettings:
 
+    def test_protocol_setting_is_called_when_building_ui(self, mocked_objects):
+        controller_mock, settings_mock, _ = mocked_objects
+
+        protocol_mock = PropertyMock(return_value=DUMMY_PROTOCOL)
+        type(settings_mock).protocol = protocol_mock
+
+        connection_settings = ConnectionSettings(controller_mock, Mock())
+        connection_settings.build_ui()
+
+        protocol_mock.assert_called_once()
+
+    def test_protocol_setting_combobox_is_set_to_initial_value(self, mocked_objects):
+        controller_mock, settings_mock, _ = mocked_objects
+
+        protocol_mock = PropertyMock(return_value=DUMMY_PROTOCOL)
+        type(settings_mock).protocol = protocol_mock
+
+        with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.Gtk.ComboBoxText.set_active_id") as set_active_mock:
+            connection_settings = ConnectionSettings(controller_mock, Mock())
+            connection_settings.build_ui()
+
+            set_active_mock.assert_called_once_with(DUMMY_PROTOCOL)
+
     def test_vpn_accelerator_setting_is_called_when_building_ui(self, mocked_objects):
-        controller_mock, features_mock = mocked_objects
+        controller_mock, _, features_mock = mocked_objects
 
         vpn_accelerator_mock = PropertyMock()
         type(features_mock).vpn_accelerator = vpn_accelerator_mock
@@ -61,7 +90,7 @@ class TestConnectionSettings:
 
     @pytest.mark.parametrize("vpn_accelerator_enabled", [False, True])
     def test_vpn_accelerator_setting_switch_is_set_to_initial_value(self, vpn_accelerator_enabled, mocked_objects):
-        controller_mock, features_mock = mocked_objects
+        controller_mock, _, features_mock = mocked_objects
 
         vpn_accelerator_mock = PropertyMock(return_value=vpn_accelerator_enabled)
         type(features_mock).vpn_accelerator = vpn_accelerator_mock
@@ -74,7 +103,7 @@ class TestConnectionSettings:
 
     @pytest.mark.parametrize("vpn_accelerator_enabled", [False, True])
     def test_vpn_accelerator_setting_when_switching_switch_state_and_changes_are_saved(self, vpn_accelerator_enabled, mocked_objects):
-        controller_mock, features_mock = mocked_objects
+        controller_mock, _, features_mock = mocked_objects
         vpn_accelerator_mock = PropertyMock(return_value=vpn_accelerator_enabled)
         type(features_mock).vpn_accelerator = vpn_accelerator_mock
 
@@ -90,7 +119,7 @@ class TestConnectionSettings:
 
     @pytest.mark.parametrize("is_connection_active", [False, True])    
     def test_vpn_accelerator_setting_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(self, is_connection_active, mocked_objects):
-        controller_mock, features_mock = mocked_objects
+        controller_mock, _, features_mock = mocked_objects
         notification_bar_mock = Mock()
         vpn_accelerator_mock = PropertyMock(return_value=True)
         type(features_mock).vpn_accelerator = vpn_accelerator_mock

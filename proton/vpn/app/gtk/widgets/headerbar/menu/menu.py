@@ -84,6 +84,16 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         """Set the logout button to either be enabled or disabled."""
         self.logout_action.set_enabled(newvalue)
 
+    @property
+    def settings_enabled(self) -> bool:
+        """Returns if logout button is enabled or disabled."""
+        return self.settings_action.get_enabled()
+
+    @settings_enabled.setter
+    def settings_enabled(self, newvalue: bool):
+        """Set the settings button to either be enabled or disabled."""
+        self.settings_action.set_enabled(newvalue)
+
     @GObject.Signal
     def user_logged_out(self):
         """Signal emitted after a successful logout."""

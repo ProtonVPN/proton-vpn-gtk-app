@@ -1,12 +1,19 @@
+proton-vpn-gtk-app (4.0.0~a10) unstable; urgency=medium
+
+  * Add netshield selection to settings window
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 06 Jul 2023 16:00:00 +0100
+
 proton-vpn-gtk-app (4.0.0~a9) unstable; urgency=medium
 
   * Add protocol selection to settings window
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 05 Jul 2023 16:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 05 Jul 2023 16:00:00 +0100
 
 proton-vpn-gtk-app (4.0.0~a8) unstable; urgency=medium
 
-  * Implement settings window and vpn accelerator setting
+  * Implement settings window
+  * Add vpn accelerator selection to setting window
 
  -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 03 Jul 2023 16:00:00 +0100
 

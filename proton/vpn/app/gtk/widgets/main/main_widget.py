@@ -164,12 +164,14 @@ class MainWidget(Gtk.Overlay):
 
     def _display_vpn_widget(self):
         self._main_window.header_bar.menu.logout_enabled = True
+        self._main_window.header_bar.menu.settings_enabled = True
         self._loading_widget.show("Loading app...")
         self.active_widget = self.vpn_widget
         self.vpn_widget.load()
 
     def _display_login_widget(self):
         self._main_window.header_bar.menu.logout_enabled = False
+        self._main_window.header_bar.menu.settings_enabled = False
         self._loading_widget.hide()  # Required on session expired while loading VPN widget.
         self.active_widget = self.login_widget
         self.login_widget.reset()

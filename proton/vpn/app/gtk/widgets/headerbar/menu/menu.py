@@ -201,6 +201,7 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
                 "Successful logout",
                 category="app", subcategory="logout", event="success"
             )
+            self._controller.clear_settings()
             self.emit("user-logged-out")
         except ProtonAPINotReachable as e:  # pylint: disable=invalid-name
             logger.info(
@@ -210,8 +211,8 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
             self._main_window.main_widget.notifications.show_error_message(
                 self.UNABLE_TO_LOGOUT_MESSAGE
             )
-        finally:
             self.logout_enabled = True
+        finally:
             self._loading_widget.hide()
 
     def bug_report_button_click(self):

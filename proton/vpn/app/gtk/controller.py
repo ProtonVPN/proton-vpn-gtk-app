@@ -284,6 +284,10 @@ class Controller:  # pylint: disable=too-many-public-methods
         """Saves current settings to disk"""
         self._api.settings = self._settings
 
+    def clear_settings(self):
+        """Clear in-memory settings."""
+        self._settings = None
+
     def get_available_protocols(self) -> Optional[str]:
         """Returns a list of available protocol to use."""
         return self._api.connection.get_available_protocols_for_backend(

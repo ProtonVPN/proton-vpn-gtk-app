@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
 %define version 4.0.0
-%define upstream_version 4.0.0a10
+%define upstream_version 4.0.0a11
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.10.a10
+%define release 0.11.a11
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -69,6 +69,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Jul 06 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.11.a11
+- Add port forwarding selection to settings window
+
 * Thu Jul 06 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.10.a10
 - Add netshield selection to settings window
 

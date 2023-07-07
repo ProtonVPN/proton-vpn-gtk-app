@@ -86,6 +86,26 @@ class TestLogoutMenuEntry:
 
         controller_mock.logout.assert_called_once()
 
+    def test_logout_menu_entry_clears_in_memory_settings_when_clicked_if_not_connected_to_vpn(self):
+        controller_mock = Mock()
+        logout_future = Future()
+        logout_future.set_result(None)
+
+        controller_mock.logout.return_value = logout_future
+        controller_mock.is_connection_active = False
+
+        menu = Menu(
+            controller=controller_mock,
+            main_window=Mock(),
+            loading_widget=Mock()
+        )
+
+        menu.logout_button_click()
+
+        process_gtk_events()
+
+        controller_mock.clear_settings.assert_called_once()
+
     def test_logout_menu_entry_display_loading_widget_when_clicked(self):
         logout_future = Future()
         logout_future.set_result(None)

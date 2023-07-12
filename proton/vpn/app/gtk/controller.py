@@ -57,7 +57,8 @@ class Controller:  # pylint: disable=too-many-public-methods
         vpn_data_refresher: VPNDataRefresher = None,
         vpn_reconnector: VPNReconnector = None,
         app_config: AppConfig = None,
-        settings: Settings = None
+        settings: Settings = None,
+        cache_handler: CacheHandler = None
     ):  # pylint: disable=too-many-arguments
         self.thread_pool_executor = thread_pool_executor
         self._api = api or ProtonVPNAPI(ClientTypeMetadata(
@@ -75,6 +76,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         )
         self._app_config = app_config
         self._settings = settings
+        self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
 
     def login(self, username: str, password: str) -> Future:
         """
@@ -255,18 +257,22 @@ class Controller:  # pylint: disable=too-many-public-methods
         if self._app_config is not None:
             return self._app_config
 
-        cache_handler = CacheHandler(APP_CONFIG)
-        app_config = cache_handler.load()
+        app_config = self._cache_handler.load()
 
         if app_config is None:
             self._app_config = AppConfig.default()
-            cache_handler.save(
+            self._cache_handler.save(
                 self._app_config.to_dict()
             )
         else:
             self._app_config = AppConfig.from_dict(app_config)
 
         return self._app_config
+
+    @app_configuration.setter
+    def app_configuration(self, new_value: AppConfig):
+        self._app_config = new_value
+        self._cache_handler.save(self._app_config.to_dict())
 
     @property
     def app_version(self) -> str:

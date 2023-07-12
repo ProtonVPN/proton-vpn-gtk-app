@@ -52,7 +52,13 @@ label.success {
 }
 
 .setting-category {
-    margin-top: 20px
+    margin-top: 20px;
+    margin-left: 20px;
+	margin-right: 20px;
+}
+
+.setting-category:last-child{
+	margin-bottom: 60px;
 }
 
 .setting-item {
@@ -67,9 +73,4 @@ label.success {
 	border: 1px solid rgba(155, 155, 155, 0.2);
 	outline: none;
 	background-image: none;
-}
-
-.viewport-frame {
-    margin-left: 20px;
-    margin-right: 20px;
 }

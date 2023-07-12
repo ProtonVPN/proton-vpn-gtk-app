@@ -28,16 +28,19 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings impo
     ConnectionSettings
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import \
     FeatureSettings
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings import \
+    GeneralSettings
 
 
 class SettingsWindow(Gtk.Window):
     """Main settings window."""
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         controller: Controller,
         notification_bar: NotificationBar = None,
         feature_settings: FeatureSettings = None,
-        connection_settings: ConnectionSettings = None
+        connection_settings: ConnectionSettings = None,
+        general_settings: GeneralSettings = None
     ):
         super().__init__()
         self.set_title("Settings")
@@ -53,6 +56,9 @@ class SettingsWindow(Gtk.Window):
         self._connection_settings = connection_settings or ConnectionSettings(
             self._controller, self._notification_bar
         )
+        self._general_settings = general_settings or GeneralSettings(
+            self._controller, self._notification_bar
+        )
 
         self._create_elastic_window()
 
@@ -61,6 +67,7 @@ class SettingsWindow(Gtk.Window):
     def _build_ui(self, *_):
         self._connection_settings.build_ui()
         self._feature_settings.build_ui()
+        self._general_settings.build_ui()
         self.show_all()
 
     def _create_elastic_window(self):
@@ -76,6 +83,7 @@ class SettingsWindow(Gtk.Window):
 
         self.content_container.pack_start(self._feature_settings, False, False, 0)
         self.content_container.pack_start(self._connection_settings, False, False, 0)
+        self.content_container.pack_start(self._general_settings, False, False, 0)
 
         viewport = Gtk.Viewport()
         viewport.get_style_context().add_class("viewport-frame")

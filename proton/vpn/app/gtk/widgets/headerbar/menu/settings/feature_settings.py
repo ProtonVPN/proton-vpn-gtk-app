@@ -41,7 +41,7 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     PORT_FORWARDING_SETUP_GUIDE = "Follow our "\
         "<a href=\"https://protonvpn.com/support/port-forwarding-manual-setup/"\
         "#how-to-use-port-forwarding\">guide</a>"\
-        " to set it up"
+        " to set it up."
 
     def __init__(self, controller: Controller, notification_bar: NotificationBar):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)

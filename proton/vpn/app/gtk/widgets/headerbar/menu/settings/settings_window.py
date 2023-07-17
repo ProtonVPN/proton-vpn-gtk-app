@@ -90,7 +90,6 @@ class SettingsWindow(Gtk.Window):
         viewport.add(self.content_container)
 
         scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_property("window-placement", False)
         scrolled_window.set_propagate_natural_height(True)
         scrolled_window.set_min_content_height(300)
         scrolled_window.set_min_content_width(400)

@@ -31,6 +31,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.disconnect_dialog import Disconne
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings import SettingsWindow
+from proton.vpn.app.gtk.widgets.headerbar.menu.release_notes_dialog import ReleaseNotesDialog
 
 from proton.session.exceptions import ProtonAPINotReachable
 from proton.vpn import logging
@@ -60,15 +61,17 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self._controller = controller
         self._loading_widget = loading_widget
 
-        self.settings_action = Gio.SimpleAction.new("settings", None)
         self.bug_report_action = Gio.SimpleAction.new("report", None)
+        self.settings_action = Gio.SimpleAction.new("settings", None)
+        self.release_notes_action = Gio.SimpleAction.new("release_notes", None)
         self.about_action = Gio.SimpleAction.new("about", None)
         self.logout_action = Gio.SimpleAction.new("logout", None)
         self.quit_action = Gio.SimpleAction.new("quit", None)
 
-        self.append_item(Gio.MenuItem.new("Report an issue", "win.report"))
-        self.append_item(Gio.MenuItem.new("Settings", "win.settings"))
         self.append_item(Gio.MenuItem.new("About", "win.about"))
+        self.append_item(Gio.MenuItem.new("Settings", "win.settings"))
+        self.append_item(Gio.MenuItem.new("Release notes", "win.release_notes"))
+        self.append_item(Gio.MenuItem.new("Report an issue", "win.report"))
         self.append_item(Gio.MenuItem.new("Logout", "win.logout"))
         self.append_item(Gio.MenuItem.new("Quit", "win.quit"))
 
@@ -100,18 +103,22 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
 
     def _setup_actions(self):
         # Add actions to Gtk.ApplicationWindow
-        self._main_window.add_action(self.settings_action)
         self._main_window.add_action(self.bug_report_action)
+        self._main_window.add_action(self.settings_action)
+        self._main_window.add_action(self.release_notes_action)
         self._main_window.add_action(self.about_action)
         self._main_window.add_action(self.logout_action)
         self._main_window.add_action(self.quit_action)
 
         # Connect actions to callbacks
+        self.bug_report_action.connect(
+            "activate", self._on_report_an_issue_clicked
+        )
         self.settings_action.connect(
             "activate", self._on_settings_clicked
         )
-        self.bug_report_action.connect(
-            "activate", self._on_report_an_issue_clicked
+        self.release_notes_action.connect(
+            "activate", self._on_release_notes_clicked
         )
         self.about_action.connect(
             "activate", self._on_about_clicked
@@ -123,10 +130,6 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
             "activate", self._on_quit_clicked
         )
 
-    def _on_settings_clicked(self,  *_):
-        settings_window = SettingsWindow(self._controller)
-        settings_window.present()
-
     def _on_report_an_issue_clicked(self, *_):
         bug_dialog = BugReportDialog(self._controller, self._main_window)
         bug_dialog.set_transient_for(self._main_window)
@@ -134,6 +137,16 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         # is emitted.
         bug_dialog.run()
         bug_dialog.destroy()
+
+    def _on_settings_clicked(self,  *_):
+        settings_window = SettingsWindow(self._controller)
+        settings_window.set_transient_for(self._main_window)
+        settings_window.present()
+
+    def _on_release_notes_clicked(self,  *_):
+        release_notes = ReleaseNotesDialog()
+        release_notes.set_transient_for(self._main_window)
+        release_notes.present()
 
     def _on_about_clicked(self, *_):
         about_dialog = AboutDialog()

@@ -51,7 +51,7 @@ label.success {
     color: @signal-success
 }
 
-.setting-category {
+.setting-category{
     margin-top: 20px;
     margin-left: 20px;
 	margin-right: 20px;
@@ -68,9 +68,13 @@ label.success {
 }
 
 .upgrade-tag{
-	border-radius: 10px;
+    border-radius: 10px;
 	background: transparent;
 	border: 1px solid rgba(155, 155, 155, 0.2);
 	outline: none;
 	background-image: none;
+}
+
+.release-notes-collection {
+    margin: 20px 20px 60px 20px;
 }

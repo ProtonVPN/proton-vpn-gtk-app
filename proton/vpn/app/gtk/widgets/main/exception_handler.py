@@ -24,6 +24,7 @@ import threading
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
     ProtonAPIAuthenticationNeeded
+from proton.vpn.session.exceptions import ServerNotFoundError
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,7 @@ class ExceptionHandler:
     GENERIC_ERROR_TITLE = "Something went wrong"
     GENERIC_ERROR_MESSAGE = "We're sorry, an unexpected error occurred." \
                             "Please try again."
+    SERVER_NOT_FOUND_TITLE = "Unable to find server"
     PROTON_API_NOT_REACHABLE_MESSAGE = "Our servers are not reachable. " \
                                        "Please check your internet connection."
 
@@ -99,6 +101,8 @@ class ExceptionHandler:
             self._on_proton_api_not_reachable(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, ProtonAPIError) and exc_value.error:
             self._on_proton_api_error(exc_type, exc_value, exc_traceback)
+        elif isinstance(exc_value, ServerNotFoundError):
+            self._on_server_not_found(exc_type, exc_value, exc_traceback)
         elif issubclass(exc_type, AssertionError):
             # We shouldn't catch assertion errors raised by tests.
             raise exc_value
@@ -121,6 +125,17 @@ class ExceptionHandler:
         self._main_widget.notifications.show_error_message(exc_value.error)
         logger.error(
             exc_value.error,
+            category="APP", event="ERROR",
+            exc_info=(exc_type, exc_value, exc_traceback)
+        )
+
+    def _on_server_not_found(self, exc_type, exc_value, exc_traceback):
+        self._main_widget.notifications.show_error_dialog(
+            title=self.SERVER_NOT_FOUND_TITLE,
+            message=str(exc_value)
+        )
+        logger.error(
+            exc_value,
             category="APP", event="ERROR",
             exc_info=(exc_type, exc_value, exc_traceback)
         )

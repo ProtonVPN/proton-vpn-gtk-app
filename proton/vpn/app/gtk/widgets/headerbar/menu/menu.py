@@ -139,7 +139,10 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         bug_dialog.destroy()
 
     def _on_settings_clicked(self,  *_):
-        settings_window = SettingsWindow(self._controller)
+        settings_window = SettingsWindow(
+            self._controller,
+            self._main_window.application.tray_indicator
+        )
         settings_window.set_transient_for(self._main_window)
         settings_window.present()
 

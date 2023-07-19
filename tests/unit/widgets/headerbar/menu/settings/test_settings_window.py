@@ -27,12 +27,13 @@ from proton.vpn.core_api.settings import NetShield
 class TestSettingsWindow:
 
     def test_settings_window_ensure_passed_objects_are_added_to_container(self):
+        tray_indicator_mock = Mock()
         feature_settings_mock = Mock()
         connection_settings_mock = Mock()
         general_settings_mock = Mock()
         notification_bar_mock = Mock()
         with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window.Gtk.Box.pack_start") as pack_start_mock:
-            settings_window = SettingsWindow(Mock(), notification_bar_mock, feature_settings_mock, connection_settings_mock, general_settings_mock)
+            settings_window = SettingsWindow(Mock(), tray_indicator_mock, notification_bar_mock, feature_settings_mock, connection_settings_mock, general_settings_mock)
 
             assert pack_start_mock.mock_calls[0].args == (feature_settings_mock, False, False, 0)
             assert pack_start_mock.mock_calls[1].args == (connection_settings_mock, False, False, 0)

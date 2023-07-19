@@ -19,13 +19,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-
+from typing import TYPE_CHECKING, Optional
 from gi.repository import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     CategoryHeader, SettingRow, SettingName, SettingDescription
 )
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator
 
 
 class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
@@ -36,13 +37,21 @@ class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         "soon as Proton VPN app starts. Replace it with a country ISO code "\
         "(e.g.: US for United States), a server (e.g.: NL#42)"\
         " or Fastest for quick connection. Default value: Off."
+    TRAY_PINNED_SERVERS_LABEL = "Pinned Tray Connections"
+    TRAY_PINNED_SERVERS_DESCRIPTION = "Access preferred connections from system tray."\
+        " Enter country or server codes, separated by commas, to quickly connect "\
+        "(e.g.: NL#42, JP, US, IT#01)."
 
-    def __init__(self, controller: Controller, notification_bar: NotificationBar):
+    def __init__(
+        self, controller: Controller,
+        tray_indicator: Optional["TrayIndicator"] = None
+    ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller
-        self._notification_bar = notification_bar
+        self._tray_indicator = tray_indicator
 
         self.connect_at_app_startup_row = None
+        self.tray_pinned_servers_row = None
 
         self.set_halign(Gtk.Align.FILL)
         self.set_spacing(15)
@@ -54,6 +63,7 @@ class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         under this category."""
         self.pack_start(CategoryHeader(self.CATEGORY_NAME), False, False, 0)
         self.build_connect_at_app_startup()
+        self.build_tray_pinned_servers()
 
     @property
     def connect_at_app_startup(self) -> str:
@@ -98,3 +108,51 @@ class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         )
 
         self.pack_start(self.connect_at_app_startup_row, False, False, 0)
+
+    @property
+    def tray_pinned_servers(self) -> str:
+        """Shortcut property that returns the current
+        `tray_pinned_servers` setting"""
+        tray_pinned_servers = self._controller.app_configuration.tray_pinned_servers
+
+        return ', '.join(tray_pinned_servers)
+
+    @tray_pinned_servers.setter
+    def tray_pinned_servers(self, newvalue: str):
+        """Shortcut property that sets the new `tray_pinned_servers` setting and
+        stores to disk."""
+        server_list = []
+
+        for pinned_server in newvalue.split(","):
+            cleaned_pinned_server = pinned_server.strip().upper()
+
+            if cleaned_pinned_server:
+                server_list.append(cleaned_pinned_server)
+
+        app_config = self._controller.app_configuration
+        app_config.tray_pinned_servers = server_list
+        self._controller.app_configuration = app_config
+
+    def build_tray_pinned_servers(self):
+        """Builds and adds the `tray_pinned_servers` setting to the widget."""
+        def on_focus_outside_entry(entry: Gtk.Entry, _):
+            self.tray_pinned_servers = entry.get_text()
+            self._tray_indicator.reload_pinned_servers()
+
+        if self._tray_indicator is None:
+            return
+
+        entry = Gtk.Entry()
+        entry.set_halign(Gtk.Align.END)
+        entry.set_hexpand(True)
+
+        entry.set_text(self.tray_pinned_servers)
+        entry.connect("focus-out-event", on_focus_outside_entry)
+
+        self.tray_pinned_servers_row = SettingRow(
+            SettingName(self.TRAY_PINNED_SERVERS_LABEL),
+            entry,
+            SettingDescription(self.TRAY_PINNED_SERVERS_DESCRIPTION),
+        )
+
+        self.pack_start(self.tray_pinned_servers_row, False, False, 0)

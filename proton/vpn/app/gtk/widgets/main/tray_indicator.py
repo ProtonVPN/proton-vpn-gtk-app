@@ -142,40 +142,88 @@ class TrayIndicator:
     @property
     def display_connect_entry(self) -> bool:
         """Returns if the connect button is visible or not."""
-        return self._connect_entry.get_property("visible")
+        return self._connect_entry.get_visible()
+
+    @display_connect_entry.setter
+    def display_connect_entry(self, newvalue: bool):
+        """Returns if the connect button is visible or not."""
+        self._connect_entry.set_visible(newvalue)
 
     @property
     def display_disconnect_entry(self) -> bool:
         """Returns if the disconnect button is visible or not."""
-        return self._disconnect_entry.get_property("visible")
+        return self._disconnect_entry.get_visible()
+
+    @display_disconnect_entry.setter
+    def display_disconnect_entry(self, newvalue: bool):
+        """Returns if the disconnect button is visible or not."""
+        self._disconnect_entry.set_visible(newvalue)
 
     @property
     def enable_connect_entry(self) -> bool:
         """Returns if connect entry is clickable or not."""
-        return self._connect_entry.get_property("sensitive")
+        return self._connect_entry.get_sensitive()
 
     @enable_connect_entry.setter
     def enable_connect_entry(self, newvalue: bool):
         """Sets if connect entry should be clickable or not."""
-        self._connect_entry.set_property("sensitive", newvalue)
+        self._connect_entry.set_sensitive(newvalue)
 
     @property
     def enable_disconnect_entry(self) -> bool:
         """Returns if disconnect entry is clickable or not."""
-        return self._disconnect_entry.get_property("sensitive")
+        return self._disconnect_entry.get_sensitive()
 
     @enable_disconnect_entry.setter
     def enable_disconnect_entry(self, newvalue: bool):
         """Sets if disconnect entry should be clickable or not."""
-        self._disconnect_entry.set_property("sensitive", newvalue)
+        self._disconnect_entry.set_sensitive(newvalue)
+
+    def reload_pinned_servers(self):
+        """Reloads pinned servers.
+            Useful to use when the list is changed from the outside.
+        """
+        def _reload_pinned_servers():
+            if self._pinned_server_items:
+                self._remove_pinned_servers()
+
+            if not self._controller.app_configuration.tray_pinned_servers:
+                return
+
+            # 0 = Quick Connect
+            # 1 = Disconnect
+            # 2 = Seperator
+            # 3 = First pinned server
+            base_pos = 3
+
+            for server in self._controller.app_configuration.tray_pinned_servers:
+                servername = str(server).upper()
+                server_entry = Gtk.MenuItem(label=f"{servername}")
+                server_entry.connect(
+                    "activate",
+                    self._on_connect_to_pinned_entry_clicked, servername
+                )
+                self._menu.insert(server_entry, base_pos)
+
+                self._pinned_server_items.append(server_entry)
+
+                base_pos += 1
+
+            self._set_visibility_for_pinned_servers(True)
+
+        GLib.idle_add(_reload_pinned_servers)
 
     def _build_menu(self) -> Gtk.Menu:
         menu = Gtk.Menu()
+        self._setup_connection_handler_entries(menu)
+        menu.append(Gtk.SeparatorMenuItem())
+
         if self._controller.user_logged_in:
             self._setup_pinned_server_entries(menu)
 
-        self._setup_connection_handler_entries(menu)
+        menu.append(Gtk.SeparatorMenuItem())
         self._setup_main_window_visibility_toggle_entry(menu)
+        menu.append(Gtk.SeparatorMenuItem())
         self._setup_quit_entry(menu)
 
         return menu
@@ -184,20 +232,18 @@ class TrayIndicator:
         if not self._controller.app_configuration.tray_pinned_servers:
             return
 
-        separator = Gtk.SeparatorMenuItem()
-        self._pinned_server_items.append(separator)
-        menu.prepend(separator)
-
-        for server in reversed(self._controller.app_configuration.tray_pinned_servers):
+        for server in self._controller.app_configuration.tray_pinned_servers:
             servername = str(server).upper()
             server_entry = Gtk.MenuItem(label=f"{servername}")
             server_entry.connect(
                 "activate",
-                self._on_connect_to_server_entry_clicked, servername
+                self._on_connect_to_pinned_entry_clicked, servername
             )
-            menu.prepend(server_entry)
+            menu.append(server_entry)
 
             self._pinned_server_items.append(server_entry)
+
+        self._set_visibility_for_pinned_servers(True)
 
     def _setup_connection_handler_entries(self, menu: Gtk.Menu):
         self._connect_entry = Gtk.MenuItem(label="Quick Connect")
@@ -219,19 +265,16 @@ class TrayIndicator:
         self._toggle_entry.show()
 
     def _setup_quit_entry(self, menu: Gtk.Menu):
-        separator = Gtk.SeparatorMenuItem()
-        menu.append(separator)
-
         self._quit_entry = Gtk.MenuItem(label="Quit")
         self._quit_entry.connect("activate", self._on_exit_app_menu_entry_clicked)
         menu.append(self._quit_entry)
         self._quit_entry.show()
 
-    def _on_connect_to_server_entry_clicked(
+    def _on_connect_to_pinned_entry_clicked(
         self, _: Gtk.MenuItem, servername: str
     ):
         logger.info(f"Connect to {servername}", category="ui.tray", event="connect")
-        self._controller.connect_to_server(servername)
+        self._controller.connect_from_tray(servername)
 
     def _on_toggle_app_visibility_menu_entry_clicked(self, *_):
         if self._main_window.get_visible():
@@ -252,14 +295,13 @@ class TrayIndicator:
         self._controller.disconnect()
 
     def _on_user_logged_in(self, *_):
-        self._connect_entry.show()
-        self._disconnect_entry.hide()
-        self._setup_pinned_server_entries(self._menu)
-        self._set_visibility_for_pinned_servers(True)
+        self.display_disconnect_entry = False
+        self.display_connect_entry = True
+        self.reload_pinned_servers()
 
     def _on_user_logged_out(self, *_):
-        self._connect_entry.hide()
-        self._disconnect_entry.hide()
+        self.display_disconnect_entry = False
+        self.display_connect_entry = False
         self._remove_pinned_servers()
 
     def _on_connection_disconnected(self):
@@ -269,18 +311,19 @@ class TrayIndicator:
             self.DISCONNECTED_ICON_DESCRIPTION
         )
 
-        if self._controller.user_logged_in:
-            self._connect_entry.show()
-            self._disconnect_entry.hide()
-            self._set_visibility_for_pinned_servers(True)
+        if not self._controller.user_logged_in:
+            return
+
+        self.display_disconnect_entry = False
+        self.display_connect_entry = True
 
     def _on_connection_connecting(self):
         self.enable_connect_entry = False
 
     def _on_connection_connected(self):
         self.enable_disconnect_entry = True
-        self._connect_entry.hide()
-        self._disconnect_entry.show()
+        self.display_disconnect_entry = True
+        self.display_connect_entry = False
         self._indicator.set_icon_full(
             self.CONNECTED_ICON,
             self.CONNECTED_ICON_DESCRIPTION
@@ -288,7 +331,7 @@ class TrayIndicator:
 
     def _set_visibility_for_pinned_servers(self, newvalue: bool):
         for server_item in self._pinned_server_items:
-            server_item.set_property("visible", newvalue)
+            server_item.set_visible(newvalue)
 
     def _remove_pinned_servers(self):
         for server_item in self._pinned_server_items:
@@ -300,8 +343,8 @@ class TrayIndicator:
         self.enable_disconnect_entry = False
 
     def _on_connection_error(self):
-        self._connect_entry.show()
-        self._disconnect_entry.hide()
+        self.display_disconnect_entry = False
+        self.display_connect_entry = True
         self._indicator.set_icon_full(
             self.ERROR_ICON,
             self.ERROR_ICON_DESCRIPTION
@@ -320,12 +363,26 @@ class TrayIndicator:
         """
         self._connect_entry.emit("activate")
 
+    @property
+    def top_most_pinned_server_entry(self) -> Gtk.MenuItem:
+        """Returns the topmost pinned server button.
+        """
+        return self._menu.get_children()[3]
+
     def activate_top_most_pinned_server_entry(self):
         """Clicks the topmost pinned server button.
         """
-        self._menu.get_children()[0].emit("activate")
+        self._menu.get_children()[3].emit("activate")
 
     def activate_disconnect_entry(self):
         """Clicks the disconnect button.
         """
         self._disconnect_entry.emit("activate")
+
+    @property
+    def are_servers_pinned(self) -> bool:
+        """Returns if there are any pinned servers."""
+        return bool(self._pinned_server_items) and any(
+            child in self._pinned_server_items
+            for child in self._menu.get_children()
+        )

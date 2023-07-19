@@ -18,6 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import pytest
 from unittest.mock import Mock, PropertyMock, patch
+from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk import gi
 from gi.repository import Gdk  # pylint: disable=C0413 # noqa: E402
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings import GeneralSettings
@@ -71,7 +72,7 @@ def test_connect_at_app_start_translates_data_types_when_switching_to_and_from_o
 
 
 @pytest.mark.parametrize("new_setting", ["fastest", "pt", "nl#12"])
-def test_connect_at_app_start_when_changing_entry_and_ensure_changes_are_saved_by_leaving_focus(new_setting, mocked_controller_and_connect_app_at_startup):
+def test_connect_at_app_start_when_changing_entry_and_leaving_focus_ensuring_changes_are_saved(new_setting, mocked_controller_and_connect_app_at_startup):
     controller_mock, connect_at_app_startup_mock = mocked_controller_and_connect_app_at_startup
 
     general_settings = GeneralSettings(controller_mock, Mock())
@@ -83,3 +84,76 @@ def test_connect_at_app_start_when_changing_entry_and_ensure_changes_are_saved_b
     general_settings.connect_at_app_startup_row.interactive_object.emit("focus-out-event", Gdk.Event(Gdk.EventType.FOCUS_CHANGE))
 
     connect_at_app_startup_mock.assert_called_once_with(new_setting.upper())
+
+
+@pytest.fixture
+def mocked_controller_and_tray_pinned_servers():
+    controller_mock = Mock(name="controller")
+
+    property_mock = PropertyMock(name="tray_pinned_servers", return_value=[])
+    type(controller_mock.app_configuration).tray_pinned_servers = property_mock
+
+    return controller_mock, property_mock
+
+
+def test_tray_pinned_servers_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_tray_pinned_servers):
+    controller_mock, tray_pinned_servers_mock = mocked_controller_and_tray_pinned_servers
+
+    general_settings = GeneralSettings(controller_mock, Mock())
+    general_settings.build_tray_pinned_servers()
+
+    tray_pinned_servers_mock.assert_called_once()
+
+
+def test_tray_pinned_servers_when_tray_indicator_is_not_available(mocked_controller_and_tray_pinned_servers):
+    controller_mock, tray_pinned_servers_mock = mocked_controller_and_tray_pinned_servers
+
+    general_settings = GeneralSettings(controller_mock)
+    general_settings.build_tray_pinned_servers()
+
+    assert general_settings.tray_pinned_servers_row is None
+
+
+def test_tray_pinned_servers_when_entry_is_set_to_initial_value(mocked_controller_and_tray_pinned_servers):
+    controller_mock, tray_pinned_servers_mock = mocked_controller_and_tray_pinned_servers
+
+    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.Gtk.Entry.set_text") as set_text_mock:
+        general_settings = GeneralSettings(controller_mock, Mock())
+        general_settings.build_tray_pinned_servers()
+
+        set_text_mock.assert_called_once_with('')
+
+
+@pytest.mark.parametrize("new_setting", [("se, pt#12, CH"), (" pt "), ("nl#12"), ('')])
+def test_tray_pinned_servers_when_changing_entry_and_leaving_focus_ensuring_changes_are_saved(new_setting, mocked_controller_and_tray_pinned_servers):
+    controller_mock, tray_pinned_servers_mock = mocked_controller_and_tray_pinned_servers
+
+    general_settings = GeneralSettings(controller_mock, Mock())
+    general_settings.build_tray_pinned_servers()
+
+    tray_pinned_servers_mock.reset_mock()
+
+    general_settings.tray_pinned_servers_row.interactive_object.set_text(new_setting)
+    general_settings.tray_pinned_servers_row.interactive_object.emit("focus-out-event", Gdk.Event(Gdk.EventType.FOCUS_CHANGE))
+
+    if new_setting:
+        _new_setting = new_setting.split(",")
+        _new_setting = [entry.strip().upper() for entry in _new_setting]
+    else:
+        _new_setting = []
+
+    tray_pinned_servers_mock.assert_called_once_with(_new_setting)
+
+
+def test_tray_pinned_servers_when_changing_entry_and_leaving_focus_ensuring_tray_reload_pinned_servers(mocked_controller_and_tray_pinned_servers):
+    controller_mock, tray_pinned_servers_mock = mocked_controller_and_tray_pinned_servers
+
+    tray_indicator_mock = Mock()
+
+    general_settings = GeneralSettings(controller_mock, tray_indicator_mock)
+    general_settings.build_tray_pinned_servers()
+
+    general_settings.tray_pinned_servers_row.interactive_object.set_text("")
+    general_settings.tray_pinned_servers_row.interactive_object.emit("focus-out-event", Gdk.Event(Gdk.EventType.FOCUS_CHANGE))
+
+    tray_indicator_mock.reload_pinned_servers.assert_called_once()

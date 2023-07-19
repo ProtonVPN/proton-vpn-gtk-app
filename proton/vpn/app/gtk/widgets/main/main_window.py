@@ -48,6 +48,7 @@ class MainWindow(Gtk.ApplicationWindow):
             loading_widget: LoadingWidget = None
     ):
         super().__init__(application=application)
+        self._application = application
         self.get_settings().props.gtk_application_prefer_dark_theme = True
         self._controller = controller
         self._close_window_handler_id = None
@@ -74,6 +75,12 @@ class MainWindow(Gtk.ApplicationWindow):
             loading_widget=self._loading_widget
         )
         self.add(self.main_widget)
+
+    @property
+    def application(self) -> Gtk.Application:
+        """Returns Gtk.Application object which contains references to windows,
+        tray indicator and other settings."""
+        return self._application
 
     def add_keyboard_shortcut(self, target_widget: Gtk.Widget, target_signal: str, shortcut: str):
         """

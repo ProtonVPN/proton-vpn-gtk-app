@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
+from typing import TYPE_CHECKING, Optional
 
 from gi.repository import Gtk
 from proton.vpn.app.gtk.controller import Controller
@@ -31,16 +32,20 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import 
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings import \
     GeneralSettings
 
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator
+
 
 class SettingsWindow(Gtk.Window):
     """Main settings window."""
     def __init__(  # pylint: disable=too-many-arguments
         self,
         controller: Controller,
+        tray_indicator: Optional["TrayIndicator"] = None,
         notification_bar: NotificationBar = None,
         feature_settings: FeatureSettings = None,
         connection_settings: ConnectionSettings = None,
-        general_settings: GeneralSettings = None
+        general_settings: GeneralSettings = None,
     ):
         super().__init__()
         self.set_title("Settings")
@@ -57,7 +62,7 @@ class SettingsWindow(Gtk.Window):
             self._controller, self._notification_bar
         )
         self._general_settings = general_settings or GeneralSettings(
-            self._controller, self._notification_bar
+            self._controller, tray_indicator
         )
 
         self._create_elastic_window()

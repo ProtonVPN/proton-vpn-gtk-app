@@ -172,7 +172,6 @@ def test_assert_connection_related_entries_are_properly_displayed_when_user_has_
     logged_in_callback()
     process_gtk_events()
 
-
     assert tray_indicator.display_connect_entry
     assert not tray_indicator.display_disconnect_entry    
 
@@ -310,7 +309,51 @@ def test_connect_pinned_server_entry_connects_to_vpn_when_activated(controller_m
     process_gtk_events()
 
     tray_indicator.activate_top_most_pinned_server_entry()
-    controller_mock.connect_to_server.assert_called_once_with(pinned_server)
+    controller_mock.connect_from_tray.assert_called_once_with(pinned_server)
+
+
+def test_remove_pinned_server_entry_when_user_has_logged_out(controller_mock):
+    indicator_mock = Mock()
+    main_window = Mock()
+    main_window.get_visible.return_value = True
+
+    pinned_server = "TEST#30"
+    controller_mock.user_logged_in = True
+    controller_mock.current_connection_status = states.Disconnected()
+    controller_mock.app_configuration.tray_pinned_servers = [pinned_server]
+
+    tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
+    process_gtk_events()
+
+    main_window.header_bar.menu.connect.call_args.args[1]()
+    process_gtk_events()
+
+    assert not tray_indicator.are_servers_pinned
+
+
+def test_ensure_pinned_server_entries_remain_in_order_after_user_has_logged_out_and_logged_in(controller_mock):
+    indicator_mock = Mock()
+    main_window = Mock()
+    main_window.get_visible.return_value = True
+
+    pinned_server1 = "TEST#30"
+    pinned_server2 = "TEST#40"
+    pinned_server3 = "TEST#50"
+    controller_mock.user_logged_in = True
+    controller_mock.current_connection_status = states.Disconnected()
+    controller_mock.app_configuration.tray_pinned_servers = [pinned_server1, pinned_server2, pinned_server3]
+
+    tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
+    process_gtk_events()
+
+    main_window.header_bar.menu.connect.call_args.args[1]()
+    process_gtk_events()
+
+    main_window.main_widget.login_widget.connect.call_args.args[1]()
+    process_gtk_events()
+
+    assert tray_indicator.are_servers_pinned
+    assert tray_indicator.top_most_pinned_server_entry.get_label() == pinned_server1
 
 
 def test_disconnect_entry_disconnects_from_vpn_when_user_is_connected(controller_mock):

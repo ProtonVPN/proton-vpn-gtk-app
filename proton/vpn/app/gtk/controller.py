@@ -61,6 +61,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         cache_handler: CacheHandler = None
     ):  # pylint: disable=too-many-arguments
         self.thread_pool_executor = thread_pool_executor
+
         self._api = api or ProtonVPNAPI(ClientTypeMetadata(
             type="gui", version=semver.from_pep440(self.app_version)
         ))
@@ -74,6 +75,7 @@ class Controller:  # pylint: disable=too-many-public-methods
             network_monitor=NetworkMonitor(pool=thread_pool_executor),
             session_monitor=SessionMonitor()
         )
+
         self._app_config = app_config
         self._settings = settings
         self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
@@ -142,10 +144,18 @@ class Controller:  # pylint: disable=too-many-public-methods
         # Temporary hack for parsing. Should be improved
         if connect_at_app_startup == "FASTEST":
             self.connect_to_fastest_server()
-        elif "#" in connect_at_app_startup:
-            self.connect_to_server(connect_at_app_startup)
         else:
-            self.connect_to_country(connect_at_app_startup)
+            self._connect_to(connect_at_app_startup)
+
+    def connect_from_tray(self, connect_to: str):
+        """Connect to servers from tray."""
+        self._connect_to(connect_to)
+
+    def _connect_to(self, connect_to: str):
+        if "#" in connect_to:
+            self.connect_to_server(connect_to)
+        else:
+            self.connect_to_country(connect_to)
 
     def connect_to_country(self, country_code: str):
         """

@@ -28,13 +28,17 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
 )
 
 
-class ConnectionSettings(Gtk.Box):
+class ConnectionSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
     CATEGORY_NAME = "Connection"
     PROTOCOL_LABEL = "Protocol"
     VPN_ACCELERATOR_LABEL = "VPN Accelerator"
     VPN_ACCELERATOR_DESCRIPTION = "Increase your connection speed by up to 400% "\
         "with performance enhancing technologies."
+    MODERATE_NAT_LABEL = "Moderate NAT"
+    MODERATE_NAT_DESCRIPTION = "Disables randomization of the local addresses mapping. "\
+        "This can slightly reduce connection security, but should allow direct "\
+        "connections for online gaming and similar purposes."
 
     def __init__(self, controller: Controller, notification_bar: NotificationBar):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
@@ -46,6 +50,7 @@ class ConnectionSettings(Gtk.Box):
 
         self.vpn_accelerator_row = None
         self.protocol_row = None
+        self.moderate_nat_row = None
 
         self.get_style_context().add_class("setting-category")
 
@@ -55,6 +60,7 @@ class ConnectionSettings(Gtk.Box):
         self.pack_start(CategoryHeader(self.CATEGORY_NAME), False, False, 0)
         self.build_protocol()
         self.build_vpn_accelerator()
+        self.build_moderate_nat()
 
     @property
     def protocol(self) -> str:
@@ -80,6 +86,18 @@ class ConnectionSettings(Gtk.Box):
         self._controller.get_settings().features.vpn_accelerator = newvalue
         self._controller.save_settings()
 
+    @property
+    def moderate_nat(self) -> bool:
+        """Shortcut property that returns the current `moderate_nat` setting."""
+        return self._controller.get_settings().features.moderate_nat
+
+    @moderate_nat.setter
+    def moderate_nat(self, newvalue: bool):
+        """Shortcut property that sets the new `moderate_nat` setting and
+        stores to disk."""
+        self._controller.get_settings().features.moderate_nat = newvalue
+        self._controller.save_settings()
+
     def build_protocol(self):
         """Builds and adds the `protocol` setting to the widget."""
         def on_combobox_changed(combobox):
@@ -93,9 +111,9 @@ class ConnectionSettings(Gtk.Box):
                 )
 
         available_protocols = self._controller.get_available_protocols()
-        protocol_combobox = Gtk.ComboBoxText()
-        protocol_combobox.set_hexpand(True)
-        protocol_combobox.set_halign(Gtk.Align.END)
+        combobox = Gtk.ComboBoxText()
+        combobox.set_hexpand(True)
+        combobox.set_halign(Gtk.Align.END)
 
         human_readeable_protocol = {
             "openvpn-tcp": "OpenVPN (TCP)",
@@ -103,16 +121,13 @@ class ConnectionSettings(Gtk.Box):
         }
 
         for protocol in available_protocols:
-            protocol_combobox.append(protocol, human_readeable_protocol.get(protocol, protocol))
+            combobox.append(protocol, human_readeable_protocol.get(protocol, protocol))
 
-        protocol_combobox.set_entry_text_column(1)
-        protocol_combobox.set_active_id(self.protocol)
-        protocol_combobox.connect("changed", on_combobox_changed)
+        combobox.set_entry_text_column(1)
+        combobox.set_active_id(self.protocol)
+        combobox.connect("changed", on_combobox_changed)
 
-        self.protocol_row = SettingRow(
-            SettingName(self.PROTOCOL_LABEL),
-            protocol_combobox
-        )
+        self.protocol_row = SettingRow(SettingName(self.PROTOCOL_LABEL), combobox)
         self.pack_start(self.protocol_row, False, False, 0)
 
     def build_vpn_accelerator(self):
@@ -129,16 +144,45 @@ class ConnectionSettings(Gtk.Box):
                 self.vpn_accelerator = False
             return
 
-        vpn_accelerator_switch = Gtk.Switch()
-        vpn_accelerator_switch.set_halign(Gtk.Align.END)
-        vpn_accelerator_switch.set_hexpand(True)
+        switch = Gtk.Switch()
+        switch.set_halign(Gtk.Align.END)
+        switch.set_hexpand(True)
 
         self.vpn_accelerator_row = SettingRow(
             SettingName(self.VPN_ACCELERATOR_LABEL),
-            vpn_accelerator_switch,
+            switch,
             SettingDescription(self.VPN_ACCELERATOR_DESCRIPTION)
         )
 
-        vpn_accelerator_switch.set_state(self.vpn_accelerator)
-        vpn_accelerator_switch.connect("state-set", on_switch_state)
+        switch.set_state(self.vpn_accelerator)
+        switch.connect("state-set", on_switch_state)
         self.pack_start(self.vpn_accelerator_row, False, False, 0)
+
+    def build_moderate_nat(self):
+        """Builds and adds the `moderate_nat` setting to the widget."""
+        def on_switch_state(_, new_value: bool):
+            self.moderate_nat = new_value
+            if self._controller.is_connection_active:
+                self._notification_bar.show_info_message(
+                    f"{RECONNECT_MESSAGE}"
+                )
+
+        if not self._controller.vpn_data_refresher.client_config.feature_flags.moderate_nat:
+            if self.moderate_nat:
+                self.moderate_nat = False
+            return
+
+        switch = Gtk.Switch()
+        switch.set_halign(Gtk.Align.END)
+        switch.set_hexpand(True)
+
+        self.moderate_nat_row = SettingRow(
+            SettingName(self.MODERATE_NAT_LABEL),
+            switch,
+            SettingDescription(self.MODERATE_NAT_DESCRIPTION),
+            self._controller.user_tier
+        )
+
+        switch.set_state(self.moderate_nat)
+        switch.connect("state-set", on_switch_state)
+        self.pack_start(self.moderate_nat_row, False, False, 0)

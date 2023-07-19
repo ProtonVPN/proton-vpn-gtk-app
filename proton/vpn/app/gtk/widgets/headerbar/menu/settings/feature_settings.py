@@ -113,24 +113,24 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             (str(NetShield.BLOCK_MALICIOUS_URL.value), "Block Malware"),
             (str(NetShield.BLOCK_ADS_AND_TRACKING.value), "Block ads, trackers and malware"),
         ]
-        netshield_combobox = Gtk.ComboBoxText()
-        netshield_combobox.set_hexpand(True)
-        netshield_combobox.set_halign(Gtk.Align.END)
+        combobox = Gtk.ComboBoxText()
+        combobox.set_hexpand(True)
+        combobox.set_halign(Gtk.Align.END)
 
         for netshield_option in netshield_options:
             id_, ui_friendly_text = netshield_option
-            netshield_combobox.append(id_, ui_friendly_text)
+            combobox.append(id_, ui_friendly_text)
 
         self.netshield_row = SettingRow(
             SettingName(self.NETSHIELD_LABEL),
-            netshield_combobox,
+            combobox,
             SettingDescription(self.NETSHIELD_DESCRIPTION),
             self._controller.user_tier
         )
 
-        netshield_combobox.set_entry_text_column(1)
-        netshield_combobox.set_active_id(self.netshield)
-        netshield_combobox.connect("changed", on_combobox_changed)
+        combobox.set_entry_text_column(1)
+        combobox.set_active_id(self.netshield)
+        combobox.connect("changed", on_combobox_changed)
         self.pack_start(self.netshield_row, False, False, 0)
 
     def build_port_forwarding(self):
@@ -155,14 +155,15 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
                 self.port_forwarding = False
             return
 
-        port_forwarding_switch = Gtk.Switch()
-        port_forwarding_switch.set_halign(Gtk.Align.END)
-        port_forwarding_switch.set_hexpand(True)
+        switch = Gtk.Switch()
+        switch.set_halign(Gtk.Align.END)
+        switch.set_hexpand(True)
+
         description = SettingDescription(self.PORT_FORWARDING_DESCRIPTION)
 
         self.port_forwarding_row = SettingRow(
             SettingName(self.PORT_FORWARDING_LABEL),
-            port_forwarding_switch,
+            switch,
             description,
             self._controller.user_tier
         )
@@ -170,6 +171,6 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         port_forwarding_setting = self.port_forwarding
         edit_description_based_on_setting(port_forwarding_setting)
 
-        port_forwarding_switch.set_state(port_forwarding_setting)
-        port_forwarding_switch.connect("state-set", on_switch_state)
+        switch.set_state(port_forwarding_setting)
+        switch.connect("state-set", on_switch_state)
         self.pack_start(self.port_forwarding_row, False, False, 0)

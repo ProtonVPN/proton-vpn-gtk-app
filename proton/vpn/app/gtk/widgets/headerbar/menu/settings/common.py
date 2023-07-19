@@ -38,7 +38,14 @@ class CategoryHeader(Gtk.Label):
 
 
 class SettingRow(Gtk.Grid):
-    """Contains the objects of a single item."""
+    """Contains the objects of a single item.
+
+    The reason the `user_tier` is optional is mainly because some rows might
+    be only available for free or paid plans, thus features that are free
+    the `SettingRow` don't need a tier, but for paid features
+    that can have another UI state (disabled state) we just need to pass the
+    user tier for it to automatically display the propper UI.
+    """
     def __init__(
         self, label: Gtk.Label,
         interactive_object: Gtk.Widget,
@@ -50,13 +57,11 @@ class SettingRow(Gtk.Grid):
         self.set_row_spacing(10)
         self.set_column_spacing(100)
 
-        self._user_tier = user_tier
-
         self._label = label
         self._interactive_object = interactive_object
         self._description = description
 
-        self.build_ui(self._user_tier is not None and self._user_tier < 1)
+        self.build_ui(user_tier is not None and user_tier < 1)
 
     def build_ui(self, is_upgrade_required: bool):
         """Builds the UI depending if an upgrade is required or not."""
@@ -96,8 +101,8 @@ class SettingRow(Gtk.Grid):
 class UpgradePlusTag(Gtk.Button):
     """ Using normal button instead of LinkButton mainly
     because of styling. LinkButtons usually have very ugly UI,
-    and all they do is emit `::activate-link which`
-    just calls `Gtk.show_uri_on_window`
+    and all they do is emit `::activate-link` which
+    just calls `Gtk.show_uri_on_window`.
 
     Source: https://lazka.github.io/pgi-docs/Gtk-3.0/classes/LinkButton.html
     """

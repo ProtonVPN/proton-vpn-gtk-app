@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
 %define version 4.0.0
-%define upstream_version 4.0.0a13
+%define upstream_version 4.0.0a14
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.13.a13
+%define release 0.14.a14
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -69,6 +69,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Jul 19 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.14.a14
+- Add NAT type selection to settings window
+
 * Mon Jul 17 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.13.a13
 - Add user-friendly release notes to menu
 

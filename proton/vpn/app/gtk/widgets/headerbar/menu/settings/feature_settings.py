@@ -35,6 +35,9 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     NETSHIELD_LABEL = "NetShield"
     NETSHIELD_DESCRIPTION = "Protect yourself from ads, malware, and trackers "\
         "on websites and apps."
+    KILLSWITCH_LABEL = "Kill Switch"
+    KILLSWITCH_DESCRIPTION = "Protects your IP address by disconnecting you from the " \
+        "internet if you lose your VPN connection."
     PORT_FORWARDING_LABEL = "Port Forwarding"
     PORT_FORWARDING_DESCRIPTION = "Bypass firewalls to connect to P2P servers "\
         "and devices on your local network."
@@ -49,6 +52,7 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._notification_bar = notification_bar
 
         self.netshield_row = None
+        self.killswitch_row = None
         self.port_forwarding_row = None
 
         self.set_halign(Gtk.Align.FILL)
@@ -61,6 +65,7 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         under this category."""
         self.pack_start(CategoryHeader(self.CATEGORY_NAME), False, False, 0)
         self.build_netshield()
+        self.build_killswitch()
         self.build_port_forwarding()
 
     @property
@@ -73,6 +78,18 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         """Shortcut property that sets the new `netshield` setting and
         stores to disk."""
         self._controller.get_settings().features.netshield = int(newvalue)
+        self._controller.save_settings()
+
+    @property
+    def killswitch(self) -> int:
+        """Shortcut property that returns the current `killswitch` setting."""
+        return int(self._controller.get_settings().killswitch)
+
+    @killswitch.setter
+    def killswitch(self, newvalue: int):
+        """Shortcut property that sets the new `killswitch` setting and
+        stores to disk."""
+        self._controller.get_settings().killswitch = int(newvalue)
         self._controller.save_settings()
 
     @property
@@ -132,6 +149,29 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         combobox.set_active_id(self.netshield)
         combobox.connect("changed", on_combobox_changed)
         self.pack_start(self.netshield_row, False, False, 0)
+
+    def build_killswitch(self):
+        """Builds and adds the `killswitch` setting to the widget."""
+        def on_switch_state(_, new_value: bool):
+            self.killswitch = new_value
+            if self._controller.is_connection_active:
+                self._notification_bar.show_info_message(
+                    f"{RECONNECT_MESSAGE}"
+                )
+
+        switch = Gtk.Switch()
+        switch.set_halign(Gtk.Align.END)
+        switch.set_hexpand(True)
+
+        self.killswitch_row = SettingRow(
+            SettingName(self.KILLSWITCH_LABEL),
+            switch,
+            SettingDescription(self.KILLSWITCH_DESCRIPTION)
+        )
+
+        switch.set_state(self.killswitch)
+        switch.connect("state-set", on_switch_state)
+        self.pack_start(self.killswitch_row, False, False, 0)
 
     def build_port_forwarding(self):
         """Builds and adds the `port_forwarding` setting to the widget."""

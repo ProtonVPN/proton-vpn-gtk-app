@@ -30,14 +30,14 @@ if TYPE_CHECKING:
 
 
 class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
-    """General settingsa are grouped under this class."""
+    """General settings are grouped under this class."""
     CATEGORY_NAME = "General"
-    CONNECT_AT_APP_STARTUP_LABEL = "Auto Connect"
+    CONNECT_AT_APP_STARTUP_LABEL = "Auto connect"
     CONNECT_AT_APP_STARTUP_DESCRIPTION = "You will be connected to a server as "\
         "soon as Proton VPN app starts. Replace it with a country ISO code "\
         "(e.g.: US for United States), a server (e.g.: NL#42)"\
         " or Fastest for quick connection. Default value: Off."
-    TRAY_PINNED_SERVERS_LABEL = "Pinned Tray Connections"
+    TRAY_PINNED_SERVERS_LABEL = "Pinned tray connections"
     TRAY_PINNED_SERVERS_DESCRIPTION = "Access preferred connections from system tray."\
         " Enter country or server codes, separated by commas, to quickly connect "\
         "(e.g.: NL#42, JP, US, IT#01)."

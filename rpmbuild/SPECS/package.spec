@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
 %define version 4.0.0
-%define upstream_version 4.0.0a16
+%define upstream_version 4.0.0b1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.16.a16
+%define release 0.17.b1
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -69,7 +69,11 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Tue Sep 05 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.16.16
+* Tue Sep 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.17.b1
+- Fixed typos
+- Official beta release
+
+* Tue Sep 05 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.16.a16
 - Add kill switch selection to settings window
 
 * Fri Jul 21 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.15.a15

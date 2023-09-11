@@ -35,10 +35,10 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     NETSHIELD_LABEL = "NetShield"
     NETSHIELD_DESCRIPTION = "Protect yourself from ads, malware, and trackers "\
         "on websites and apps."
-    KILLSWITCH_LABEL = "Kill Switch"
+    KILLSWITCH_LABEL = "Kill switch"
     KILLSWITCH_DESCRIPTION = "Protects your IP address by disconnecting you from the " \
         "internet if you lose your VPN connection."
-    PORT_FORWARDING_LABEL = "Port Forwarding"
+    PORT_FORWARDING_LABEL = "Port forwarding"
     PORT_FORWARDING_DESCRIPTION = "Bypass firewalls to connect to P2P servers "\
         "and devices on your local network."
     PORT_FORWARDING_SETUP_GUIDE = "Follow our "\

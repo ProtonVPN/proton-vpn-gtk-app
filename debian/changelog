@@ -1,3 +1,10 @@
+proton-vpn-gtk-app (4.0.0~b1) unstable; urgency=medium
+
+  * Fixed typos
+  * Official beta release
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 11 Sep 2023 10:00:00 +0100
+
 proton-vpn-gtk-app (4.0.0~a16) unstable; urgency=medium
 
   * Add kill switch selection to settings window

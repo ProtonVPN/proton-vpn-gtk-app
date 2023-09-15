@@ -22,7 +22,7 @@ from unittest.mock import Mock, PropertyMock, patch
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import RECONNECT_MESSAGE
-from proton.vpn.core_api.settings import NetShield
+from proton.vpn.core.settings import NetShield
 
 
 FREE_TIER = 0

@@ -26,7 +26,7 @@ from gi.repository import GLib
 
 from proton.vpn import logging
 from proton.vpn.connection import states, VPNConnection
-from proton.vpn.core_api.connection import VPNConnectorWrapper
+from proton.vpn.core.connection import VPNConnectorWrapper
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor

@@ -20,7 +20,7 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from datetime import timedelta
 
 from gi.repository import GLib, GObject
-from proton.vpn.core_api.api import ProtonVPNAPI
+from proton.vpn.core.api import ProtonVPNAPI
 from proton.vpn.session.client_config import ClientConfig
 
 from proton.vpn import logging

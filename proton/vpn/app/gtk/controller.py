@@ -28,17 +28,17 @@ from typing import Optional
 from proton.vpn import logging
 
 from proton.vpn.connection import VPNConnection, states
-from proton.vpn.core_api.api import ProtonVPNAPI
-from proton.vpn.core_api.session import ClientTypeMetadata
-from proton.vpn.core_api.connection import VPNConnectorWrapper
-from proton.vpn.core_api.cache_handler import CacheHandler
+from proton.vpn.core.api import ProtonVPNAPI
+from proton.vpn.core.session import ClientTypeMetadata
+from proton.vpn.core.connection import VPNConnectorWrapper
+from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.session.servers import LogicalServer
 
 from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
-from proton.vpn.core_api.settings import Settings
+from proton.vpn.core.settings import Settings
 from proton.vpn.app.gtk.utils import semver
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG

@@ -21,7 +21,7 @@ import pytest
 from unittest.mock import Mock, PropertyMock, patch
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings import SettingsWindow
-from proton.vpn.core_api.settings import NetShield
+from proton.vpn.core.settings import NetShield
 
 
 class TestSettingsWindow:

@@ -21,8 +21,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from behave import given, when, then, fixture, use_fixture
 
-from proton.vpn.core_api.api import ProtonVPNAPI
-from proton.vpn.core_api.session import ClientTypeMetadata
+from proton.vpn.core.api import ProtonVPNAPI
+from proton.vpn.core.session import ClientTypeMetadata
 
 
 def before_feature_serverlist(context, feature):

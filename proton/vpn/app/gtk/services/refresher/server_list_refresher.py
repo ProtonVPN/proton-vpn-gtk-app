@@ -28,7 +28,7 @@ from proton.session.exceptions import (
 
 from proton.vpn import logging
 from proton.vpn.session.servers.logicals import ServerList
-from proton.vpn.core_api.api import ProtonVPNAPI
+from proton.vpn.core.api import ProtonVPNAPI
 
 from proton.vpn.app.gtk.utils.glib import run_after_seconds
 

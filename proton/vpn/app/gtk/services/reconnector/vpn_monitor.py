@@ -22,7 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from typing import Callable, Optional
 
 from proton.vpn.connection import states
-from proton.vpn.core_api.connection import VPNConnectorWrapper
+from proton.vpn.core.connection import VPNConnectorWrapper
 
 
 class VPNMonitor:

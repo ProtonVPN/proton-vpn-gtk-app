@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from gi.repository import Gtk
-from proton.vpn.core_api.settings import NetShield
+from proton.vpn.core.settings import NetShield
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (

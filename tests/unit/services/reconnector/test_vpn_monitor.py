@@ -21,7 +21,7 @@ from unittest.mock import Mock
 import pytest
 
 from proton.vpn.connection import states
-from proton.vpn.core_api.connection import VPNConnectorWrapper
+from proton.vpn.core.connection import VPNConnectorWrapper
 
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 

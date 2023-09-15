@@ -30,7 +30,7 @@ from gi.repository import GLib, GObject
 from proton.vpn import logging
 from proton.vpn.session.client_config import ClientConfig
 from proton.vpn.session.servers.logicals import ServerList
-from proton.vpn.core_api.api import ProtonVPNAPI
+from proton.vpn.core.api import ProtonVPNAPI
 
 from proton.vpn.app.gtk.services.refresher.client_config_refresher import ClientConfigRefresher
 from proton.vpn.app.gtk.services.refresher.server_list_refresher import ServerListRefresher

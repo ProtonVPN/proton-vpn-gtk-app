@@ -27,18 +27,26 @@ from proton.vpn.core.settings import NetShield
 class TestSettingsWindow:
 
     def test_settings_window_ensure_passed_objects_are_added_to_container(self):
-        tray_indicator_mock = Mock()
-        feature_settings_mock = Mock()
-        connection_settings_mock = Mock()
-        general_settings_mock = Mock()
-        notification_bar_mock = Mock()
+        tray_indicator_mock = Mock(name="tray_indicator")
+        feature_settings_mock = Mock(name="feature_settings")
+        connection_settings_mock = Mock(name="connection_settings")
+        general_settings_mock = Mock(name="general_settings")
+        notification_bar_mock = Mock(name="notification_bar")
+        account_settings_mock = Mock(name="account_settings")
         with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window.Gtk.Box.pack_start") as pack_start_mock:
-            settings_window = SettingsWindow(Mock(), tray_indicator_mock, notification_bar_mock, feature_settings_mock, connection_settings_mock, general_settings_mock)
+            settings_window = SettingsWindow(
+                Mock(),
+                tray_indicator_mock, notification_bar_mock, feature_settings_mock,
+                connection_settings_mock, general_settings_mock, account_settings_mock
+            )
 
-            assert pack_start_mock.mock_calls[0].args == (feature_settings_mock, False, False, 0)
-            assert pack_start_mock.mock_calls[1].args == (connection_settings_mock, False, False, 0)
-            assert pack_start_mock.mock_calls[2].args == (general_settings_mock, False, False, 0)
-            assert pack_start_mock.mock_calls[3].args == (notification_bar_mock, False, False, 0)
+            print(pack_start_mock.mock_calls)
+
+            assert pack_start_mock.mock_calls[0].args == (account_settings_mock, False, False, 0)
+            assert pack_start_mock.mock_calls[1].args == (feature_settings_mock, False, False, 0)
+            assert pack_start_mock.mock_calls[2].args == (connection_settings_mock, False, False, 0)
+            assert pack_start_mock.mock_calls[3].args == (general_settings_mock, False, False, 0)
+            assert pack_start_mock.mock_calls[4].args == (notification_bar_mock, False, False, 0)
 
     @pytest.mark.parametrize("present_window", [False, True])
     def test_settings_window_ensure_window_does_not_load_content_until_required(self, present_window):

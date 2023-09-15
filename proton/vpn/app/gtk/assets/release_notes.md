@@ -1,3 +1,7 @@
+## 4.0.0-b2
+- We have added account information to the settings window. You can now quickly access your plan and manage your account.
+- Fixed authentication issue causing pop-up with invalid session.
+
 ## 4.0.0-b1
 - We're happy to announce that the alpha version, has officially transitioned to beta, bringing you a more stable and feature-rich experience!
 

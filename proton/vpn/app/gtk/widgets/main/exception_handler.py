@@ -94,6 +94,11 @@ class ExceptionHandler:
         :param exc_traceback: The exception traceback.
         """
         if issubclass(exc_type, ProtonAPIAuthenticationNeeded):
+            logger.warning(
+                "Authentication required.",
+                category="API", event="ERROR",
+                exc_info=(exc_type, exc_value, exc_traceback)
+            )
             self._main_widget.session_expired()
             return
 

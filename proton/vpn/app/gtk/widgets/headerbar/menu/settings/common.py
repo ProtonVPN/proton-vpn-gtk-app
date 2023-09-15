@@ -125,10 +125,14 @@ class UpgradePlusTag(Gtk.Button):
 
 class SettingName(Gtk.Label):
     """Label used to identify a setting."""
-    def __init__(self, label: str):
+    def __init__(self, label: str, bold: bool = False):
+        if bold:
+            label = f"<b>{label}</b>"
+
         super().__init__(label=label)
         self.set_halign(Gtk.Align.START)
         self.set_hexpand(True)
+        self.set_use_markup(True)
 
     @property
     def disabled(self) -> bool:

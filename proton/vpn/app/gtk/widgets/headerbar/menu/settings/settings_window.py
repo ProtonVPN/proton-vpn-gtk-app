@@ -25,6 +25,8 @@ from typing import TYPE_CHECKING, Optional
 from gi.repository import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.account_settings import \
+    AccountSettings
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings import \
     ConnectionSettings
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import \
@@ -36,7 +38,7 @@ if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator
 
 
-class SettingsWindow(Gtk.Window):
+class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attributes
     """Main settings window."""
     def __init__(  # pylint: disable=too-many-arguments
         self,
@@ -46,6 +48,7 @@ class SettingsWindow(Gtk.Window):
         feature_settings: FeatureSettings = None,
         connection_settings: ConnectionSettings = None,
         general_settings: GeneralSettings = None,
+        account_settings: AccountSettings = None,
     ):
         super().__init__()
         self.set_title("Settings")
@@ -55,6 +58,7 @@ class SettingsWindow(Gtk.Window):
         self._controller = controller
         self._notification_bar = notification_bar or NotificationBar()
 
+        self._account_settings = account_settings or AccountSettings(self._controller)
         self._feature_settings = feature_settings or FeatureSettings(
             self._controller, self._notification_bar
         )
@@ -70,6 +74,7 @@ class SettingsWindow(Gtk.Window):
         self.connect("realize", self._build_ui)
 
     def _build_ui(self, *_):
+        self._account_settings.build_ui()
         self._connection_settings.build_ui()
         self._feature_settings.build_ui()
         self._general_settings.build_ui()
@@ -86,6 +91,7 @@ class SettingsWindow(Gtk.Window):
         self.main_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.content_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
+        self.content_container.pack_start(self._account_settings, False, False, 0)
         self.content_container.pack_start(self._feature_settings, False, False, 0)
         self.content_container.pack_start(self._connection_settings, False, False, 0)
         self.content_container.pack_start(self._general_settings, False, False, 0)

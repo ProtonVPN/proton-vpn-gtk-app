@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.0.0~b2) unstable; urgency=medium
+
+  * Add account data to settings window
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 15 Sep 2023 12:00:00 +0100
+
 proton-vpn-gtk-app (4.0.0~b1) unstable; urgency=medium
 
   * Fixed typos

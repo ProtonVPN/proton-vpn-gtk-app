@@ -28,7 +28,7 @@ from typing import Optional
 from proton.vpn import logging
 
 from proton.vpn.connection import VPNConnection, states
-from proton.vpn.core.api import ProtonVPNAPI
+from proton.vpn.core.api import ProtonVPNAPI, VPNAccount
 from proton.vpn.core.session import ClientTypeMetadata
 from proton.vpn.core.connection import VPNConnectorWrapper
 from proton.vpn.core.cache_handler import CacheHandler
@@ -121,7 +121,7 @@ class Controller:  # pylint: disable=too-many-public-methods
     @property
     def user_tier(self):
         """Returns user tier."""
-        return self._api.get_user_tier()
+        return self._api.user_tier
 
     def run_startup_actions(self, _):
         """Runs any startup actions that are necessary once the app has loaded."""
@@ -202,6 +202,16 @@ class Controller:  # pylint: disable=too-many-public-methods
         "disconnected" state.
         """
         self._api.connection.disconnect()
+
+    @property
+    def account_name(self) -> str:
+        """Returns account name."""
+        return self._api.account_name
+
+    @property
+    def account_data(self) -> VPNAccount:
+        """Returns account data."""
+        return self._api.account_data
 
     @property
     def current_connection(self) -> VPNConnection:

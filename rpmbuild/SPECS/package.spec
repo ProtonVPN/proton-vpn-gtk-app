@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
 %define version 4.0.0
-%define upstream_version 4.0.0b2
+%define upstream_version 4.0.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.18.b2
+%define release 1
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -69,6 +69,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Oct 10 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-1
+- Stable release
+
 * Fri Sep 15 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.18.b2
 - Add account data to settings window
 

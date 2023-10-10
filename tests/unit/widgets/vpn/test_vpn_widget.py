@@ -117,9 +117,9 @@ def test_display_initializes_widget(server_list):
 
     process_gtk_events()
 
-    assert connection_status_subscriber.connection_status_update.called_once  # (1)
-    assert controller_mock.register_connection_status_subscriber.called_once_with(vpn_widget)  # (2)
-    assert controller_mock.reconnector.enable.called_once  # (3)
+    connection_status_subscriber.connection_status_update.assert_called_once()  # (1)
+    controller_mock.register_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (2)
+    controller_mock.reconnector.enable.assert_called_once()  # (3)
     assert vpn_widget_ready_event.wait(timeout=0), "vpn-data-ready signal was not sent."  # (4)
 
 

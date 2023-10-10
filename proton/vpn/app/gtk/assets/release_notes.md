@@ -1,3 +1,6 @@
+## 4.0.0
+- The new Proton VPN Linux client is officially out of beta. This release completes our journey from alpha to beta and delivers a stable version, ensuring a refined and polished user experience.
+
 ## 4.0.0-b2
 - We have added account information to the settings window. You can now quickly access your plan and manage your account.
 - Fixed authentication issue causing pop-up with invalid session.

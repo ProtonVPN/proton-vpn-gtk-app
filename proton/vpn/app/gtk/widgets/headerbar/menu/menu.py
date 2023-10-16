@@ -174,7 +174,7 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
             logout_dialog.destroy()
 
             confirm_logout = response == Gtk.ResponseType.YES
-            self.logout_enabled = response == Gtk.ResponseType.NO
+            self.logout_enabled = response in (Gtk.ResponseType.NO, Gtk.ResponseType.DELETE_EVENT)
 
         if confirm_logout:
             logger.info("Yes", category="ui", subcategory="dialog", event="logout")

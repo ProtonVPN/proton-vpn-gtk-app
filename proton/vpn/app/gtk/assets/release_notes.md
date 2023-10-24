@@ -1,3 +1,6 @@
+## 4.1.0
+- Secure Core: you can now connect through Proton VPN's Secure Core network and get an additional layer of security to defend you against advanced attacks.
+
 ## 4.0.0
 - The new Proton VPN Linux client is officially out of beta. This release completes our journey from alpha to beta and delivers a stable version, ensuring a refined and polished user experience.
 

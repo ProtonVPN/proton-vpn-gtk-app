@@ -327,13 +327,6 @@ class CountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         # Smart routing is assumed to be used until the opposite is proven.
         smart_routing_country = True
         for server in ordered_servers:
-            # 15/03-2023
-            # Servers with Secure-Core are currently being filtered out
-            # because there isn't a way to get the domain/subject of the server,
-            # for TLS authentication.
-            if ServerFeatureEnum.SECURE_CORE in server.features:
-                continue
-
             self._country_features.update(server.features)
             self._is_free_country = self._is_free_country or server.tier == 0
             # The country is under maintenance if (1) that was the case up until now and

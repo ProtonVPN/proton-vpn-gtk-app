@@ -1,6 +1,6 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.0.0
-%define upstream_version 4.0.0
+%define version 4.1.0
+%define upstream_version 4.1.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -69,6 +69,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Oct 25 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.0-1
+- Display secure core servers in server list
+
 * Tue Oct 10 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-1
 - Stable release
 

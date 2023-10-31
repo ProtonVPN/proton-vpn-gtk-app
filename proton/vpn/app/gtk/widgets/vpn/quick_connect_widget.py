@@ -88,7 +88,7 @@ class QuickConnectWidget(Gtk.Box):
 
     def _on_connection_state_error(self):
         self.connect_button.hide()
-        self.disconnect_button.set_label("Cancel Reconnection")
+        self.disconnect_button.set_label("Cancel Connection")
         self.disconnect_button.show()
 
     def _on_connect_button_clicked(self, _):

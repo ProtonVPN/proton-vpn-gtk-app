@@ -25,7 +25,8 @@ from typing import TYPE_CHECKING
 from gi.repository import GLib
 
 from proton.vpn import logging
-from proton.vpn.connection import states, VPNConnection
+from proton.vpn.connection import states, VPNConnection, events
+from proton.vpn.connection.exceptions import VPNConnectionError, AuthenticationError
 from proton.vpn.core.connection import VPNConnectorWrapper
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
@@ -102,6 +103,16 @@ class VPNReconnector:
         """Returns True if the VPN connection dropped or False otherwise."""
         return isinstance(self._vpn_connector.current_state, states.Error)
 
+    @property
+    def is_connection_error_fatal(self) -> bool:
+        """
+        Returns True if a VPN reconnection is possible or False otherwise.
+        """
+        return (
+            isinstance(self._vpn_connector.current_state, states.Error)
+            and not isinstance(self._vpn_connector.current_state.context.event, events.AuthDenied)
+        )
+
     def schedule_reconnection(self) -> bool:
         """Schedules a reconnection attempt.
 
@@ -125,6 +136,13 @@ class VPNReconnector:
     def _current_connection(self) -> VPNConnection:
         return self._vpn_connector.current_connection
 
+    def _raise_reconnection_error(self):
+        event = self._vpn_connector.current_state.context.event
+        if isinstance(event, events.AuthDenied):
+            raise AuthenticationError("Reconnection not possible due to authentication error.")
+
+        raise VPNConnectionError(f"Reconnection not possible due to unexpected event: {event}")
+
     def _on_session_unlocked(self):
         """
         Callback called by the session monitor once the user session has been
@@ -135,6 +153,10 @@ class VPNReconnector:
 
         if not self.did_vpn_drop:
             logger.debug("VPN reconnection not necessary: connection didn't drop.")
+            return
+
+        if not self.is_connection_error_fatal:
+            logger.debug("VPN reconnection not possible: fatal connection error.")
             return
 
         self.schedule_reconnection()
@@ -152,11 +174,23 @@ class VPNReconnector:
             logger.debug("VPN reconnection not necessary: connection didn't drop.")
             return
 
+        if not self.is_connection_error_fatal:
+            logger.debug("VPN reconnection not possible: fatal connection error.")
+            return
+
         self.schedule_reconnection()
 
     def _on_vpn_drop(self):
         """Callback called by the VPN monitor when a VPN connection drop was detected."""
         logger.info("VPN connection drop was detected.")
+
+        if not self.is_connection_error_fatal:
+            logger.info("VPN reconnection not possible: fatal connection error.")
+            self._reset_retry_counter()
+            # Raise exception on the next event loop iteration so that the app reacts to it.
+            GLib.idle_add(self._raise_reconnection_error)
+            return
+
         self.schedule_reconnection()
 
     def _on_vpn_up(self):

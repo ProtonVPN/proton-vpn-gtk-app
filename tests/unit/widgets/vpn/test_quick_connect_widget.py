@@ -32,7 +32,7 @@ from tests.unit.testing_utils import process_gtk_events, run_main_loop
     (Disconnected(), True, False, None),
     (Connecting(), False, True, "Cancel Connection"),
     (Connected(), False, True, "Disconnect"),
-    (Error(), False, True, "Cancel Reconnection")
+    (Error(), False, True, "Cancel Connection")
 ])
 def test_quick_connect_widget_changes_button_according_to_connection_state_changes(
         connection_state, connect_button_visible, disconnect_button_visible, disconnect_button_label

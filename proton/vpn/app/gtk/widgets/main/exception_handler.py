@@ -22,6 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import sys
 import threading
 
+from proton.vpn.connection.exceptions import AuthenticationError
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
     ProtonAPIAuthenticationNeeded
 from proton.vpn.session.exceptions import ServerNotFoundError
@@ -38,6 +39,12 @@ class ExceptionHandler:
     SERVER_NOT_FOUND_TITLE = "Unable to find server"
     PROTON_API_NOT_REACHABLE_MESSAGE = "Our servers are not reachable. " \
                                        "Please check your internet connection."
+    VPN_AUTHENTICATION_ERROR_TITLE = "VPN connection error"
+    VPN_AUTHENTICATION_ERROR_MESSAGE = (
+        "Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP."
+        "\n\nClick \"Cancel Connection\" to restore your Internet connection. "
+        "If the issue persists please try to sign out and in."
+    )
 
     def __init__(self, main_widget):
         super().__init__()
@@ -108,6 +115,8 @@ class ExceptionHandler:
             self._on_proton_api_error(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, ServerNotFoundError):
             self._on_server_not_found(exc_type, exc_value, exc_traceback)
+        elif isinstance(exc_value, AuthenticationError):
+            self._on_vpn_authentication_error(exc_type, exc_value, exc_traceback)
         elif issubclass(exc_type, AssertionError):
             # We shouldn't catch assertion errors raised by tests.
             raise exc_value
@@ -139,6 +148,18 @@ class ExceptionHandler:
             title=self.SERVER_NOT_FOUND_TITLE,
             message=str(exc_value)
         )
+        logger.error(
+            exc_value,
+            category="APP", event="ERROR",
+            exc_info=(exc_type, exc_value, exc_traceback)
+        )
+
+    def _on_vpn_authentication_error(self, exc_type, exc_value, exc_traceback):
+        self._main_widget.notifications.show_error_dialog(
+            title=self.VPN_AUTHENTICATION_ERROR_TITLE,
+            message=self.VPN_AUTHENTICATION_ERROR_MESSAGE
+        )
+
         logger.error(
             exc_value,
             category="APP", event="ERROR",

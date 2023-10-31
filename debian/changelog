@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.1) unstable; urgency=medium
+
+  * Show authentication denied error message
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 31 Oct 2023 12:35:26 +0100
+
 proton-vpn-gtk-app (4.1.0) unstable; urgency=medium
 
   * Display secure core servers in server list

@@ -20,7 +20,8 @@ from unittest.mock import Mock, patch, PropertyMock
 
 import pytest
 
-from proton.vpn.connection import states
+from proton.vpn.connection import states, events
+from proton.vpn.connection.exceptions import AuthenticationError
 from proton.vpn.core.connection import VPNConnectorWrapper
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
@@ -28,6 +29,7 @@ from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonit
 from proton.vpn.app.gtk.services.reconnector.reconnector import VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
+from tests.unit.testing_utils import process_gtk_events
 
 
 @pytest.fixture
@@ -130,12 +132,13 @@ def test_did_vpn_drop_returns_true_only_if_the_current_connection_state_is_error
     assert reconnector.did_vpn_drop is expected_result
 
 
-@pytest.mark.parametrize("did_vpn_drop, scheduled_reconnection_expected", [
-    (False, False),
-    (True, True)
+@pytest.mark.parametrize("did_vpn_drop, is_connection_error_fatal, scheduled_reconnection_expected", [
+    (False, False, False),
+    (True, False, False),
+    (True, True, True)
 ])
-def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_only_if_vpn_connection_dropped(
-        did_vpn_drop, scheduled_reconnection_expected,
+def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_only_if_vpn_connection_dropped_and_connection_error_is_not_fatal(
+        did_vpn_drop, is_connection_error_fatal, scheduled_reconnection_expected,
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     reconnector = VPNReconnector(
@@ -143,9 +146,12 @@ def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_o
     )
 
     with patch.object(VPNReconnector, "did_vpn_drop", new_callable=PropertyMock) as did_vpn_drop_patch, \
+            patch.object(VPNReconnector, "is_connection_error_fatal", new_callable=PropertyMock) as is_connection_error_fatal_patch, \
             patch.object(VPNReconnector, "schedule_reconnection"):
         # Mock whether a VPN connection dropped happened or not
         did_vpn_drop_patch.return_value = did_vpn_drop
+        # and whether reconnection is possible or not
+        is_connection_error_fatal_patch.return_value = is_connection_error_fatal
 
         # Simulate network up.
         network_monitor.network_up_callback()
@@ -153,12 +159,13 @@ def test_schedule_reconnection_is_called_once_network_connectivity_is_detected_o
         assert reconnector.schedule_reconnection.called is scheduled_reconnection_expected
 
 
-@pytest.mark.parametrize("did_vpn_drop, scheduled_reconnection_expected", [
-    (False, False),
-    (True, True)
+@pytest.mark.parametrize("did_vpn_drop, is_connection_error_fatal, scheduled_reconnection_expected", [
+    (False, False, False),
+    (True, False, False),
+    (True, True, True)
 ])
-def test_schedule_reconnection_is_called_once_user_session_is_unlocked_only_if_vpn_connection_dropped(
-        did_vpn_drop, scheduled_reconnection_expected,
+def test_schedule_reconnection_is_called_once_user_session_is_unlocked_only_if_vpn_connection_dropped_and_connection_error_is_not_fatal(
+        did_vpn_drop, is_connection_error_fatal, scheduled_reconnection_expected,
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
 ):
     reconnector = VPNReconnector(
@@ -166,9 +173,11 @@ def test_schedule_reconnection_is_called_once_user_session_is_unlocked_only_if_v
     )
 
     with patch.object(VPNReconnector, "did_vpn_drop", new_callable=PropertyMock) as did_vpn_drop_patch, \
+            patch.object(VPNReconnector, "is_connection_error_fatal", new_callable=PropertyMock) as is_connection_error_fatal_patch, \
             patch.object(VPNReconnector, "schedule_reconnection"):
         # Mock whether a VPN connection dropped happened or not
         did_vpn_drop_patch.return_value = did_vpn_drop
+        is_connection_error_fatal_patch.return_value = is_connection_error_fatal
 
         # Simulate user session unlocked.
         session_monitor.session_unlocked_callback()
@@ -197,6 +206,26 @@ def test_schedule_reconnection_only_schedule_a_reconnection_if_there_is_not_one_
     glib_mock.timeout_add.assert_called_once()
 
 
+def test_on_vpn_drop_raises_exception_on_authentication_denied_error(
+    vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+):
+    VPNReconnector(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    )
+
+    # Set current VPN state to authentication denied error, currently considered as a fatal error.
+    vpn_connector.current_state = states.Error(
+        context=states.StateContext(event=events.AuthDenied(context=None))
+    )
+
+    # Simulate a VPN drop.
+    vpn_monitor.vpn_drop_callback()
+
+    # An authentication error should have been raised since we currently fail to reconnect in such case.
+    with pytest.raises(AuthenticationError):
+        process_gtk_events()
+
+
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.random")
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
 def test_on_vpn_drop_a_reconnection_attempt_is_scheduled_with_an_exponential_backoff_delay(
@@ -208,6 +237,7 @@ def test_on_vpn_drop_a_reconnection_attempt_is_scheduled_with_an_exponential_bac
     VPNReconnector(
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
     )
+    vpn_connector.current_state = states.Error()
 
     glib_mock.timeout_add_seconds.return_value = 1
     random_mock.uniform.return_value = 1  # Get rid of randomness.
@@ -237,7 +267,7 @@ def test_on_vpn_drop_a_reconnection_attempt_is_scheduled_with_an_exponential_bac
 ])
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.random")
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
-def test_reconnection_is_rescheduled_if_network_is_down_or_session_is_locked(
+def test_reconnection_is_rescheduled_if_connection_error_is_not_fatal_when_network_is_down_or_session_is_locked(
     glib_mock, random_mock,
     is_network_up, is_session_unlocked,
     vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
@@ -251,6 +281,11 @@ def test_reconnection_is_rescheduled_if_network_is_down_or_session_is_locked(
     """
     VPNReconnector(
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    )
+
+    # Set current VPN state to a non fatal error.
+    vpn_connector.current_state = states.Error(
+        context=states.StateContext(event=events.Timeout(context=None))
     )
 
     glib_mock.timeout_add_seconds.return_value = 1

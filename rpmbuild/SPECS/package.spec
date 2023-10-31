@@ -1,6 +1,6 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.1.0
-%define upstream_version 4.1.0
+%define version 4.1.1
+%define upstream_version 4.1.1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -69,6 +69,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Oct 31 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.1.1
+- Show authentication denied error message
+
 * Wed Oct 25 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.0-1
 - Display secure core servers in server list
 
@@ -78,7 +81,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Fri Sep 15 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.18.b2
 - Add account data to settings window
 
-* Tue Sep 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.17.b1
+* Mon Sep 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.17.b1
 - Fixed typos
 - Official beta release
 
@@ -115,7 +118,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Tue Jun 06 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.6.a6
 - Retrieve VPN account if it wasn't retrieved yet
 
-* Fri May 29 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.5.a5
+* Mon May 29 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.5.a5
 - Ensure UI updates smoothly after starting with auto-connect
 
 * Fri May 26 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.4.a4

@@ -27,7 +27,7 @@ from tests.unit.testing_utils import DummyThreadPoolExecutor, process_gtk_events
 def test_enable_schedules_next_refresh_after_expiration_time(run_delayed_patch):
     api_mock = Mock()
     refresher = ClientConfigRefresher(
-        thread_pool_executor=DummyThreadPoolExecutor(),
+        executor=DummyThreadPoolExecutor(),
         proton_vpn_api=api_mock
     )
 
@@ -47,7 +47,7 @@ def test_refresh_fetches_client_config_and_schedules_another_refresh_after_new_c
 ):
     api_mock = Mock()
     refresher = ClientConfigRefresher(
-        thread_pool_executor=DummyThreadPoolExecutor(),
+        executor=DummyThreadPoolExecutor(),
         proton_vpn_api=api_mock
     )
     new_client_config_event = Event()

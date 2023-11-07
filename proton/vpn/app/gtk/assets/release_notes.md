@@ -1,3 +1,9 @@
+## 4.1.2
+- Bug fixes.
+
+## 4.1.1
+- Improved VPN connection error handling.
+
 ## 4.1.0
 - Secure Core: you can now connect through Proton VPN's Secure Core network and get an additional layer of security to defend you against advanced attacks.
 

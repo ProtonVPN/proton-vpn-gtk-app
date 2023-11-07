@@ -20,7 +20,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from concurrent.futures import ThreadPoolExecutor, Future
+from concurrent.futures import Future
 from importlib import metadata
 
 from typing import Optional
@@ -40,6 +40,7 @@ from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonit
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 from proton.vpn.core.settings import Settings
 from proton.vpn.app.gtk.utils import semver
+from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
 
@@ -52,7 +53,7 @@ class Controller:  # pylint: disable=too-many-public-methods
 
     def __init__(
         self,
-        thread_pool_executor: ThreadPoolExecutor,
+        executor: AsyncExecutor,
         api: ProtonVPNAPI = None,
         vpn_data_refresher: VPNDataRefresher = None,
         vpn_reconnector: VPNReconnector = None,
@@ -60,19 +61,19 @@ class Controller:  # pylint: disable=too-many-public-methods
         settings: Settings = None,
         cache_handler: CacheHandler = None
     ):  # pylint: disable=too-many-arguments
-        self.thread_pool_executor = thread_pool_executor
+        self.executor = executor
 
         self._api = api or ProtonVPNAPI(ClientTypeMetadata(
             type="gui", version=semver.from_pep440(self.app_version)
         ))
         self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
-            self.thread_pool_executor, self._api
+            self.executor, self._api
         )
         self.reconnector = vpn_reconnector or VPNReconnector(
             vpn_connector=self._api.connection,
             vpn_data_refresher=self.vpn_data_refresher,
             vpn_monitor=VPNMonitor(vpn_connector=self._api.connection),
-            network_monitor=NetworkMonitor(pool=thread_pool_executor),
+            network_monitor=NetworkMonitor(pool=executor),
             session_monitor=SessionMonitor()
         )
 
@@ -87,7 +88,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         :param password:
         :return: A Future object wrapping the result of the login API call.
         """
-        return self.thread_pool_executor.submit(
+        return self.executor.submit(
             self._api.login,
             username, password
         )
@@ -98,7 +99,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         :param code: The 2FA code.
         :return: A Future object wrapping the result of the 2FA verification.
         """
-        return self.thread_pool_executor.submit(
+        return self.executor.submit(
             self._api.submit_2fa_code,
             code
         )
@@ -108,7 +109,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         Logs the user out.
         :return: A future to be able to track the logout completion.
         """
-        return self.thread_pool_executor.submit(self._api.logout)
+        return self.executor.submit(self._api.logout)
 
     @property
     def user_logged_in(self) -> bool:
@@ -247,7 +248,7 @@ class Controller:  # pylint: disable=too-many-public-methods
     def submit_bug_report(self, bug_report: BugReportForm) -> Future:
         """Submits an issue report.
         :return: A Future object wrapping the result of the API."""
-        return self.thread_pool_executor.submit(
+        return self.executor.submit(
             self._api.submit_bug_report,
             bug_report
         )

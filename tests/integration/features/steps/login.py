@@ -19,6 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import asyncio
 import threading
 
 from gi.repository import GLib
@@ -59,7 +60,7 @@ def submit_2fa_code_threadsafe(two_factor_auth_form, two_factor_auth_code):
 
 def after_login_scenario(context, scenario):
     """Called after every login scenario from environment.py"""
-    ProtonVPNAPI(ClientTypeMetadata("gui", "4.0.0")).logout()
+    asyncio.run(ProtonVPNAPI(ClientTypeMetadata("gui", "4.0.0")).logout())
 
 
 @given("a user without 2FA enabled")

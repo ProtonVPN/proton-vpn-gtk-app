@@ -25,15 +25,16 @@ import io
 import re
 import subprocess
 from tempfile import NamedTemporaryFile
-from concurrent.futures import Future, ThreadPoolExecutor
+from concurrent.futures import Future
 
 from typing import TYPE_CHECKING, List
 from gi.repository import Gtk, GLib
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
-from proton.vpn.core.reports import BugReportForm
+from proton.vpn.session import BugReportForm
 from proton.vpn.app.gtk import __version__
 from proton.vpn import logging
+from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 
 if TYPE_CHECKING:
@@ -71,7 +72,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self._main_window = main_window
         self.notification_bar = notification_bar or NotificationBar()
         self._log_collector = log_collector or LogCollector(
-            self._controller.thread_pool_executor
+            self._controller.executor
         )
 
         self.set_title("Report an Issue")
@@ -291,8 +292,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 class LogCollector:  # pylint: disable=too-few-public-methods
     """Collects all necessary logs needed for the report tool."""
 
-    def __init__(self, thread_pool_executor: ThreadPoolExecutor):
-        self._thread_pool_executor = thread_pool_executor
+    def __init__(self, executor: AsyncExecutor):
+        self._executor = executor
 
     def get_logs(self) -> Future:
         """
@@ -334,4 +335,4 @@ class LogCollector:  # pylint: disable=too-few-public-methods
 
                 raise RuntimeError("Network Manager logs could not be generated.")
 
-        return self._thread_pool_executor.submit(run_subprocess)
+        return self._executor.submit(run_subprocess)

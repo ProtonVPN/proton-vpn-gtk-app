@@ -62,7 +62,7 @@ def test_quick_connect_widget_changes_button_according_to_connection_state_chang
 
 def test_quick_connect_widget_connects_to_fastest_server_when_connect_button_is_clicked():
     api_mock = Mock()
-    controller = Controller(thread_pool_executor=Mock(), api=api_mock)
+    controller = Controller(executor=Mock(), api=api_mock)
     quick_connect_widget = QuickConnectWidget(controller=controller)
 
     quick_connect_widget.connect_button.clicked()
@@ -74,7 +74,7 @@ def test_quick_connect_widget_connects_to_fastest_server_when_connect_button_is_
 
 def test_quick_connect_widget_disconnects_from_current_server_when_disconnect_is_clicked():
     api_mock = Mock()
-    controller = Controller(thread_pool_executor=Mock(), api=api_mock)
+    controller = Controller(executor=Mock(), api=api_mock)
     quick_connect_widget = QuickConnectWidget(controller=controller)
 
     quick_connect_widget.disconnect_button.clicked()

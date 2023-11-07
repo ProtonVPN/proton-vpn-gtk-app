@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from concurrent.futures import Future, ThreadPoolExecutor
+from concurrent.futures import Future
 from datetime import timedelta
 from typing import Callable
 
@@ -25,6 +25,7 @@ from gi.repository import GLib, GObject
 from proton.session.exceptions import (
     ProtonAPINotReachable, ProtonAPINotAvailable,
 )
+from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 
 from proton.vpn import logging
 from proton.vpn.session.servers.logicals import ServerList
@@ -41,11 +42,11 @@ class ServerListRefresher(GObject.Object):
     """
     def __init__(
             self,
-            thread_pool_executor: ThreadPoolExecutor,
+            executor: AsyncExecutor,
             proton_vpn_api: ProtonVPNAPI
     ):
         super().__init__()
-        self._thread_pool = thread_pool_executor
+        self._executor = executor
         self._api = proton_vpn_api
         self._reload_servers_source_id: int = None
 
@@ -96,7 +97,7 @@ class ServerListRefresher(GObject.Object):
             )
 
     def _trigger_api_call(self, api_method: Callable, signal_to_emit: str) -> Future:
-        future = self._thread_pool.submit(api_method)
+        future = self._executor.submit(api_method)
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_api_call_done, future, signal_to_emit)
         )

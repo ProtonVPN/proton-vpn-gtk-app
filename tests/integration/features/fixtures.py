@@ -32,6 +32,7 @@ from behave import fixture, use_fixture
 from proton.vpn.app.gtk.app import App
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.services import VPNReconnector
+from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from tests.integration.features.atlas_utils import AtlasUsers
 
 
@@ -78,8 +79,8 @@ def before_each_scenario(context, scenario):
 
 @fixture
 def app(context):
-    with ThreadPoolExecutor() as thread_pool_executor:
-        app, app_thread, app_events = start_app(thread_pool_executor)
+    with AsyncExecutor() as executor:
+        app, app_thread, app_events = start_app(executor)
         context.app = app
         context.app_thread = app_thread
         context.app_events = app_events
@@ -87,11 +88,11 @@ def app(context):
         stop_app(app, app_thread)
 
 
-def start_app(thread_pool_executor) -> (App, Thread, Dict):
+def start_app(async_executor) -> (App, Thread, Dict):
     app = App(
-        thread_pool_executor,
+        async_executor,
         controller=Controller(
-            thread_pool_executor,
+            async_executor,
             vpn_reconnector=Mock(VPNReconnector))
     )
     app_events = dict()

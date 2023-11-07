@@ -35,7 +35,7 @@ def test_enable_enables_server_list_and_client_config_refreshers_if_the_vpn_sess
     client_config_refresher = Mock()
     server_list_refresher = Mock()
     refresher = VPNDataRefresher(
-        thread_pool_executor=DummyThreadPoolExecutor(),
+        executor=DummyThreadPoolExecutor(),
         proton_vpn_api=api_mock,
         client_config_refresher=client_config_refresher,
         server_list_refresher=server_list_refresher
@@ -54,7 +54,7 @@ def test_enable_refreshes_vpn_session_if_not_loaded_and_then_enables_server_list
     client_config_refresher = Mock()
     server_list_refresher = Mock()
     refresher = VPNDataRefresher(
-        thread_pool_executor=DummyThreadPoolExecutor(),
+        executor=DummyThreadPoolExecutor(),
         proton_vpn_api=api_mock,
         client_config_refresher=client_config_refresher,
         server_list_refresher=server_list_refresher

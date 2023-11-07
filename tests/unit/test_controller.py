@@ -21,7 +21,7 @@ def test_autoconnect_feature(
     app_configuration_mock.connect_at_app_startup = connect_at_app_startup_value
 
     controller = Controller(
-        thread_pool_executor=Mock(),
+        executor=Mock(),
         api=Mock(),
         vpn_data_refresher=Mock(),
         vpn_reconnector=Mock(),

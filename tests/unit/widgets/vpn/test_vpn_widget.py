@@ -73,7 +73,7 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
     controller_mock = Mock()
     api_mock = Mock()
     controller_mock.vpn_data_refresher = VPNDataRefresher(
-        thread_pool_executor=Mock(),
+        executor=Mock(),
         proton_vpn_api=api_mock
     )
     controller_mock.user_tier = PLUS_TIER

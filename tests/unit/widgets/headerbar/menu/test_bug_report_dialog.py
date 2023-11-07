@@ -22,7 +22,7 @@ from io import StringIO
 from unittest.mock import Mock
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
-from proton.vpn.core.reports import BugReportForm
+from proton.vpn.session import BugReportForm
 
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportDialog
 from tests.unit.testing_utils import process_gtk_events

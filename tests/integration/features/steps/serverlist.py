@@ -19,6 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import asyncio
+
 from behave import given, when, then, fixture, use_fixture
 
 from proton.vpn.core.api import ProtonVPNAPI
@@ -34,10 +36,10 @@ def before_feature_serverlist(context, feature):
 @fixture
 def logged_in_session(context):
     context.api = ProtonVPNAPI(ClientTypeMetadata("gui", "4.0.0"))
-    result = context.api.login(username=context.free_user_name, password=context.free_user_password)
+    result = asyncio.run(context.api.login(username=context.free_user_name, password=context.free_user_password))
     assert result.success, f"Unable to login with {context.free_user_name}."
     yield context.api
-    context.api.logout()
+    asyncio.run(context.api.logout())
 
 
 @given("the user is logged in")

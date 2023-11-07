@@ -22,7 +22,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, Any, Dict
 
 from gi.repository import GLib, GObject
@@ -34,6 +33,7 @@ from proton.vpn.core.api import ProtonVPNAPI
 
 from proton.vpn.app.gtk.services.refresher.client_config_refresher import ClientConfigRefresher
 from proton.vpn.app.gtk.services.refresher.server_list_refresher import ServerListRefresher
+from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 
 logger = logging.getLogger(__name__)
 
@@ -48,20 +48,20 @@ class VPNDataRefresher(GObject.Object):
     """
     def __init__(
         self,
-        thread_pool_executor: ThreadPoolExecutor,
+        executor: AsyncExecutor,
         proton_vpn_api: ProtonVPNAPI,
         client_config_refresher: ClientConfigRefresher = None,
         server_list_refresher: ServerListRefresher = None
     ):
         super().__init__()
-        self._thread_pool = thread_pool_executor
+        self._executor = executor
         self._api = proton_vpn_api
         self._client_config_refresher = client_config_refresher or ClientConfigRefresher(
-            thread_pool_executor,
+            executor,
             proton_vpn_api
         )
         self._server_list_refresher = server_list_refresher or ServerListRefresher(
-            thread_pool_executor,
+            executor,
             proton_vpn_api
         )
         self._signal_refresher_map = {
@@ -154,7 +154,7 @@ class VPNDataRefresher(GObject.Object):
 
     def _refresh_vpn_session_and_then_enable(self):
         logger.warning("Reloading VPN session...")
-        on_vpn_session_ready_future = self._thread_pool.submit(
+        on_vpn_session_ready_future = self._executor.submit(
             self._api.fetch_session_data
         )
 

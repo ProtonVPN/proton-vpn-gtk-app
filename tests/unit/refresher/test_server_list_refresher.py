@@ -37,7 +37,7 @@ def test_refresh_fetches_server_list_if_expired_and_schedules_next_refresh(
     api_mock.fetch_server_list.return_value = new_server_list
 
     refresher = ServerListRefresher(
-        thread_pool_executor=DummyThreadPoolExecutor(),
+        executor=DummyThreadPoolExecutor(),
         proton_vpn_api=api_mock
     )
     new_server_list_event = Event()
@@ -76,7 +76,7 @@ def test_refresh_updates_server_loads_if_expired_and_schedules_next_refresh(
     api_mock.update_server_loads.return_value = updated_server_list
 
     refresher = ServerListRefresher(
-        thread_pool_executor=DummyThreadPoolExecutor(),
+        executor=DummyThreadPoolExecutor(),
         proton_vpn_api=api_mock
     )
     new_server_loads_event = Event()
@@ -115,7 +115,7 @@ def test_refresh_schedules_next_refresh_if_server_list_is_not_expired(
 
 
     refresher = ServerListRefresher(
-        thread_pool_executor=DummyThreadPoolExecutor(),
+        executor=DummyThreadPoolExecutor(),
         proton_vpn_api=api_mock
     )
 

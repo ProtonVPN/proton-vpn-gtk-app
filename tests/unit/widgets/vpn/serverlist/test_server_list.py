@@ -146,7 +146,7 @@ SERVER_LIST_UPDATED = ServerList.from_dict({
 def test_server_list_widget_subscribes_to_server_list_updates_on_realize():
     mock_controller = Mock()
     mock_controller.vpn_data_refresher = VPNDataRefresher(
-        thread_pool_executor=Mock(),
+        executor=Mock(),
         proton_vpn_api=Mock()
     )
 

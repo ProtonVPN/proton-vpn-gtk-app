@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.2) unstable; urgency=medium
+
+  * Switch to AsyncExecutor to avoid thread-safety issues in asyncio code
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 08 Nov 2023 09:59:38 +0100
+
 proton-vpn-gtk-app (4.1.1) unstable; urgency=medium
 
   * Show authentication denied error message

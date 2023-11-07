@@ -19,13 +19,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, Optional
 
 from gi.repository import GObject, Gtk, Gdk
 
-from proton.vpn.app.gtk.controller import Controller
 from proton.vpn import logging
+
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.assets.style import STYLE_PATH
@@ -51,13 +52,13 @@ class App(Gtk.Application):
 
     def __init__(
             self,
-            thread_pool_executor: ThreadPoolExecutor,
+            executor: AsyncExecutor,
             controller: Controller = None
     ):
         super().__init__(application_id="proton.vpn.app.gtk")
         logger.info(f"{self=}", category="APP", event="PROCESS_START")
         self._controller = controller or Controller(
-            thread_pool_executor=thread_pool_executor
+            executor=executor
         )
         self.window = None
         self.tray_indicator = None
@@ -141,8 +142,8 @@ class App(Gtk.Application):
 
         Usage example:
         .. code-block:: python
-            with ThreadPoolExecutor() as thread_pool_executor:
-                app = App(thread_pool_executor)
+            with AsyncExecutor() as executor:
+                app = App(executor)
                 app.queue_signal_connect(
                     signal_spec="main_widget.vpn_widget.servers_widget::server-list-ready",
                     callback=my_func

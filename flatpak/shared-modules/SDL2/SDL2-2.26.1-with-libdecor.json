@@ -1,0 +1,24 @@
+
+{
+  "name": "SDL2",
+  "buildsystem": "autotools",
+  "config-opts": ["--disable-static"],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.26.1.tar.gz",
+      "sha256": "91d8d26fc45a27c215b70090b351fd30e36bfe44bdd940e5db13d5148058d226"
+    }
+  ],
+  "cleanup": [ "/bin/sdl2-config", 
+               "/include", 
+               "/lib/libSDL2.la", 
+               "/lib/libSDL2main.a", 
+               "/lib/libSDL2main.la", 
+               "/lib/libSDL2_test.a", 
+               "/lib/libSDL2_test.la", 
+               "/lib/cmake", 
+               "/share/aclocal",
+               "/lib/pkgconfig"],
+  "modules": [ "../libdecor/libdecor-0.1.1.json" ]
+}

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+    <id>com.protonvpn.www</id>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-3.0</project_license>
+    <name>Proton VPN</name>
+    <developer_name>Proton AG</developer_name>
+    <summary>Trusted and easy-to-use VPN app for Linux</summary>
+    <description>
+        <p>NOTE: This release is not verified by, affiliated with, or supported by Proton AG.</p>
+        <p>Proton VPN is the world's only free VPN app that is safe to use and respects your
+            privacy. Proton VPN is created by the CERN scientists behind Proton Mail - the world's
+            largest encrypted email service. Our fast VPN offers secure, private and encrypted
+            internet access with advanced security features. Proton VPN also unblocks access to
+            popular websites and streaming platforms.</p>
+        <p>Used by millions worldwide, Proton’s secure no-logs VPN offers 24/7 safe and private
+            internet access, and does not record your browsing history, display ads, sell your data
+            to third parties, or limit downloads.</p>
+        <p>Free VPN features available to all users</p>
+        <ul>
+            <li>Unlimited data with no bandwidth or speed restrictions</li>
+            <li>Strict no logs policy</li>
+            <li>Bypass geo restrictions: smart protocol selection automatically overcomes VPN bans
+                and unblocks censored sites and content</li>
+            <li>Full disk encrypted servers protect your data</li>
+            <li>Perfect forward secrecy: encrypted traffic cannot be captured and decrypted later</li>
+            <li>DNS leak protection: we encrypt DNS queries to ensure that your browsing activity
+                cannot be exposed through DNS leaks</li>
+            <li>Always-on VPN/ kill switch offers protection against leaks caused by accidental
+                disconnections</li>
+
+        </ul>
+        <p>Premium VPN features</p>
+        <ul>
+            <li>Access 2900+ high speed servers across 65+ countries worldwide</li>
+            <li>Fast VPN: high speed servers with connections up to 10 Gbps</li>
+            <li>VPN Accelerator: unique technology increases Proton VPN's speeds by up to 400% to
+                give a faster browsing experience</li>
+            <li>Unblock access to blocked or censored content</li>
+            <li>Connect up to 10 devices to the VPN at the same time</li>
+            <li>Ad blocker (NetShield): a DNS filtering feature that protects you from malware,
+                blocks ads, and prevents website trackers from following you across the web</li>
+            <li>Stream films, sports events, and videos on any streaming service (Netflix, Hulu,
+                Amazon Prime Video, Disney+, BBC iplayer etc)</li>
+            <li>File-sharing and P2P support</li>
+            <li>Secure Core servers protect against network-based attacks with multi-hop VPN</li>
+            <li>Tor over VPN provides automatic integration with the Tor anonymity network</li>
+            <li>Split tunneling support allows you to select which apps go through the VPN tunnel</li>
+        </ul>
+        <p>Why choose Proton VPN?</p>
+        <ul>
+            <li>No-logs VPN: We do not keep any logs that can identify what you do online</li>
+            <li>DNS and IPv6 leak protection: Our Linux app will never accidentally expose your real
+                IP address</li>
+            <li>Easy-to-use interface: The new Proton VPN Linux app has an intuitive graphical user
+                interface that lets you quickly activate features and connect to servers</li>
+            <li>P2P support: Share and download files using BitTorrent and other P2P protocols</li>
+            <li>VPN Accelerator: Free and available to everyone who uses Proton VPN, our unique VPN
+                Accelerator technology can improve speeds by over 400%</li>
+            <li>Strong encryption: Our Linux app uses the OpenVPN protocol at its strongest
+                encryption settings</li>
+            <li>Based in Switzerland: Switzerland has some of the world's strongest data privacy
+                laws</li>
+            <li>Secure streaming: Unblock popular streaming services and watch your favorite shows</li>
+        </ul>
+        <p>Join the privacy revolution</p>
+        <p>Your support is important as it allows us to continue our mission to bring online freedom
+            to people around the globe. Get our private VPN free today and enjoy fast VPN
+            connections and a secure internet, from anywhere.</p>
+    </description>
+    <screenshots>
+        <screenshot type="default">
+            <image>
+                https://protonvpn.com/support/wp-content/uploads/2023/10/ubuntu-desktop.png</image>
+        </screenshot>
+    </screenshots>
+    <url type="homepage">https://protonvpn.com/</url>
+    <url type="contact">https://protonvpn.com/support-form</url>
+    <url type="help">https://protonvpn.com/support/linux-vpn-setup/</url>
+    <url type="vcs-browser">https://github.com/ProtonVPN/proton-vpn-gtk-app</url>
+
+    <releases>
+        <release version="4.1.0" date="2022-11-02" />
+        <release version="4.0.0" date="2022-10-10" />
+    </releases>
+
+    <content_rating type="oars-1.1">
+        <content_attribute id="money-purchasing">intense</content_attribute>
+    </content_rating>
+</component>

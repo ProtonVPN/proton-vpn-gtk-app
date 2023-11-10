@@ -1,0 +1,14 @@
+# Generated with flatpak-pip-generator --checker-data --yaml --runtime=org.gnome.Sdk//45 distro -o pip-resources.python-proton-vpn-api-core
+name: python3-distro
+buildsystem: simple
+build-commands:
+  - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
+    --prefix=${FLATPAK_DEST} "distro" --no-build-isolation
+sources:
+  - type: file
+    url: https://files.pythonhosted.org/packages/f4/2c/c90a3adaf0ddb70afe193f5ebfb539612af57cffe677c3126be533df3098/distro-1.8.0-py3-none-any.whl
+    sha256: 99522ca3e365cac527b44bde033f64c6945d90eb9f769703caaec52b09bbd3ff
+    x-checker-data:
+      name: distro
+      packagetype: bdist_wheel
+      type: pypi

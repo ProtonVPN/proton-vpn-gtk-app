@@ -73,6 +73,7 @@ def unsorted_server_list():
                 "Load": 50,
                 "Servers": [{"Status": 1}],
                 "Features": 1,  # Secure core feature
+                "EntryCountry": "CH",
                 "ExitCountry": "JP",
                 "Tier": PLUS_TIER,
             },

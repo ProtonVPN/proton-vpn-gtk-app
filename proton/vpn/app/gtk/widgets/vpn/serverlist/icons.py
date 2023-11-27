@@ -72,3 +72,19 @@ class TORIcon(Gtk.Image):
         help_text = "TOR supported"
         self.set_tooltip_text(help_text)
         self.get_accessible().set_name(help_text)
+
+
+class SecureCoreIcon(Gtk.Image):
+    """Icon displayed when a server supports Secure core.
+
+    Since Secure core servers have a different exit country from the entry
+    country, for accessibility purposes both entry and exit countries must be
+    passed.
+    """
+    def __init__(self, entry_country_name: str, exit_country_name: str):
+        super().__init__()
+        self.set_from_pixbuf(icons.get(Path("servers/secure-core.svg")))
+        help_text = "Secure core server that "\
+            f"connects to {exit_country_name} through {entry_country_name}."
+        self.set_tooltip_text(help_text)
+        self.get_accessible().set_name(help_text)

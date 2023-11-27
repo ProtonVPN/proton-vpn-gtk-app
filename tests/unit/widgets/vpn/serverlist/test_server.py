@@ -28,7 +28,7 @@ from proton.vpn.session.servers.types import ServerLoad
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import P2PIcon, StreamingIcon, \
-    SmartRoutingIcon, TORIcon
+    SmartRoutingIcon, TORIcon, SecureCoreIcon
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerRow
 
 from tests.unit.testing_utils import process_gtk_events, run_main_loop
@@ -114,6 +114,34 @@ def test_server_row_displays_server_feature_icons(mock_controller, logical_serve
         assert server_row.is_server_feature_icon_displayed(P2PIcon)
         assert server_row.is_server_feature_icon_displayed(TORIcon)
         assert server_row.is_server_feature_icon_displayed(StreamingIcon)
+
+    run_in_window(server_row, assertions)
+
+
+@pytest.fixture
+def logical_server_with_secure_core():
+    return LogicalServer(data={
+        "ID": "1",
+        "Name": "CH-JP#1",
+        "Status": 1,
+        "Load": 50,
+        "Servers": [{"ID": "1", "Status": 1}],
+        "Features": 13,  # 1 (Secure core) + 4 (P2P) + 8 (Streaming)
+        "Tier": PLUS_TIER,
+        "HostCountry": "us",  # smart routing is enabled when host country is not None
+        "EntryCountry": "CH",
+        "ExitCountry": "JP",
+    })
+
+
+def test_server_row_only_displays_secure_core_icon(mock_controller, logical_server_with_secure_core):
+    server_row = ServerRow(server=logical_server_with_secure_core, user_tier=PLUS_TIER, controller=mock_controller)
+
+    def assertions():
+        assert server_row.is_server_feature_icon_displayed(SecureCoreIcon)
+        assert not server_row.is_server_feature_icon_displayed(P2PIcon)
+        assert not server_row.is_server_feature_icon_displayed(StreamingIcon)
+        assert not server_row.is_server_feature_icon_displayed(SmartRoutingIcon)
 
     run_in_window(server_row, assertions)
 

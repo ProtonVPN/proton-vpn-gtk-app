@@ -1,6 +1,6 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.1.2
-%define upstream_version 4.1.2
+%define version 4.1.3
+%define upstream_version 4.1.3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -69,6 +69,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Mon Nov 08 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.3
+- Add Secure core icon to servers that support the feature
+
 * Wed Nov 08 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.1.2
 - Switch to AsyncExecutor to avoid thread-safety issues in asyncio code
 

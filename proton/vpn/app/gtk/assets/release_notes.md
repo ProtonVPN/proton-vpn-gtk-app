@@ -1,3 +1,6 @@
+## 4.1.3
+- Enhance visibility of Secure Core servers in the server list.
+
 ## 4.1.2
 - Bug fixes.
 

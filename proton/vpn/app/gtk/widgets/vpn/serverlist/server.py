@@ -30,7 +30,7 @@ from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.session.servers import LogicalServer, ServerFeatureEnum
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
     UnderMaintenanceIcon, SmartRoutingIcon, StreamingIcon, \
-    P2PIcon, TORIcon
+    P2PIcon, TORIcon, SecureCoreIcon
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
 
@@ -140,12 +140,21 @@ class ServerRow(Gtk.Box):
         server_details.pack_end(self._server_load, expand=False, fill=False, padding=10)
 
         server_row_icons = []
-        smart_routing = self._server.host_country is not None
-        if smart_routing:
-            server_row_icons.append(SmartRoutingIcon())
 
-        server_feature_icons = self._build_server_feature_icons()
-        server_row_icons.extend(server_feature_icons)
+        # If server supports Secure Core then it should be the only
+        # icon to be displayed.
+        if ServerFeatureEnum.SECURE_CORE in self._server.features:
+            server_row_icons.append(
+                SecureCoreIcon(self._server.entry_country_name, self._server.exit_country_name)
+            )
+        else:
+            smart_routing = self._server.host_country is not None
+            if smart_routing:
+                server_row_icons.append(SmartRoutingIcon())
+
+            server_feature_icons = self._build_server_feature_icons()
+            server_row_icons.extend(server_feature_icons)
+
         for icon in server_row_icons:
             button_relationships.append((icon, Atk.RelationType.DESCRIBED_BY))
             server_details.pack_end(icon, expand=False, fill=False, padding=0)
@@ -168,12 +177,14 @@ class ServerRow(Gtk.Box):
 
     def _build_server_feature_icons(self) -> List[Gtk.Image]:
         server_feature_icons = []
+
         if self._server.tier > 0:
             server_feature_icons.append(StreamingIcon())
         if ServerFeatureEnum.P2P in self._server.features:
             server_feature_icons.append(P2PIcon())
         if ServerFeatureEnum.TOR in self._server.features:
             server_feature_icons.append(TORIcon())
+
         return server_feature_icons
 
     def _on_connection_state_disconnected(self):

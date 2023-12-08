@@ -29,7 +29,6 @@ BuildRequires: python3-gobject
 BuildRequires: python3-dbus
 BuildRequires: python3-proton-vpn-api-core
 BuildRequires: python3-proton-vpn-logger
-BuildRequires: python3-dbus
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
 
@@ -38,7 +37,6 @@ Requires: python3-gobject
 Requires: python3-dbus
 Requires: python3-proton-vpn-api-core
 Requires: python3-proton-vpn-logger
-Requires: python3-dbus
 Requires: librsvg2
 Requires: python3-packaging
 Suggests: libappindicator-gtk3

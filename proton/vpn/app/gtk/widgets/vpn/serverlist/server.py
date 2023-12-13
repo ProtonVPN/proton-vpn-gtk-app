@@ -22,7 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 from typing import List, Optional
 
-from gi.repository import Pango, Atk
+from gi.repository import GLib, Pango, Atk
 
 from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn.app.gtk.utils.search import normalize
@@ -213,7 +213,8 @@ class ServerRow(Gtk.Box):
         self._on_connection_state_disconnected()
 
     def _on_connect_button_clicked(self, _):
-        self._controller.connect_to_server(self._server.name)
+        future = self._controller.connect_to_server(self._server.name)
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
 
     @property
     def available(self) -> bool:

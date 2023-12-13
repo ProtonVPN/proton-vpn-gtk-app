@@ -20,7 +20,6 @@ from unittest.mock import Mock, call
 
 from proton.vpn.app.gtk.utils import glib
 from gi.repository import GLib
-from proton.vpn.app.gtk.utils.search import normalize
 from tests.unit.testing_utils import process_gtk_events, run_main_loop
 
 

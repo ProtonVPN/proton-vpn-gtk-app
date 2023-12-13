@@ -23,7 +23,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 from typing import List, Tuple, Set
-from gi.repository import Atk, GObject
+from gi.repository import Atk, GLib, GObject
 
 from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn.app.gtk.utils.search import normalize
@@ -248,7 +248,8 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.emit("toggle-country-servers")
 
     def _on_connect_button_clicked(self, _connect_button: Gtk.Button):
-        self._controller.connect_to_country(self.country_code)
+        future = self._controller.connect_to_country(self.country_code)
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
 
     def _on_connection_state_disconnected(self):
         """Flags this server as "not connected"."""

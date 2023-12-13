@@ -32,6 +32,7 @@ from proton.vpn.core.connection import VPNConnectorWrapper
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
+from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.services import VPNDataRefresher
@@ -39,7 +40,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class VPNReconnector:
+class VPNReconnector:  # pylint: disable=too-many-instance-attributes
     """
     It implements the auto reconnect feature.
 
@@ -58,7 +59,8 @@ class VPNReconnector:
             vpn_data_refresher: "VPNDataRefresher",
             vpn_monitor: VPNMonitor,
             network_monitor: NetworkMonitor,
-            session_monitor: SessionMonitor
+            session_monitor: SessionMonitor,
+            async_executor: AsyncExecutor
     ):
         self._vpn_connector = vpn_connector
         self._vpn_data_refresher = vpn_data_refresher
@@ -72,6 +74,8 @@ class VPNReconnector:
 
         self._session_monitor = session_monitor or SessionMonitor()
         self._session_monitor.session_unlocked_callback = self._on_session_unlocked
+
+        self._executor = async_executor
 
         self._retry_src_id = None
         self.retry_counter = 0
@@ -216,11 +220,13 @@ class VPNReconnector:
 
         vpn_server = self._get_vpn_server(connection.server_id)
         if vpn_server:
-            self._vpn_connector.connect(
+            future = self._executor.submit(
+                self._vpn_connector.connect,
                 vpn_server,
                 connection.protocol,
                 connection.backend
             )
+            future.add_done_callback(lambda f: GLib.idle_add(f.result))
             self._increase_retry_counter()
         else:
             # The server was removed from the server list after the user had connected to it.

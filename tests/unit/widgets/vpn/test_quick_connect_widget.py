@@ -22,7 +22,6 @@ import pytest
 from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
 from proton.vpn.connection.states import Disconnected, Connected, Connecting, Error
 from tests.unit.testing_utils import process_gtk_events, run_main_loop
@@ -61,23 +60,20 @@ def test_quick_connect_widget_changes_button_according_to_connection_state_chang
 
 
 def test_quick_connect_widget_connects_to_fastest_server_when_connect_button_is_clicked():
-    api_mock = Mock()
-    controller = Controller(executor=Mock(), api=api_mock)
-    quick_connect_widget = QuickConnectWidget(controller=controller)
+    controller_mock = Mock()
+    quick_connect_widget = QuickConnectWidget(controller=controller_mock)
 
     quick_connect_widget.connect_button.clicked()
     process_gtk_events()
 
-    api_mock.server_list.get_fastest.assert_called_once()
-    api_mock.connection.connect.assert_called_once()
+    controller_mock.connect_to_fastest_server.assert_called_once()
 
 
 def test_quick_connect_widget_disconnects_from_current_server_when_disconnect_is_clicked():
-    api_mock = Mock()
-    controller = Controller(executor=Mock(), api=api_mock)
-    quick_connect_widget = QuickConnectWidget(controller=controller)
+    controller_mock = Mock()
+    quick_connect_widget = QuickConnectWidget(controller=controller_mock)
 
     quick_connect_widget.disconnect_button.clicked()
     process_gtk_events()
 
-    api_mock.connection.disconnect.assert_called_once()
+    controller_mock.disconnect.assert_called_once()

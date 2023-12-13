@@ -1,8 +1,4 @@
 """
-This module defines the Controller class, which decouples the GUI from the
-Proton VPN back-ends.
-
-
 Copyright (c) 2023 Proton AG
 
 This file is part of Proton VPN.
@@ -20,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from __future__ import annotations
 from concurrent.futures import Future
 from importlib import metadata
 
@@ -47,15 +44,23 @@ from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
 logger = logging.getLogger(__name__)
 
 
-class Controller:  # pylint: disable=too-many-public-methods
+class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-attributes
     """The C in the MVC pattern."""
     DEFAULT_BACKEND = "linuxnetworkmanager"
+
+    @staticmethod
+    def get(executor: AsyncExecutor):
+        """Preferred method to get an instance of Controller."""
+        controller = Controller(executor)
+        executor.submit(controller.initialize_vpn_connector).result()
+        return controller
 
     def __init__(
         self,
         executor: AsyncExecutor,
         api: ProtonVPNAPI = None,
         vpn_data_refresher: VPNDataRefresher = None,
+        vpn_connector: VPNConnectorWrapper = None,
         vpn_reconnector: VPNReconnector = None,
         app_config: AppConfig = None,
         settings: Settings = None,
@@ -69,17 +74,31 @@ class Controller:  # pylint: disable=too-many-public-methods
         self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
             self.executor, self._api
         )
-        self.reconnector = vpn_reconnector or VPNReconnector(
-            vpn_connector=self._api.connection,
-            vpn_data_refresher=self.vpn_data_refresher,
-            vpn_monitor=VPNMonitor(vpn_connector=self._api.connection),
-            network_monitor=NetworkMonitor(pool=executor),
-            session_monitor=SessionMonitor()
-        )
+        self._connector = vpn_connector
+        self._reconnector = vpn_reconnector
 
         self._app_config = app_config
         self._settings = settings
         self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
+        self.use_reconnector = True
+
+    async def initialize_vpn_connector(self):
+        """
+        Runs the required initializations to be able to start new VPN connections.
+        """
+        self._connector = await self._api.get_vpn_connector()
+
+        self._reconnector = VPNReconnector(
+            vpn_connector=self._connector,
+            vpn_data_refresher=self.vpn_data_refresher,
+            vpn_monitor=VPNMonitor(vpn_connector=self._connector),
+            network_monitor=NetworkMonitor(pool=self.executor),
+            session_monitor=SessionMonitor(),
+            async_executor=self.executor
+        )
+
+        if self.user_logged_in and self.use_reconnector:
+            self._reconnector.enable()
 
     def login(self, username: str, password: str) -> Future:
         """
@@ -88,10 +107,13 @@ class Controller:  # pylint: disable=too-many-public-methods
         :param password:
         :return: A Future object wrapping the result of the login API call.
         """
-        return self.executor.submit(
-            self._api.login,
-            username, password
-        )
+        async def login():
+            result = await self._api.login(username, password)
+            if result.success and self.use_reconnector:
+                self._reconnector.enable()
+            return result
+
+        return self.executor.submit(login)
 
     def submit_2fa_code(self, code: str) -> Future:
         """
@@ -99,17 +121,25 @@ class Controller:  # pylint: disable=too-many-public-methods
         :param code: The 2FA code.
         :return: A Future object wrapping the result of the 2FA verification.
         """
-        return self.executor.submit(
-            self._api.submit_2fa_code,
-            code
-        )
+        async def submit_2fa_code():
+            result = await self._api.submit_2fa_code(code)
+            if result.success and self.use_reconnector:
+                self._reconnector.enable()
+            return result
+
+        return self.executor.submit(submit_2fa_code)
 
     def logout(self) -> Future:
         """
         Logs the user out.
         :return: A future to be able to track the logout completion.
         """
-        return self.executor.submit(self._api.logout)
+        async def logout():
+            result = await self._api.logout()
+            self._reconnector.disable()
+            return result
+
+        return self.executor.submit(logout)
 
     @property
     def user_logged_in(self) -> bool:
@@ -136,7 +166,7 @@ class Controller:  # pylint: disable=too-many-public-methods
         ):
             self.autoconnect()
 
-    def autoconnect(self):
+    def autoconnect(self) -> Future:
         """Connects to a server from app configuration.
             This method is intended to be called at app startup.
         """
@@ -144,21 +174,21 @@ class Controller:  # pylint: disable=too-many-public-methods
 
         # Temporary hack for parsing. Should be improved
         if connect_at_app_startup == "FASTEST":
-            self.connect_to_fastest_server()
-        else:
-            self._connect_to(connect_at_app_startup)
+            return self.connect_to_fastest_server()
 
-    def connect_from_tray(self, connect_to: str):
+        return self._connect_to(connect_at_app_startup)
+
+    def connect_from_tray(self, connect_to: str) -> Future:
         """Connect to servers from tray."""
-        self._connect_to(connect_to)
+        return self._connect_to(connect_to)
 
-    def _connect_to(self, connect_to: str):
+    def _connect_to(self, connect_to: str) -> Future:
         if "#" in connect_to:
-            self.connect_to_server(connect_to)
-        else:
-            self.connect_to_country(connect_to)
+            return self.connect_to_server(connect_to)
 
-    def connect_to_country(self, country_code: str):
+        return self.connect_to_country(connect_to)
+
+    def connect_to_country(self, country_code: str) -> Future:
         """
         Establishes a VPN connection to the specified country.
         :param country_code: The ISO3166 code of the country to connect to.
@@ -166,18 +196,18 @@ class Controller:  # pylint: disable=too-many-public-methods
         "connected" state.
         """
         server = self._api.server_list.get_fastest_in_country(country_code)
-        self._connect_to_vpn(server)
+        return self._connect_to_vpn(server)
 
-    def connect_to_fastest_server(self):
+    def connect_to_fastest_server(self) -> Future:
         """
         Establishes a VPN connection to the fastest server.
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
         server = self._api.server_list.get_fastest()
-        self._connect_to_vpn(server)
+        return self._connect_to_vpn(server)
 
-    def connect_to_server(self, server_name: str = None):
+    def connect_to_server(self, server_name: str = None) -> Future:
         """
         Establishes a VPN connection.
         :param server_name: The name of the server to connect to.
@@ -185,24 +215,26 @@ class Controller:  # pylint: disable=too-many-public-methods
         "connected" state.
         """
         server = self._api.server_list.get_by_name(server_name)
-        self._connect_to_vpn(server)
+        return self._connect_to_vpn(server)
 
-    def _connect_to_vpn(self, server: LogicalServer):
-        vpn_server = self._api.connection.get_vpn_server(
+    def _connect_to_vpn(self, server: LogicalServer) -> Future:
+        vpn_server = self._connector.get_vpn_server(
             server, self.vpn_data_refresher.client_config
         )
-        self._api.connection.connect(
+
+        return self.executor.submit(
+            self._connector.connect,
             vpn_server,
-            protocol=self.get_settings().protocol,
+            protocol=self.get_settings().protocol
         )
 
-    def disconnect(self):
+    def disconnect(self) -> Future:
         """
         Terminates a VPN connection.
         :return: A Future object that resolves once the connection reaches the
         "disconnected" state.
         """
-        self._api.connection.disconnect()
+        return self.executor.submit(self._connector.disconnect)
 
     @property
     def account_name(self) -> str:
@@ -217,18 +249,18 @@ class Controller:  # pylint: disable=too-many-public-methods
     @property
     def current_connection(self) -> VPNConnection:
         """Returns the current VPN connection, if it exists."""
-        return self._api.connection.current_connection
+        return self._connector.current_connection
 
     @property
     def current_connection_status(self) -> states.State:
         """Returns the current VPN connection status. If there is not a
         current VPN connection, then the Disconnected state is returned."""
-        return self._api.connection.current_state
+        return self._connector.current_state
 
     @property
     def current_server_id(self) -> str:
         """Returns the server id of the current connection."""
-        return self._api.connection.current_server_id
+        return self._connector.current_server_id
 
     @property
     def is_connection_active(self) -> bool:
@@ -238,12 +270,12 @@ class Controller:  # pylint: disable=too-many-public-methods
         A connection is considered active in the connecting, connected
         and disconnecting states.
         """
-        return self._api.connection.is_connection_active
+        return self._connector.is_connection_active
 
     @property
     def is_connection_disconnected(self) -> bool:
         """Returns whether the current connection is in disconnected state or not."""
-        return isinstance(self._api.connection.current_state, states.Disconnected)
+        return isinstance(self._connector.current_state, states.Disconnected)
 
     def submit_bug_report(self, bug_report: BugReportForm) -> Future:
         """Submits an issue report.
@@ -258,19 +290,19 @@ class Controller:  # pylint: disable=too-many-public-methods
         Registers a new subscriber to connection status updates.
         :param subscriber: The subscriber to be registered.
         """
-        self._api.connection.register(subscriber)
+        self._connector.register(subscriber)
 
     def unregister_connection_status_subscriber(self, subscriber):
         """
         Unregisters an existing subscriber from connection status updates.
         :param subscriber: The subscriber to be unregistered.
         """
-        self._api.connection.unregister(subscriber)
+        self._connector.unregister(subscriber)
 
     @property
     def vpn_connector(self) -> VPNConnectorWrapper:
         """Returns the VPN connector"""
-        return self._api.connection
+        return self._connector
 
     @property
     def app_configuration(self) -> AppConfig:
@@ -317,6 +349,6 @@ class Controller:  # pylint: disable=too-many-public-methods
 
     def get_available_protocols(self) -> Optional[str]:
         """Returns a list of available protocol to use."""
-        return self._api.connection.get_available_protocols_for_backend(
+        return self._connector.get_available_protocols_for_backend(
             self.DEFAULT_BACKEND
         )

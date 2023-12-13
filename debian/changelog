@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.4) unstable; urgency=medium
+
+  * Fix app getting stuck in disconnecting state
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 13 Dec 2023 12:35:51 +0100
+
 proton-vpn-gtk-app (4.1.3) unstable; urgency=medium
 
   * Add Secure core icon to servers that support the feature

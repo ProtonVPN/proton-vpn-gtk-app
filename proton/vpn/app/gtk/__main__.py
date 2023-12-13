@@ -23,6 +23,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import sys
 
 from proton.vpn.app.gtk.app import App
+from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 
 
@@ -30,7 +31,8 @@ def main():
     """Runs the app."""
 
     with AsyncExecutor() as executor:
-        sys.exit(App(executor).run(sys.argv))
+        controller = Controller.get(executor)
+        sys.exit(App(controller).run(sys.argv))
 
 
 if __name__ == "__main__":

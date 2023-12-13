@@ -1,3 +1,6 @@
+## 4.1.4
+- Fix app getting stuck in disconnecting state.
+
 ## 4.1.3
 - Enhance visibility of Secure Core servers in the server list.
 

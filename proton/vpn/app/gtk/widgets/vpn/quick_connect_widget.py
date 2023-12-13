@@ -19,6 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from gi.repository import GLib
 from proton.vpn.connection.states import State
 
 from proton.vpn.app.gtk import Gtk
@@ -93,8 +94,10 @@ class QuickConnectWidget(Gtk.Box):
 
     def _on_connect_button_clicked(self, _):
         logger.info("Connect to fastest server", category="ui.tray", event="connect")
-        self._controller.connect_to_fastest_server()
+        future = self._controller.connect_to_fastest_server()
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
 
     def _on_disconnect_button_clicked(self, _):
         logger.info("Disconnect from VPN", category="ui", event="disconnect")
-        self._controller.disconnect()
+        future = self._controller.disconnect()
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.

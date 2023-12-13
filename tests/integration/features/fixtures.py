@@ -89,12 +89,9 @@ def app(context):
 
 
 def start_app(async_executor) -> (App, Thread, Dict):
-    app = App(
-        async_executor,
-        controller=Controller(
-            async_executor,
-            vpn_reconnector=Mock(VPNReconnector))
-    )
+    controller = Controller.get(async_executor)
+    controller.use_reconnector = False
+    app = App(controller)
     app_events = dict()
 
     # Register an event to be able to wait for the application to be ready.

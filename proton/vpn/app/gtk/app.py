@@ -26,7 +26,6 @@ from gi.repository import GObject, Gtk, Gdk
 from proton.vpn import logging
 
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.assets.style import STYLE_PATH
@@ -52,14 +51,11 @@ class App(Gtk.Application):
 
     def __init__(
             self,
-            executor: AsyncExecutor,
-            controller: Controller = None
+            controller: Controller
     ):
         super().__init__(application_id="proton.vpn.app.gtk")
         logger.info(f"{self=}", category="APP", event="PROCESS_START")
-        self._controller = controller or Controller(
-            executor=executor
-        )
+        self._controller = controller
         self.window = None
         self.tray_indicator = None
         self._signal_connect_queue = []

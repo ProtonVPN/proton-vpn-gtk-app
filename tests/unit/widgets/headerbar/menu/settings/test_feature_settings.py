@@ -299,7 +299,7 @@ def test_killswitch_when_switch_is_set_to_initial_value(killswitch_enabled, mock
         set_state_mock.assert_called_once_with(killswitch_enabled)
 
 @pytest.mark.parametrize("is_killswitch_enabled", [False, True])
-def test_port_forwarding_when_switching_switch_state_and_ensure_changes_are_saved(is_killswitch_enabled, mocked_controller_and_killswitch):
+def test_killswitch_when_switching_switch_state_and_ensure_changes_are_saved(is_killswitch_enabled, mocked_controller_and_killswitch):
     controller_mock, killswitch_mock = mocked_controller_and_killswitch
 
     killswitch_mock.return_value = is_killswitch_enabled
@@ -315,7 +315,7 @@ def test_port_forwarding_when_switching_switch_state_and_ensure_changes_are_save
     controller_mock.save_settings.assert_called_once()
 
 @pytest.mark.parametrize("is_connection_active", [False, True])    
-def test_port_forwarding_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_killswitch):
+def test_killswitch_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_killswitch):
     controller_mock, killswitch_mock = mocked_controller_and_killswitch
     notification_bar_mock = Mock()
 

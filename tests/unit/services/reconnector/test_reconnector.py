@@ -35,8 +35,7 @@ from tests.unit.testing_utils import process_gtk_events
 
 @pytest.fixture
 def async_executor():
-    with AsyncExecutor() as executor:
-        yield executor
+    return Mock(AsyncExecutor)
 
 
 @pytest.fixture
@@ -237,12 +236,12 @@ def test_on_vpn_drop_raises_exception_on_authentication_denied_error(
 @patch("proton.vpn.app.gtk.services.reconnector.reconnector.GLib")
 def test_on_vpn_drop_a_reconnection_attempt_is_scheduled_with_an_exponential_backoff_delay(
     glib_mock, random_mock,
-    vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor
+    vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor, async_executor
 ):
     """After each reconnection attempt, the backoff delay should increase
     exponentially."""
     VPNReconnector(
-        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor, async_executor=Mock()
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor, async_executor
     )
     vpn_connector.current_state = states.Error()
 

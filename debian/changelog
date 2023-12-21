@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.7) unstable; urgency=medium
+
+  * Log time of search queries
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 11 Jan 2024 11:30:00 +0100
+
 proton-vpn-gtk-app (4.1.6) unstable; urgency=medium
 
   * Fix close button on account dialog

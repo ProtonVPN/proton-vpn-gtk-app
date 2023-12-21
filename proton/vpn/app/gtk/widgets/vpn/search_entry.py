@@ -83,4 +83,4 @@ class SearchEntry(Gtk.SearchEntry):
 
         self.emit("search-complete")
         end_time = time.time()
-        logger.info(f"Search for '{entry_text}' done in {(end_time - start_time) * 1000:.2f} ms.")
+        logger.info(f"Search done in {(end_time - start_time) * 1000:.2f} ms.")

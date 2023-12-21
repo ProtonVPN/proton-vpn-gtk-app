@@ -1,3 +1,6 @@
+## 4.1.7
+- Improve application log.
+
 ## 4.1.6
 - Various bug fixes contributed by community.
 

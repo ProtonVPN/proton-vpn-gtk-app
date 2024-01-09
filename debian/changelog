@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.5) unstable; urgency=medium
+
+  * Disconnect from VPN when quitting app
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 09 Jan 2024 14:37:00 +0100
+
 proton-vpn-gtk-app (4.1.4) unstable; urgency=medium
 
   * Fix app getting stuck in disconnecting state

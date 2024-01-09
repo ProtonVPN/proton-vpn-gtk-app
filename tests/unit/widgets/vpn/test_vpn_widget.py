@@ -141,8 +141,9 @@ def test_unload_resets_widget_state():
     """
     The `unload()` method is called on the "unrealize" event and its goal
     is to reset the widget state. Currently, it does the following things:
-    1. unregisters from connection status updates,
-    2. disables the VPN data refresher
+    1. disconnects if there is an active VPN connection,
+    2. unregisters from connection status updates,
+    3. disables the VPN data refresher
     """
     controller_mock = Mock()
     controller_mock.is_connection_active = True
@@ -150,5 +151,6 @@ def test_unload_resets_widget_state():
     vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
     vpn_widget.unload()
 
-    controller_mock.unregister_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (1)
-    controller_mock.vpn_data_refresher.disable.assert_called_once()  # (2)
+    controller_mock.disconnect()  # (1)
+    controller_mock.unregister_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (2)
+    controller_mock.vpn_data_refresher.disable.assert_called_once()  # (3)

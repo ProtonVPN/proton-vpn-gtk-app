@@ -178,6 +178,7 @@ class VPNWidget(Gtk.Box):
 
     def unload(self):
         """Unloads the widget and resets its state."""
+        self._controller.disconnect()
         self._controller.vpn_data_refresher.disconnect(
             self._state.vpn_data_ready_handler_id
         )

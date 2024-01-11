@@ -1,3 +1,9 @@
+## 4.1.6
+- Various bug fixes contributed by community.
+
+## 4.1.5
+- Fix regression: disconnect from VPN when quitting app.
+
 ## 4.1.4
 - Fix app getting stuck in disconnecting state.
 

@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -51,8 +51,9 @@ def test_disable_unregisters_monitor_from_connection_state_updates():
     (states.Disconnected(), False),
     (states.Error(), True)
 ])
+@patch("proton.vpn.app.gtk.services.reconnector.vpn_monitor.GLib")
 def test_status_update_only_triggers_vpn_drop_callback_on_error_connection_state(
-        state, vpn_drop_callback_called
+        glib_mock, state, vpn_drop_callback_called
 ):
     vpn_connector = Mock(VPNConnectorWrapper)
     monitor = VPNMonitor(vpn_connector)
@@ -60,7 +61,10 @@ def test_status_update_only_triggers_vpn_drop_callback_on_error_connection_state
 
     monitor.status_update(state)
 
-    assert monitor.vpn_drop_callback.called is vpn_drop_callback_called
+    if vpn_drop_callback_called:
+        glib_mock.idle_add.assert_called_with(monitor.vpn_drop_callback)
+    else:
+        glib_mock.idle_add.assert_not_called()
 
 
 @pytest.mark.parametrize("state,vpn_up_callback_called", [
@@ -70,8 +74,9 @@ def test_status_update_only_triggers_vpn_drop_callback_on_error_connection_state
     (states.Disconnected(), False),
     (states.Error(), False)
 ])
+@patch("proton.vpn.app.gtk.services.reconnector.vpn_monitor.GLib")
 def test_status_update_only_triggers_vpn_up_callback_on_connected_connection_state(
-        state, vpn_up_callback_called
+        glib_mock, state, vpn_up_callback_called
 ):
     vpn_connector = Mock(VPNConnectorWrapper)
     monitor = VPNMonitor(vpn_connector)
@@ -79,7 +84,10 @@ def test_status_update_only_triggers_vpn_up_callback_on_connected_connection_sta
 
     monitor.status_update(state)
 
-    assert monitor.vpn_up_callback.called is vpn_up_callback_called
+    if vpn_up_callback_called:
+        glib_mock.idle_add.assert_called_with(monitor.vpn_up_callback)
+    else:
+        glib_mock.idle_add.assert_not_called()
 
 
 def test_status_update_does_not_fail_when_callbacks_were_not_set():

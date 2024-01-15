@@ -1,6 +1,6 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.1.7
-%define upstream_version 4.1.7
+%define version 4.1.8
+%define upstream_version 4.1.8
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Mon Jan 15 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.8
+- Dispatch VPN monitor status updates from asyncio to GLib loop
+
 * Thu Jan 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.7
 - Log time of search queries
 

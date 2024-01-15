@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.8) unstable; urgency=medium
+
+  * Dispatch VPN monitor status updates from asyncio to GLib loop
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 15 Jan 2024 16:18:48 +0100
+
 proton-vpn-gtk-app (4.1.7) unstable; urgency=medium
 
   * Log time of search queries

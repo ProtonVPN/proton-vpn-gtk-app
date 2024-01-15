@@ -140,7 +140,9 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
     def _current_connection(self) -> VPNConnection:
         return self._vpn_connector.current_connection
 
-    def _raise_reconnection_error(self):
+    def _on_reconnection_error(self):
+        self._reset_retry_counter()
+
         event = self._vpn_connector.current_state.context.event
         if isinstance(event, events.AuthDenied):
             raise AuthenticationError("Reconnection not possible due to authentication error.")
@@ -190,9 +192,8 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
 
         if not self.is_connection_error_fatal:
             logger.info("VPN reconnection not possible: fatal connection error.")
-            self._reset_retry_counter()
             # Raise exception on the next event loop iteration so that the app reacts to it.
-            GLib.idle_add(self._raise_reconnection_error)
+            GLib.idle_add(self._on_reconnection_error)
             return
 
         self.schedule_reconnection()

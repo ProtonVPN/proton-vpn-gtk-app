@@ -1,3 +1,6 @@
+## 4.1.8
+- VPN connection monitoring bug fix.
+
 ## 4.1.7
 - Improve application log.
 

@@ -21,6 +21,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import Callable, Optional
 
+from gi.repository import GLib
+
 from proton.vpn.connection import states
 from proton.vpn.core.connection import VPNConnectorWrapper
 
@@ -52,7 +54,7 @@ class VPNMonitor:
         """This method is called by the VPN connection state machine whenever
         the connection state changes."""
         if isinstance(connection_status, states.Error) and self.vpn_drop_callback:
-            self.vpn_drop_callback()  # pylint: disable=not-callable
+            GLib.idle_add(self.vpn_drop_callback)  # pylint: disable=not-callable
 
         if isinstance(connection_status, states.Connected) and self.vpn_up_callback:
-            self.vpn_up_callback()  # pylint: disable=not-callable
+            GLib.idle_add(self.vpn_up_callback)  # pylint: disable=not-callable

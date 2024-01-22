@@ -49,7 +49,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     WIDTH = 400
     HEIGHT = 300
     EMAIL_REGEX = re.compile(
-        r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
+        r'[^@\s]+@[^@\s]{2,}\.[^@\s\.-]{2,}'
     )
     BUG_REPORT_SENDING_MESSAGE = "Reporting your issue..."
     BUG_REPORT_SUCCESS_MESSAGE = "Your issue has been reported"
@@ -283,6 +283,10 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.description_buffer.connect(
             "changed", self._on_entry_changed
         )
+
+    def get_submit_button(self):
+        """Returns the Submit button."""
+        return self.get_widget_for_response(Gtk.ResponseType.OK)
 
     def click_on_submit_button(self):
         """Clicks the Submit button."""

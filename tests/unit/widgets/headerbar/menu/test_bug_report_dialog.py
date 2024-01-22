@@ -20,6 +20,7 @@ from concurrent.futures import Future
 from io import StringIO
 
 from unittest.mock import Mock
+import pytest
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.session import BugReportForm
@@ -167,3 +168,35 @@ def test_bug_report_widget_shows_error_message_on_unexpected_errors_reaching_api
 
     assert bug_report_widget.status_label == bug_report_widget.BUG_REPORT_UNEXPECTED_ERROR_MESSAGE
 
+
+@pytest.mark.parametrize("email_entry, is_enabled", [
+    ("test-email@pm.me", True),
+    ("test@pm.me", True),
+    ("test@pm-random.me", True),
+    ("test@pm-ra-ndom123.me", True),
+    ("123-@pm-ra-ndom123.me", True),
+    ("test.-@pm.me", True),
+    ("-@pm-ra-ndom123.me", True),
+    (".-@pm-ra-ndom123.me", True),
+    (".-test@pm.me", True),
+    ("test@pm-ra-ndom123.123", True),
+    (".@pm-ra-ndom123.123", True),
+    ("test@pm-ra-ndom123.12-3", False),
+    ("test@pm-ra-ndom123.12.3", False),
+    (".@pm-ra-ndom123.a", False),
+    ("test@-.me", False),
+    ("test@..me", False),
+])
+def test_bug_report_widget_submit_button_reacts_accordindgly_to_email_format_requirments(email_entry, is_enabled):
+    controller_mock = Mock()
+    bug_report_widget = BugReportDialog(
+        controller=controller_mock, main_window=Mock(),
+        log_collector=Mock()
+    )
+
+    bug_report_widget.username_entry.set_text("Username")
+    bug_report_widget.description_buffer.set_text("Bug report description.")
+    bug_report_widget.email_entry.set_text(email_entry)
+    submit_button_enabled = bug_report_widget.get_submit_button().get_sensitive()
+
+    assert submit_button_enabled == is_enabled

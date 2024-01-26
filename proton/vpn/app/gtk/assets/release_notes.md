@@ -1,3 +1,6 @@
+## 4.1.10
+- Recover from manual cache deletion.
+
 ## 4.1.9
 - Bug fixes.
 

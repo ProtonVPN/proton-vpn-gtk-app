@@ -75,12 +75,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             self.executor, self._api
         )
         self._connector = vpn_connector
-        self._reconnector = vpn_reconnector
+        self.reconnector = vpn_reconnector
 
         self._app_config = app_config
         self._settings = settings
         self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
-        self.use_reconnector = True
 
     async def initialize_vpn_connector(self):
         """
@@ -88,7 +87,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """
         self._connector = await self._api.get_vpn_connector()
 
-        self._reconnector = VPNReconnector(
+        self.reconnector = VPNReconnector(
             vpn_connector=self._connector,
             vpn_data_refresher=self.vpn_data_refresher,
             vpn_monitor=VPNMonitor(vpn_connector=self._connector),
@@ -97,9 +96,6 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             async_executor=self.executor
         )
 
-        if self.user_logged_in and self.use_reconnector:
-            self._reconnector.enable()
-
     def login(self, username: str, password: str) -> Future:
         """
         Logs the user in.
@@ -107,13 +103,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         :param password:
         :return: A Future object wrapping the result of the login API call.
         """
-        async def login():
-            result = await self._api.login(username, password)
-            if result.success and self.use_reconnector:
-                self._reconnector.enable()
-            return result
-
-        return self.executor.submit(login)
+        return self.executor.submit(self._api.login, username, password)
 
     def submit_2fa_code(self, code: str) -> Future:
         """
@@ -121,25 +111,14 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         :param code: The 2FA code.
         :return: A Future object wrapping the result of the 2FA verification.
         """
-        async def submit_2fa_code():
-            result = await self._api.submit_2fa_code(code)
-            if result.success and self.use_reconnector:
-                self._reconnector.enable()
-            return result
-
-        return self.executor.submit(submit_2fa_code)
+        return self.executor.submit(self._api.submit_2fa_code, code)
 
     def logout(self) -> Future:
         """
         Logs the user out.
         :return: A future to be able to track the logout completion.
         """
-        async def logout():
-            result = await self._api.logout()
-            self._reconnector.disable()
-            return result
-
-        return self.executor.submit(logout)
+        return self.executor.submit(self._api.logout)
 
     @property
     def user_logged_in(self) -> bool:

@@ -90,7 +90,6 @@ def app(context):
 
 def start_app(async_executor) -> (App, Thread, Dict):
     controller = Controller.get(async_executor)
-    controller.use_reconnector = False
     app = App(controller)
     app_events = dict()
 

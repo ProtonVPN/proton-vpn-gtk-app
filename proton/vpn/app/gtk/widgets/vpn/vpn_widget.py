@@ -161,6 +161,7 @@ class VPNWidget(Gtk.Box):
         # The VPN widget subscribes to connection status updates, and then
         # passes on these connection status updates to child widgets
         self._controller.register_connection_status_subscriber(self)
+        self._controller.reconnector.enable()
 
         self.server_list_widget.display(user_tier=user_tier, server_list=server_list)
 
@@ -184,6 +185,7 @@ class VPNWidget(Gtk.Box):
         )
 
         self._controller.unregister_connection_status_subscriber(self)
+        self._controller.reconnector.disable()
         self._controller.vpn_data_refresher.disable()
 
         for widget in [

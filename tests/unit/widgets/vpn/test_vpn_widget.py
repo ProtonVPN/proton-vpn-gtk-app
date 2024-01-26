@@ -98,7 +98,8 @@ def test_display_initializes_widget(server_list):
     Proton's REST API.
     The display method should:
      1. update connection state subscribers with the current VPN connection state,
-     2. register the VPN widget itself to future VPN connection state updates and
+     2. register the VPN widget itself to future VPN connection state updates,
+     3. enable the reconnector and finally
      4. emit the vpn-widget-ready signal.
     """
     controller_mock = Mock()
@@ -118,7 +119,8 @@ def test_display_initializes_widget(server_list):
 
     connection_status_subscriber.connection_status_update.assert_called_once()  # (1)
     controller_mock.register_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (2)
-    assert vpn_widget_ready_event.wait(timeout=0), "vpn-data-ready signal was not sent."  # (3)
+    controller_mock.reconnector.enable.assert_called_once()  # (3)
+    assert vpn_widget_ready_event.wait(timeout=0), "vpn-data-ready signal was not sent."  # (4)
 
 
 def test_vpn_widget_notifies_child_widgets_on_connection_status_update():
@@ -143,7 +145,8 @@ def test_unload_resets_widget_state():
     is to reset the widget state. Currently, it does the following things:
     1. disconnects if there is an active VPN connection,
     2. unregisters from connection status updates,
-    3. disables the VPN data refresher
+    3. disables the reconnector and
+    4. disables the VPN data refresher
     """
     controller_mock = Mock()
     controller_mock.is_connection_active = True
@@ -151,6 +154,7 @@ def test_unload_resets_widget_state():
     vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
     vpn_widget.unload()
 
-    controller_mock.disconnect()  # (1)
+    controller_mock.disconnect.assert_called_once()  # (1)
     controller_mock.unregister_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (2)
-    controller_mock.vpn_data_refresher.disable.assert_called_once()  # (3)
+    controller_mock.reconnector.disable.assert_called_once()  # (3)
+    controller_mock.vpn_data_refresher.disable.assert_called_once()  # (4)

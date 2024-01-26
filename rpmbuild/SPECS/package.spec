@@ -1,6 +1,6 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.1.9
-%define upstream_version 4.1.9
+%define version 4.1.10
+%define upstream_version 4.1.10
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Jan 26 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.10
+- Recover from manual cache deletion
+
 * Mon Jan 15 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.9
 - Improve email regex when submitting bug reports
 

@@ -78,7 +78,7 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.show_country_servers = show_country_servers
         self._connection_state = connection_state
 
-    def _build_ui(self, connected: bool):
+    def _build_ui(self, connection_state: ConnectionStateEnum):
         self._country_name_label = Gtk.Label(label=self.country_name)
         self.pack_start(self._country_name_label, expand=False, fill=False, padding=0)
         self.set_spacing(10)
@@ -90,10 +90,7 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
         self._show_under_maintenance_icon_or_country_details()
 
-        if connected:
-            self.connection_state = ConnectionStateEnum.CONNECTED
-        else:
-            self.connection_state = ConnectionStateEnum.DISCONNECTED
+        self.connection_state = connection_state
 
     def update_under_maintenance_status(self, under_maintenance: bool):
         """Shows or hides the under maintenance status for the country."""

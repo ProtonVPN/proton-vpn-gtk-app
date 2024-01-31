@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.1.10
-%define upstream_version 4.1.10
+%define version 4.1.11
+%define upstream_version 4.1.11rc1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 1
+%define release 0.1.rc1
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Jan 31 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.11
+- Fix minor bug in country row initialization
+
 * Fri Jan 26 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.10
 - Recover from manual cache deletion
 

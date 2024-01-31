@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.11~rc1) unstable; urgency=medium
+
+  * Fix minor bug in country row initialization
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 31 Jan 2024 11:47:42 +0100
+
 proton-vpn-gtk-app (4.1.10) unstable; urgency=medium
 
   * Recover from manual cache deletion

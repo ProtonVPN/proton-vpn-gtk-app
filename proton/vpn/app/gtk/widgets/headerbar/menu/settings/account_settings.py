@@ -22,34 +22,24 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from gi.repository import Gtk, Gdk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    CategoryHeader, SettingRow, SettingName, SettingDescription
+    BaseCategoryContainer, SettingRow, SettingName, SettingDescription
 )
 
 
-class AccountSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
+class AccountSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
     """Account settings are grouped under this class."""
     CATEGORY_NAME = "Account"
     MANAGE_ACCOUNT_URL = "https://account.protonvpn.com/account"
 
     def __init__(self, controller: Controller):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(self.CATEGORY_NAME)
         self._controller = controller
         self.account_row = None
-
-        self.set_halign(Gtk.Align.FILL)
-        self.set_spacing(15)
-
-        self.get_style_context().add_class("setting-category")
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
         under this category."""
-        self.pack_start(CategoryHeader(self.CATEGORY_NAME), False, False, 0)
-
         manage_account_button = Gtk.Button()
-        manage_account_button.set_halign(Gtk.Align.END)
-        manage_account_button.set_hexpand(True)
-
         manage_account_button.set_label("Manage Account")
         manage_account_button.connect("clicked", self._on_click_manage_account_button)
 

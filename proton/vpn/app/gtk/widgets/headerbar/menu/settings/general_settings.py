@@ -23,13 +23,13 @@ from typing import TYPE_CHECKING, Optional
 from gi.repository import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    CategoryHeader, SettingRow, SettingName, SettingDescription
+    BaseCategoryContainer, SettingRow, SettingName, SettingDescription
 )
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator
 
 
-class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
+class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
     """General settings are grouped under this class."""
     CATEGORY_NAME = "General"
     CONNECT_AT_APP_STARTUP_LABEL = "Auto connect"
@@ -46,22 +46,16 @@ class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self, controller: Controller,
         tray_indicator: Optional["TrayIndicator"] = None
     ):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(self.CATEGORY_NAME)
         self._controller = controller
         self._tray_indicator = tray_indicator
 
         self.connect_at_app_startup_row = None
         self.tray_pinned_servers_row = None
 
-        self.set_halign(Gtk.Align.FILL)
-        self.set_spacing(15)
-
-        self.get_style_context().add_class("setting-category")
-
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
         under this category."""
-        self.pack_start(CategoryHeader(self.CATEGORY_NAME), False, False, 0)
         self.build_connect_at_app_startup()
         self.build_tray_pinned_servers()
 
@@ -95,9 +89,6 @@ class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             self.connect_at_app_startup = newvalue
 
         entry = Gtk.Entry()
-        entry.set_halign(Gtk.Align.END)
-        entry.set_hexpand(True)
-
         entry.set_text(self.connect_at_app_startup)
         entry.connect("focus-out-event", on_focus_outside_entry)
 
@@ -143,9 +134,6 @@ class GeneralSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             return
 
         entry = Gtk.Entry()
-        entry.set_halign(Gtk.Align.END)
-        entry.set_hexpand(True)
-
         entry.set_text(self.tray_pinned_servers)
         entry.connect("focus-out-event", on_focus_outside_entry)
 

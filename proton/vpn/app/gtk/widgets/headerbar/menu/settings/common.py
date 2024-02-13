@@ -27,6 +27,22 @@ RECONNECT_MESSAGE = "Please establish a new VPN connection for "\
         "changes to take effect."
 
 
+class BaseCategoryContainer(Gtk.Box):
+    """Base container class that is used to group common settings.
+
+    Mostly a helper class to remove the necessity of writing boilerplate
+    styling code in each category container.
+    """
+    def __init__(self, category_name: str):
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+
+        self.get_style_context().add_class("setting-category")
+        self.set_halign(Gtk.Align.FILL)
+        self.set_spacing(15)
+
+        self.pack_start(CategoryHeader(category_name), False, False, 0)
+
+
 class CategoryHeader(Gtk.Label):
     """Header that is used to seperate between setting types, such as
     Features, Connection, etc."""
@@ -46,10 +62,11 @@ class SettingRow(Gtk.Grid):
     that can have another UI state (disabled state) we just need to pass the
     user tier for it to automatically display the propper UI.
     """
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
         self, label: Gtk.Label,
         interactive_object: Gtk.Widget,
-        description: Gtk.Label = None, user_tier: int = None
+        description: Gtk.Label = None,
+        user_tier: int = None,
     ):
         super().__init__()
         self.get_style_context().add_class("setting-item")
@@ -70,6 +87,11 @@ class SettingRow(Gtk.Grid):
             self._interactive_object = UpgradePlusTag()
 
         self.attach(self._label, 0, 0, 1, 1)
+
+        # Style interactive_object so it's always aligned
+        self._interactive_object.set_hexpand(True)
+        self._interactive_object.set_halign(Gtk.Align.END)
+
         self.attach(self._interactive_object, 1, 0, 1, 1)
 
         if self._description:
@@ -141,7 +163,7 @@ class SettingName(Gtk.Label):
 
     @disabled.setter
     def disabled(self, newvalue: bool):
-        """Sets of the label should be disabled or not."""
+        """Sets if the label should be disabled or not."""
         self.set_property("sensitive", not newvalue)
 
 

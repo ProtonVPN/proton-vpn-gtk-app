@@ -25,19 +25,145 @@ from proton.vpn.core.settings import NetShield
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    RECONNECT_MESSAGE, CategoryHeader, SettingRow, SettingName, SettingDescription
+    RECONNECT_MESSAGE, BaseCategoryContainer, SettingRow, SettingName, SettingDescription
 )
+from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
 
 
-class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
+class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-attributes,too-few-public-methods
+    """Kill switch setting widget.
+
+    Since the kill switch can have multiple modes, we need to have a proper
+    widget that handles of all of these cases and is easy to test.
+    """
+    KILLSWITCH_LABEL = "Kill switch"
+    KILLSWITCH_DESCRIPTION = "Protects your IP address by disconnecting you from the " \
+        "internet if you lose your VPN connection."
+    KILLSWITCH_STANDARD_DESCRIPTION = "Automatically disconnect from the internet if "\
+        "VPN connection is lost."
+    KILLSWITCH_ADVANCED_DESCRIPTION = "Only allow internet access when connected to Proton VPN. " \
+        "Advanced kill switch will remain active even when you restart your device."
+
+    def __init__(self, controller: Controller, notification_bar: NotificationBar):
+        self._controller = controller
+        self._notification_bar = notification_bar
+
+        killswitch_state = self.killswitch
+        switch = self._build_main_setting(killswitch_state)
+
+        super().__init__(
+            SettingName(self.KILLSWITCH_LABEL),
+            switch,
+            SettingDescription(self.KILLSWITCH_DESCRIPTION)
+        )
+
+        self._standard_radio_button_connect_id = None
+        self._advanced_radio_button_connect_id = None
+
+        self.standard_radio_button = None
+        self.advanced_radio_button = None
+        self.revealer = None
+
+        self._build_revealer(killswitch_state)
+
+    @property
+    def killswitch(self) -> int:
+        """Shortcut property that returns the current `killswitch` setting."""
+        return int(self._controller.get_settings().killswitch)
+
+    @killswitch.setter
+    def killswitch(self, newvalue: int):
+        """Shortcut property that sets the new `killswitch` setting and
+        stores to disk."""
+        self._controller.get_settings().killswitch = int(newvalue)
+        self._controller.save_settings()
+
+    def _build_main_setting(self, killswitch_state: int) -> Gtk.Switch:
+        switch = Gtk.Switch()
+        switch.set_state(killswitch_state)
+        switch.connect("state-set", self._on_switch_button_toggle)
+
+        return switch
+
+    def _build_revealer(self, killswitch_state: int):
+        # Standard kill switch setting
+        main_standard_container = Gtk.Grid()
+        main_standard_container.set_column_spacing(10)
+
+        self.standard_radio_button = Gtk.RadioButton()
+        self.standard_radio_button.set_active(killswitch_state == KillSwitchSettingEnum.ON)
+
+        main_standard_container.attach(self.standard_radio_button, 0, 0, 1, 1)
+        main_standard_container.attach(SettingName("Standard"), 1, 0, 1, 1)
+        main_standard_container.attach(
+            SettingDescription(self.KILLSWITCH_STANDARD_DESCRIPTION),
+            1, 1, 1, 1
+        )
+
+        # Advanced kill switch setting
+        main_advanced_container = Gtk.Grid()
+        main_advanced_container.set_column_spacing(10)
+
+        self.advanced_radio_button = Gtk.RadioButton(group=self.standard_radio_button)
+        self.advanced_radio_button.set_active(killswitch_state == KillSwitchSettingEnum.PERMANENT)
+
+        main_advanced_container.attach(self.advanced_radio_button, 0, 0, 1, 1)
+        main_advanced_container.attach(SettingName("Advanced"), 1, 0, 1, 1)
+        main_advanced_container.attach(
+            SettingDescription(self.KILLSWITCH_ADVANCED_DESCRIPTION),
+            1, 1, 1, 1
+        )
+
+        # Add both containers that contain all children that are to be displayed in the revealer
+        revealer_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        revealer_container.set_spacing(10)
+        revealer_container.pack_start(main_standard_container, False, False, 0)
+        revealer_container.pack_start(main_advanced_container, False, False, 0)
+
+        # Create and add revealer
+        self.revealer = Gtk.Revealer()
+        self.attach(self.revealer, 0, 2, 2, 1)
+        self.revealer.add(revealer_container)
+        self.revealer.set_reveal_child(killswitch_state > KillSwitchSettingEnum.OFF)
+
+        self.standard_radio_button.connect(
+            "toggled", self._on_radio_button_toggle, KillSwitchSettingEnum.ON
+        )
+        self.advanced_radio_button.connect(
+            "toggled", self._on_radio_button_toggle, KillSwitchSettingEnum.PERMANENT
+        )
+
+    def _on_radio_button_toggle(self, widget: Gtk.RadioButton, new_value: int):
+        # If revealer is hidden then we don't want to resolve the trigger from
+        # programmatically setting the standard radio button.
+        if not self.revealer.get_reveal_child():
+            return
+
+        if widget.get_active():
+            self._update(new_value, False)
+
+    def _on_switch_button_toggle(self, _, new_value: bool):
+        self._update(int(new_value), True)
+
+    def _update(self, value: int, new_value_comes_from_main_switch: bool):
+        self.killswitch = value
+        self.revealer.set_reveal_child(value > KillSwitchSettingEnum.OFF)
+
+        if new_value_comes_from_main_switch:
+            self.standard_radio_button.set_active(True)
+
+        if self._controller.is_connection_active:
+            self._notification_bar.show_info_message(
+                f"{RECONNECT_MESSAGE}"
+            )
+
+
+class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
     CATEGORY_NAME = "Features"
     NETSHIELD_LABEL = "NetShield"
     NETSHIELD_DESCRIPTION = "Protect yourself from ads, malware, and trackers "\
         "on websites and apps."
-    KILLSWITCH_LABEL = "Kill switch"
-    KILLSWITCH_DESCRIPTION = "Protects your IP address by disconnecting you from the " \
-        "internet if you lose your VPN connection."
     PORT_FORWARDING_LABEL = "Port forwarding"
     PORT_FORWARDING_DESCRIPTION = "Bypass firewalls to connect to P2P servers "\
         "and devices on your local network."
@@ -47,7 +173,7 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         " to set it up."
 
     def __init__(self, controller: Controller, notification_bar: NotificationBar):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(self.CATEGORY_NAME)
         self._controller = controller
         self._notification_bar = notification_bar
 
@@ -55,15 +181,9 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.killswitch_row = None
         self.port_forwarding_row = None
 
-        self.set_halign(Gtk.Align.FILL)
-        self.set_spacing(15)
-
-        self.get_style_context().add_class("setting-category")
-
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
         under this category."""
-        self.pack_start(CategoryHeader(self.CATEGORY_NAME), False, False, 0)
         self.build_netshield()
         self.build_killswitch()
         self.build_port_forwarding()
@@ -78,18 +198,6 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         """Shortcut property that sets the new `netshield` setting and
         stores to disk."""
         self._controller.get_settings().features.netshield = int(newvalue)
-        self._controller.save_settings()
-
-    @property
-    def killswitch(self) -> int:
-        """Shortcut property that returns the current `killswitch` setting."""
-        return int(self._controller.get_settings().killswitch)
-
-    @killswitch.setter
-    def killswitch(self, newvalue: int):
-        """Shortcut property that sets the new `killswitch` setting and
-        stores to disk."""
-        self._controller.get_settings().killswitch = int(newvalue)
         self._controller.save_settings()
 
     @property
@@ -131,8 +239,6 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             (str(NetShield.BLOCK_ADS_AND_TRACKING.value), "Block ads, trackers and malware"),
         ]
         combobox = Gtk.ComboBoxText()
-        combobox.set_hexpand(True)
-        combobox.set_halign(Gtk.Align.END)
 
         for netshield_option in netshield_options:
             id_, ui_friendly_text = netshield_option
@@ -152,25 +258,7 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
     def build_killswitch(self):
         """Builds and adds the `killswitch` setting to the widget."""
-        def on_switch_state(_, new_value: bool):
-            self.killswitch = new_value
-            if self._controller.is_connection_active:
-                self._notification_bar.show_info_message(
-                    f"{RECONNECT_MESSAGE}"
-                )
-
-        switch = Gtk.Switch()
-        switch.set_halign(Gtk.Align.END)
-        switch.set_hexpand(True)
-
-        self.killswitch_row = SettingRow(
-            SettingName(self.KILLSWITCH_LABEL),
-            switch,
-            SettingDescription(self.KILLSWITCH_DESCRIPTION)
-        )
-
-        switch.set_state(self.killswitch)
-        switch.connect("state-set", on_switch_state)
+        self.killswitch_row = KillSwitchSetting(self._controller, self._notification_bar)
         self.pack_start(self.killswitch_row, False, False, 0)
 
     def build_port_forwarding(self):
@@ -196,9 +284,6 @@ class FeatureSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             return
 
         switch = Gtk.Switch()
-        switch.set_halign(Gtk.Align.END)
-        switch.set_hexpand(True)
-
         description = SettingDescription(self.PORT_FORWARDING_DESCRIPTION)
 
         self.port_forwarding_row = SettingRow(

@@ -24,11 +24,11 @@ from gi.repository import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    RECONNECT_MESSAGE, CategoryHeader, SettingRow, SettingName, SettingDescription
+    RECONNECT_MESSAGE, BaseCategoryContainer, SettingRow, SettingName, SettingDescription
 )
 
 
-class ConnectionSettings(Gtk.Box):  # pylint: disable=too-many-instance-attributes
+class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
     CATEGORY_NAME = "Connection"
     PROTOCOL_LABEL = "Protocol"
@@ -41,23 +41,17 @@ class ConnectionSettings(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         "connections for online gaming and similar purposes."
 
     def __init__(self, controller: Controller, notification_bar: NotificationBar):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(self.CATEGORY_NAME)
         self._controller = controller
         self._notification_bar = notification_bar
-
-        self.set_halign(Gtk.Align.FILL)
-        self.set_spacing(15)
 
         self.vpn_accelerator_row = None
         self.protocol_row = None
         self.moderate_nat_row = None
 
-        self.get_style_context().add_class("setting-category")
-
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
         under this category."""
-        self.pack_start(CategoryHeader(self.CATEGORY_NAME), False, False, 0)
         self.build_protocol()
         self.build_vpn_accelerator()
         self.build_moderate_nat()
@@ -112,8 +106,6 @@ class ConnectionSettings(Gtk.Box):  # pylint: disable=too-many-instance-attribut
 
         available_protocols = self._controller.get_available_protocols()
         combobox = Gtk.ComboBoxText()
-        combobox.set_hexpand(True)
-        combobox.set_halign(Gtk.Align.END)
 
         human_readeable_protocol = {
             "openvpn-tcp": "OpenVPN (TCP)",
@@ -145,8 +137,6 @@ class ConnectionSettings(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             return
 
         switch = Gtk.Switch()
-        switch.set_halign(Gtk.Align.END)
-        switch.set_hexpand(True)
 
         self.vpn_accelerator_row = SettingRow(
             SettingName(self.VPN_ACCELERATOR_LABEL),
@@ -173,8 +163,6 @@ class ConnectionSettings(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             return
 
         switch = Gtk.Switch()
-        switch.set_halign(Gtk.Align.END)
-        switch.set_hexpand(True)
 
         self.moderate_nat_row = SettingRow(
             SettingName(self.MODERATE_NAT_LABEL),

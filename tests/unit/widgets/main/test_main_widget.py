@@ -23,7 +23,7 @@ from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
-from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from tests.unit.testing_utils import process_gtk_events
 
 
@@ -35,7 +35,7 @@ def test_main_widget_initially_shows_login_widget_if_the_user_did_not_log_in_yet
     main_widget = MainWidget(
         controller=controller_mock,
         main_window=main_window_mock,
-        loading_widget=LoadingWidget()
+        overlay_widget=OverlayWidget()
     )
     main_widget.initialize_visible_widget()
 
@@ -51,7 +51,7 @@ def test_main_widget_initially_shows_vpn_widget_if_the_user_had_already_logged_i
     main_widget = MainWidget(
         controller=controller_mock,
         main_window=main_window_mock,
-        loading_widget=LoadingWidget()
+        overlay_widget=OverlayWidget()
     )
     main_widget.initialize_visible_widget()
 
@@ -64,7 +64,7 @@ def test_main_widget_switches_from_login_to_vpn_widget_after_login():
     main_widget = MainWidget(
         controller=Mock(),
         main_window=main_window_mock,
-        loading_widget=LoadingWidget()
+        overlay_widget=OverlayWidget()
     )
     main_widget.active_widget = main_widget.login_widget
 
@@ -79,7 +79,7 @@ def test_main_widget_switches_from_vpn_to_login_widget_after_logout():
     main_widget = MainWidget(
         controller=Mock(),
         main_window=main_window_mock,
-        loading_widget=LoadingWidget()
+        overlay_widget=OverlayWidget()
     )
     main_widget.active_widget = main_widget.vpn_widget
 
@@ -98,7 +98,7 @@ def test_main_widget_switches_to_login_widget_when_session_expired():
         controller=Mock(),
         main_window=main_window_mock,
         notifications=notifications_mock,
-        loading_widget=LoadingWidget()
+        overlay_widget=OverlayWidget()
     )
     main_widget.active_widget = main_widget.vpn_widget
     main_widget.session_expired()
@@ -123,7 +123,7 @@ def test_run_start_actions_when_user_is_not_logged_in_and_start_the_app_with_log
     main_widget = MainWidget(
         controller=controller_mock,
         main_window=Mock(),
-        loading_widget=LoadingWidget(),
+        overlay_widget=OverlayWidget(),
         notifications=notifications_mock
     )
     main_widget.initialize_visible_widget()
@@ -144,7 +144,7 @@ def test_run_start_actions_when_user_is_logged_in_and_start_the_app_with_vpn_wid
     main_widget = MainWidget(
         controller=controller_mock,
         main_window=Mock(),
-        loading_widget=LoadingWidget(),
+        overlay_widget=OverlayWidget(),
         notifications=notifications_mock
     )
     main_widget.initialize_visible_widget()

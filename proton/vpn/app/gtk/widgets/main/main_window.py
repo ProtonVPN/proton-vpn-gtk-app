@@ -29,7 +29,7 @@ from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar.headerbar import HeaderBar
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
-from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -45,7 +45,7 @@ class MainWindow(Gtk.ApplicationWindow):
             notifications: Notifications = None,
             header_bar: HeaderBar = None,
             main_widget: MainWidget = None,
-            loading_widget: LoadingWidget = None
+            overlay_widget: OverlayWidget = None
     ):
         super().__init__(application=application)
         self._application = application
@@ -55,7 +55,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._configure_window()
 
-        self._loading_widget = loading_widget or LoadingWidget()
+        self._overlay_widget = overlay_widget or OverlayWidget()
 
         notifications = notifications or Notifications(
             main_window=self, notification_bar=NotificationBar()
@@ -64,7 +64,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header_bar = header_bar or HeaderBar(
             controller=controller,
             main_window=self,
-            loading_widget=self._loading_widget
+            overlay_widget=self._overlay_widget
         )
         self.set_titlebar(self.header_bar)
 
@@ -72,7 +72,7 @@ class MainWindow(Gtk.ApplicationWindow):
             controller=controller,
             main_window=self,
             notifications=notifications,
-            loading_widget=self._loading_widget
+            overlay_widget=self._overlay_widget
         )
         self.add(self.main_widget)
 

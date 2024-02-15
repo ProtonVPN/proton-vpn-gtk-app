@@ -28,7 +28,7 @@ from proton.vpn.app.gtk.widgets.main.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.widgets.login.login_widget import LoginWidget
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
-from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, DefaultLoadingWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.util import connect_once
 
@@ -49,15 +49,15 @@ class MainWidget(Gtk.Overlay):
 
     def __init__(
         self, controller: Controller, main_window: "MainWindow",
-        loading_widget: LoadingWidget, notifications: Notifications = None
+        overlay_widget: OverlayWidget, notifications: Notifications = None
     ):
         super().__init__()
         self.layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.layout.set_name("main-widget")
 
-        self._loading_widget = loading_widget
+        self._overlay_widget = overlay_widget
         self.add(self.layout)
-        self.add_overlay(self._loading_widget)
+        self.add_overlay(self._overlay_widget)
 
         self._active_widget = None
         self._controller = controller
@@ -141,12 +141,12 @@ class MainWidget(Gtk.Overlay):
     def _on_user_logged_out(self, *_):
         self._display_login_widget()
 
-    def _hide_loading_widget(self, *_):
-        self._loading_widget.hide()
+    def _hide_overlay_widget(self, *_):
+        self._overlay_widget.hide()
 
     def _create_login_widget(self) -> LoginWidget:
         login_widget = LoginWidget(
-            self._controller, self.notifications, self._loading_widget
+            self._controller, self.notifications, self._overlay_widget
         )
         login_widget.connect("user-logged-in", self._on_user_logged_in)
         return login_widget
@@ -154,10 +154,11 @@ class MainWidget(Gtk.Overlay):
     def _create_vpn_widget(self) -> VPNWidget:
         vpn_widget = VPNWidget(
             controller=self._controller,
-            main_window=self._main_window
+            main_window=self._main_window,
+            overlay_widget=self._overlay_widget
         )
         vpn_widget.connect(
-            "vpn-widget-ready", self._hide_loading_widget
+            "vpn-widget-ready", self._hide_overlay_widget
         )
 
         return vpn_widget
@@ -165,14 +166,16 @@ class MainWidget(Gtk.Overlay):
     def _display_vpn_widget(self):
         self._main_window.header_bar.menu.logout_enabled = True
         self._main_window.header_bar.menu.settings_enabled = True
-        self._loading_widget.show("Loading app...")
+        self._overlay_widget.show(
+            DefaultLoadingWidget("Loading app...")
+        )
         self.active_widget = self.vpn_widget
         self.vpn_widget.load()
 
     def _display_login_widget(self):
         self._main_window.header_bar.menu.logout_enabled = False
         self._main_window.header_bar.menu.settings_enabled = False
-        self._loading_widget.hide()  # Required on session expired while loading VPN widget.
+        self._overlay_widget.hide()  # Required on session expired while loading VPN widget.
         self.active_widget = self.login_widget
         self.login_widget.reset()
         self.login_widget.show_all()

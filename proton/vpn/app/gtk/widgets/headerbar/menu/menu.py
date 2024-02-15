@@ -29,7 +29,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugRepor
 from proton.vpn.app.gtk.widgets.headerbar.menu.about_dialog import AboutDialog
 from proton.vpn.app.gtk.widgets.headerbar.menu.disconnect_dialog import DisconnectDialog
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, DefaultLoadingWidget
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings import SettingsWindow
 from proton.vpn.app.gtk.widgets.headerbar.menu.release_notes_dialog import ReleaseNotesDialog
 from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
@@ -64,12 +64,12 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
 
     def __init__(
         self, controller: Controller,
-        main_window: "MainWindow", loading_widget: LoadingWidget
+        main_window: "MainWindow", overlay_widget: OverlayWidget
     ):
         super().__init__()
         self._main_window = main_window
         self._controller = controller
-        self._loading_widget = loading_widget
+        self._overlay_widget = overlay_widget
 
         self.bug_report_action = Gio.SimpleAction.new("report", None)
         self.settings_action = Gio.SimpleAction.new("settings", None)
@@ -190,7 +190,7 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         if confirm_logout:
             logger.info("Yes", category="ui", subcategory="dialog", event="logout")
 
-            self._loading_widget.show(self.LOGOUT_LOADING_MESSAGE)
+            self._overlay_widget.show(DefaultLoadingWidget(self.LOGOUT_LOADING_MESSAGE))
 
             if kill_switch_state > KillSwitchSettingEnum.OFF:
                 future = self._controller.disable_killswitch()
@@ -250,7 +250,7 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
             )
             self.logout_enabled = True
         finally:
-            self._loading_widget.hide()
+            self._overlay_widget.hide()
 
     def _display_dialog(self, dialog: DisconnectDialog) -> bool:
         dialog.set_transient_for(self._main_window)

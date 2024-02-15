@@ -45,7 +45,7 @@ def test_two_factor_auth_form_signals_successful_2fa(
     two_factor_auth_form = TwoFactorAuthForm(
         controller=controller_mocking_successful_2fa,
         notifications=Mock(),
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     two_factor_auth_successful_callback = Mock()
     two_factor_auth_form.connect(
@@ -84,7 +84,7 @@ def test_two_factor_auth_form_shows_error_when_submitting_wrong_2fa_code(
     two_factor_auth_form = TwoFactorAuthForm(
         controller=controller_mocking_wrong_2fa_code,
         notifications=notifications_mock,
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     two_factor_auth_form.submit_two_factor_auth()
 
@@ -115,7 +115,7 @@ def test_two_factor_auth_form_shows_error_when_session_expires_before_submitting
     two_factor_auth_form = TwoFactorAuthForm(
         controller=controller_mocking_expired_session_before_submitting_2fa_code,
         notifications=notifications_mock,
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     two_factor_auth_form.submit_two_factor_auth()
 
@@ -193,12 +193,12 @@ def test_submit_button_disables_when_amount_of_required_characters_are_provided_
 def test_two_factor_auth_form_display_loading_widget_when_submitting_successful_2fa(
     controller_mocking_successful_2fa
 ):
-    loading_widget_mock = Mock()
+    overlay_widget_mock = Mock()
 
     two_factor_auth_form = TwoFactorAuthForm(
         controller=controller_mocking_successful_2fa,
         notifications=Mock(),
-        loading_widget=loading_widget_mock
+        overlay_widget=overlay_widget_mock
     )
     two_factor_auth_successful_callback = Mock()
     two_factor_auth_form.connect(
@@ -208,28 +208,31 @@ def test_two_factor_auth_form_display_loading_widget_when_submitting_successful_
 
     two_factor_auth_form.submit_two_factor_auth()
 
-    loading_widget_mock.show.assert_called_once_with(two_factor_auth_form.LOGGING_IN_MESSAGE)
+    widget = overlay_widget_mock.show.call_args[0][0]
+    overlay_widget_mock.show.assert_called_once()
+    assert widget.get_label() == two_factor_auth_form.LOGGING_IN_MESSAGE
 
     process_gtk_events()
 
-    loading_widget_mock.hide.assert_called_once()
+    overlay_widget_mock.hide.assert_called_once()
 
 
 def test_two_factor_auth_form_hide_loading_widget_when_when_submitting_wrong_2fa_code(
         controller_mocking_wrong_2fa_code
 ):
-    loading_widget_mock = Mock()
+    overlay_widget_mock = Mock()
 
     two_factor_auth_form = TwoFactorAuthForm(
         controller=controller_mocking_wrong_2fa_code,
         notifications=Mock(),
-        loading_widget=loading_widget_mock
+        overlay_widget=overlay_widget_mock
     )
     two_factor_auth_form.submit_two_factor_auth()
 
-    loading_widget_mock.show.assert_called_once_with(two_factor_auth_form.LOGGING_IN_MESSAGE)
+    widget = overlay_widget_mock.show.call_args[0][0]
+    overlay_widget_mock.show.assert_called_once()
+    assert widget.get_label() == two_factor_auth_form.LOGGING_IN_MESSAGE
 
     process_gtk_events()
 
-    loading_widget_mock.hide.assert_called_once()
-
+    overlay_widget_mock.hide.assert_called_once()

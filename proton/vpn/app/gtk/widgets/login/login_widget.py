@@ -27,7 +27,7 @@ from proton.vpn import logging
 from proton.vpn.app.gtk.widgets.login.login_form import LoginForm
 from proton.vpn.app.gtk.widgets.login.two_factor_auth_form import TwoFactorAuthForm
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
-from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class LoginWidget(Gtk.Stack):
     """
     def __init__(
         self, controller: Controller,
-        notifications: Notifications, loading_widget: LoadingWidget
+        notifications: Notifications, overlay_widget: OverlayWidget
     ):
         super().__init__()
 
@@ -50,10 +50,10 @@ class LoginWidget(Gtk.Stack):
         self._controller = controller
         self.active_form = None
 
-        self.login_form = LoginForm(controller, notifications, loading_widget)
+        self.login_form = LoginForm(controller, notifications, overlay_widget)
         self.add_named(self.login_form, "login_form")
         self.two_factor_auth_form = TwoFactorAuthForm(
-            controller, notifications, loading_widget
+            controller, notifications, overlay_widget
         )
         self.add_named(self.two_factor_auth_form, "2fa_form")
 

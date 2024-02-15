@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.menu import Menu
-from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.app import MainWindow
@@ -41,7 +41,7 @@ class HeaderBar(Gtk.HeaderBar):
             self,
             controller: Controller,
             main_window: "MainWindow",
-            loading_widget: LoadingWidget
+            overlay_widget: OverlayWidget
     ):
         super().__init__()
 
@@ -53,7 +53,7 @@ class HeaderBar(Gtk.HeaderBar):
         self.menu = Menu(
             controller=controller,
             main_window=main_window,
-            loading_widget=loading_widget
+            overlay_widget=overlay_widget
         )
         menu_button.set_menu_model(self.menu)
         self.pack_start(menu_button)

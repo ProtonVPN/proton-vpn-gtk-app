@@ -24,23 +24,84 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from proton.vpn.app.gtk import Gtk
 
 
-class LoadingWidget(Gtk.Box):
+class Spinner(Gtk.Spinner):
+    """Spinner with some default configurations.
+    Upon being shown it automatically starts spinning.
+    """
+    def __init__(self):
+        super().__init__()
+        self.set_property("height-request", 50)
+
+        self.connect("show", self._on_show_spinner)
+
+    def _on_show_spinner(self, *_):
+        self.start()
+        super().show()
+
+
+class BaseLoadingContainerWidget(Gtk.Box):
+    """Used mainly to standardize and styling, to reduce boilerplate code.
+    """
+    def __init__(self, orientation: Gtk.Orientation = Gtk.Orientation.VERTICAL):
+        super().__init__(orientation=orientation)
+        self.set_spacing(25)
+
+
+class DefaultLoadingWidget(BaseLoadingContainerWidget):
+    """Helper class to be used when only a label is needed
+    to be displayed with a spinner."""
+    def __init__(self, label: str):
+        super().__init__()
+        self._label = Gtk.Label.new(label)
+        self._spinner = Spinner()
+
+        self.pack_start(self._label, expand=False, fill=False, padding=0)
+        self.pack_start(self._spinner, expand=False, fill=False, padding=0)
+
+    def get_label(self) -> str:
+        """Returns the label of the object"""
+        return self._label.get_label()
+
+
+class LoadingConnectionWidget(BaseLoadingContainerWidget):
+    """When establishing connections, this widget is used to display status,
+    hide the main vpn widget and display a cancel connection button.
+    """
+    def __init__(
+        self, label: str,
+        cancel_button: Gtk.Button,
+        display_loading_status: Gtk.Widget = None
+    ):
+        super().__init__()
+
+        self._label = Gtk.Label.new(label)
+        self._cancel_button = cancel_button
+        self._cancel_button.get_style_context().add_class("danger")
+        self._cancel_button.set_halign(Gtk.Align.CENTER)
+
+        if not display_loading_status:
+            self._display_loading_status = Spinner()
+        else:
+            self._display_loading_status = display_loading_status
+
+        self.pack_start(self._label, expand=False, fill=False, padding=0)
+        self.pack_start(self._display_loading_status, expand=False, fill=False, padding=0)
+        self.pack_start(self._cancel_button, expand=False, fill=False, padding=0)
+
+    def get_label(self) -> str:
+        """Returns the label of the object"""
+        return self._label.get_label()
+
+
+class OverlayWidget(Gtk.Box):
     """Loading widget responsible for displaying loading status
     to the user."""
 
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
-        self._label = Gtk.Label.new()
-        self._spinner = Gtk.Spinner.new()
-        self._spinner.set_property("height-request", 50)
-
-        # Another container had to be created to be able to vertically center
-        # the content.
-        self._centered_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+        self._centered_container = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=20)
         self._centered_container.show()
 
-        self._centered_container.pack_start(self._label, expand=False, fill=False, padding=0)
-        self._centered_container.pack_start(self._spinner, expand=False, fill=False, padding=0)
         self._centered_container.set_valign(Gtk.Align.CENTER)
 
         self.pack_start(self._centered_container, expand=True, fill=True, padding=0)
@@ -49,18 +110,19 @@ class LoadingWidget(Gtk.Box):
         # background is transparent, but the intended use of this widget is to
         # hide other widgets while an action is ongoing.
         self.get_style_context().add_class("background")
-        self._label.show()
-        self._spinner.show()
         self.set_no_show_all(True)
 
-    def show(self, message: str):  # pylint: disable=arguments-differ
+    def show(self, widget: Gtk.Widget):  # pylint: disable=arguments-differ
         """Shows the loading screen to the user."""
-        self._label.set_label(message)
-        self._spinner.start()
-        Gtk.Box.show(self)
+        self._centered_container.pack_start(widget, expand=False, fill=False, padding=0)
+        widget.show_all()
+        super().show()
 
     def hide(self):  # pylint: disable=arguments-differ
         """Hides the loading widget from the user."""
-        self._spinner.stop()
-        self._label.set_label("")
-        Gtk.Box.hide(self)
+        # https://lazka.github.io/pgi-docs/Gtk-3.0/classes/Container.html#Gtk.Container.remove
+        children = self._centered_container.get_children()
+        if children:
+            children[0].destroy()
+
+        super().hide()

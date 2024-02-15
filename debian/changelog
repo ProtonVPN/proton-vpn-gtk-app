@@ -1,8 +1,14 @@
+proton-vpn-gtk-app (4.1.11~rc5) unstable; urgency=medium
+
+  * Add overlay when connecting to server
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 20 Feb 2024 16:00:00 +0100
+
 proton-vpn-gtk-app (4.1.11~rc4) unstable; urgency=medium
 
   * Upon logging out or quitting, inform the user about the kill switch status
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mod, 19 Feb 2024 15:00:00 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 19 Feb 2024 15:00:00 +0100
 
 proton-vpn-gtk-app (4.1.11~rc3) unstable; urgency=medium
 

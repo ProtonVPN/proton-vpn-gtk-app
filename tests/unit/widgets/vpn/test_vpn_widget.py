@@ -79,7 +79,7 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
     controller_mock.user_tier = PLUS_TIER
     api_mock.client_config.seconds_until_expiration = 10
 
-    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
+    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock(), overlay_widget=Mock())
     with patch.object(vpn_widget, "display"):
         vpn_widget.load()
 
@@ -103,7 +103,7 @@ def test_display_initializes_widget(server_list):
      4. emit the vpn-widget-ready signal.
     """
     controller_mock = Mock()
-    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
+    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock(), overlay_widget=Mock())
 
     # Mock connection status subscribers
     connection_status_subscriber = Mock()
@@ -124,7 +124,7 @@ def test_display_initializes_widget(server_list):
 
 
 def test_vpn_widget_notifies_child_widgets_on_connection_status_update():
-    vpn_widget = VPNWidget(controller=Mock(), main_window=Mock())
+    vpn_widget = VPNWidget(controller=Mock(), main_window=Mock(), overlay_widget=Mock())
 
     # Mock connection status subscribers
     connection_status_subscriber = Mock()
@@ -151,7 +151,7 @@ def test_unload_resets_widget_state():
     controller_mock = Mock()
     controller_mock.is_connection_active = True
 
-    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock())
+    vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock(), overlay_widget=Mock())
     vpn_widget.unload()
 
     controller_mock.disconnect.assert_called_once()  # (1)

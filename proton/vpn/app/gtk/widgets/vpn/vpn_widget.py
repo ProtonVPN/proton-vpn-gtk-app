@@ -35,6 +35,7 @@ from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidg
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.session.client_config import ClientConfig
 from proton.vpn.session.servers import ServerList
 
@@ -66,7 +67,10 @@ class VPNWidgetState:
 class VPNWidget(Gtk.Box):
     """Exposes the ProtonVPN product functionality to the user."""
 
-    def __init__(self, controller: Controller, main_window: "MainWindow"):
+    def __init__(
+        self, controller: Controller,
+        main_window: "MainWindow", overlay_widget: OverlayWidget
+    ):
         super().__init__(spacing=10)
 
         self.set_name("vpn-widget")
@@ -74,7 +78,7 @@ class VPNWidget(Gtk.Box):
         self._state.load_start_time = time.time()
         self._controller = controller
 
-        self.connection_status_widget = VPNConnectionStatusWidget()
+        self.connection_status_widget = VPNConnectionStatusWidget(controller, overlay_widget)
         self.pack_start(self.connection_status_widget, expand=False, fill=False, padding=0)
 
         self.quick_connect_widget = QuickConnectWidget(self._controller)

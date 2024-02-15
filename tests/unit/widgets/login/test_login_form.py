@@ -45,7 +45,7 @@ def test_login_form_signals_when_the_user_is_authenticated(
     login_form = LoginForm(
         controller=controller_mocking_successful_login,
         notifications=Mock(),
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
@@ -71,7 +71,7 @@ def test_login_form_authenticates_user_when_pressing_enter_on_username_field(
     login_form = LoginForm(
         controller=controller_mocking_successful_login,
         notifications=Mock(),
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
@@ -91,7 +91,7 @@ def test_login_form_authenticates_user_when_pressing_enter_on_password_field(
     login_form = LoginForm(
         controller=controller_mocking_successful_login,
         notifications=Mock(),
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
@@ -111,7 +111,7 @@ def test_login_form_does_not_authenticate_user_when_pressing_enter_on_username_f
     login_form = LoginForm(
         controller=controller_mocking_successful_login,
         notifications=Mock(),
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
@@ -131,7 +131,7 @@ def test_login_form_does_not_authenticate_user_when_pressing_enter_on_username_f
     login_form = LoginForm(
         controller=controller_mocking_successful_login,
         notifications=Mock(),
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
@@ -166,7 +166,7 @@ def test_login_form_shows_error_when_submitting_an_invalid_username(
     login_form = LoginForm(
         controller=controller_mocking_invalid_username,
         notifications=notifications_mock,
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     login_form.username = "MockInvalidUsername"
     login_form.password = "MockPassword"
@@ -198,7 +198,7 @@ def test_login_form_shows_error_when_submitting_wrong_credentials(
     login_form = LoginForm(
         controller=controller_mocking_invalid_credentials,
         notifications=notifications_mock,
-        loading_widget=Mock()
+        overlay_widget=Mock()
     )
     login_form.username = "MockUser"
     login_form.password = "MockPassword"
@@ -209,15 +209,15 @@ def test_login_form_shows_error_when_submitting_wrong_credentials(
     notifications_mock.show_error_message.assert_called_once_with(LoginForm.INCORRECT_CREDENTIALS_MESSAGE)
 
 
-def test_login_form_loading_widget_is_displayed_when_submitting_form_and_authentication_is_sucessfull(
+def test_login_form_overlay_widget_is_displayed_when_submitting_form_and_authentication_is_sucessfull(
     controller_mocking_successful_login
 ):
-    loading_widget_mock = Mock()
+    overlay_widget_mock = Mock()
     
     login_form = LoginForm(
         controller=controller_mocking_successful_login,
         notifications=Mock(),
-        loading_widget=loading_widget_mock
+        overlay_widget=overlay_widget_mock
     )
     user_logged_in_callback = Mock()
     login_form.connect("user-authenticated", user_logged_in_callback)
@@ -229,29 +229,34 @@ def test_login_form_loading_widget_is_displayed_when_submitting_form_and_authent
     login_form.password = "password"
     login_form.submit_login()
 
-    loading_widget_mock.show.assert_called_once_with(login_form.LOGGING_IN_MESSAGE)
+    widget = overlay_widget_mock.show.call_args[0][0]
+    overlay_widget_mock.show.assert_called_once()
+    assert widget.get_label() == login_form.LOGGING_IN_MESSAGE
 
     process_gtk_events()
 
-    loading_widget_mock.hide.assert_called_once()
+    overlay_widget_mock.hide.assert_called_once()
 
 
-def test_login_form_loading_widget_is_hidden_when_submitting_form_with_wrong_credentials(
+def test_login_form_overlay_widget_is_hidden_when_submitting_form_with_wrong_credentials(
         controller_mocking_invalid_credentials
 ):
-    loading_widget_mock = Mock()
+    overlay_widget_mock = Mock()
 
     login_form = LoginForm(
         controller=controller_mocking_invalid_credentials,
         notifications=Mock(),
-        loading_widget=loading_widget_mock
+        overlay_widget=overlay_widget_mock
     )
     login_form.username = "MockUser"
     login_form.password = "MockPassword"
     login_form.submit_login()
 
-    loading_widget_mock.show.assert_called_once_with(login_form.LOGGING_IN_MESSAGE)
+    widget = overlay_widget_mock.show.call_args[0][0]
+    overlay_widget_mock.show.assert_called_once()
+    assert widget.get_label() == login_form.LOGGING_IN_MESSAGE
+
 
     process_gtk_events()
 
-    loading_widget_mock.hide.assert_called_once()
+    overlay_widget_mock.hide.assert_called_once()

@@ -32,7 +32,7 @@ from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
-from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, DefaultLoadingWidget
 
 logger = logging.getLogger(__name__)
 
@@ -51,13 +51,13 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
 
     def __init__(
         self, controller: Controller,
-        notifications: Notifications, loading_widget: LoadingWidget
+        notifications: Notifications, overlay_widget: OverlayWidget
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
         self.set_name("login-form")
         self._controller = controller
         self._notifications = notifications
-        self._loading_widget = loading_widget
+        self._overlay_widget = overlay_widget
 
         self.pack_start(ProtonVPNLogo(), expand=False, fill=True, padding=0)
 
@@ -104,7 +104,9 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
 
     def _on_login_button_clicked(self, _):
         logger.info("Clicked on login", category="UI", subcategory="LOGIN", event="CLICK")
-        self._loading_widget.show(self.LOGGING_IN_MESSAGE)
+        self._overlay_widget.show(
+            DefaultLoadingWidget(self.LOGGING_IN_MESSAGE)
+        )
         future = self._controller.login(self.username, self.password)
         future.add_done_callback(
             lambda future: GLib.idle_add(self._on_login_result, future)
@@ -119,7 +121,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
             self.emit("login-error")
             return
         finally:
-            self._loading_widget.hide()
+            self._overlay_widget.hide()
 
         if result.authenticated:
             self._signal_user_authenticated(result.twofa_required)

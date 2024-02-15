@@ -23,7 +23,7 @@ from tests.unit.testing_utils import process_gtk_events
 
 
 def test_login_widget_signals_user_logged_in_when_user_is_authenticated_and_2fa_is_not_required():
-    login_widget = LoginWidget(controller=Mock(), notifications=Mock(), loading_widget=Mock())
+    login_widget = LoginWidget(controller=Mock(), notifications=Mock(), overlay_widget=Mock())
 
     user_logged_in_callback = Mock()
     login_widget.connect("user-logged-in", user_logged_in_callback)
@@ -35,7 +35,7 @@ def test_login_widget_signals_user_logged_in_when_user_is_authenticated_and_2fa_
 
 
 def test_login_widget_asks_for_2fa_when_required():
-    login_widget = LoginWidget(controller=Mock(), notifications=Mock(), loading_widget=Mock())
+    login_widget = LoginWidget(controller=Mock(), notifications=Mock(), overlay_widget=Mock())
     two_factor_auth_required = True
     login_widget.login_form.emit("user-authenticated", two_factor_auth_required)
 
@@ -45,7 +45,7 @@ def test_login_widget_asks_for_2fa_when_required():
 
 
 def test_login_widget_switches_back_to_login_form_if_session_expires_during_2fa():
-    login_widget = LoginWidget(controller=Mock(), notifications=Mock(), loading_widget=Mock())
+    login_widget = LoginWidget(controller=Mock(), notifications=Mock(), overlay_widget=Mock())
 
     login_widget.display_form(login_widget.two_factor_auth_form)
     login_widget.two_factor_auth_form.emit("session-expired")

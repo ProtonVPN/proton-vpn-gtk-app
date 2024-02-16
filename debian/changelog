@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.11~rc3) unstable; urgency=medium
+
+  * Apply kill switch settings immediately
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 16 Feb 2024 14:40:31 +0100
+
 proton-vpn-gtk-app (4.1.11~rc2) unstable; urgency=medium
 
   * Add permanent option to kill switch setting

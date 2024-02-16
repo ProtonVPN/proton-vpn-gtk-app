@@ -313,14 +313,19 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
     def get_settings(self) -> Settings:
         """Returns general settings."""
-        if self._settings is None:
-            self._settings = self._api.settings
+        if not self._settings:
+            self._settings = self.executor.submit(
+                self._api.load_settings
+            ).result()
 
         return self._settings
 
-    def save_settings(self) -> None:
+    def save_settings(self) -> Future:
         """Saves current settings to disk"""
-        self._api.settings = self._settings
+        return self.executor.submit(
+            self._api.save_settings,
+            self._settings
+        )
 
     def clear_settings(self):
         """Clear in-memory settings."""

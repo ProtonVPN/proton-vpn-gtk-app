@@ -287,7 +287,7 @@ class TestKillSwitchSetting:
     def test_killswitch_when_setting_is_called_upon_building_ui_elements(self, mocked_controller_and_killswitch):
         controller_mock, killswitch_mock = mocked_controller_and_killswitch
 
-        setting = KillSwitchSetting(controller_mock, Mock())
+        setting = KillSwitchSetting(controller_mock)
 
         killswitch_mock.assert_called_once()
 
@@ -298,7 +298,7 @@ class TestKillSwitchSetting:
         killswitch_mock.return_value = killswitch_enabled
 
         with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.Gtk.Switch.set_state") as set_state_mock:
-            setting = KillSwitchSetting(controller_mock, Mock())
+            setting = KillSwitchSetting(controller_mock)
 
             set_state_mock.assert_called_once_with(killswitch_enabled)
 
@@ -308,7 +308,7 @@ class TestKillSwitchSetting:
 
         killswitch_mock.return_value = initial_killswitch_state
 
-        setting = KillSwitchSetting(controller_mock, Mock())
+        setting = KillSwitchSetting(controller_mock)
 
         assert setting.revealer.get_reveal_child() == initial_killswitch_state
 
@@ -318,7 +318,7 @@ class TestKillSwitchSetting:
 
         killswitch_mock.return_value = not killswitch_state
 
-        setting = KillSwitchSetting(controller_mock, Mock())
+        setting = KillSwitchSetting(controller_mock)
 
         killswitch_mock.reset_mock()
 
@@ -336,7 +336,7 @@ class TestKillSwitchSetting:
 
         killswitch_mock.return_value = initial_kill_switch_state
 
-        setting = KillSwitchSetting(controller_mock, Mock())
+        setting = KillSwitchSetting(controller_mock)
 
         killswitch_mock.reset_mock()
 
@@ -354,7 +354,7 @@ class TestKillSwitchSetting:
 
         killswitch_mock.return_value = not is_killswitch_enabled
 
-        setting = KillSwitchSetting(controller_mock, Mock())
+        setting = KillSwitchSetting(controller_mock)
 
         killswitch_mock.reset_mock()
 
@@ -366,7 +366,7 @@ class TestKillSwitchSetting:
 
         killswitch_mock.return_value = KILLSWITCH_ADVANCED
 
-        setting = KillSwitchSetting(controller_mock, Mock())
+        setting = KillSwitchSetting(controller_mock)
 
         killswitch_mock.reset_mock()
 
@@ -377,20 +377,3 @@ class TestKillSwitchSetting:
 
         setting.interactive_object.set_state(True)
         killswitch_mock.assert_called_once_with(True)
-
-    @pytest.mark.parametrize("is_connection_active", [False, True])
-    def test_killswitch_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(self, is_connection_active, mocked_controller_and_killswitch):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-        notification_bar_mock = Mock()
-
-        killswitch_mock.return_value = True
-        controller_mock.is_connection_active = is_connection_active
-
-        setting = KillSwitchSetting(controller_mock, notification_bar_mock)
-
-        setting.interactive_object.set_state(False)
-
-        if is_connection_active:
-            notification_bar_mock.show_info_message.assert_called_once_with(RECONNECT_MESSAGE)
-        else:
-            notification_bar_mock.show_info_message.assert_not_called()

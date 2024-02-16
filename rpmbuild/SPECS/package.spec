@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
 %define version 4.1.11
-%define upstream_version 4.1.11rc2
+%define upstream_version 4.1.11rc3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.1.rc2
+%define release 0.3.rc3
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Feb 16 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.11-0.3.rc3
+- Apply kill switch settings immediately
+
 * Fri Feb 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.11-0.1.rc2
 - Add permanent option to kill switch setting
 

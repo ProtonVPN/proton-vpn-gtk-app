@@ -44,9 +44,8 @@ class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-a
     KILLSWITCH_ADVANCED_DESCRIPTION = "Only allow internet access when connected to Proton VPN. " \
         "Advanced kill switch will remain active even when you restart your device."
 
-    def __init__(self, controller: Controller, notification_bar: NotificationBar):
+    def __init__(self, controller: Controller):
         self._controller = controller
-        self._notification_bar = notification_bar
 
         killswitch_state = self.killswitch
         switch = self._build_main_setting(killswitch_state)
@@ -152,11 +151,6 @@ class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-a
         if new_value_comes_from_main_switch:
             self.standard_radio_button.set_active(True)
 
-        if self._controller.is_connection_active:
-            self._notification_bar.show_info_message(
-                f"{RECONNECT_MESSAGE}"
-            )
-
 
 class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
@@ -258,7 +252,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     def build_killswitch(self):
         """Builds and adds the `killswitch` setting to the widget."""
-        self.killswitch_row = KillSwitchSetting(self._controller, self._notification_bar)
+        self.killswitch_row = KillSwitchSetting(self._controller)
         self.pack_start(self.killswitch_row, False, False, 0)
 
     def build_port_forwarding(self):

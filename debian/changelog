@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.1.11~rc4) unstable; urgency=medium
+
+  * Upon logging out or quitting, inform the user about the kill switch status
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mod, 19 Feb 2024 15:00:00 +0100
+
 proton-vpn-gtk-app (4.1.11~rc3) unstable; urgency=medium
 
   * Apply kill switch settings immediately

@@ -32,6 +32,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.loading_widget import LoadingWidget
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings import SettingsWindow
 from proton.vpn.app.gtk.widgets.headerbar.menu.release_notes_dialog import ReleaseNotesDialog
+from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
 
 from proton.session.exceptions import ProtonAPINotReachable
 from proton.vpn import logging
@@ -47,10 +48,19 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
 
     LOGOUT_LOADING_MESSAGE = "Logging out..."
     UNABLE_TO_LOGOUT_MESSAGE = "Unable to logout, please ensure you have internet access."
-    DISCONNECT_ON_LOGOUT_MESSAGE = "Logging out of the application will cancel the current" \
-                                   " VPN connection.\n\nDo you want to continue?"
+    DISCONNECT_ON_LOGOUT_MESSAGE = "Logging out of the application will cancel the current " \
+                                   "VPN connection.\n\nDo you want to continue?"
+    DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE = "Logging out of the application "\
+        "will cancel the current VPN connection and disable the kill switch."\
+        "\n\nDo you want to continue?"
+    LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE = "Logging out of the application will "\
+        "disable the kill switch, potentially exposing your internet traffic. "\
+        "\n\nDo you want to continue?"
     DISCONNECT_ON_QUIT_MESSAGE = "Quitting the application will cancel the current" \
                                  " VPN connection.\n\nDo you want to continue?"
+    DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE = "Quitting the application "\
+        "will keep the kill switch active, but your current VPN connection will be terminated."\
+        "\n\nDo you want to continue?"
 
     def __init__(
         self, controller: Controller,
@@ -160,45 +170,56 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
 
     def _on_logout_clicked(self, *_):
         logger.info("Logout button clicked", category="ui", subcategory="logout", event="click")
+
         self.logout_enabled = False
+        kill_switch_state = self._controller.get_settings().killswitch
         confirm_logout = True
 
         if not self._controller.is_connection_disconnected:
-            logout_dialog = DisconnectDialog(
-                message=self.DISCONNECT_ON_LOGOUT_MESSAGE
+            dialog = DisconnectDialog(
+                self.DISCONNECT_ON_LOGOUT_MESSAGE
+                if kill_switch_state < KillSwitchSettingEnum.ON
+                else self.DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE
             )
-            logout_dialog.set_transient_for(self._main_window)
-            # run() blocks the main loop, and only exist once the `::response` signal
-            # is emitted.
-            response = Gtk.ResponseType(logout_dialog.run())
-            logout_dialog.destroy()
-
-            confirm_logout = response == Gtk.ResponseType.YES
-            self.logout_enabled = response in (Gtk.ResponseType.NO, Gtk.ResponseType.DELETE_EVENT)
+            confirm_logout = self._display_dialog(dialog)
+        elif kill_switch_state == KillSwitchSettingEnum.PERMANENT:
+            confirm_logout = self._display_dialog(
+                DisconnectDialog(self.LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE)
+            )
 
         if confirm_logout:
             logger.info("Yes", category="ui", subcategory="dialog", event="logout")
+
             self._loading_widget.show(self.LOGOUT_LOADING_MESSAGE)
+
+            if kill_switch_state > KillSwitchSettingEnum.OFF:
+                future = self._controller.disable_killswitch()
+                future.add_done_callback(
+                    lambda f: GLib.idle_add(self._on_killswitch_disabled_logout, f)
+                )
+                return
+
             self._request_logout()
 
     def _on_quit_clicked(self, *_):
+        kill_switch_state = self._controller.get_settings().killswitch
         confirm_quit = True
 
         if not self._controller.is_connection_disconnected:
-            quit_dialog = DisconnectDialog(
-                message=self.DISCONNECT_ON_QUIT_MESSAGE
+            dialog = DisconnectDialog(
+                self.DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE
+                if kill_switch_state == KillSwitchSettingEnum.PERMANENT
+                else self.DISCONNECT_ON_QUIT_MESSAGE
             )
-            quit_dialog.set_transient_for(self._main_window)
-            # run() blocks the main loop, and only exist once the `::response` signal
-            # is emitted.
-            response = Gtk.ResponseType(quit_dialog.run())
-            quit_dialog.destroy()
-
-            confirm_quit = response == Gtk.ResponseType.YES
+            confirm_quit = self._display_dialog(dialog)
 
         if confirm_quit:
             logger.info("Yes", category="ui", subcategory="dialog", event="quit")
             self._main_window.quit()
+
+    def _on_killswitch_disabled_logout(self, future: Future):
+        future.result()
+        self._request_logout()
 
     def _request_logout(self):
         future = self._controller.logout()
@@ -230,6 +251,17 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
             self.logout_enabled = True
         finally:
             self._loading_widget.hide()
+
+    def _display_dialog(self, dialog: DisconnectDialog) -> bool:
+        dialog.set_transient_for(self._main_window)
+        # run() blocks the main loop, and only exist once the `::response` signal
+        # is emitted.
+        response = Gtk.ResponseType(dialog.run())
+        dialog.destroy()
+
+        self.logout_enabled = response in (Gtk.ResponseType.NO, Gtk.ResponseType.DELETE_EVENT)
+
+        return response == Gtk.ResponseType.YES
 
     def bug_report_button_click(self):
         """Clicks the bug report menu entry."""

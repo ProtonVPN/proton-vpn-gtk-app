@@ -40,6 +40,7 @@ from proton.vpn.app.gtk.utils import semver
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
+from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
 
 logger = logging.getLogger(__name__)
 
@@ -282,6 +283,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     def vpn_connector(self) -> VPNConnectorWrapper:
         """Returns the VPN connector"""
         return self._connector
+
+    def disable_killswitch(self) -> Future:
+        """Disables the kill switch and stores the change to file."""
+        self.get_settings().killswitch = KillSwitchSettingEnum.OFF
+        return self.save_settings()
 
     @property
     def app_configuration(self) -> AppConfig:

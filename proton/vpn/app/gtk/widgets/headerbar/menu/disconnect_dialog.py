@@ -20,6 +20,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from gi.repository import Pango
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
 
@@ -48,6 +49,10 @@ class DisconnectDialog(Gtk.Dialog):
         yes_button.get_style_context().add_class("danger")
 
         label = Gtk.Label(label=message)
+        label.set_width_chars(50)
+        label.set_max_width_chars(50)
+        label.set_line_wrap(True)
+        label.set_line_wrap_mode(Pango.WrapMode.WORD)
 
         # By default Gtk.Dialog has a vertical box child (Gtk.Box) `vbox`
         self.vbox.set_border_width(20)  # pylint: disable=no-member

@@ -38,7 +38,8 @@ class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-a
     """
     KILLSWITCH_LABEL = "Kill switch"
     KILLSWITCH_DESCRIPTION = "Protects your IP address by disconnecting you from the " \
-        "internet if you lose your VPN connection."
+        "internet if you lose your VPN connection. "\
+        "<a href=\"https://protonvpn.com/support/what-is-kill-switch/\">Learn more</a>"
     KILLSWITCH_STANDARD_DESCRIPTION = "Automatically disconnect from the internet if "\
         "VPN connection is lost."
     KILLSWITCH_ADVANCED_DESCRIPTION = "Only allow internet access when connected to Proton VPN. " \

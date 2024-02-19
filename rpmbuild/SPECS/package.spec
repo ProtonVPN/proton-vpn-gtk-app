@@ -70,7 +70,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Fri Feb 16 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.11-0.3.rc3
 - Apply kill switch settings immediately
 
-* Fri Feb 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.11-0.1.rc2
+* Fri Feb 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.11-0.2.rc2
 - Add permanent option to kill switch setting
 
 * Wed Jan 31 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.11-0.1.rc1

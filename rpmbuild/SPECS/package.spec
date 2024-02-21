@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.1.11
-%define upstream_version 4.1.11rc5
+%define version 4.2.0
+%define upstream_version 4.2.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.5.rc5
+%define release 1
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -67,20 +67,12 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Tue Feb 20 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.11-0.5.rc5
-- Add overlay when connecting to server
-
-* Mon Feb 19 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.11-0.4.rc4
-- Upon logging out or quitting, inform the user about the kill switch status
-
-* Fri Feb 16 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.11-0.3.rc3
-- Apply kill switch settings immediately
-
-* Fri Feb 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.11-0.2.rc2
-- Add permanent option to kill switch setting
-
-* Wed Jan 31 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.11-0.1.rc1
-- Fix minor bug in country row initialization
+* Wed Feb 21 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.2.0
+- Add overlay when connecting to server (Alexandru Cheltuitor)
+- Upon logging out or quitting, inform the user about the kill switch status (Alexandru Cheltuitor)
+- Apply kill switch settings immediately (Josep Llaneras)
+- Add permanent option to kill switch setting (Alexandru Cheltuitor)
+- Fix minor bug in country row initialization (Josep Llaneras)
 
 * Fri Jan 26 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.10
 - Recover from manual cache deletion

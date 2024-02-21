@@ -1,32 +1,12 @@
-proton-vpn-gtk-app (4.1.11~rc5) unstable; urgency=medium
+proton-vpn-gtk-app (4.2.0) unstable; urgency=medium
 
-  * Add overlay when connecting to server
+  * Add overlay when connecting to server (Alexandru Cheltuitor)
+  * Upon logging out or quitting, inform the user about the kill switch status (Alexandru Cheltuitor)
+  * Apply kill switch settings immediately (Josep Llaneras)
+  * Add permanent option to kill switch setting (Alexandru Cheltuitor)
+  * Fix minor bug in country row initialization (Josep Llaneras)
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 20 Feb 2024 16:00:00 +0100
-
-proton-vpn-gtk-app (4.1.11~rc4) unstable; urgency=medium
-
-  * Upon logging out or quitting, inform the user about the kill switch status
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 19 Feb 2024 15:00:00 +0100
-
-proton-vpn-gtk-app (4.1.11~rc3) unstable; urgency=medium
-
-  * Apply kill switch settings immediately
-
- -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 16 Feb 2024 14:40:31 +0100
-
-proton-vpn-gtk-app (4.1.11~rc2) unstable; urgency=medium
-
-  * Add permanent option to kill switch setting
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 16 Feb 2024 11:00:00 +0100
-
-proton-vpn-gtk-app (4.1.11~rc1) unstable; urgency=medium
-
-  * Fix minor bug in country row initialization
-
- -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 31 Jan 2024 11:47:42 +0100
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 21 Feb 2024 16:00:00 +0100
 
 proton-vpn-gtk-app (4.1.10) unstable; urgency=medium
 

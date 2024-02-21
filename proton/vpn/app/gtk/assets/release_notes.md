@@ -1,3 +1,6 @@
+## 4.2.0
+- Advanced Kill Switch: you can now allow internet access on your device only when connected to a Proton VPN server.
+
 ## 4.1.10
 - Recover from manual cache deletion.
 

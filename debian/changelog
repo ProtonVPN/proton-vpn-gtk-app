@@ -1,3 +1,6 @@
+proton-vpn-gtk-app (4.2.1~rc1) unstable; urgency=low
+  * Increase minimum number of characters required for bug report description.
+
 proton-vpn-gtk-app (4.2.0) unstable; urgency=medium
 
   * Add overlay when connecting to server (Alexandru Cheltuitor)

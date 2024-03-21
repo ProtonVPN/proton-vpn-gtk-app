@@ -194,8 +194,10 @@ def test_bug_report_widget_submit_button_reacts_accordindgly_to_email_format_req
         log_collector=Mock()
     )
 
+    min_chars = BugReportDialog.BUG_REPORT_DESCRIPTION_MIN_CHARACTERS
     bug_report_widget.username_entry.set_text("Username")
-    bug_report_widget.description_buffer.set_text("Bug report description.")
+    bug_report_description = "Bug report with rea{'l'*min_chars}y long description"
+    bug_report_widget.description_buffer.set_text(bug_report_description)
     bug_report_widget.email_entry.set_text(email_entry)
     submit_button_enabled = bug_report_widget.get_submit_button().get_sensitive()
 

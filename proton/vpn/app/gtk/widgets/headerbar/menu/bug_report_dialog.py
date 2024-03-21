@@ -61,6 +61,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     BUG_REPORT_TITLE = "Report from Linux app"
     BUG_REPORT_CLIENT = "Linux GUI"
     BUG_REPORT_VERSION = __version__
+    BUG_REPORT_DESCRIPTION_MIN_CHARACTERS = 50
 
     def __init__(
         self, controller: Controller, main_window: MainWindow,
@@ -210,7 +211,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             self.description_buffer.get_start_iter(),
             self.description_buffer.get_end_iter(),
             True
-        )) > 10
+        )) > BugReportDialog.BUG_REPORT_DESCRIPTION_MIN_CHARACTERS
 
         return bool(
             is_username_provided
@@ -246,9 +247,13 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         content.add(email_label)  # pylint: disable=no-member
         content.add(self.email_entry)  # pylint: disable=no-member
 
-        description_label = Gtk.Label.new("Description")
+        min_characters = BugReportDialog.BUG_REPORT_DESCRIPTION_MIN_CHARACTERS
+        description_label = Gtk.Label.new(
+            f"Description (minimum {min_characters} characters)"
+        )
+
         description_label.set_halign(Gtk.Align.START)
-        # Has to have min 10 chars
+        # Has to have min 50 chars
         self.description_buffer = Gtk.TextBuffer.new(None)
         self.description_textview = Gtk.TextView.new_with_buffer(
             self.description_buffer

@@ -1,9 +1,9 @@
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.2.0
-%define upstream_version 4.2.0
+%define version 4.2.1
+%define upstream_version 4.2.1rc1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 1
+%define release 0.1.rc1
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Mar 21 2024 Luke Titley <luke.titley@proton.ch> 4.2.1-0.1.rc1
+- Increase minimum number of characters required for bug report description.
+
 * Wed Feb 21 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.2.0
 - Add overlay when connecting to server (Alexandru Cheltuitor)
 - Upon logging out or quitting, inform the user about the kill switch status (Alexandru Cheltuitor)
@@ -83,7 +86,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Mon Jan 15 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.8
 - Dispatch VPN monitor status updates from asyncio to GLib loop
 
-* Thu Jan 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.7
+* Thu Jan 11 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.7
 - Log time of search queries
 
 * Thu Jan 11 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.6

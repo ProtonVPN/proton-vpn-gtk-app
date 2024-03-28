@@ -1,9 +1,10 @@
+
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.2.1
+%define version 4.2.1~rc1
 %define upstream_version 4.2.1rc1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
-%define release 0.1.rc1
+%define release 1
 
 Prefix: %{_prefix}
 Name: %{unmangled_name}
@@ -67,7 +68,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Thu Mar 21 2024 Luke Titley <luke.titley@proton.ch> 4.2.1-0.1.rc1
+* Mon Mar 25 2024 Luke Titley <luke.titley@proton.ch> 4.2.1~rc1
 - Increase minimum number of characters required for bug report description.
 
 * Wed Feb 21 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.2.0
@@ -80,7 +81,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Fri Jan 26 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.10
 - Recover from manual cache deletion
 
-* Mon Jan 15 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.9
+* Wed Jan 24 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.9
 - Improve email regex when submitting bug reports
 
 * Mon Jan 15 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.1.8
@@ -109,65 +110,66 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Tue Oct 31 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.1.1
 - Show authentication denied error message
 
-* Wed Oct 25 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.0-1
+* Wed Oct 25 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.1.0
 - Display secure core servers in server list
 
-* Tue Oct 10 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-1
+* Tue Oct 10 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0
 - Stable release
 
-* Fri Sep 15 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.18.b2
+* Fri Sep 15 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~b2
 - Add account data to settings window
 
-* Mon Sep 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.17.b1
+* Mon Sep 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~b1
 - Fixed typos
 - Official beta release
 
-* Tue Sep 05 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.16.a16
+* Tue Sep 05 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a16
 - Add kill switch selection to settings window
 
-* Fri Jul 21 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.15.a15
+* Fri Jul 21 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a15
 - Add server pinning to settings window
 
-* Wed Jul 19 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.14.a14
+* Wed Jul 19 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a14
 - Add NAT type selection to settings window
 
-* Mon Jul 17 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.13.a13
-- Add user-friendly release notes to menu
+* Mon Jul 17 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a13
+- Add user-friendly release notes to app
 
-* Wed Jul 12 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.12.a12
+* Wed Jul 12 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a12
 - Add auto-connect at app startup to settings window
 
-* Thu Jul 06 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.11.a11
+* Thu Jul 06 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a11
 - Add port forwarding selection to settings window
 
-* Thu Jul 06 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.10.a10
+* Thu Jul 06 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a10
 - Add netshield selection to settings window
 
-* Wed Jul 05 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.9.a9
+* Wed Jul 05 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a9
 - Add protocol selection to settings window
 
-* Mon Jul 03 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.8.a8
-- Implement settings window and vpn accelerator setting
+* Mon Jul 03 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a8
+- Implement settings window
+- Add vpn accelerator selection to setting window
 
-* Mon Jun 19 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.7.a7
+* Mon Jun 19 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0~a7
 - VPN data refresh fix
 
-* Tue Jun 06 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.6.a6
+* Tue Jun 06 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0~a6
 - Retrieve VPN account if it wasn't retrieved yet
 
-* Mon May 29 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.5.a5
+* Mon May 29 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a5
 - Ensure UI updates smoothly after starting with auto-connect
 
-* Fri May 26 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.4.a4
+* Fri May 26 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a4
 - Add auto-connect on app startup feature
 
-* Thu May 25 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.3.a3
+* Thu May 25 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0~a3
 - Add server feature icons
 
-* Thu May 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0-0.2.a2
+* Thu May 11 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.0.0~a2
 - Display loading widget during login/logout with a custom message
 
-* Tue May 02 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0-0.1a1
+* Tue May 02 2023 Josep Llaneras <josep.llaneras@proton.ch> 4.0.0~a1
 - Send app version to REST API
 
 * Thu Apr 27 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.20.8
@@ -243,10 +245,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Fri Feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
 - Refactor widget package structure
 
-* Fri Feb 10 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.4
-- Refactor widget package structure
-
-* Thu Feb 09 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.3
+* Thu Feb 09 2023 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.13.3
 - Fix crash when connected server would go into maintenance
 
 * Wed Feb 08 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.13.2
@@ -289,7 +288,7 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 - Load VPN server details from persisted connection
 
 * Wed Jan 11 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.9.4
-- Fix Fail silently when the server list or the client config could not be updated
+- Fail silently when the server list or the client config could not be updated
 
 * Fri Jan 06 2023 Josep Llaneras <josep.llaneras@proton.ch> 0.9.3
 - Fix quick connect widget glitch when opening the app twice
@@ -316,21 +315,21 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 - Get server name/id from connection status update
 
 * Fri Dec 02 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.6.6
-- Check if the current connection is active before disconnecting
+- Ensure that UI is updated after logout/login
 
 * Tue Nov 15 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.6.5
 - Check if the current connection is active before disconnecting
 
-* Mon Nov 14 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.6.4
+* Tue Nov 15 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.6.4
 - Display error dialog whenever a connection fails to be established
 
 * Fri Nov 11 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.6.3
 - Add Proton VPN logging library
 
-* Mon Nov 7 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.6.2
+* Mon Nov 07 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.6.2
 - Ensure that vpn connection is stopped before logging out the user, if there is one
 
-* Fri Nov 4 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.6.1
+* Fri Nov 04 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.6.1
 - Fix bug happening when connecting to a server without disconnecting first from the previous one
 
 * Mon Oct 31 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.6.0
@@ -351,13 +350,13 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Fri Sep 23 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.3.1
 - Fix crash when connecting to free server
 
-* Thu Sep 22 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.3.0
+* Thu Sep 22 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.3.0
 - Display upgrade button for servers that require a higher tier plan to connect to
 
 * Wed Sep 21 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.2.0
 - Group servers by country
 
-* Mon Sep 19 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.1.2
+* Tue Sep 20 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.1.2
 - Add basic logging
 
 * Mon Sep 19 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.1.1
@@ -366,5 +365,6 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 * Thu Sep 15 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.1.0
 - Allow the user to connect to a concrete VPN server
 
-* Sat Jun 4 2022 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 0.0.2
-- First RPM release
+* Wed Jun 22 2022 Josep Llaneras <josep.llaneras@proton.ch> 0.0.0
+- First release
+

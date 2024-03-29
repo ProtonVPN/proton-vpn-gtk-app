@@ -41,6 +41,10 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     TRAY_PINNED_SERVERS_DESCRIPTION = "Access preferred connections from system tray."\
         " Enter country or server codes, separated by commas, to quickly connect "\
         "(e.g.: NL#42, JP, US, IT#01)."
+    ANONYMOUS_CRASH_REPORTS_LABEL = "Share anonymous crash reports"
+    ANONYMOUS_CRASH_REPORTS_DESCRIPTION = "Crash reports help us fix bugs, detect firewalls,"\
+        "and avoid VPN blocks.\n\nThese statistics do not contain your IP address, and they "\
+        "cannot be used to identify you. We'll never share them with third parties."
 
     def __init__(
         self, controller: Controller,
@@ -52,12 +56,14 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
         self.connect_at_app_startup_row = None
         self.tray_pinned_servers_row = None
+        self.anonymous_crash_reports_row = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
         under this category."""
         self.build_connect_at_app_startup()
         self.build_tray_pinned_servers()
+        self.build_anonymous_crash_reports()
 
     @property
     def connect_at_app_startup(self) -> str:
@@ -144,3 +150,32 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         )
 
         self.pack_start(self.tray_pinned_servers_row, False, False, 0)
+
+    @property
+    def anonymous_crash_reports(self) -> bool:
+        """Shortcut property that returns the current `anonymous_crash_reports` setting"""
+        return self._controller.get_settings().anonymous_crash_reports
+
+    @anonymous_crash_reports.setter
+    def anonymous_crash_reports(self, newvalue: bool):
+        """Shortcut property that sets the new `anonymous_crash_reports` setting and
+        stores to disk."""
+        self._controller.get_settings().anonymous_crash_reports = newvalue
+        self._controller.save_settings()
+
+    def build_anonymous_crash_reports(self):
+        """Builds and adds the `anonymous_crash_reports` setting to the widget."""
+        def on_switch_state(_, new_value: bool):
+            self.anonymous_crash_reports = new_value
+
+        switch = Gtk.Switch()
+
+        self.anonymous_crash_reports_row = SettingRow(
+            SettingName(self.ANONYMOUS_CRASH_REPORTS_LABEL),
+            switch,
+            SettingDescription(self.ANONYMOUS_CRASH_REPORTS_DESCRIPTION)
+        )
+
+        switch.set_state(self.anonymous_crash_reports)
+        switch.connect("state-set", on_switch_state)
+        self.pack_start(self.anonymous_crash_reports_row, False, False, 0)

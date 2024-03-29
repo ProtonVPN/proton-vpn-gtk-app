@@ -63,7 +63,10 @@ class MainWidget(Gtk.Overlay):
         self._controller = controller
         self._main_window = main_window
 
-        exception_handler = ExceptionHandler(main_widget=self)
+        exception_handler = ExceptionHandler(
+            main_widget=self,
+            controller=controller)
+
         self.notifications = notifications or Notifications(
             main_window, NotificationBar()
         )

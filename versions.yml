@@ -1,3 +1,12 @@
+version: 4.2.1rc4
+time: 2024/04/05 17:00
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
+- Anonymous crash reports are now sent by default, this can be disabled in the settings.
+---
 version: 4.2.1rc3
 time: 2024/04/04 17:00
 author: Alexandru Cheltuitor

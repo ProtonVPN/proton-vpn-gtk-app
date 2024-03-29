@@ -20,6 +20,7 @@ import sys
 import threading
 from collections import namedtuple
 from unittest.mock import Mock, patch
+from types import SimpleNamespace
 
 import pytest
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
@@ -145,3 +146,38 @@ def test_handle_exceptions_that_should_be_raised_again(exception_type):
             exc_value=exception_type(),
             exc_traceback=None
         )
+
+@pytest.mark.parametrize(
+    "exception,error_title,error_message", [
+        (Exception("Unexpected error"), ExceptionHandler.GENERIC_ERROR_TITLE, ExceptionHandler.GENERIC_ERROR_MESSAGE),
+    ]
+)
+def test_handle_exceptions_reporting_remotely(
+        exception, error_title, error_message
+):
+    send_error = SimpleNamespace(invoked=False)
+
+    def send_error_to_proton(error):
+        exc_type, exc_value, exc_traceback = error
+
+        # Make sure we're sent the correct information
+        assert exc_type is Exception
+        assert isinstance(exc_value, Exception)
+
+        # Make sure we were actually invoked
+        send_error.invoked = True
+
+    controller = Mock()
+    controller.send_error_to_proton = send_error_to_proton
+
+    main_widget_mock = Mock()
+    exception_handler = ExceptionHandler(main_widget=main_widget_mock,
+                                         controller=controller)
+
+    exception_handler.handle_exception(
+        exc_type=type(exception),
+        exc_value=exception,
+        exc_traceback=None
+    )
+
+    assert send_error.invoked, "send_error_to_proton not invoked"

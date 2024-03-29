@@ -46,11 +46,12 @@ class ExceptionHandler:
         "If the issue persists please try to sign out and in."
     )
 
-    def __init__(self, main_widget):
+    def __init__(self, main_widget, controller=None):
         super().__init__()
         self._main_widget = main_widget
         self._previous_sys_excepthook = sys.excepthook
         self._previous_threading_excepthook = threading.excepthook
+        self._controller = controller
 
     def enable(self):
         """
@@ -176,3 +177,7 @@ class ExceptionHandler:
             category="APP", event="CRASH",
             exc_info=(exc_type, exc_value, exc_traceback)
         )
+
+        if self._controller:
+            self._controller.send_error_to_proton(
+                (exc_type, exc_value, exc_traceback))

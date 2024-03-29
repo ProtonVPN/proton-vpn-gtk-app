@@ -19,8 +19,9 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 from concurrent.futures import Future
 from importlib import metadata
+from types import TracebackType
 
-from typing import Optional
+from typing import Optional, Type
 
 from proton.vpn import logging
 
@@ -69,9 +70,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     ):  # pylint: disable=too-many-arguments
         self.executor = executor
 
-        self._api = api or ProtonVPNAPI(ClientTypeMetadata(
+        client_type_metadata = ClientTypeMetadata(
             type="gui", version=semver.from_pep440(self.app_version)
-        ))
+        )
+
+        self._api = api or ProtonVPNAPI(client_type_metadata)
         self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
             self.executor, self._api
         )
@@ -81,6 +84,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self._app_config = app_config
         self._settings = settings
         self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
+
+        self._api.usage_reporting.init(
+            client_type_metadata,
+            enabled=settings.anonymous_crash_reports if settings else True
+        )
 
     async def initialize_vpn_connector(self):
         """
@@ -347,3 +355,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             available_protocols,
             key=lambda protocol: protocol.cls.ui_protocol
         )
+
+    def send_error_to_proton(self,
+                             error: BaseException |
+                             tuple[Optional[Type[BaseException]],
+                                   Optional[BaseException],
+                                   Optional[TracebackType]]):
+        """Sends the error to Sentry."""
+        self._api.usage_reporting.report_error(error)

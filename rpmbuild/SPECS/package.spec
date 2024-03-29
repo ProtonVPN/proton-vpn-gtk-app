@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.2.1~rc3
-%define upstream_version 4.2.1rc3
+%define version 4.2.1~rc4
+%define upstream_version 4.2.1rc4
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Apr 05 2024 Luke Titley <luke.titley@proton.ch> 4.2.1~rc4
+- Anonymous crash reports are now sent by default, this can be disabled in the settings.
+
 * Thu Apr 04 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.2.1~rc3
 - Ensure that protocol list in settings UI is properly capitalized and alphabetically ordered
 

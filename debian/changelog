@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.2.1~rc2) unstable; urgency=low
+
+  * Change how we build debian and rpm packages. We now depend on a single versions.yml file to build the others.
+
+ -- Luke Titley <luke.titley@proton.ch>  Wed, 03 Apr 2024 17:00:00
+
 proton-vpn-gtk-app (4.2.1~rc1) unstable; urgency=low
 
   * Increase minimum number of characters required for bug report description.

@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.2.1~rc1
-%define upstream_version 4.2.1rc1
+%define version 4.2.1~rc2
+%define upstream_version 4.2.1rc2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Apr 03 2024 Luke Titley <luke.titley@proton.ch> 4.2.1~rc2
+- Change how we build debian and rpm packages. We now depend on a single versions.yml file to build the others.
+
 * Mon Mar 25 2024 Luke Titley <luke.titley@proton.ch> 4.2.1~rc1
 - Increase minimum number of characters required for bug report description.
 

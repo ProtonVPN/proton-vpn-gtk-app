@@ -24,8 +24,12 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings impo
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import RECONNECT_MESSAGE
 
 
-DUMMY_PROTOCOL = "openvpn-tcp"
-DUMMY_PROTOCOL2 = "openvpn-udp"
+MockOpenVPNTCP = Mock()
+MockOpenVPNTCP.cls.protocol = "openvpn-tcp"
+MockOpenVPNTCP.cls.ui_protocol = "OpenVPN (TCP)"
+MockOpenVPNUDP = Mock()
+MockOpenVPNUDP.cls.protocol = "openvpn-udp"
+MockOpenVPNUDP.cls.ui_protocol = "OpenVPN (UDP)"
 
 
 FREE_TIER = 0
@@ -35,9 +39,9 @@ PLUS_TIER = 1
 @pytest.fixture
 def mocked_controller_and_protocol():
     controller_mock = Mock(name="controller")
-    controller_mock.get_available_protocols.return_value = [DUMMY_PROTOCOL, DUMMY_PROTOCOL2]
+    controller_mock.get_available_protocols.return_value = [MockOpenVPNTCP, MockOpenVPNUDP]
 
-    property_mock = PropertyMock(name="protocol", return_value=DUMMY_PROTOCOL)
+    property_mock = PropertyMock(name="protocol", return_value=MockOpenVPNTCP.cls.protocol)
     type(controller_mock.get_settings.return_value).protocol = property_mock
 
     return controller_mock, property_mock
@@ -84,7 +88,7 @@ def test_protocol_when_combobox_is_set_to_initial_value(mocked_controller_and_pr
         connection_settings = ConnectionSettings(controller_mock, Mock())
         connection_settings.build_protocol()
 
-        set_active_mock.assert_called_once_with(DUMMY_PROTOCOL)
+        set_active_mock.assert_called_once_with(MockOpenVPNTCP.cls.protocol)
 
 
 def test_protocol_when_switching_switch_protocol_and_ensure_changes_are_saved(mocked_controller_and_protocol):
@@ -94,9 +98,9 @@ def test_protocol_when_switching_switch_protocol_and_ensure_changes_are_saved(mo
 
     protocol_mock.reset_mock()
 
-    connection_settings.protocol_row.interactive_object.set_active_id(DUMMY_PROTOCOL2)
+    connection_settings.protocol_row.interactive_object.set_active_id(MockOpenVPNUDP.cls.protocol)
 
-    protocol_mock.assert_called_once_with(DUMMY_PROTOCOL2)
+    protocol_mock.assert_called_once_with(MockOpenVPNUDP.cls.protocol)
     controller_mock.save_settings.assert_called_once()
 
 
@@ -110,12 +114,13 @@ def test_protocol_when_reconnect_message_reacts_accordingly_if_there_is_an_activ
     connection_settings = ConnectionSettings(controller_mock, notification_bar_mock)
     connection_settings.build_protocol()
 
-    connection_settings.protocol_row.interactive_object.set_active_id(DUMMY_PROTOCOL2)
+    connection_settings.protocol_row.interactive_object.set_active_id(MockOpenVPNUDP.cls.protocol)
 
     if is_connection_active:
         notification_bar_mock.show_info_message.assert_called_once_with(RECONNECT_MESSAGE)
     else:
         notification_bar_mock.show_info_message.assert_not_called()
+
 
 def test_vpn_accelerator_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_vpn_accelerator):
     controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator

@@ -1,3 +1,12 @@
+version: 4.2.1rc3
+time: 2024/04/04 17:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Ensure that protocol list in settings UI is properly capitalized and alphabetically ordered
+---
 version: 4.2.1rc2
 time: 2024/04/03 17:00
 author: Luke Titley

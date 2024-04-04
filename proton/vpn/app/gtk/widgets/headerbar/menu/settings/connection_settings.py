@@ -107,13 +107,8 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         available_protocols = self._controller.get_available_protocols()
         combobox = Gtk.ComboBoxText()
 
-        human_readeable_protocol = {
-            "openvpn-tcp": "OpenVPN (TCP)",
-            "openvpn-udp": "OpenVPN (UDP)",
-        }
-
         for protocol in available_protocols:
-            combobox.append(protocol, human_readeable_protocol.get(protocol, protocol))
+            combobox.append(protocol.cls.protocol, protocol.cls.ui_protocol)
 
         combobox.set_entry_text_column(1)
         combobox.set_active_id(self.protocol)

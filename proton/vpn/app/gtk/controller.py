@@ -338,7 +338,12 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self._settings = None
 
     def get_available_protocols(self) -> Optional[str]:
-        """Returns a list of available protocol to use."""
-        return self._connector.get_available_protocols_for_backend(
+        """Returns an alphabetically sorted list of available protocol to use."""
+        available_protocols = self._connector.get_available_protocols_for_backend(
             self.DEFAULT_BACKEND
+        )
+
+        return sorted(
+            available_protocols,
+            key=lambda protocol: protocol.cls.ui_protocol
         )

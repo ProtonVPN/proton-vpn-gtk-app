@@ -20,7 +20,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import pytest
 from unittest.mock import Mock, PropertyMock, patch
 from tests.unit.testing_utils import process_gtk_events
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings, KillSwitchSetting
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings, KillSwitchSetting, KillSwitchSettingEnum
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import RECONNECT_MESSAGE
 from proton.vpn.core.settings import NetShield
 
@@ -276,7 +276,7 @@ class TestKillSwitchSetting:
         controller_mock = Mock(name="controller")
         controller_mock.get_settings.return_value = Mock()
 
-        property_mock = PropertyMock()
+        property_mock = PropertyMock(return_value=KillSwitchSettingEnum.OFF)
         type(controller_mock.get_settings.return_value).killswitch = property_mock
 
         user_tier_mock = PropertyMock(return_value=PLUS_TIER)

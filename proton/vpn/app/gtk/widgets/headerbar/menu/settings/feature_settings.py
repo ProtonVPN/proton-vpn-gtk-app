@@ -69,13 +69,13 @@ class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-a
     @property
     def killswitch(self) -> int:
         """Shortcut property that returns the current `killswitch` setting."""
-        return int(self._controller.get_settings().killswitch)
+        return self._controller.get_settings().killswitch
 
     @killswitch.setter
     def killswitch(self, newvalue: int):
         """Shortcut property that sets the new `killswitch` setting and
         stores to disk."""
-        self._controller.get_settings().killswitch = int(newvalue)
+        self._controller.get_settings().killswitch = newvalue
         self._controller.save_settings()
 
     def _build_main_setting(self, killswitch_state: int) -> Gtk.Switch:

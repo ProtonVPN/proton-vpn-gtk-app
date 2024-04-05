@@ -30,6 +30,7 @@ from tests.unit.testing_utils import process_gtk_events
 def test_main_widget_initially_shows_login_widget_if_the_user_did_not_log_in_yet():
     controller_mock = Mock()
     controller_mock.user_logged_in = False
+    controller_mock.get_settings.return_value.killswitch = 0
     main_window_mock = Mock()
 
     main_widget = MainWidget(
@@ -76,8 +77,11 @@ def test_main_widget_switches_from_login_to_vpn_widget_after_login():
 
 def test_main_widget_switches_from_vpn_to_login_widget_after_logout():
     main_window_mock = Mock()
+    controller_mock = Mock()
+    controller_mock.get_settings.return_value.killswitch = 0
+
     main_widget = MainWidget(
-        controller=Mock(),
+        controller=controller_mock,
         main_window=main_window_mock,
         overlay_widget=OverlayWidget()
     )
@@ -94,8 +98,11 @@ def test_main_widget_switches_to_login_widget_when_session_expired():
     main_window_mock = Mock()
     notifications_mock = Mock()
     notifications_mock.notification_bar = NotificationBar()
+    controller_mock = Mock()
+    controller_mock.get_settings.return_value.killswitch = 0
+
     main_widget = MainWidget(
-        controller=Mock(),
+        controller=controller_mock,
         main_window=main_window_mock,
         notifications=notifications_mock,
         overlay_widget=OverlayWidget()
@@ -116,6 +123,7 @@ def test_run_start_actions_when_user_is_not_logged_in_and_start_the_app_with_log
     and we ensure that after a successfull login, auto-connect is not triggered."""
     controller_mock = Mock()
     controller_mock.user_logged_in = False
+    controller_mock.get_settings.return_value.killswitch = 0
 
     notifications_mock = Mock()
     notifications_mock.notification_bar = NotificationBar()

@@ -27,7 +27,7 @@ from proton.vpn.app.gtk import Gtk
 
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportDialog
 from proton.vpn.app.gtk.widgets.headerbar.menu.about_dialog import AboutDialog
-from proton.vpn.app.gtk.widgets.headerbar.menu.disconnect_dialog import DisconnectDialog
+from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, DefaultLoadingWidget
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings import SettingsWindow
@@ -61,6 +61,8 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
     DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE = "Quitting the application "\
         "will keep the kill switch active, but your current VPN connection will be terminated."\
         "\n\nDo you want to continue?"
+    DISCONNECT_TITLE = "Active connection found"
+    KILLSWITCH_ENABLED_TITLE = "Kill Switch enabled"
 
     def __init__(
         self, controller: Controller,
@@ -176,15 +178,19 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         confirm_logout = True
 
         if not self._controller.is_connection_disconnected:
-            dialog = DisconnectDialog(
+            dialog = ConfirmationDialog(
                 self.DISCONNECT_ON_LOGOUT_MESSAGE
                 if kill_switch_state < KillSwitchSettingEnum.ON
-                else self.DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE
+                else self.DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE,
+                self.DISCONNECT_TITLE
             )
             confirm_logout = self._display_dialog(dialog)
         elif kill_switch_state == KillSwitchSettingEnum.PERMANENT:
             confirm_logout = self._display_dialog(
-                DisconnectDialog(self.LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE)
+                ConfirmationDialog(
+                    self.LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE,
+                    self.KILLSWITCH_ENABLED_TITLE
+                )
             )
 
         if confirm_logout:
@@ -206,10 +212,11 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         confirm_quit = True
 
         if not self._controller.is_connection_disconnected:
-            dialog = DisconnectDialog(
+            dialog = ConfirmationDialog(
                 self.DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE
                 if kill_switch_state == KillSwitchSettingEnum.PERMANENT
-                else self.DISCONNECT_ON_QUIT_MESSAGE
+                else self.DISCONNECT_ON_QUIT_MESSAGE,
+                self.DISCONNECT_TITLE
             )
             confirm_quit = self._display_dialog(dialog)
 
@@ -252,7 +259,7 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         finally:
             self._overlay_widget.hide()
 
-    def _display_dialog(self, dialog: DisconnectDialog) -> bool:
+    def _display_dialog(self, dialog: ConfirmationDialog) -> bool:
         dialog.set_transient_for(self._main_window)
         # run() blocks the main loop, and only exist once the `::response` signal
         # is emitted.

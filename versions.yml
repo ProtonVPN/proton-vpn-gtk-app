@@ -1,3 +1,12 @@
+version: 4.2.1rc5
+time: 2024/04/09 10:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Provide the possibility to disable Kill Switch if user is logged out and Kill Switch is set to permanent
+---
 version: 4.2.1rc4
 time: 2024/04/05 17:00
 author: Luke Titley

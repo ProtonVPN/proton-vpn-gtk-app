@@ -27,19 +27,14 @@ from proton.vpn import logging
 logger = logging.getLogger(__name__)
 
 
-class DisconnectDialog(Gtk.Dialog):
-    """Base disconnect dialog widget.
-    Since the behaviours on_logout and on_quit are exactly the same
-    with just differences of context, this class serves as base for both
-    occasions.
-    """
+class ConfirmationDialog(Gtk.Dialog):
+    """Confirmation dialog widget."""
     WIDTH = 150
     HEIGHT = 200
-    TITLE = "Active connection found"
 
-    def __init__(self, message: str):
+    def __init__(self, message: str, title: str):
         super().__init__()
-        self.set_title(self.TITLE)
+        self.set_title(title)
         self.set_default_size(self.WIDTH, self.HEIGHT)
 
         yes_button = self.add_button("_Yes", Gtk.ResponseType.YES)

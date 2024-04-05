@@ -206,9 +206,9 @@ class TestLogoutMenuEntry:
             menu.UNABLE_TO_LOGOUT_MESSAGE
         )
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_logout_menu_entry_logs_user_out_when_clicked_while_connected_to_vpn_only_after_user_dialog_confirmation(
-            self, disconnect_dialog_patch
+            self, confirmation_dialog_patch
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.OFF
@@ -218,9 +218,9 @@ class TestLogoutMenuEntry:
         controller_mock.logout.return_value = logout_future
         controller_mock.is_connection_disconnected = False
 
-        disconnect_dialog_mock = Mock()
-        disconnect_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
-        disconnect_dialog_patch.return_value = disconnect_dialog_mock
+        confirmation_dialog_mock = Mock()
+        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
+        confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -232,13 +232,13 @@ class TestLogoutMenuEntry:
 
         process_gtk_events()
 
-        disconnect_dialog_mock.run.assert_called_once()
-        disconnect_dialog_mock.destroy.assert_called_once()
+        confirmation_dialog_mock.run.assert_called_once()
+        confirmation_dialog_mock.destroy.assert_called_once()
         controller_mock.logout.assert_called_once()
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_logout_menu_entry_does_not_log_user_out_when_clicked_while_connected_to_vpn_if_user_cancels_confirmation_dialog(
-            self, disconnect_dialog_patch
+            self, confirmation_dialog_patch
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.OFF
@@ -248,9 +248,9 @@ class TestLogoutMenuEntry:
         controller_mock.logout.return_value = logout_future
         controller_mock.is_connection_disconnected = False
 
-        disconnect_dialog_mock = Mock()
-        disconnect_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
-        disconnect_dialog_patch.return_value = disconnect_dialog_mock
+        confirmation_dialog_mock = Mock()
+        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
+        confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -262,21 +262,21 @@ class TestLogoutMenuEntry:
 
         process_gtk_events()
 
-        disconnect_dialog_mock.run.assert_called_once()
-        disconnect_dialog_mock.destroy.assert_called_once()
+        confirmation_dialog_mock.run.assert_called_once()
+        confirmation_dialog_mock.destroy.assert_called_once()
         assert not controller_mock.logout.call_count
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_logout_menu_entry_displays_message_when_clicked_while_connected_to_vpn_and_killswitch_is_enabled(
-        self, disconnect_dialog_patch
+        self, confirmation_dialog_patch
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.ON
         controller_mock.is_connection_disconnected = False
 
-        disconnect_dialog_mock = Mock()
-        disconnect_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
-        disconnect_dialog_patch.return_value = disconnect_dialog_mock
+        confirmation_dialog_mock = Mock()
+        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
+        confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -288,19 +288,22 @@ class TestLogoutMenuEntry:
 
         process_gtk_events()
 
-        disconnect_dialog_patch.assert_called_once_with(menu.DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE)
+        confirmation_dialog_patch.assert_called_once_with(
+            menu.DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE,
+            menu.DISCONNECT_TITLE
+        )
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_logout_menu_entry_displays_message_when_clicked_while_not_connected_to_vpn_and_permanent_killswitch_is_enabled(
-        self, disconnect_dialog_patch
+        self, confirmation_dialog_patch
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.PERMANENT
         controller_mock.is_connection_disconnected = True
 
-        disconnect_dialog_mock = Mock()
-        disconnect_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
-        disconnect_dialog_patch.return_value = disconnect_dialog_mock
+        confirmation_dialog_mock = Mock()
+        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
+        confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -312,12 +315,15 @@ class TestLogoutMenuEntry:
 
         process_gtk_events()
 
-        disconnect_dialog_patch.assert_called_once_with(menu.LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE)
+        confirmation_dialog_patch.assert_called_once_with(
+            menu.LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE,
+            menu.KILLSWITCH_ENABLED_TITLE
+        )
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     @pytest.mark.parametrize("kill_switch_state", [KillSwitchSettingEnum.ON, KillSwitchSettingEnum.PERMANENT])
     def test_logout_menu_entry_when_clicked_ensure_kill_switch_state_is_set_to_off_while_killswitch_is_enabled_and_logout_is_called(
-        self, disconnect_dialog_patch, kill_switch_state
+        self, confirmation_dialog_patch, kill_switch_state
     ):
         controller_mock = Mock()
         future = Future()
@@ -327,9 +333,9 @@ class TestLogoutMenuEntry:
         type(controller_mock.get_settings.return_value).killswitch = property_mock
         controller_mock.is_connection_disconnected = True
 
-        disconnect_dialog_mock = Mock()
-        disconnect_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
-        disconnect_dialog_patch.return_value = disconnect_dialog_mock
+        confirmation_dialog_mock = Mock()
+        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
+        confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -369,9 +375,9 @@ class TestQuitMenuEntry:
 
         main_window_mock.quit.assert_called_once()
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_quit_menu_entry_closes_app_window_when_clicked_only_after_user_dialog_confirmation_while_connected_to_vpn(
-            self, disconnect_dialog_patch
+            self, confirmation_dialog_patch
     ):
         main_window_mock = Mock()
         controller_mock = Mock()
@@ -380,7 +386,7 @@ class TestQuitMenuEntry:
 
         quit_dialog_mock = Mock()
         quit_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
-        disconnect_dialog_patch.return_value = quit_dialog_mock
+        confirmation_dialog_patch.return_value = quit_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -391,9 +397,9 @@ class TestQuitMenuEntry:
         menu.quit_button_click()
         main_window_mock.quit.assert_called_once()
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_quit_menu_entry_does_nothing_when_clicked_if_user_cancels_confirmation_dialog_while_connected_to_vpn(
-            self, disconnect_dialog_patch
+            self, confirmation_dialog_patch
     ):
         main_window_mock = Mock()
         controller_mock = Mock()
@@ -402,7 +408,7 @@ class TestQuitMenuEntry:
 
         quit_dialog_mock = Mock()
         quit_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
-        disconnect_dialog_patch.return_value = quit_dialog_mock
+        confirmation_dialog_patch.return_value = quit_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -413,17 +419,17 @@ class TestQuitMenuEntry:
         menu.quit_button_click()
         main_window_mock.quit.assert_not_called()
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_quit_menu_entry_displays_message_when_clicked_while_connected_to_vpn(
-        self, disconnect_dialog_patch
+        self, confirmation_dialog_patch
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.OFF
         controller_mock.is_connection_disconnected = False
 
-        disconnect_dialog_mock = Mock()
-        disconnect_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
-        disconnect_dialog_patch.return_value = disconnect_dialog_mock
+        confirmation_dialog_mock = Mock()
+        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
+        confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -435,11 +441,11 @@ class TestQuitMenuEntry:
 
         process_gtk_events()
 
-        disconnect_dialog_patch.assert_called_once_with(menu.DISCONNECT_ON_QUIT_MESSAGE)
+        confirmation_dialog_patch.assert_called_once_with(menu.DISCONNECT_ON_QUIT_MESSAGE, menu.DISCONNECT_TITLE)
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_quit_menu_entry_displays_message_when_clicked_while_connected_to_vpn_and_permanent_killswitch_is_enabled(
-        self, disconnect_dialog_patch
+        self, confirmation_dialog_patch
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.PERMANENT
@@ -447,7 +453,7 @@ class TestQuitMenuEntry:
 
         quit_dialog_mock = Mock()
         quit_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
-        disconnect_dialog_patch.return_value = quit_dialog_mock
+        confirmation_dialog_patch.return_value = quit_dialog_mock
 
         menu = Menu(
             controller=controller_mock,
@@ -459,11 +465,14 @@ class TestQuitMenuEntry:
 
         process_gtk_events()
 
-        disconnect_dialog_patch.assert_called_once_with(menu.DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE)
+        confirmation_dialog_patch.assert_called_once_with(
+            menu.DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE,
+            menu.DISCONNECT_TITLE
+        )
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.DisconnectDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")
     def test_quit_menu_entry_when_clicked_ensure_kill_switch_state_stays_in_the_same_state_and_ensure_quit_is_called(
-        self, disconnect_dialog_patch
+        self, confirmation_dialog_patch
     ):
         main_window_mock = Mock()
         controller_mock = Mock()
@@ -474,9 +483,9 @@ class TestQuitMenuEntry:
         type(controller_mock.get_settings.return_value).killswitch = property_mock
         controller_mock.is_connection_disconnected = True
 
-        disconnect_dialog_mock = Mock()
-        disconnect_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
-        disconnect_dialog_patch.return_value = disconnect_dialog_mock
+        confirmation_dialog_mock = Mock()
+        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
+        confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
             controller=controller_mock,

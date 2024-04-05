@@ -149,7 +149,8 @@ class MainWidget(Gtk.Overlay):
 
     def _create_login_widget(self) -> LoginWidget:
         login_widget = LoginWidget(
-            self._controller, self.notifications, self._overlay_widget
+            self._controller, self.notifications,
+            self._overlay_widget, self._main_window
         )
         login_widget.connect("user-logged-in", self._on_user_logged_in)
         return login_widget

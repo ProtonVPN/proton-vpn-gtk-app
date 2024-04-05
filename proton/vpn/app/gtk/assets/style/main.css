@@ -4,16 +4,16 @@
 
 label.info {
     background-color: @signal-info;
-	background-image: image(@signal-info);
-	color: @text-norm;
+    background-image: image(@signal-info);
+    color: @text-norm;
     text-shadow: None;
     padding: 5px;
 }
 
 label.error {
     background-color: @signal-danger;
-	background-image: image(@signal-danger);
-	color: @text-norm;
+    background-image: image(@signal-danger);
+    color: @text-norm;
     text-shadow: None;
     padding: 5px;
 }
@@ -21,22 +21,24 @@ label.error {
 label.success {
     background-color: @signal-success;
     background-image: image(@signal-success);
-	color: @text-norm;
+    color: @text-norm;
     text-shadow: None;
     padding: 5px;
 }
 
-#vpn-widget, #login-widget {
+#vpn-widget,
+#login-widget {
     margin: 10px;
 }
 
-#login-logo{
+#login-logo {
     margin-top: 75px;
     margin-bottom: 40px;
 }
 
-#bug-report-content, #bug-report-dialog buttonbox {
- margin: 20px;   
+#bug-report-content,
+#bug-report-dialog buttonbox {
+    margin: 20px;
 }
 
 #server-load.signal-danger {
@@ -51,14 +53,14 @@ label.success {
     color: @signal-success
 }
 
-.setting-category{
+.setting-category {
     margin-top: 20px;
     margin-left: 20px;
-	margin-right: 20px;
+    margin-right: 20px;
 }
 
-.setting-category:last-child{
-	margin-bottom: 60px;
+.setting-category:last-child {
+    margin-bottom: 60px;
 }
 
 .setting-item {
@@ -67,14 +69,20 @@ label.success {
     border-radius: 10px;
 }
 
-.upgrade-tag{
+.upgrade-tag {
     border-radius: 10px;
-	background: transparent;
-	border: 1px solid rgba(155, 155, 155, 0.2);
-	outline: none;
-	background-image: none;
+    background: transparent;
+    border: 1px solid rgba(155, 155, 155, 0.2);
+    outline: none;
+    background-image: none;
 }
 
 .release-notes-collection {
     margin: 20px 20px 60px 20px;
+}
+
+#login-kill-switch-revealer box {
+    border-top: 1px solid rgba(155, 155, 155, 0.2);
+    padding: 15px 0px;
+    margin-top: 20px;
 }

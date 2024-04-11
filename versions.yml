@@ -1,56 +1,15 @@
-version: 4.2.1rc6
+version: 4.3.0
 time: 2024/04/11 14:00
 author: Luke Titley
 email: luke.titley@proton.ch
 urgency: low
 stability: unstable
 description:
-- Fix missing space in anonymous crash reports description.
----
-version: 4.2.1rc5
-time: 2024/04/09 10:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Provide the possibility to disable Kill Switch if user is logged out and Kill Switch is set to permanent
----
-version: 4.2.1rc4
-time: 2024/04/05 17:00
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Anonymous crash reports are now sent by default, this can be disabled in the settings.
----
-version: 4.2.1rc3
-time: 2024/04/04 17:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Ensure that protocol list in settings UI is properly capitalized and alphabetically ordered
----
-version: 4.2.1rc2
-time: 2024/04/03 17:00
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Change how we build debian and rpm packages. We now depend on a single versions.yml file to build the others.
----
-version: 4.2.1rc1
-time: 2024/03/25 15:00
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Increase minimum number of characters required for bug report description.
+- Provide the possibility to disable Kill Switch if user is logged out and Kill Switch is set to permanent (Alexandru Cheltuitor)
+- Ensure that protocol list in settings UI is properly capitalized and alphabetically ordered (Alexandru Cheltuitor)
+- Anonymous crash reports are now sent by default, this can be disabled in the settings (Luke Titley)
+- Change how we build debian and rpm packages. We now depend on a single versions.yml file to build everything (Luke Titley)
+- Increase minimum number of characters required for bug report description (Luke Titley)
 ---
 version: 4.2.0
 time: 2024/02/21 15:00

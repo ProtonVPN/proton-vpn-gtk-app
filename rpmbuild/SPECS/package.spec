@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.2.1~rc6
-%define upstream_version 4.2.1rc6
+%define version 4.3.0
+%define upstream_version 4.3.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,23 +68,12 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Thu Apr 11 2024 Luke Titley <luke.titley@proton.ch> 4.2.1~rc6
-- Fix missing space in anonymous crash reports description.
-
-* Tue Apr 09 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.2.1~rc5
-- Provide the possibility to disable Kill Switch if user is logged out and Kill Switch is set to permanent
-
-* Fri Apr 05 2024 Luke Titley <luke.titley@proton.ch> 4.2.1~rc4
-- Anonymous crash reports are now sent by default, this can be disabled in the settings.
-
-* Thu Apr 04 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.2.1~rc3
-- Ensure that protocol list in settings UI is properly capitalized and alphabetically ordered
-
-* Wed Apr 03 2024 Luke Titley <luke.titley@proton.ch> 4.2.1~rc2
-- Change how we build debian and rpm packages. We now depend on a single versions.yml file to build the others.
-
-* Mon Mar 25 2024 Luke Titley <luke.titley@proton.ch> 4.2.1~rc1
-- Increase minimum number of characters required for bug report description.
+* Thu Apr 11 2024 Luke Titley <luke.titley@proton.ch> 4.3.0
+- Provide the possibility to disable Kill Switch if user is logged out and Kill Switch is set to permanent (Alexandru Cheltuitor)
+- Ensure that protocol list in settings UI is properly capitalized and alphabetically ordered (Alexandru Cheltuitor)
+- Anonymous crash reports are now sent by default, this can be disabled in the settings (Luke Titley)
+- Change how we build debian and rpm packages. We now depend on a single versions.yml file to build everything (Luke Titley)
+- Increase minimum number of characters required for bug report description (Luke Titley)
 
 * Wed Feb 21 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.2.0
 - Add overlay when connecting to server (Alexandru Cheltuitor)

@@ -1,3 +1,7 @@
+## 4.3.0
+- We have improved our troubleshooting tools for better error investigation.
+- Bug fixes.
+
 ## 4.2.0
 - Advanced Kill Switch: you can now allow internet access on your device only when connected to a Proton VPN server.
 

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.2.1~rc6) unstable; urgency=low
+
+  * Fix missing space in anonymous crash reports description.
+
+ -- Luke Titley <luke.titley@proton.ch>  Thu, 11 Apr 2024 14:00:00
+
 proton-vpn-gtk-app (4.2.1~rc5) unstable; urgency=low
 
   * Provide the possibility to disable Kill Switch if user is logged out and Kill Switch is set to permanent

@@ -1,3 +1,12 @@
+version: 4.2.1rc6
+time: 2024/04/11 14:00
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
+- Fix missing space in anonymous crash reports description.
+---
 version: 4.2.1rc5
 time: 2024/04/09 10:00
 author: Alexandru Cheltuitor

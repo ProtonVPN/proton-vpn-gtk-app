@@ -42,7 +42,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         " Enter country or server codes, separated by commas, to quickly connect "\
         "(e.g.: NL#42, JP, US, IT#01)."
     ANONYMOUS_CRASH_REPORTS_LABEL = "Share anonymous crash reports"
-    ANONYMOUS_CRASH_REPORTS_DESCRIPTION = "Crash reports help us fix bugs, detect firewalls,"\
+    ANONYMOUS_CRASH_REPORTS_DESCRIPTION = "Crash reports help us fix bugs, detect firewalls, "\
         "and avoid VPN blocks.\n\nThese statistics do not contain your IP address, and they "\
         "cannot be used to identify you. We'll never share them with third parties."
 

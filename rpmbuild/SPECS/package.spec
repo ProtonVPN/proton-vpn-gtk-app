@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.1~rc1
-%define upstream_version 4.3.1rc1
+%define version 4.3.1~rc2
+%define upstream_version 4.3.1rc2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Apr 18 2024 Luke Titley <luke.titley@proton.ch> 4.3.1~rc2
+- Add connection features to the wireguard certificate request.
+
 * Tue Apr 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.3.1~rc1
 - Periodically refresh certificate.
 

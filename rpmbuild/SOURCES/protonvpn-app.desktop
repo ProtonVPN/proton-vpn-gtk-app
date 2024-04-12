@@ -4,6 +4,6 @@ Exec=protonvpn-app
 Terminal=false
 Type=Application
 Icon=proton-vpn-logo
-StartupWMClass=Protonvpn
+StartupWMClass=protonvpn-app
 Comment=Proton VPN GUI client
 Categories=Network;

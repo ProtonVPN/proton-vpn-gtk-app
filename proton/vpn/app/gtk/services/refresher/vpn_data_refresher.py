@@ -33,6 +33,7 @@ from proton.vpn.core.api import ProtonVPNAPI
 
 from proton.vpn.app.gtk.services.refresher.client_config_refresher import ClientConfigRefresher
 from proton.vpn.app.gtk.services.refresher.server_list_refresher import ServerListRefresher
+from proton.vpn.app.gtk.services.refresher.certificate_refresher import CertificateRefresher
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 
 logger = logging.getLogger(__name__)
@@ -46,12 +47,13 @@ class VPNDataRefresher(GObject.Object):
         - keeping it up to date and
         - notifying subscribers when VPN data has been updated.
     """
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         executor: AsyncExecutor,
         proton_vpn_api: ProtonVPNAPI,
         client_config_refresher: ClientConfigRefresher = None,
-        server_list_refresher: ServerListRefresher = None
+        server_list_refresher: ServerListRefresher = None,
+        certificate_refresher: CertificateRefresher = None
     ):
         super().__init__()
         self._executor = executor
@@ -64,10 +66,16 @@ class VPNDataRefresher(GObject.Object):
             executor,
             proton_vpn_api
         )
+        self._certificate_refresher = certificate_refresher or CertificateRefresher(
+            executor,
+            proton_vpn_api
+        )
+
         self._signal_refresher_map = {
             "new-client-config": self._client_config_refresher,
             "new-server-list": self._server_list_refresher,
-            "new-server-loads": self._server_list_refresher
+            "new-server-loads": self._server_list_refresher,
+            "new-certificate": self._certificate_refresher
         }
         self._signal_handler_ids: Dict[int, GObject.Object] = {}
 
@@ -138,6 +146,7 @@ class VPNDataRefresher(GObject.Object):
         """Stops retrieving data periodically from Proton's REST API."""
         self._client_config_refresher.disable()
         self._server_list_refresher.disable()
+        self._certificate_refresher.disable()
         logger.info(
             "VPN data refresher service disabled.",
             category="app", subcategory="vpn_data_refresher", event="disable"
@@ -151,6 +160,7 @@ class VPNDataRefresher(GObject.Object):
         )
         self._client_config_refresher.enable()
         self._server_list_refresher.enable()
+        self._certificate_refresher.enable()
 
     def _refresh_vpn_session_and_then_enable(self):
         logger.warning("Reloading VPN session...")

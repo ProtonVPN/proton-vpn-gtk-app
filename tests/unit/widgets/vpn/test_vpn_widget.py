@@ -72,6 +72,7 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
 ):
     controller_mock = Mock()
     api_mock = Mock()
+    api_mock.account_data.vpn_credentials.pubkey_credentials.remaining_time_to_next_refresh = 1
     controller_mock.vpn_data_refresher = VPNDataRefresher(
         executor=Mock(),
         proton_vpn_api=api_mock

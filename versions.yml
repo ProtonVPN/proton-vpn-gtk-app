@@ -1,3 +1,12 @@
+version: 4.3.1rc3
+time: 2024/04/18 18:05
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
+- Update wireguard certificate request when settings are changed.
+---
 version: 4.3.1rc2
 time: 2024/04/18 09:20
 author: Luke Titley

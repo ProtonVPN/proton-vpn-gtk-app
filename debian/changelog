@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.3.1~rc3) unstable; urgency=low
+
+  * Update wireguard certificate request when settings are changed.
+
+ -- Luke Titley <luke.titley@proton.ch>  Thu, 18 Apr 2024 18:05:00
+
 proton-vpn-gtk-app (4.3.1~rc2) unstable; urgency=low
 
   * Add connection features to the wireguard certificate request.

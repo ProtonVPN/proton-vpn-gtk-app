@@ -66,7 +66,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         """Shortcut property that sets the new `protocol` setting and
         stores to disk."""
         self._controller.get_settings().protocol = newvalue
-        self._controller.save_settings_and_update_certificate()
+        self._controller.save_settings(update_certificate=True)
 
     @property
     def vpn_accelerator(self) -> bool:
@@ -78,7 +78,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         """Shortcut property that sets the new `vpn_accelerator` setting and
         stores to disk."""
         self._controller.get_settings().features.vpn_accelerator = newvalue
-        self._controller.save_settings_and_update_certificate()
+        self._controller.save_settings(update_certificate=True)
 
     @property
     def moderate_nat(self) -> bool:
@@ -90,7 +90,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         """Shortcut property that sets the new `moderate_nat` setting and
         stores to disk."""
         self._controller.get_settings().features.moderate_nat = newvalue
-        self._controller.save_settings_and_update_certificate()
+        self._controller.save_settings(update_certificate=True)
 
     def build_protocol(self):
         """Builds and adds the `protocol` setting to the widget."""

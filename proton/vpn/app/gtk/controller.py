@@ -45,6 +45,8 @@ from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnu
 
 logger = logging.getLogger(__name__)
 
+WIREGUARD_PROTOCOL = "wireguard"
+
 
 class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-attributes
     """The C in the MVC pattern."""
@@ -334,24 +336,29 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
         return self._settings
 
-    def save_settings(self) -> Future:
-        """Saves current settings to disk"""
+    def save_settings(self, update_certificate: bool = False) -> Future:
+        """
+        Saves current settings to disk and updates the wireguard certificate
+        if necessary.
+        """
+
+        # If update certificate is invoked then we save and update the
+        # certificate in the same call
+        if update_certificate:
+            async def save_and_update(settings):
+                await self._api.save_settings(settings)
+                if settings.protocol == WIREGUARD_PROTOCOL:
+                    await self._api.fetch_certificate()
+
+            return self.executor.submit(
+                save_and_update,
+                self._settings
+            )
+
+        # Otherwise we just save as normal
         return self.executor.submit(
             self._api.save_settings,
             self._settings
-        )
-
-    def save_settings_and_update_certificate(self) -> Future:
-        """Saves current settings to disk and updates the certificate as well"""
-
-        # Wait for the settings to save
-        self.executor.submit(
-            self._api.save_settings,
-            self._settings
-        ).result()
-
-        self.executor.submit(
-            self._api.fetch_certificate,
         )
 
     def clear_settings(self):

@@ -341,6 +341,19 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             self._settings
         )
 
+    def save_settings_and_update_certificate(self) -> Future:
+        """Saves current settings to disk and updates the certificate as well"""
+
+        # Wait for the settings to save
+        self.executor.submit(
+            self._api.save_settings,
+            self._settings
+        ).result()
+
+        self.executor.submit(
+            self._api.fetch_certificate,
+        )
+
     def clear_settings(self):
         """Clear in-memory settings."""
         self._settings = None

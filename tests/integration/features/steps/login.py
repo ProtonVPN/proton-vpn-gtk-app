@@ -29,7 +29,7 @@ import pyotp
 
 from proton.sso import ProtonSSO
 from proton.vpn.core.api import ProtonVPNAPI
-from proton.vpn.core.session import ClientTypeMetadata
+from proton.vpn.core.session_holder import ClientTypeMetadata
 
 
 def before_login_scenario(context, scenario):

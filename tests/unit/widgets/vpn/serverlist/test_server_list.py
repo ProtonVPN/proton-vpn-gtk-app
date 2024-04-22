@@ -20,7 +20,7 @@ import time
 from unittest.mock import Mock
 
 import pytest
-from proton.vpn.session.servers import ServerList
+from proton.vpn.core.session.servers import ServerList
 from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
 from proton.vpn.app.gtk.services import VPNDataRefresher

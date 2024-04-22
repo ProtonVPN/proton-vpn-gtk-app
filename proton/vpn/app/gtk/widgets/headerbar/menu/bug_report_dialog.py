@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import io
 import re
-import subprocess
+import subprocess  # nosec B404
 from tempfile import NamedTemporaryFile
 from concurrent.futures import Future
 
@@ -31,7 +31,7 @@ from typing import TYPE_CHECKING, List
 from gi.repository import Gtk, GLib
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
-from proton.vpn.session import BugReportForm
+from proton.vpn.core.session import BugReportForm
 from proton.vpn.app.gtk import __version__
 from proton.vpn import logging
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
@@ -338,7 +338,7 @@ class LogCollector:  # pylint: disable=too-few-public-methods
                     "journalctl", "-u", "NetworkManager", "--no-pager",
                     "--utc", "--since=-1d", "--no-hostname"
                 ]
-                process = subprocess.run(args, stdout=temp_file, check=False)
+                process = subprocess.run(args, stdout=temp_file, check=False)  # nosec B603
                 if process.returncode == 0:
                     return open(temp_file.name, "rb")
 

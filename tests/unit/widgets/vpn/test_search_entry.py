@@ -22,7 +22,7 @@ from unittest.mock import Mock
 from gi.repository import GLib
 import pytest
 
-from proton.vpn.session.servers import ServerList, LogicalServer
+from proton.vpn.core.session.servers import ServerList, LogicalServer
 
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget

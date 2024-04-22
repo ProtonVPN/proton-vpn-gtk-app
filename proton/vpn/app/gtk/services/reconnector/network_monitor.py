@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-import subprocess
+import subprocess  # nosec B404
 from concurrent.futures import ThreadPoolExecutor, Future
 from typing import Callable
 
@@ -38,7 +38,8 @@ def check_for_network_connectivity() -> bool:
     # 192.0.2.1 is used because is a valid IP that won't be in use,
     # since it is reserved for documentation purposes:
     # https://www.rfc-editor.org/rfc/rfc5737.html
-    result = subprocess.run(["ip", "route", "get", "192.0.2.1"], check=False, capture_output=True)
+    result = subprocess.run(                                                    # nosec B603, B607
+        ["ip", "route", "get", "192.0.2.1"], check=False, capture_output=True)  # nosec B607
     return result.returncode == 0
 
 

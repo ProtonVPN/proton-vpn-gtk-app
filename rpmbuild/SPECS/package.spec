@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.1~rc3
-%define upstream_version 4.3.1rc3
+%define version 4.3.1~rc4
+%define upstream_version 4.3.1rc4
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -28,7 +28,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core
+BuildRequires: python3-proton-vpn-api-core >= 0.23.0
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
@@ -36,7 +36,7 @@ BuildRequires: python3-packaging
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core
+Requires: python3-proton-vpn-api-core >= 0.23.0
 Requires: python3-proton-vpn-logger
 Requires: librsvg2
 Requires: python3-packaging
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Mon Apr 22 2024 Luke Titley <luke.titley@proton.ch> 4.3.1~rc4
+- Switch to using sessions module that is now bundled with vpn-api-core.
+
 * Thu Apr 18 2024 Luke Titley <luke.titley@proton.ch> 4.3.1~rc3
 - Update wireguard certificate request when settings are changed.
 

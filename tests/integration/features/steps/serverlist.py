@@ -24,7 +24,7 @@ import asyncio
 from behave import given, when, then, fixture, use_fixture
 
 from proton.vpn.core.api import ProtonVPNAPI
-from proton.vpn.core.session import ClientTypeMetadata
+from proton.vpn.core.session_holder import ClientTypeMetadata
 
 
 def before_feature_serverlist(context, feature):

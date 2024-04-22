@@ -159,7 +159,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         """Resets the state of the login/2fa forms."""
         self._notifications.hide_message()
         self.username = ""
-        self.password = ""
+        self.password = ""  # nosec B105
         self._username_entry.grab_focus()
 
     @property

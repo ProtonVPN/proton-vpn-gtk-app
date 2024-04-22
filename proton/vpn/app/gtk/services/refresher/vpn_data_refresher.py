@@ -27,8 +27,8 @@ from typing import Callable, Any, Dict
 from gi.repository import GLib, GObject
 
 from proton.vpn import logging
-from proton.vpn.session.client_config import ClientConfig
-from proton.vpn.session.servers.logicals import ServerList
+from proton.vpn.core.session.client_config import ClientConfig
+from proton.vpn.core.session.servers.logicals import ServerList
 from proton.vpn.core.api import ProtonVPNAPI
 
 from proton.vpn.app.gtk.services.refresher.client_config_refresher import ClientConfigRefresher

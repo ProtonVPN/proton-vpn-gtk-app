@@ -1,3 +1,12 @@
+version: 4.3.1rc4
+time: 2024/04/22 15:00
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
+- Switch to using sessions module that is now bundled with vpn-api-core.
+---
 version: 4.3.1rc3
 time: 2024/04/18 18:05
 author: Luke Titley

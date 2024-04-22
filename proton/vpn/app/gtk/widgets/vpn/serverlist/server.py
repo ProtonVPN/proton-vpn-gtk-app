@@ -27,7 +27,7 @@ from gi.repository import GLib, Pango, Atk
 from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
-from proton.vpn.session.servers import LogicalServer, ServerFeatureEnum
+from proton.vpn.core.session.servers import LogicalServer, ServerFeatureEnum
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
     UnderMaintenanceIcon, SmartRoutingIcon, StreamingIcon, \
     P2PIcon, TORIcon, SecureCoreIcon

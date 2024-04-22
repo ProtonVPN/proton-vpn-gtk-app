@@ -253,7 +253,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
         The amount of time increases exponentially based on the number of
         previous attempts.
         """
-        return 2 ** self.retry_counter * random.uniform(0.9, 1.1) * 1000
+        return 2 ** self.retry_counter * random.uniform(0.9, 1.1) * 1000  # nosec B311
 
     def _reset_retry_counter(self):
         if self._retry_src_id:

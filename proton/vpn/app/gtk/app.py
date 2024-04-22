@@ -181,8 +181,8 @@ class App(Gtk.Application):
             for widget_path_segment in widget_path.split("."):
                 obj = getattr(obj, widget_path_segment)
 
-            assert isinstance(obj, GObject.Object), \
-                f"{type(obj)} does not inherit from GObject.Object."
+            assert isinstance(obj, GObject.Object), (                  # nosec: B101
+                f"{type(obj)} does not inherit from GObject.Object.")  # nosec: B101
             obj.connect(signal_name, callback)
 
     @staticmethod

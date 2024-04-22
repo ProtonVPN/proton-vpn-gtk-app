@@ -28,15 +28,15 @@ from gi.repository import Atk, GLib, GObject
 from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
-from proton.vpn.session.servers import Country
+from proton.vpn.core.session.servers import Country
 from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
     SmartRoutingIcon, P2PIcon, TORIcon, UnderMaintenanceIcon
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerRow
-from proton.vpn.session.servers import LogicalServer
-from proton.vpn.session.servers import ServerFeatureEnum
+from proton.vpn.core.session.servers import LogicalServer
+from proton.vpn.core.session.servers import ServerFeatureEnum
 
 logger = logging.getLogger(__name__)
 

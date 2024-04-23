@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.3.1~rc7) unstable; urgency=low
+
+  * Ensure behavioral consistency when opening settings window across different distributions.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 23 Apr 2024 17:00:00
+
 proton-vpn-gtk-app (4.3.1~rc6) unstable; urgency=low
 
   * Update label alignment on disable kill switch widget at login.

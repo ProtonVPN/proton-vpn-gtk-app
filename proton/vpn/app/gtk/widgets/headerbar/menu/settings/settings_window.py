@@ -50,10 +50,13 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         general_settings: GeneralSettings = None,
         account_settings: AccountSettings = None,
     ):
-        super().__init__()
+        super().__init__(Gtk.WindowType.TOPLEVEL)
+        self.set_modal(True)
         self.set_title("Settings")
         self.set_default_size(600, 500)
-        self.set_modal(True)
+        # Set position is set to center on parent so that we prevent it from
+        # spawning somewhere else randomly.
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
         self._controller = controller
         self._notification_bar = notification_bar or NotificationBar()

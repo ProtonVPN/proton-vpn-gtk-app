@@ -1,3 +1,12 @@
+version: 4.3.1rc5
+time: 2024/04/22 15:00
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
+- Missed the minimum python3-proton-vpn-api-core version in build_packages.py
+---
 version: 4.3.1rc4
 time: 2024/04/22 15:00
 author: Luke Titley

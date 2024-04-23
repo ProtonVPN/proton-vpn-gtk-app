@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.3.1~rc5) unstable; urgency=low
+
+  * Missed the minimum python3-proton-vpn-api-core version in build_packages.py
+
+ -- Luke Titley <luke.titley@proton.ch>  Mon, 22 Apr 2024 15:00:00
+
 proton-vpn-gtk-app (4.3.1~rc4) unstable; urgency=low
 
   * Switch to using sessions module that is now bundled with vpn-api-core.

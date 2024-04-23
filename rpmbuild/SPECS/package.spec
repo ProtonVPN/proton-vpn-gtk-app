@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.1~rc5
-%define upstream_version 4.3.1rc5
+%define version 4.3.1~rc6
+%define upstream_version 4.3.1rc6
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Apr 23 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.3.1~rc6
+- Update label alignment on disable kill switch widget at login.
+
 * Mon Apr 22 2024 Luke Titley <luke.titley@proton.ch> 4.3.1~rc5
 - Missed the minimum python3-proton-vpn-api-core version in build_packages.py
 

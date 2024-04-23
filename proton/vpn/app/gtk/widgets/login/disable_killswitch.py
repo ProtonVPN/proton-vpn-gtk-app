@@ -39,7 +39,7 @@ class KillSwitchLabel(Gtk.Label):
         self.set_line_wrap(True)
         # set_max_width_chars is required for set_line_wrap to have effect.
         self.set_max_width_chars(20)
-        self.set_justify(Gtk.Justification.FILL)
+        self.set_justify(Gtk.Justification.LEFT)
 
 
 class DisableKillSwitchButton(Gtk.Button):

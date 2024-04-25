@@ -1,3 +1,10 @@
+proton-vpn-gtk-app (4.3.2) unstable; urgency=low
+
+  * Only initialize sentry on first enable.
+  * Forward SSL_CERT_FILE environment variable to sentry.
+
+ -- Luke Titley <luke.titley@proton.ch>  Tue, 30 Apr 2024 11:30:00
+
 proton-vpn-gtk-app (4.3.1) unstable; urgency=low
 
   * Ensure behavioral consistency when opening settings window across different distributions (Alexandru Cheltuitor)

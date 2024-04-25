@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.1
-%define upstream_version 4.3.1
+%define version 4.3.2
+%define upstream_version 4.3.2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -28,7 +28,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.23.0
+BuildRequires: python3-proton-vpn-api-core >= 0.24.0
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
@@ -36,7 +36,7 @@ BuildRequires: python3-packaging
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.23.0
+Requires: python3-proton-vpn-api-core >= 0.24.0
 Requires: python3-proton-vpn-logger
 Requires: librsvg2
 Requires: python3-packaging
@@ -68,6 +68,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Apr 30 2024 Luke Titley <luke.titley@proton.ch> 4.3.2
+- Only initialize sentry on first enable.
+- Forward SSL_CERT_FILE environment variable to sentry.
+
 * Fri Apr 19 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.3.1
 - Ensure behavioral consistency when opening settings window across different distributions (Alexandru Cheltuitor)
 - Update label alignment on disable kill switch widget at login (Alexandru Cheltuitor)

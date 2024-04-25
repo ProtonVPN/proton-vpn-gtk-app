@@ -1,3 +1,13 @@
+version: 4.3.2
+time: 2024/04/30 11:30
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
+- Only initialize sentry on first enable.
+- Forward SSL_CERT_FILE environment variable to sentry.
+---
 version: 4.3.1
 time: 2024/04/19 11:00
 author: Josep Llaneras

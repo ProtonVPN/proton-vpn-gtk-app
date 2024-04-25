@@ -87,8 +87,10 @@ class LoginWidget(Gtk.Box):
         self.login_stack.reset()
 
     def _on_disable_killswitch(self, _):
-        self._controller.get_settings().killswitch = KillSwitchSettingEnum.OFF
-        self._controller.save_settings()
+        settings = self._controller.get_settings()
+        settings.killswitch = KillSwitchSettingEnum.OFF
+        self._controller.save_settings(settings)
+
         self.disable_killswitch.set_reveal_child(False)
         self.login_stack.login_form.set_property("sensitive", True)
 

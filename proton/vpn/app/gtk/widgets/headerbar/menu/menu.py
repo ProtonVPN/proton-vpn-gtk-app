@@ -245,7 +245,6 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
                 "Successful logout",
                 category="app", subcategory="logout", event="success"
             )
-            self._controller.clear_settings()
             self.emit("user-logged-out")
         except ProtonAPINotReachable as e:  # pylint: disable=invalid-name
             logger.info(

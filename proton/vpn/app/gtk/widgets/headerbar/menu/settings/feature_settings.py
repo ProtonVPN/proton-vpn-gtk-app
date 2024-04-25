@@ -75,8 +75,9 @@ class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-a
     def killswitch(self, newvalue: int):
         """Shortcut property that sets the new `killswitch` setting and
         stores to disk."""
-        self._controller.get_settings().killswitch = newvalue
-        self._controller.save_settings()
+        settings = self._controller.get_settings()
+        settings.killswitch = newvalue
+        self._controller.save_settings(settings)
 
     def _build_main_setting(self, killswitch_state: int) -> Gtk.Switch:
         switch = Gtk.Switch()
@@ -192,8 +193,9 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     def netshield(self, newvalue: str):
         """Shortcut property that sets the new `netshield` setting and
         stores to disk."""
-        self._controller.get_settings().features.netshield = int(newvalue)
-        self._controller.save_settings(update_certificate=True)
+        settings = self._controller.get_settings()
+        settings.features.netshield = int(newvalue)
+        self._controller.save_settings(settings, update_certificate=True)
 
     @property
     def port_forwarding(self) -> str:
@@ -204,8 +206,9 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     def port_forwarding(self, newvalue: str):
         """Shortcut property that sets the new `port_forwarding` setting and
         stores to disk."""
-        self._controller.get_settings().features.port_forwarding = newvalue
-        self._controller.save_settings(update_certificate=True)
+        settings = self._controller.get_settings()
+        settings.features.port_forwarding = newvalue
+        self._controller.save_settings(settings, update_certificate=True)
 
     def build_netshield(self):
         """Builds and adds the `netshield` setting to the widget.

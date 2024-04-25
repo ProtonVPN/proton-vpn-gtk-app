@@ -108,8 +108,6 @@ class TestLogoutMenuEntry:
 
         process_gtk_events()
 
-        controller_mock.clear_settings.assert_called_once()
-
     def test_logout_menu_entry_display_overlay_widget_when_clicked(self):
         logout_future = Future()
         logout_future.set_result(None)

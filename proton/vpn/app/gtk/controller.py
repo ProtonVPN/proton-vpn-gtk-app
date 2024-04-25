@@ -67,7 +67,6 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         vpn_connector: VPNConnectorWrapper = None,
         vpn_reconnector: VPNReconnector = None,
         app_config: AppConfig = None,
-        settings: Settings = None,
         cache_handler: CacheHandler = None
     ):  # pylint: disable=too-many-arguments
         self.executor = executor
@@ -84,7 +83,6 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self.reconnector = vpn_reconnector
 
         self._app_config = app_config
-        self._settings = settings
         self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
 
     async def initialize_vpn_connector(self):
@@ -291,8 +289,9 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
     def disable_killswitch(self) -> Future:
         """Disables the kill switch and stores the change to file."""
-        self.get_settings().killswitch = KillSwitchSettingEnum.OFF
-        return self.save_settings()
+        settings = self.get_settings()
+        settings.killswitch = KillSwitchSettingEnum.OFF
+        return self.save_settings(settings)
 
     @property
     def app_configuration(self) -> AppConfig:
@@ -324,41 +323,31 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
     def get_settings(self) -> Settings:
         """Returns general settings."""
-        if not self._settings:
-            self._settings = self.executor.submit(
-                self._api.load_settings
-            ).result()
 
-        return self._settings
+        return self.executor.submit(
+            self._api.load_settings
+        ).result()
 
-    def save_settings(self, update_certificate: bool = False) -> Future:
+    def save_settings(self, settings: Settings, update_certificate: bool = False) -> Future:
         """
         Saves current settings to disk and updates the wireguard certificate
         if necessary.
         """
 
-        # If update certificate is invoked then we save and update the
-        # certificate in the same call
-        if update_certificate:
-            async def save_and_update(settings):
-                await self._api.save_settings(settings)
-                if settings.protocol == WIREGUARD_PROTOCOL:
-                    await self._api.fetch_certificate()
+        async def save_and_update(settings):
 
-            return self.executor.submit(
-                save_and_update,
-                self._settings
-            )
+            # Save the settings to disk
+            await self._api.save_settings(settings)
 
-        # Otherwise we just save as normal
+            # If update certificate is invoked then we save and update the
+            # certificate in the same call
+            if update_certificate and (settings.protocol == WIREGUARD_PROTOCOL):
+                await self._api.fetch_certificate()
+
         return self.executor.submit(
-            self._api.save_settings,
-            self._settings
+            save_and_update,
+            settings
         )
-
-    def clear_settings(self):
-        """Clear in-memory settings."""
-        self._settings = None
 
     def get_available_protocols(self) -> Optional[str]:
         """Returns an alphabetically sorted list of available protocol to use."""

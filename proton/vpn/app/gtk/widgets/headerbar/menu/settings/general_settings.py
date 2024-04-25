@@ -160,8 +160,9 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     def anonymous_crash_reports(self, newvalue: bool):
         """Shortcut property that sets the new `anonymous_crash_reports` setting and
         stores to disk."""
-        self._controller.get_settings().anonymous_crash_reports = newvalue
-        self._controller.save_settings()
+        settings = self._controller.get_settings()
+        settings.anonymous_crash_reports = newvalue
+        self._controller.save_settings(settings)
 
     def build_anonymous_crash_reports(self):
         """Builds and adds the `anonymous_crash_reports` setting to the widget."""

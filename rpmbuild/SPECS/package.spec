@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.3~rc1
-%define upstream_version 4.3.3rc1
+%define version 4.3.3~rc2
+%define upstream_version 4.3.3rc2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -28,7 +28,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.24.0
+BuildRequires: python3-proton-vpn-api-core >= 0.25.0
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
@@ -36,7 +36,7 @@ BuildRequires: python3-packaging
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.24.0
+Requires: python3-proton-vpn-api-core >= 0.25.0
 Requires: python3-proton-vpn-logger
 Requires: librsvg2
 Requires: python3-packaging
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri May 24 2024 Luke Titley <luke.titley@proton.ch> 4.3.3~rc2
+- Refactor settings.
+
 * Wed May 08 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.3.3~rc1
 - Disable protocol selection if user is connected to vpn.
 

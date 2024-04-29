@@ -1,65 +1,17 @@
-version: 4.3.1rc7
-time: 2024/04/23 17:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
+version: 4.3.1
+time: 2024/04/19 11:00
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
-- Ensure behavioral consistency when opening settings window across different distributions.
----
-version: 4.3.1rc6
-time: 2024/04/23 15:30
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Update label alignment on disable kill switch widget at login.
----
-version: 4.3.1rc5
-time: 2024/04/22 15:00
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Missed the minimum python3-proton-vpn-api-core version in build_packages.py
----
-version: 4.3.1rc4
-time: 2024/04/22 15:00
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Switch to using sessions module that is now bundled with vpn-api-core.
----
-version: 4.3.1rc3
-time: 2024/04/18 18:05
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Update wireguard certificate request when settings are changed.
----
-version: 4.3.1rc2
-time: 2024/04/18 09:20
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Add connection features to the wireguard certificate request.
----
-version: 4.3.1rc1
-time: 2024/04/16 16:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Periodically refresh certificate.
+- Ensure behavioral consistency when opening settings window across different distributions (Alexandru Cheltuitor)
+- Update label alignment on disable kill switch widget at login (Alexandru Cheltuitor)
+- Missed the minimum python3-proton-vpn-api-core version in build_packages.py (Luke Titley)
+- Switch to using sessions module that is now bundled with vpn-api-core (Luke Titley)
+- Update wireguard certificate request when settings are changed (Luke Titley)
+- Add connection features to the wireguard certificate request (Luke Titley)
+- Periodically refresh certificate (Alexandru Cheltuitor)
 ---
 version: 4.3.0
 time: 2024/04/11 14:00

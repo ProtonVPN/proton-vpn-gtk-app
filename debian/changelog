@@ -1,44 +1,14 @@
-proton-vpn-gtk-app (4.3.1~rc7) unstable; urgency=low
+proton-vpn-gtk-app (4.3.1) unstable; urgency=low
 
-  * Ensure behavioral consistency when opening settings window across different distributions.
+  * Ensure behavioral consistency when opening settings window across different distributions (Alexandru Cheltuitor)
+  * Update label alignment on disable kill switch widget at login (Alexandru Cheltuitor)
+  * Missed the minimum python3-proton-vpn-api-core version in build_packages.py (Luke Titley)
+  * Switch to using sessions module that is now bundled with vpn-api-core (Luke Titley)
+  * Update wireguard certificate request when settings are changed (Luke Titley)
+  * Add connection features to the wireguard certificate request (Luke Titley)
+  * Periodically refresh certificate (Alexandru Cheltuitor)
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 23 Apr 2024 17:00:00
-
-proton-vpn-gtk-app (4.3.1~rc6) unstable; urgency=low
-
-  * Update label alignment on disable kill switch widget at login.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 23 Apr 2024 15:30:00
-
-proton-vpn-gtk-app (4.3.1~rc5) unstable; urgency=low
-
-  * Missed the minimum python3-proton-vpn-api-core version in build_packages.py
-
- -- Luke Titley <luke.titley@proton.ch>  Mon, 22 Apr 2024 15:00:00
-
-proton-vpn-gtk-app (4.3.1~rc4) unstable; urgency=low
-
-  * Switch to using sessions module that is now bundled with vpn-api-core.
-
- -- Luke Titley <luke.titley@proton.ch>  Mon, 22 Apr 2024 15:00:00
-
-proton-vpn-gtk-app (4.3.1~rc3) unstable; urgency=low
-
-  * Update wireguard certificate request when settings are changed.
-
- -- Luke Titley <luke.titley@proton.ch>  Thu, 18 Apr 2024 18:05:00
-
-proton-vpn-gtk-app (4.3.1~rc2) unstable; urgency=low
-
-  * Add connection features to the wireguard certificate request.
-
- -- Luke Titley <luke.titley@proton.ch>  Thu, 18 Apr 2024 09:20:00
-
-proton-vpn-gtk-app (4.3.1~rc1) unstable; urgency=low
-
-  * Periodically refresh certificate.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 16 Apr 2024 16:00:00
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 19 Apr 2024 11:00:00
 
 proton-vpn-gtk-app (4.3.0) unstable; urgency=low
 

@@ -1,3 +1,7 @@
+## 4.3.1
+- Now it's possible to disable the advanced kill switch from the login screen.
+- Improved window positioning consistency across distributions.
+
 ## 4.3.0
 - We have improved our troubleshooting tools for better error investigation.
 - Bug fixes.

@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.1~rc7
-%define upstream_version 4.3.1rc7
+%define version 4.3.1
+%define upstream_version 4.3.1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,26 +68,14 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Tue Apr 23 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.3.1~rc7
-- Ensure behavioral consistency when opening settings window across different distributions.
-
-* Tue Apr 23 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.3.1~rc6
-- Update label alignment on disable kill switch widget at login.
-
-* Mon Apr 22 2024 Luke Titley <luke.titley@proton.ch> 4.3.1~rc5
-- Missed the minimum python3-proton-vpn-api-core version in build_packages.py
-
-* Mon Apr 22 2024 Luke Titley <luke.titley@proton.ch> 4.3.1~rc4
-- Switch to using sessions module that is now bundled with vpn-api-core.
-
-* Thu Apr 18 2024 Luke Titley <luke.titley@proton.ch> 4.3.1~rc3
-- Update wireguard certificate request when settings are changed.
-
-* Thu Apr 18 2024 Luke Titley <luke.titley@proton.ch> 4.3.1~rc2
-- Add connection features to the wireguard certificate request.
-
-* Tue Apr 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.3.1~rc1
-- Periodically refresh certificate.
+* Fri Apr 19 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.3.1
+- Ensure behavioral consistency when opening settings window across different distributions (Alexandru Cheltuitor)
+- Update label alignment on disable kill switch widget at login (Alexandru Cheltuitor)
+- Missed the minimum python3-proton-vpn-api-core version in build_packages.py (Luke Titley)
+- Switch to using sessions module that is now bundled with vpn-api-core (Luke Titley)
+- Update wireguard certificate request when settings are changed (Luke Titley)
+- Add connection features to the wireguard certificate request (Luke Titley)
+- Periodically refresh certificate (Alexandru Cheltuitor)
 
 * Thu Apr 11 2024 Luke Titley <luke.titley@proton.ch> 4.3.0
 - Provide the possibility to disable Kill Switch if user is logged out and Kill Switch is set to permanent (Alexandru Cheltuitor)

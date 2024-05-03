@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.2
-%define upstream_version 4.3.2
+%define version 4.3.2~rc2
+%define upstream_version 4.3.2rc2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,7 +68,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Tue Apr 30 2024 Luke Titley <luke.titley@proton.ch> 4.3.2
+* Fri May 03 2024 Luke Titley <luke.titley@proton.ch> 4.3.2~rc2
+- We no longer call UsageReporting.init to initialize UsageReporting.
+
+* Tue Apr 30 2024 Luke Titley <luke.titley@proton.ch> 4.3.2~rc1
 - Only initialize sentry on first enable.
 - Forward SSL_CERT_FILE environment variable to sentry.
 

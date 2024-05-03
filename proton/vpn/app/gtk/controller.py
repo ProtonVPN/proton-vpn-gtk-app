@@ -86,7 +86,6 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self._app_config = app_config
         self._settings = settings
         self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
-        self._api.usage_reporting.init(client_type_metadata)
 
     async def initialize_vpn_connector(self):
         """

@@ -1,4 +1,13 @@
-version: 4.3.2
+version: 4.3.2rc2
+time: 2024/05/3 16:00
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
+- We no longer call UsageReporting.init to initialize UsageReporting.
+---
+version: 4.3.2rc1
 time: 2024/04/30 11:30
 author: Luke Titley
 email: luke.titley@proton.ch

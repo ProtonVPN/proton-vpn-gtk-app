@@ -1,4 +1,10 @@
-proton-vpn-gtk-app (4.3.2) unstable; urgency=low
+proton-vpn-gtk-app (4.3.2~rc2) unstable; urgency=low
+
+  * We no longer call UsageReporting.init to initialize UsageReporting.
+
+ -- Luke Titley <luke.titley@proton.ch>  Fri, 03 May 2024 16:00:00
+
+proton-vpn-gtk-app (4.3.2~rc1) unstable; urgency=low
 
   * Only initialize sentry on first enable.
   * Forward SSL_CERT_FILE environment variable to sentry.

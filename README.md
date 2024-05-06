@@ -18,6 +18,8 @@ You can get the latest stable release from our [Proton VPN official website](htt
 
 For development purposes (within a virtual environment) see the required packages in the setup.py file, under `install_requires` and `extra_require`. As of now these packages will not be available on pypi. Also see [Virtual environment](#virtual-environment) below.
 
+At runtime, the ProtonVPN GTK app requires a graphical environment supported by GTK3, networking managed by NetworkManager and a secret service under the `org.freedesktop.secrets.service` DBUS path such as gnome-keyring. Please ensure these components are working on your machine before reporting issues.
+
 ### Virtual environment
 
 If you didn't do it yet, to be able to pip install Proton VPN components you'll

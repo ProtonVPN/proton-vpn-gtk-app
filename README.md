@@ -79,3 +79,27 @@ xvfb-run -a behave integration_tests/features
 
 ## Versioning
 Version matches format: `[major][minor][patch]`
+
+We automate the versioning of the debian and rpm files.
+All versions of the application are recorded in versions.yml.
+To bump the version, add the following text to the top of versions.yml
+
+```
+version: <latest version>
+time: <date> <time>
+author: <your name>
+email: <your email address>
+urgency: low
+stability: unstable
+description:
+- <A description of the changes this new version contains>
+---
+```
+
+Make sure you have the '---' dashes at the end of your block of text.
+You can use the previous entries as an example.
+
+Finally run `scripts/build_packages.py`. This will generate a new package.spec
+file for rpmbuild and a new changelog file for debian.
+
+That's it.

@@ -1,3 +1,12 @@
+version: 4.3.3rc1
+time: 2024/05/08 11:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Disable protocol selection if user is connected to vpn.
+---
 version: 4.3.2
 time: 2024/05/07 14:00
 author: Luke Titley

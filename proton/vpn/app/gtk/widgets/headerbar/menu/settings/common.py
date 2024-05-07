@@ -83,7 +83,7 @@ class SettingRow(Gtk.Grid):
     def build_ui(self, is_upgrade_required: bool):
         """Builds the UI depending if an upgrade is required or not."""
         if is_upgrade_required:
-            self._label.disabled = True
+            self._label.enabled = False
             self._interactive_object = UpgradePlusTag()
 
         self.attach(self._label, 0, 0, 1, 1)
@@ -114,10 +114,25 @@ class SettingRow(Gtk.Grid):
         return self._description
 
     @property
-    def overriden_by_upgrade_tag(self) -> bool:
+    def enabled(self) -> bool:
+        """Returns if the widget is enabled."""
+        return self.get_property("sensitive")
+
+    @enabled.setter
+    def enabled(self, newvalue: bool):
+        """Set if the widget should be enabled."""
+        self.set_property("sensitive", newvalue)
+
+    @property
+    def overridden_by_upgrade_tag(self) -> bool:
         """Returns if the the upgrade tag has overriden original interactive
         object."""
         return isinstance(self._interactive_object, UpgradePlusTag)
+
+    def set_tooltip(self, tooltip_text: str):
+        """Set a tooltip to this row."""
+        self.set_has_tooltip(True)
+        self.set_tooltip_text(tooltip_text)
 
 
 class UpgradePlusTag(Gtk.Button):
@@ -157,14 +172,14 @@ class SettingName(Gtk.Label):
         self.set_use_markup(True)
 
     @property
-    def disabled(self) -> bool:
-        """Returns if the label is disabled or not."""
-        return not self.get_property("sensitive")
+    def enabled(self) -> bool:
+        """Returns if the label is enabled."""
+        return self.get_property("sensitive")
 
-    @disabled.setter
-    def disabled(self, newvalue: bool):
-        """Sets if the label should be disabled or not."""
-        self.set_property("sensitive", not newvalue)
+    @enabled.setter
+    def enabled(self, newvalue: bool):
+        """Sets if the label should be enabled."""
+        self.set_property("sensitive", newvalue)
 
 
 class SettingDescription(Gtk.Label):

@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.2
-%define upstream_version 4.3.2
+%define version 4.3.3~rc1
+%define upstream_version 4.3.3rc1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed May 08 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.3.3~rc1
+- Disable protocol selection if user is connected to vpn.
+
 * Tue May 07 2024 Luke Titley <luke.titley@proton.ch> 4.3.2
 - We no longer call UsageReporting.init to initialize UsageReporting.
 - Only initialize sentry on first enable.

@@ -118,9 +118,9 @@ def test_netshield_upgrade_tag_override_interactive_object_if_plan_upgrade_is_re
     feature_settings.build_netshield()
 
     if user_tier == FREE_TIER:
-        assert feature_settings.netshield_row.overriden_by_upgrade_tag
+        assert feature_settings.netshield_row.overridden_by_upgrade_tag
     else:
-        assert not feature_settings.netshield_row.overriden_by_upgrade_tag
+        assert not feature_settings.netshield_row.overridden_by_upgrade_tag
 
 
 @pytest.mark.parametrize("is_client_config_netshield_enabled", [True, False])
@@ -264,9 +264,9 @@ def test_port_forwarding_upgrade_tag_override_interactive_object_if_plan_upgrade
     feature_settings.build_port_forwarding()
 
     if user_tier == FREE_TIER:
-        assert feature_settings.port_forwarding_row.overriden_by_upgrade_tag
+        assert feature_settings.port_forwarding_row.overridden_by_upgrade_tag
     else:
-        assert not feature_settings.port_forwarding_row.overriden_by_upgrade_tag
+        assert not feature_settings.port_forwarding_row.overridden_by_upgrade_tag
 
 
 class TestKillSwitchSetting:

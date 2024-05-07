@@ -122,6 +122,18 @@ def test_protocol_when_reconnect_message_reacts_accordingly_if_there_is_an_activ
         notification_bar_mock.show_info_message.assert_not_called()
 
 
+def test_protocol_when_connection_is_active_and_widget_is_not_interactive(mocked_controller_and_protocol):
+    controller_mock, protocol_mock = mocked_controller_and_protocol
+    notification_bar_mock = Mock()
+
+    controller_mock.is_connection_disconnected = False
+
+    connection_settings = ConnectionSettings(controller_mock, notification_bar_mock)
+    connection_settings.build_protocol()
+
+    assert not connection_settings.protocol_row.enabled
+
+
 def test_vpn_accelerator_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_vpn_accelerator):
     controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
 
@@ -189,7 +201,7 @@ def test_vpn_accelerator_when_clientconfig_dictates_the_setting_state(is_client_
 def test_vpn_accelerator_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_vpn_accelerator):
     controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
     notification_bar_mock = Mock()
-    
+
     vpn_accelerator_mock.return_value = True
     controller_mock.is_connection_active = is_connection_active
 
@@ -297,6 +309,6 @@ def test_moderate_nat_upgrade_tag_override_interactive_object_if_plan_upgrade_is
     feature_settings.build_moderate_nat()
 
     if user_tier == FREE_TIER:
-        assert feature_settings.moderate_nat_row.overriden_by_upgrade_tag
+        assert feature_settings.moderate_nat_row.overridden_by_upgrade_tag
     else:
-        assert not feature_settings.moderate_nat_row.overriden_by_upgrade_tag
+        assert not feature_settings.moderate_nat_row.overridden_by_upgrade_tag

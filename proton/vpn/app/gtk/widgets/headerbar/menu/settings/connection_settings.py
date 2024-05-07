@@ -39,6 +39,8 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
     MODERATE_NAT_DESCRIPTION = "Disables randomization of the local addresses mapping. "\
         "This can slightly reduce connection security, but should allow direct "\
         "connections for online gaming and similar purposes."
+    SWITCH_PROTOCOL_IF_CONNECTION_ACTIVE_DESCRIPTION = "Protocol selection "\
+        "is disabled while VPN is active. Disconnect to make changes."
 
     def __init__(self, controller: Controller, notification_bar: NotificationBar):
         super().__init__(self.CATEGORY_NAME)
@@ -115,6 +117,13 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         combobox.connect("changed", on_combobox_changed)
 
         self.protocol_row = SettingRow(SettingName(self.PROTOCOL_LABEL), combobox)
+
+        if not self._controller.is_connection_disconnected:
+            self.protocol_row.enabled = False
+            self.protocol_row.set_tooltip(
+                self.SWITCH_PROTOCOL_IF_CONNECTION_ACTIVE_DESCRIPTION
+            )
+
         self.pack_start(self.protocol_row, False, False, 0)
 
     def build_vpn_accelerator(self):

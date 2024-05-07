@@ -1,3 +1,6 @@
+## 4.3.2
+- We fixed some minor issues related to caching and authentication.
+
 ## 4.3.1
 - Now it's possible to disable the advanced kill switch from the login screen.
 - Improved window positioning consistency across distributions.

@@ -1,0 +1,20 @@
+# Generated with flatpak-pip-generator --checker-data --yaml --runtime=org.gnome.Sdk//45 jinja2 -o pip-resources.python-proton-vpn-connection
+name: python3-jinja2
+buildsystem: simple
+build-commands:
+  - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
+    --prefix=${FLATPAK_DEST} "jinja2" --no-build-isolation
+sources:
+  - type: file
+    url: https://files.pythonhosted.org/packages/bc/c3/f068337a370801f372f2f8f6bad74a5c140f6fda3d9de154052708dd3c65/Jinja2-3.1.2-py3-none-any.whl
+    sha256: 6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61
+    x-checker-data:
+      name: Jinja2
+      packagetype: bdist_wheel
+      type: pypi
+  - type: file
+    url: https://files.pythonhosted.org/packages/6d/7c/59a3248f411813f8ccba92a55feaac4bf360d29e2ff05ee7d8e1ef2d7dbf/MarkupSafe-2.1.3.tar.gz
+    sha256: af598ed32d6ae86f1b747b82783958b1a4ab8f617b06fe68795c7f026abbdcad
+    x-checker-data:
+      name: MarkupSafe
+      type: pypi

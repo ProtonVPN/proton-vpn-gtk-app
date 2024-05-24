@@ -1,0 +1,36 @@
+diff --git a/proton/vpn/app/gtk/widgets/main/tray_indicator.py b/proton/vpn/app/gtk/widgets/main/tray_indicator.py
+index b7797e6..1f0b782 100644
+--- a/proton/vpn/app/gtk/widgets/main/tray_indicator.py
++++ b/proton/vpn/app/gtk/widgets/main/tray_indicator.py
+@@ -75,19 +75,19 @@ class TrayIndicator:
+         see `_on_connection_disconnected` for implementation details.
+     """
+     DISCONNECTED_ICON = str(
+-        ICONS_PATH / f"state-{states.Disconnected.__name__.lower()}.svg"
++        f"com.protonvpn.www.state-{states.Disconnected.__name__.lower()}"
+     )
+     DISCONNECTED_ICON_DESCRIPTION = str(
+         f"VPN {states.Disconnected.__name__.lower()}"
+     )
+     CONNECTED_ICON = str(
+-        ICONS_PATH / f"state-{states.Connected.__name__.lower()}.svg"
++        f"com.protonvpn.www.state-{states.Connected.__name__.lower()}"
+     )
+     CONNECTED_ICON_DESCRIPTION = str(
+         f"VPN {states.Connected.__name__.lower()}"
+     )
+     ERROR_ICON = str(
+-        ICONS_PATH / f"state-{states.Error.__name__.lower()}.svg"
++        f"com.protonvpn.www.state-{states.Error.__name__.lower()}"
+     )
+     ERROR_ICON_DESCRIPTION = str(
+         f"VPN {states.Error.__name__.lower()}"
+@@ -102,7 +102,7 @@ class TrayIndicator:
+             AppIndicator = _import_app_indicator()  # pylint: disable=invalid-name
+             self._indicator = AppIndicator.Indicator.new(
+                 id="proton-vpn-app",
+-                icon_name="proton-vpn-sign",
++                icon_name="com.protonvpn.www.proton-vpn-sign",
+                 category=AppIndicator.IndicatorCategory.APPLICATION_STATUS
+             )
+             self._indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)

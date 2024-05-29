@@ -1,20 +1,13 @@
-version: 4.3.3rc2
-time: 2024/05/24 11:00
-author: Luke Titley
-email: luke.titley@proton.ch
+version: 4.4.0
+time: 2024/05/29 12:00
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
-- Refactor settings to ensure the settings file isn't created when we retrieve it.
----
-version: 4.3.3rc1
-time: 2024/05/08 11:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Disable protocol selection if user is connected to vpn.
+- Prepare wireguard release (Josep LLaneras).
+- Refactor settings to ensure the settings file isn't created when we retrieve it (Luke Titley).
+- Disable protocol selection if user is connected to vpn (Alexandru Cheltuitor).
 ---
 version: 4.3.2
 time: 2024/05/07 14:00

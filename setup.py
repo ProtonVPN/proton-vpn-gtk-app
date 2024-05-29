@@ -24,6 +24,8 @@ setup(
             "proton-keyring-linux-secretservice",
             "proton-vpn-network-manager-openvpn",
             "proton-vpn-killswitch-network-manager",
+            "proton-vpn-network-manager-wireguard",
+            "proton-vpn-killswitch-network-manager-wireguard",
             "behave",
             "pyotp",
             "pytest",

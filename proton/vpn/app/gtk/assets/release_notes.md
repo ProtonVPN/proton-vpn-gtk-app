@@ -1,3 +1,6 @@
+## 4.4.0
+- Introducing WireGuard, our new pilot VPN implementation designed to provide enhanced security. Please note that this implementation is still experimental.
+
 ## 4.3.2
 - We fixed some minor issues related to caching and authentication.
 

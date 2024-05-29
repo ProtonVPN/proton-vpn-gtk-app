@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.3.3~rc2
-%define upstream_version 4.3.3rc2
+%define version 4.4.0
+%define upstream_version 4.4.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,11 +68,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Fri May 24 2024 Luke Titley <luke.titley@proton.ch> 4.3.3~rc2
-- Refactor settings.
-
-* Wed May 08 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.3.3~rc1
-- Disable protocol selection if user is connected to vpn.
+* Wed May 29 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.0
+- Prepare wireguard release (Josep LLaneras).
+- Refactor settings to ensure the settings file isn't created when we retrieve it (Luke Titley).
+- Disable protocol selection if user is connected to vpn (Alexandru Cheltuitor).
 
 * Tue May 07 2024 Luke Titley <luke.titley@proton.ch> 4.3.2
 - We no longer call UsageReporting.init to initialize UsageReporting.

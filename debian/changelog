@@ -1,14 +1,10 @@
-proton-vpn-gtk-app (4.3.3~rc2) unstable; urgency=low
+proton-vpn-gtk-app (4.4.0) unstable; urgency=low
 
-  * Refactor settings.
+  * Prepare wireguard release (Josep LLaneras).
+  * Refactor settings to ensure the settings file isn't created when we retrieve it (Luke Titley).
+  * Disable protocol selection if user is connected to vpn (Alexandru Cheltuitor).
 
- -- Luke Titley <luke.titley@proton.ch>  Fri, 24 May 2024 11:00:00
-
-proton-vpn-gtk-app (4.3.3~rc1) unstable; urgency=low
-
-  * Disable protocol selection if user is connected to vpn.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 08 May 2024 11:00:00
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 29 May 2024 12:00:00
 
 proton-vpn-gtk-app (4.3.2) unstable; urgency=low
 

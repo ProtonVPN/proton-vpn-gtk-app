@@ -84,7 +84,7 @@ def run_main_loop(main_loop, timeout_in_ms=5000):
     main_loop.run()
 
     if timeout_occurred:
-        raise RuntimeError(f"Timeout occurred after {timeout_in_ms} seconds.")
+        raise TimeoutError(f"Timeout occurred after {timeout_in_ms} seconds.")
 
 
 class DummyThreadPoolExecutor:

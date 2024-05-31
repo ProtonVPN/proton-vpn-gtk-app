@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.4.1~rc1) unstable; urgency=low
+
+  * Fix task scheduler after suspending/resuming the computer.
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 04 Jun 2024 11:00:00
+
 proton-vpn-gtk-app (4.4.0) unstable; urgency=low
 
   * Prepare wireguard release (Josep LLaneras).

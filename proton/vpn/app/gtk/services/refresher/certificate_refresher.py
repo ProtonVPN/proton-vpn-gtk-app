@@ -23,7 +23,7 @@ from gi.repository import GObject, GLib
 
 
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
-from proton.vpn.app.gtk.utils.glib import run_after_seconds
+from proton.vpn.app.gtk.utils.glib import run_after_seconds, cancel_task
 
 from proton.vpn import logging
 from proton.vpn.core.api import ProtonVPNAPI
@@ -32,6 +32,8 @@ from proton.session.exceptions import (
 )
 
 logger = logging.getLogger(__name__)
+
+# pylint: disable=R0801
 
 
 class CertificateRefresher(GObject.Object):
@@ -43,7 +45,7 @@ class CertificateRefresher(GObject.Object):
         super().__init__()
         self._executor = executor
         self._api = proton_vpn_api
-        self._refresh_certificate_source_id: Optional[int] = None
+        self._refresh_task_id: Optional[int] = None
 
     @GObject.Signal(name="new-certificate")
     def new_certificate(self):
@@ -52,7 +54,7 @@ class CertificateRefresher(GObject.Object):
     @property
     def enabled(self):
         """Whether the refresher has already been enabled or not."""
-        return self._refresh_certificate_source_id is not None
+        return self._refresh_task_id is not None
 
     def enable(self):
         """Starts periodically refreshing the client configuration."""
@@ -102,7 +104,7 @@ class CertificateRefresher(GObject.Object):
             )
 
     def _schedule_next_certificate_refresh(self, delay_in_seconds: float):
-        self._refresh_certificate_source_id = run_after_seconds(
+        self._refresh_task_id = run_after_seconds(
             self._refresh,
             delay_seconds=delay_in_seconds
         )
@@ -116,5 +118,5 @@ class CertificateRefresher(GObject.Object):
         if not self.enable:
             return
 
-        GLib.source_remove(self._refresh_certificate_source_id)
-        self._refresh_certificate_source_id = None
+        cancel_task(self._refresh_task_id)
+        self._refresh_task_id = None

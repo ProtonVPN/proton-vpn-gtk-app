@@ -31,9 +31,11 @@ from proton.vpn import logging
 from proton.vpn.core.session.servers.logicals import ServerList
 from proton.vpn.core.api import ProtonVPNAPI
 
-from proton.vpn.app.gtk.utils.glib import run_after_seconds
+from proton.vpn.app.gtk.utils.glib import run_after_seconds, cancel_task
 
 logger = logging.getLogger(__name__)
+
+# pylint: disable=R0801
 
 
 class ServerListRefresher(GObject.Object):
@@ -48,7 +50,7 @@ class ServerListRefresher(GObject.Object):
         super().__init__()
         self._executor = executor
         self._api = proton_vpn_api
-        self._reload_servers_source_id: int = None
+        self._refresh_task_id: int = None
 
     @GObject.Signal(name="new-server-list", arg_types=(object,))
     def new_server_list(self, server_list: ServerList):
@@ -61,7 +63,7 @@ class ServerListRefresher(GObject.Object):
     @property
     def enabled(self):
         """Whether the refresher has already been enabled or not."""
-        return self._reload_servers_source_id is not None
+        return self._refresh_task_id is not None
 
     def enable(self):
         """Starts periodically refreshing the server lists/loads"""
@@ -76,9 +78,9 @@ class ServerListRefresher(GObject.Object):
 
     def disable(self):
         """Stops periodically refreshing the server list/loads."""
-        if self._reload_servers_source_id is not None:
-            GLib.source_remove(self._reload_servers_source_id)
-            self._reload_servers_source_id = None
+        if self._refresh_task_id is not None:
+            cancel_task(self._refresh_task_id)
+            self._refresh_task_id = None
             logger.info("Server list refresher disabled.")
 
     def _refresh(self):
@@ -119,7 +121,7 @@ class ServerListRefresher(GObject.Object):
             )
 
     def _schedule_next_server_list_refresh(self, delay_in_seconds: float):
-        self._reload_servers_source_id = run_after_seconds(
+        self._refresh_task_id = run_after_seconds(
             self._refresh,
             delay_seconds=delay_in_seconds
         )

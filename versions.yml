@@ -1,3 +1,12 @@
+version: 4.4.1rc1
+time: 2024/06/04 11:00
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+  - Fix task scheduler after suspending/resuming the computer.
+---
 version: 4.4.0
 time: 2024/05/29 12:00
 author: Josep Llaneras

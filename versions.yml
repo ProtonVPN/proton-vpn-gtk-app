@@ -1,3 +1,12 @@
+version: 4.4.1rc2
+time: 2024/06/06 12:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+  - Implement exponential backoff when retrying to refresh certificate.
+---
 version: 4.4.1rc1
 time: 2024/06/04 11:00
 author: Josep Llaneras

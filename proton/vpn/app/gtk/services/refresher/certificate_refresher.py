@@ -27,6 +27,8 @@ from proton.vpn.app.gtk.utils.glib import run_after_seconds, cancel_task
 
 from proton.vpn import logging
 from proton.vpn.core.api import ProtonVPNAPI
+from proton.vpn.core.session.credentials import VPNPubkeyCredentials
+from proton.vpn.app.gtk.services.refresher.backoff import generate_backoff_value
 from proton.session.exceptions import (
     ProtonAPINotReachable, ProtonAPINotAvailable,
 )
@@ -41,11 +43,13 @@ class CertificateRefresher(GObject.Object):
     Service in charge of refreshing certificate, that is used to derive
     users private keys, to establish VPN connections.
     """
+
     def __init__(self, executor: AsyncExecutor, proton_vpn_api: ProtonVPNAPI):
         super().__init__()
         self._executor = executor
         self._api = proton_vpn_api
         self._refresh_task_id: Optional[int] = None
+        self._number_of_failed_refresh_attempts = 0
 
     @GObject.Signal(name="new-certificate")
     def new_certificate(self):
@@ -89,19 +93,20 @@ class CertificateRefresher(GObject.Object):
         return future
 
     def _on_certificate_retrieved(self, future_certificate: Future):
-        next_refresh_delay = self._api.account_data\
-            .vpn_credentials.pubkey_credentials.get_refresh_interval_in_seconds()
         try:
             future_certificate.result()
             next_refresh_delay = self._api.account_data\
                 .vpn_credentials.pubkey_credentials.remaining_time_to_next_refresh
+            self._number_of_failed_refresh_attempts = 0
             self.emit("new-certificate")
         except (ProtonAPINotReachable, ProtonAPINotAvailable) as error:
             logger.warning(f"Certificate refresh failed: {error}")
-        finally:
-            self._schedule_next_certificate_refresh(
-                delay_in_seconds=next_refresh_delay
-            )
+            next_refresh_delay = self._get_next_refresh_delay()
+            self._number_of_failed_refresh_attempts += 1
+
+        self._schedule_next_certificate_refresh(
+            delay_in_seconds=next_refresh_delay
+        )
 
     def _schedule_next_certificate_refresh(self, delay_in_seconds: float):
         self._refresh_task_id = run_after_seconds(
@@ -109,8 +114,12 @@ class CertificateRefresher(GObject.Object):
             delay_seconds=delay_in_seconds
         )
 
+        logger_prefix = "Next"
+        if self._number_of_failed_refresh_attempts:
+            logger_prefix = f"Attempt {self._number_of_failed_refresh_attempts} for"
+
         logger.info(
-            "Next certificate refresh scheduled in "
+            f"{logger_prefix} certificate refresh scheduled in "
             f"{timedelta(seconds=delay_in_seconds)}"
         )
 
@@ -120,3 +129,9 @@ class CertificateRefresher(GObject.Object):
 
         cancel_task(self._refresh_task_id)
         self._refresh_task_id = None
+
+    def _get_next_refresh_delay(self):
+        return min(
+            generate_backoff_value(self._number_of_failed_refresh_attempts),
+            VPNPubkeyCredentials.get_refresh_interval_in_seconds()
+        )

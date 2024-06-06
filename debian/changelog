@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.4.1~rc2) unstable; urgency=low
+
+  * Add exponential backoff when certificate refresh fails.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 06 Jun 2024 12:00:00
+
 proton-vpn-gtk-app (4.4.1~rc1) unstable; urgency=low
 
   * Fix task scheduler after suspending/resuming the computer.

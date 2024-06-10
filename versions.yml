@@ -1,3 +1,12 @@
+version: 4.4.1rc4
+time: 2024/06/10 16:15
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+  - Only allow kill switch settings modifications when disconnected from the VPN.
+---
 version: 4.4.1rc3
 time: 2024/06/07 17:30
 author: Josep Llaneras

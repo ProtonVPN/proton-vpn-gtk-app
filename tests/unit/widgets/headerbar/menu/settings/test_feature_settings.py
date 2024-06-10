@@ -377,3 +377,17 @@ class TestKillSwitchSetting:
 
         setting.interactive_object.set_state(True)
         killswitch_mock.assert_called_once_with(True)
+
+    @pytest.mark.parametrize("is_vpn_connection_disconnected", [True, False])
+    def test_killswitch_setting_is_interactive_only_if_vpn_connection_is_disconnected(
+            self, is_vpn_connection_disconnected, mocked_controller_and_killswitch
+    ):
+        controller_mock, killswitch_mock = mocked_controller_and_killswitch
+
+        controller_mock.is_connection_disconnected = is_vpn_connection_disconnected
+
+        feature_settings = FeatureSettings(controller_mock, Mock())
+        feature_settings.build_killswitch()
+
+        # The kill switch setting should be interactive only if the VPN connection is disconnected.
+        assert feature_settings.killswitch_row.enabled is is_vpn_connection_disconnected

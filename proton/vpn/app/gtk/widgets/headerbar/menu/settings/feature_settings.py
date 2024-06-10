@@ -79,6 +79,16 @@ class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-a
         settings.killswitch = newvalue
         self._controller.save_settings(settings)
 
+    @property
+    def enabled(self) -> bool:
+        """Returns if the widget is enabled."""
+        return self.get_property("sensitive")
+
+    @enabled.setter
+    def enabled(self, newvalue: bool):
+        """Set if the widget should be enabled."""
+        self.set_property("sensitive", newvalue)
+
     def _build_main_setting(self, killswitch_state: int) -> Gtk.Switch:
         switch = Gtk.Switch()
         switch.set_state(killswitch_state)
@@ -167,6 +177,8 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         "<a href=\"https://protonvpn.com/support/port-forwarding-manual-setup/"\
         "#how-to-use-port-forwarding\">guide</a>"\
         " to set it up."
+    SWITCH_KILLSWITCH_IF_CONNECTION_ACTIVE_DESCRIPTION = "Kill switch selection "\
+        "is disabled while VPN is active. Disconnect to make changes."
 
     def __init__(self, controller: Controller, notification_bar: NotificationBar):
         super().__init__(self.CATEGORY_NAME)
@@ -257,6 +269,11 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     def build_killswitch(self):
         """Builds and adds the `killswitch` setting to the widget."""
         self.killswitch_row = KillSwitchSetting(self._controller)
+        if not self._controller.is_connection_disconnected:
+            self.killswitch_row.enabled = False
+            self.killswitch_row.set_tooltip(
+                self.SWITCH_KILLSWITCH_IF_CONNECTION_ACTIVE_DESCRIPTION
+            )
         self.pack_start(self.killswitch_row, False, False, 0)
 
     def build_port_forwarding(self):

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.4.1~rc4) unstable; urgency=low
+
+  * Only allow kill switch settings modifications when disconnected from the VPN.
+
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 10 Jun 2024 16:15:00
+
 proton-vpn-gtk-app (4.4.1~rc3) unstable; urgency=low
 
   * Log the user out on session expired error while updating certificate.

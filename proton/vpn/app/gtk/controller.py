@@ -37,7 +37,7 @@ from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonit
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 from proton.vpn.core.settings import Settings
-from proton.vpn.app.gtk.utils import semver
+from proton.vpn.app.gtk.utils import semver, glib
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
@@ -328,7 +328,9 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             self._api.load_settings
         ).result()
 
-    def save_settings(self, settings: Settings, update_certificate: bool = False) -> Future:
+    def save_settings(
+            self, settings: Settings, update_certificate: bool = False, bubble_up_errors=True
+    ) -> Future:
         """
         Saves current settings to disk and updates the wireguard certificate
         if necessary.
@@ -344,10 +346,15 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             if update_certificate and (settings.protocol == WIREGUARD_PROTOCOL):
                 await self._api.fetch_certificate()
 
-        return self.executor.submit(
+        future = self.executor.submit(
             save_and_update,
             settings
         )
+
+        if bubble_up_errors:
+            glib.bubble_up_errors(future)
+
+        return future
 
     def get_available_protocols(self) -> Optional[str]:
         """Returns an alphabetically sorted list of available protocol to use."""

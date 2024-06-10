@@ -19,6 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from concurrent.futures import Future
 from typing import Callable
 
 from gi.repository import GLib
@@ -77,3 +78,8 @@ def run_after_seconds(function, *args, delay_seconds: int, **kwargs) -> int:
 def cancel_task(task_id: int):
     """Remove task from the scheduler given its id."""
     _scheduler.cancel_task(task_id)
+
+
+def bubble_up_errors(future: Future):
+    """Makes sure that any error the future resolves to bubbles up to the GLib main loop."""
+    future.add_done_callback(lambda f: GLib.idle_add(f.result))

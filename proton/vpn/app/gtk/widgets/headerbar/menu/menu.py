@@ -87,6 +87,8 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self.append_item(Gio.MenuItem.new("Logout", "win.logout"))
         self.append_item(Gio.MenuItem.new("Quit", "win.quit"))
 
+        self._settings_window = None
+
         self._setup_actions()
 
     @property
@@ -112,6 +114,11 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
     @GObject.Signal
     def user_logged_out(self):
         """Signal emitted after a successful logout."""
+
+    def close_settings_window(self):
+        """Closes the settings window if it's open."""
+        if self._settings_window:
+            self._settings_window.close()
 
     def _setup_actions(self):
         # Add actions to Gtk.ApplicationWindow
@@ -151,12 +158,17 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         bug_dialog.destroy()
 
     def _on_settings_clicked(self,  *_):
-        settings_window = SettingsWindow(
+        self._settings_window = SettingsWindow(
             self._controller,
             self._main_window.application.tray_indicator
         )
-        settings_window.set_transient_for(self._main_window)
-        settings_window.present()
+        self._settings_window.set_transient_for(self._main_window)
+
+        def on_unrealize(_):
+            self._settings_window = None
+
+        self._settings_window.connect("unrealize", on_unrealize)
+        self._settings_window.present()
 
     def _on_release_notes_clicked(self,  *_):
         release_notes = ReleaseNotesDialog()

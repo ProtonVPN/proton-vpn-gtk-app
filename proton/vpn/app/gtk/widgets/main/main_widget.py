@@ -179,6 +179,8 @@ class MainWidget(Gtk.Overlay):
     def _display_login_widget(self):
         self._main_window.header_bar.menu.logout_enabled = False
         self._main_window.header_bar.menu.settings_enabled = False
+        # Close the settings window in case the session expires with the settings windows open.
+        self._main_window.header_bar.menu.close_settings_window()
         self._overlay_widget.hide()  # Required on session expired while loading VPN widget.
         self.active_widget = self.login_widget
         self.login_widget.reset()

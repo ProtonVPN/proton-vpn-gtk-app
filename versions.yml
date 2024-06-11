@@ -1,38 +1,14 @@
-version: 4.4.1rc4
-time: 2024/06/10 16:15
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-  - Only allow kill switch settings modifications when disconnected from the VPN.
----
-version: 4.4.1rc3
-time: 2024/06/07 17:30
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-  - Log the user out on session expired error while updating certificate.
----
-version: 4.4.1rc2
-time: 2024/06/06 12:00
+version: 4.4.1
+time: 2024/06/11 10:00
 author: Alexandru Cheltuitor
 email: alexandru.cheltuitor@proton.ch
 urgency: low
 stability: unstable
 description:
-  - Implement exponential backoff when retrying to refresh certificate.
----
-version: 4.4.1rc1
-time: 2024/06/04 11:00
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-  - Fix task scheduler after suspending/resuming the computer.
+- Only allow kill switch settings modifications when disconnected from the VPN (Josep LLaneras).
+- Log the user out on session expired error while updating certificate (Josep LLaneras).
+- Implement exponential backoff when retrying to refresh certificate (Alexandru Cheltuitor).
+- Fix task scheduler after suspending/resuming the computer (Josep LLaneras).
 ---
 version: 4.4.0
 time: 2024/05/29 12:00

@@ -1,3 +1,6 @@
+## 4.4.1
+- Includes general performance enhancements and improved handling when resuming from suspension.
+
 ## 4.4.0
 - Introducing WireGuard, our new pilot VPN implementation designed to provide enhanced security. Please note that this implementation is still experimental.
 

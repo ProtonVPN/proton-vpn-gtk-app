@@ -1,26 +1,11 @@
-proton-vpn-gtk-app (4.4.1~rc4) unstable; urgency=low
+proton-vpn-gtk-app (4.4.1) unstable; urgency=low
 
-  * Only allow kill switch settings modifications when disconnected from the VPN.
+  * Only allow kill switch settings modifications when disconnected from the VPN (Josep LLaneras).
+  * Log the user out on session expired error while updating certificate (Josep LLaneras).
+  * Implement exponential backoff when retrying to refresh certificate (Alexandru Cheltuitor).
+  * Fix task scheduler after suspending/resuming the computer (Josep LLaneras).
 
- -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 10 Jun 2024 16:15:00
-
-proton-vpn-gtk-app (4.4.1~rc3) unstable; urgency=low
-
-  * Log the user out on session expired error while updating certificate.
-
- -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 07 Jun 2024 17:30:00
-
-proton-vpn-gtk-app (4.4.1~rc2) unstable; urgency=low
-
-  * Implement exponential backoff when retrying to refresh certificate.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 06 Jun 2024 12:00:00
-
-proton-vpn-gtk-app (4.4.1~rc1) unstable; urgency=low
-
-  * Fix task scheduler after suspending/resuming the computer.
-
- -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 04 Jun 2024 11:00:00
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 11 Jun 2024 10:00:00
 
 proton-vpn-gtk-app (4.4.0) unstable; urgency=low
 

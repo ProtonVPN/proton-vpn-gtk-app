@@ -7,7 +7,7 @@ It reads versions.yml.
 '''
 import os
 import yaml
-import versions
+import devtools.versions as versions
 
 # The root of this repo
 ROOT = os.path.dirname(

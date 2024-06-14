@@ -1,3 +1,7 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_DEPTH: 1
+
 include:
  - project: 'ProtonVPN/Linux/integration/ci-libraries'
    ref: develop

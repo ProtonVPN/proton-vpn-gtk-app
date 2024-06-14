@@ -10,6 +10,14 @@ For contribution policy see [CONTRIBUTING](CONTRIBUTING.md).
 
 The [Proton VPN](https://protonvpn.com) GTK app is intended for every Proton VPN service user, it provides full access to all functionalities available to authenticated users, with the user signup process handled on the website.
 
+### Cloning
+
+Once you've cloned this repo, run:
+
+> git submodule update --init --recursive
+
+to clone the necessary submodule.
+
 ### Installation
 
 You can get the latest stable release from our [Proton VPN official website](https://protonvpn.com/download-linux).

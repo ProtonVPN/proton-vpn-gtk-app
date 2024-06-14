@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
 from setuptools import setup, find_namespace_packages
-import version
+import re
+
+VERSIONS = 'versions.yml'
+VERSION = re.search(r'version: (\S+)', open(VERSIONS).readline()).group(1)
 
 setup(
     name="proton-vpn-gtk-app",
-    version=version.read_from_versions(),
+    version=VERSION,
     description="Proton VPN GTK app",
     author="Proton AG",
     author_email="contact@protonmail.com",
@@ -39,7 +42,7 @@ setup(
     },
     packages=find_namespace_packages(include=["proton.vpn.app.*"]),
     include_package_data=True,
-    data_files=[('.', ['version.py', 'versions.yml'])],
+    data_files=[('.', ['versions.yml'])],
     python_requires=">=3.8",
     license="GPLv3",
     platforms="OS Independent",

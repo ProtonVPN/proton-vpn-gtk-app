@@ -1,0 +1,3 @@
+[submodule "scripts/devtools"]
+	path = scripts/devtools
+	url = ../integration/devtools.git

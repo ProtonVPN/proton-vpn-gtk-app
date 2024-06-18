@@ -21,12 +21,18 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import TYPE_CHECKING, Optional
 from gi.repository import Gtk
+from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, SettingRow, SettingName, SettingDescription
 )
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access import \
+    EarlyAccessSwitch
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator
+
+
+logger = logging.getLogger(__name__)
 
 
 class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
@@ -45,10 +51,12 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     ANONYMOUS_CRASH_REPORTS_DESCRIPTION = "Crash reports help us fix bugs, detect firewalls, "\
         "and avoid VPN blocks.\n\nThese statistics do not contain your IP address, and they "\
         "cannot be used to identify you. We'll never share them with third parties."
+    BETA_LABEL = "Beta access"
+    BETA_DESCRIPTION = "Get early access and help us test new versions of Proton VPN."
 
     def __init__(
         self, controller: Controller,
-        tray_indicator: Optional["TrayIndicator"] = None
+        tray_indicator: Optional["TrayIndicator"] = None,
     ):
         super().__init__(self.CATEGORY_NAME)
         self._controller = controller
@@ -57,6 +65,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         self.connect_at_app_startup_row = None
         self.tray_pinned_servers_row = None
         self.anonymous_crash_reports_row = None
+        self.beta_upgrade_row = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
@@ -64,6 +73,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         self.build_connect_at_app_startup()
         self.build_tray_pinned_servers()
         self.build_anonymous_crash_reports()
+        self.build_beta_upgrade()
 
     @property
     def connect_at_app_startup(self) -> str:
@@ -180,3 +190,37 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         switch.set_state(self.anonymous_crash_reports)
         switch.connect("state-set", on_switch_state)
         self.pack_start(self.anonymous_crash_reports_row, False, False, 0)
+
+    def build_beta_upgrade(self):
+        """Builds and adds the `Early Access` setting to the widget."""
+        def on_switch_state(_switch: EarlyAccessSwitch, new_value: bool):
+            if new_value == _switch.early_access_enabled:
+                return
+
+            logger.info(
+                f"Early access {'enabled' if new_value else 'disabled'}.",
+                category="ui",
+                subcategory="early_access",
+                event="toggle"
+            )
+
+            if new_value:
+                _switch.enable_early_access()
+            else:
+                _switch.disable_early_access()
+
+        switch = EarlyAccessSwitch(self._controller)
+
+        if not switch.can_early_access_be_displayed():
+            return
+
+        self.beta_upgrade_row = SettingRow(
+            SettingName(self.BETA_LABEL),
+            switch,
+            SettingDescription(self.BETA_DESCRIPTION)
+        )
+
+        switch.set_initial_state()
+
+        switch.connect("state-set", on_switch_state)
+        self.pack_start(self.beta_upgrade_row, False, False, 0)

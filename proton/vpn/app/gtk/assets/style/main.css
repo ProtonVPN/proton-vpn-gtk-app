@@ -37,7 +37,8 @@ label.success {
 }
 
 #bug-report-content,
-#bug-report-dialog buttonbox {
+#bug-report-dialog buttonbox,
+#early-access-dialog buttonbox {
     margin: 20px;
 }
 

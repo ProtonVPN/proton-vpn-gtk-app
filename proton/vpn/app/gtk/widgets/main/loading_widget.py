@@ -28,9 +28,9 @@ class Spinner(Gtk.Spinner):
     """Spinner with some default configurations.
     Upon being shown it automatically starts spinning.
     """
-    def __init__(self):
+    def __init__(self, size: int = 50):
         super().__init__()
-        self.set_property("height-request", 50)
+        self.set_property("height-request", size)
 
         self.connect("show", self._on_show_spinner)
 

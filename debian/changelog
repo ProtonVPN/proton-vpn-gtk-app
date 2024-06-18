@@ -1,6 +1,12 @@
+proton-vpn-gtk-app (4.4.2~rc2) unstable; urgency=low
+
+  * Add early access toggle to settings window.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 26 Jun 2024 10:00:00
+
 proton-vpn-gtk-app (4.4.2~rc1) unstable; urgency=low
 
-  * Move the scripts for generating the changelogs into a seperate repo.
+  * Move the scripts for generating the changelogs into a separate repo.
 
  -- Luke Titley <luke.titley@proton.ch>  Tue, 11 Jun 2024 10:00:00
 

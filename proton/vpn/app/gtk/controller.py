@@ -18,6 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 from concurrent.futures import Future
+import subprocess  # nosec B404
 from importlib import metadata
 from types import TracebackType
 
@@ -374,3 +375,14 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
                                    Optional[TracebackType]]):
         """Sends the error to Sentry."""
         self._api.usage_reporting.report_error(error)
+
+    def run_subprocess(self, commands: list, shell: bool = False) -> Future:
+        """Run asynchronously subprocess command so it does not block UI."""
+        return self.executor.submit(
+            subprocess.run,
+            commands,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            shell=shell  # nosec B604
+        )

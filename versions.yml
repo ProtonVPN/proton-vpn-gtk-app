@@ -1,3 +1,12 @@
+version: 4.4.2rc2
+time: 2024/06/26 10:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Add early access toggle to settings window.
+---
 version: 4.4.2rc1
 time: 2024/06/11 10:00
 author: Luke Titley
@@ -5,7 +14,7 @@ email: luke.titley@proton.ch
 urgency: low
 stability: unstable
 description:
-- Move the scripts for generating the changelogs into a seperate repo.
+- Move the scripts for generating the changelogs into a separate repo.
 ---
 version: 4.4.1
 time: 2024/06/11 10:00

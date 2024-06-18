@@ -19,7 +19,10 @@ setup(
         "pygobject",
         "pycairo",
         "dbus-python",
-        "packaging"
+        "packaging",
+        "distro",
+        "requests",
+        "proton-core"
     ],
     extras_require={
         "development": [

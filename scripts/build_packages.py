@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 '''
 This program generates a deb changelog file, and rpm spec file and a
 CHANGELOG.md file for this project.

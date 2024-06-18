@@ -41,8 +41,6 @@ setup(
         ]
     },
     packages=find_namespace_packages(include=["proton.vpn.app.*"]),
-    include_package_data=True,
-    data_files=[('.', ['versions.yml'])],
     python_requires=">=3.8",
     license="GPLv3",
     platforms="OS Independent",

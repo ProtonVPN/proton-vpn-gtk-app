@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.1
-%define upstream_version 4.4.1
+%define version 4.4.2~rc1
+%define upstream_version 4.4.2rc1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Jun 11 2024 Luke Titley <luke.titley@proton.ch> 4.4.2~rc1
+- Move the scripts for generating the changelogs into a seperate repo.
+
 * Tue Jun 11 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.1
 - Only allow kill switch settings modifications when disconnected from the VPN (Josep LLaneras).
 - Log the user out on session expired error while updating certificate (Josep LLaneras).

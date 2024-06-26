@@ -111,13 +111,21 @@ class EarlyAccessDialog(Gtk.Dialog):
     """
     LOADING_VIEW = "loading"
     STATUS_VIEW = "status"
+    TITLE = "Beta Access"
 
     def __init__(self):
         super().__init__()
         self.set_name("early-access-dialog")
-        self.set_title("Early Access")
         self.set_default_size(350, 200)
         self.set_modal(True)
+
+        # We have to add a headerbar because we want to hide the close button,
+        # which we don't have control otherwise.
+        headerbar = Gtk.HeaderBar()
+        headerbar.set_title(self.TITLE)
+        headerbar.set_show_close_button(False)
+        headerbar.set_decoration_layout("menu:")
+        self.set_titlebar(headerbar)
 
         self._confirmation_button = self.add_button("_Close", Gtk.ResponseType.CLOSE)
         self._spinner = Spinner(70)

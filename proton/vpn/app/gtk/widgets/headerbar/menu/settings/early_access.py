@@ -217,7 +217,7 @@ class EarlyAccessSwitch(Gtk.Switch):
 
     def disable_early_access(self) -> None:
         """Disables early access."""
-        self._dialog.display_loading_view("Disabling early access...")
+        self._dialog.display_loading_view("Disabling Beta access...")
         self._process(
             self.distro_manager.stable_url,
             self.distro_manager.beta_package_name
@@ -225,7 +225,7 @@ class EarlyAccessSwitch(Gtk.Switch):
 
     def enable_early_access(self) -> None:
         """Enables early access."""
-        self._dialog.display_loading_view("Enabling early access...")
+        self._dialog.display_loading_view("Enabling Beta access...")
         self._process(
             self.distro_manager.beta_url,
             self.distro_manager.stable_package_name,
@@ -239,7 +239,7 @@ class EarlyAccessSwitch(Gtk.Switch):
             except requests.exceptions.BaseHTTPError:
                 self._restore_switch_to_previous_state()
                 self._dialog.display_status_view(
-                    "Unable to download package from repositories"
+                    "Unable to download package from repositories."
                 )
             else:
                 package_to_install = url.split("/")[-1]
@@ -302,7 +302,7 @@ class EarlyAccessSwitch(Gtk.Switch):
                 self._restore_switch_to_previous_state()
                 self._dialog.display_status_view(
                     "It was not possible to "
-                    f"{'enable' if early_access_enabled else 'disable'} access.\n"
+                    f"{'enable' if early_access_enabled else 'disable'} Beta access.\n"
                 )
                 return
 
@@ -313,7 +313,7 @@ class EarlyAccessSwitch(Gtk.Switch):
                 event="run"
             )
             self._dialog.display_status_view(
-                f"Early access has been {'enabled' if early_access_enabled else 'disabled'}.\n"
+                f"Beta access has been {'enabled' if early_access_enabled else 'disabled'}.\n"
                 "Please restart the app for changes to take effect."
             )
         uninstall_existing_repo_command = \

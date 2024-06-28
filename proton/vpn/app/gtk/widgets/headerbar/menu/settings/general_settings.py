@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import TYPE_CHECKING, Optional
+import os
 from gi.repository import Gtk
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
@@ -73,7 +74,8 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         self.build_connect_at_app_startup()
         self.build_tray_pinned_servers()
         self.build_anonymous_crash_reports()
-        self.build_beta_upgrade()
+        if os.environ.get("PROTON_VPN_EARLY_RELEASE_SWITCH"):
+            self.build_beta_upgrade()
 
     @property
     def connect_at_app_startup(self) -> str:

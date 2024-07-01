@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import Callable, Optional
 
-from gi.repository import GObject, Gtk, Gdk
+from gi.repository import GObject, Gtk, Gdk, GLib
 
 from proton.vpn import logging
 
@@ -59,6 +59,8 @@ class App(Gtk.Application):
         self.window = None
         self.tray_indicator = None
         self._signal_connect_queue = []
+        self._start_minimized = False
+        self.add_options()
 
     def do_startup(self):  # pylint: disable=arguments-differ
         """Default GTK method.
@@ -102,6 +104,23 @@ class App(Gtk.Application):
         self.window.present()
         self.emit("app-ready")
 
+    def do_handle_local_options(self, options: GLib.VariantDict): # pylint: disable=arguments-differ
+        """
+        Handles the options defined in add_options
+        Returns:
+            Any negative number: Start as usual
+            Zero: Stop without error
+            Any positive number: Stop with the number as error code
+        """
+        if options.contains("version"):
+            print(self._controller.app_version)
+            return 0
+
+        if options.contains("start-minimized"):
+            self._start_minimized = True
+
+        return -1
+
     @property
     def error_dialog(self) -> Gtk.MessageDialog:
         """
@@ -113,6 +132,8 @@ class App(Gtk.Application):
     @GObject.Signal(name="app-ready")
     def app_ready(self):
         """Signal emitted when the app is ready for interaction."""
+        if self._start_minimized and (self.tray_indicator is not None):
+            self.window.hide()
 
     def quit_safely(self):
         """Quits the app safely by clicking on the quit entry in the header bar menu."""
@@ -196,3 +217,21 @@ class App(Gtk.Application):
         except TrayIndicatorNotSupported as error:
             logger.info(f"{error}")
             return None
+
+    def add_options(self):
+        """Adds the --start-minimized and --version command line options"""
+        self.add_main_option(
+            "start-minimized",
+            0,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            "Start minimized in the system tray"
+        )
+
+        self.add_main_option(
+            "version",
+            ord('v'),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            "Display the application's version"
+        )

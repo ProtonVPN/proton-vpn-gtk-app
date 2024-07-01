@@ -162,7 +162,7 @@ class MainWindow(Gtk.ApplicationWindow):
         )
 
     def quit(self):
-        """Closes the main window, which quites the app."""
+        """Closes the main window, which quits the app."""
         if self._close_window_handler_id:
             self.disconnect(self._close_window_handler_id)
 

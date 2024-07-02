@@ -172,6 +172,9 @@ class EarlyAccessSwitch(Gtk.Switch):
     uninstall and installing packages.
     """
     SUPPORTED_DISTRO_MANAGERS = [FEDORA_MANAGER, DEBIAN_MANAGER]
+    DISABLE_BETA_ACCESS_MESSAGE = "Disabling Beta access..."
+    ENABLE_BETA_ACCESS_MESSAGE = "Enabling Beta access..."
+    UNABLE_TO_DOWNLOAD_REPO_PACKAGE_MESSAGE = "Unable to download package from repository."
 
     def __init__(
         self, controller: Controller,
@@ -225,7 +228,7 @@ class EarlyAccessSwitch(Gtk.Switch):
 
     def disable_early_access(self) -> None:
         """Disables early access."""
-        self._dialog.display_loading_view("Disabling Beta access...")
+        self._dialog.display_loading_view(self.DISABLE_BETA_ACCESS_MESSAGE)
         self._process(
             self.distro_manager.stable_url,
             self.distro_manager.beta_package_name
@@ -233,7 +236,7 @@ class EarlyAccessSwitch(Gtk.Switch):
 
     def enable_early_access(self) -> None:
         """Enables early access."""
-        self._dialog.display_loading_view("Enabling Beta access...")
+        self._dialog.display_loading_view(self.ENABLE_BETA_ACCESS_MESSAGE)
         self._process(
             self.distro_manager.beta_url,
             self.distro_manager.stable_package_name,
@@ -244,10 +247,10 @@ class EarlyAccessSwitch(Gtk.Switch):
         def _on_finish_download_release_package(_future: Future):
             try:
                 _future.result()
-            except requests.exceptions.BaseHTTPError:
+            except requests.exceptions.RequestException:
                 self._restore_switch_to_previous_state()
                 self._dialog.display_status_view(
-                    "Unable to download package from repositories."
+                    self.UNABLE_TO_DOWNLOAD_REPO_PACKAGE_MESSAGE
                 )
             else:
                 package_to_install = url.split("/")[-1]

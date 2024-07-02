@@ -1,3 +1,12 @@
+version: 4.4.2rc3
+time: 2024/07/02 10:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- When early access is toggled, ensure that repo package can be downloaded, otherwise display error message.
+---
 version: 4.4.2rc2
 time: 2024/06/26 10:00
 author: Alexandru Cheltuitor

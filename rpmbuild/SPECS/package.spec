@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.2~rc2
-%define upstream_version 4.4.2rc2
+%define version 4.4.2~rc3
+%define upstream_version 4.4.2rc3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Jul 02 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.2~rc3
+- When early access is toggled, ensure that repo package can be downloaded, otherwise display error message.
+
 * Wed Jun 26 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.2~rc2
 - Add early access toggle to settings window.
 

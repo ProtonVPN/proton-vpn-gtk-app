@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.4.2~rc3) unstable; urgency=low
+
+  * When early access is toggled, ensure that repo package can be downloaded, otherwise display error message.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 02 Jul 2024 10:00:00
+
 proton-vpn-gtk-app (4.4.2~rc2) unstable; urgency=low
 
   * Add early access toggle to settings window.

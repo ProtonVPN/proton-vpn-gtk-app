@@ -138,11 +138,6 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
                     f"{RECONNECT_MESSAGE}"
                 )
 
-        if not self._controller.vpn_data_refresher.client_config.feature_flags.vpn_accelerator:
-            if self.vpn_accelerator:
-                self.vpn_accelerator = False
-            return
-
         switch = Gtk.Switch()
 
         self.vpn_accelerator_row = SettingRow(
@@ -163,11 +158,6 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
                 self._notification_bar.show_info_message(
                     f"{RECONNECT_MESSAGE}"
                 )
-
-        if not self._controller.vpn_data_refresher.client_config.feature_flags.moderate_nat:
-            if self.moderate_nat:
-                self.moderate_nat = False
-            return
 
         switch = Gtk.Switch()
 

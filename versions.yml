@@ -1,3 +1,12 @@
+version: 4.4.2rc4
+time: 2024/07/10 12:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Implement and refresh feature flags.
+---
 version: 4.4.2rc3
 time: 2024/07/02 10:00
 author: Alexandru Cheltuitor

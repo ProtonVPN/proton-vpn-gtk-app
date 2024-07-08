@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.4.2~rc4) unstable; urgency=low
+
+  * Implement and refresh feature flags.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 10 Jul 2024 12:00:00
+
 proton-vpn-gtk-app (4.4.2~rc3) unstable; urgency=low
 
   * When early access is toggled, ensure that repo package can be downloaded, otherwise display error message.

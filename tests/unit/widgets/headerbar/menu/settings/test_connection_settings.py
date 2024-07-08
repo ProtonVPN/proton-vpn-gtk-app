@@ -173,30 +173,6 @@ def test_vpn_accelerator_when_switching_switch_state_and_ensure_changes_are_save
     controller_mock.save_settings.assert_called_once()
 
 
-@pytest.mark.parametrize("is_client_config_vpn_accelerator_enabled", [True, False])
-def test_vpn_accelerator_when_clientconfig_dictates_the_setting_state(is_client_config_vpn_accelerator_enabled, mocked_controller_and_vpn_accelerator):
-    """The endpoint /clientconfig lets each client know if certain features are supported by the servers of not and thus should be respected.
-    If a feature is disabled then we shouldn't be passing it to the servers."""
-
-    controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
-
-    feature_flag_vpn_accelerator_mock = PropertyMock(return_value=is_client_config_vpn_accelerator_enabled)
-    type(controller_mock.vpn_data_refresher.client_config.feature_flags).vpn_accelerator = feature_flag_vpn_accelerator_mock
-
-    vpn_accelerator_mock.return_value = True
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_vpn_accelerator()
-
-    if is_client_config_vpn_accelerator_enabled:
-        vpn_accelerator_mock.call_count == 1
-        assert connection_settings.vpn_accelerator_row
-    else:
-        assert vpn_accelerator_mock.call_count == 2
-        assert vpn_accelerator_mock.call_args_list[1].args[0] == is_client_config_vpn_accelerator_enabled
-        assert not connection_settings.vpn_accelerator_row
-
-
 @pytest.mark.parametrize("is_connection_active", [False, True])    
 def test_vpn_accelerator_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_vpn_accelerator):
     controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
@@ -253,30 +229,6 @@ def test_moderate_nat_when_switching_switch_state_and_ensure_changes_are_saved(m
 
     moderate_nat_mock.assert_called_once_with(not moderate_nat_enabled)
     controller_mock.save_settings.assert_called_once()
-
-
-@pytest.mark.parametrize("is_client_config_moderate_nat_enabled", [True, False])
-def test_moderate_nat_when_clientconfig_dictates_the_setting_state(is_client_config_moderate_nat_enabled, mocked_controller_and_moderate_nat):
-    """The endpoint /clientconfig lets each client know if certain features are supported by the servers of not and thus should be respected.
-    If a feature is disabled then we shouldn't be passing it to the servers."""
-
-    controller_mock, moderate_nat_mock = mocked_controller_and_moderate_nat
-
-    moderate_nat_mock.return_value = True
-
-    feature_flag_moderate_nat_mock = PropertyMock(return_value=is_client_config_moderate_nat_enabled)
-    type(controller_mock.vpn_data_refresher.client_config.feature_flags).moderate_nat = feature_flag_moderate_nat_mock
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_moderate_nat()
-
-    if is_client_config_moderate_nat_enabled:
-        moderate_nat_mock.call_count == 1
-        assert connection_settings.moderate_nat_row
-    else:
-        assert moderate_nat_mock.call_count == 2
-        assert moderate_nat_mock.call_args_list[1].args[0] == is_client_config_moderate_nat_enabled
-        assert not connection_settings.moderate_nat_row
 
 
 @pytest.mark.parametrize("is_connection_active", [False, True])    

@@ -79,6 +79,7 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
     )
     controller_mock.user_tier = PLUS_TIER
     api_mock.client_config.seconds_until_expiration = 10
+    api_mock.feature_flags.seconds_until_expiration = 10
 
     vpn_widget = VPNWidget(controller=controller_mock, main_window=Mock(), overlay_widget=Mock())
     with patch.object(vpn_widget, "display"):

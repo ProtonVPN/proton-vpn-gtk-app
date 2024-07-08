@@ -31,7 +31,7 @@ from typing import TYPE_CHECKING, List
 from gi.repository import Gtk, GLib
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
-from proton.vpn.core.session import BugReportForm
+from proton.vpn.core.session.dataclasses import BugReportForm
 from proton.vpn.app.gtk import __version__
 from proton.vpn import logging
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor

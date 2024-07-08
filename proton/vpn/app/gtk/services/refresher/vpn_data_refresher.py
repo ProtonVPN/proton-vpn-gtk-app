@@ -28,18 +28,20 @@ from gi.repository import GLib, GObject
 
 from proton.vpn import logging
 from proton.vpn.core.session.client_config import ClientConfig
+from proton.vpn.core.session import FeatureFlags
 from proton.vpn.core.session.servers.logicals import ServerList
 from proton.vpn.core.api import ProtonVPNAPI
 
 from proton.vpn.app.gtk.services.refresher.client_config_refresher import ClientConfigRefresher
 from proton.vpn.app.gtk.services.refresher.server_list_refresher import ServerListRefresher
 from proton.vpn.app.gtk.services.refresher.certificate_refresher import CertificateRefresher
+from proton.vpn.app.gtk.services.refresher.feature_flags_refresher import FeatureFlagsRefresher
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 
 logger = logging.getLogger(__name__)
 
 
-class VPNDataRefresher(GObject.Object):
+class VPNDataRefresher(GObject.Object):  # pylint: disable=too-many-instance-attributes
     """
     Service in charge of:
         - retrieving the required VPN data from Proton's REST API
@@ -53,7 +55,8 @@ class VPNDataRefresher(GObject.Object):
         proton_vpn_api: ProtonVPNAPI,
         client_config_refresher: ClientConfigRefresher = None,
         server_list_refresher: ServerListRefresher = None,
-        certificate_refresher: CertificateRefresher = None
+        certificate_refresher: CertificateRefresher = None,
+        feature_flags_refresher: FeatureFlagsRefresher = None
     ):
         super().__init__()
         self._executor = executor
@@ -70,12 +73,17 @@ class VPNDataRefresher(GObject.Object):
             executor,
             proton_vpn_api
         )
+        self._feature_flags_refresher = feature_flags_refresher or FeatureFlagsRefresher(
+            executor,
+            proton_vpn_api
+        )
 
         self._signal_refresher_map = {
             "new-client-config": self._client_config_refresher,
             "new-server-list": self._server_list_refresher,
             "new-server-loads": self._server_list_refresher,
-            "new-certificate": self._certificate_refresher
+            "new-certificate": self._certificate_refresher,
+            "new-feature-flags": self._feature_flags_refresher,
         }
         self._signal_handler_ids: Dict[int, GObject.Object] = {}
 
@@ -90,6 +98,11 @@ class VPNDataRefresher(GObject.Object):
     def client_config(self) -> ClientConfig:
         """Returns the VPN client configuration."""
         return self._api.client_config
+
+    @property
+    def feature_flags(self) -> FeatureFlags:
+        """Returns VPN features."""
+        return self._api.feature_flags
 
     @GObject.Signal(name="vpn-data-ready", arg_types=(object, object))
     def vpn_data_ready(self, server_list: ServerList, client_config: ClientConfig):
@@ -147,6 +160,7 @@ class VPNDataRefresher(GObject.Object):
         self._client_config_refresher.disable()
         self._server_list_refresher.disable()
         self._certificate_refresher.disable()
+        self._feature_flags_refresher.disable()
         logger.info(
             "VPN data refresher service disabled.",
             category="app", subcategory="vpn_data_refresher", event="disable"
@@ -161,6 +175,7 @@ class VPNDataRefresher(GObject.Object):
         self._client_config_refresher.enable()
         self._server_list_refresher.enable()
         self._certificate_refresher.enable()
+        self._feature_flags_refresher.enable()
 
     def _refresh_vpn_session_and_then_enable(self):
         logger.warning("Reloading VPN session...")

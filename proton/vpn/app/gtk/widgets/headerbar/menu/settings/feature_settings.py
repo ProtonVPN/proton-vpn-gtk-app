@@ -238,11 +238,6 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
                     f"{RECONNECT_MESSAGE}"
                 )
 
-        if not self._controller.vpn_data_refresher.client_config.feature_flags.netshield:
-            if self.netshield:
-                self.netshield = NetShield.NO_BLOCK.value
-            return
-
         netshield_options = [
             (str(NetShield.NO_BLOCK.value), "Off"),
             (str(NetShield.BLOCK_MALICIOUS_URL.value), "Block Malware"),
@@ -292,11 +287,6 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
                     f"{RECONNECT_MESSAGE}"
                 )
             edit_description_based_on_setting(new_value)
-
-        if not self._controller.vpn_data_refresher.client_config.feature_flags.port_forwarding:
-            if self.port_forwarding:
-                self.port_forwarding = False
-            return
 
         switch = Gtk.Switch()
         description = SettingDescription(self.PORT_FORWARDING_DESCRIPTION)

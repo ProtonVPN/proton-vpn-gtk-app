@@ -32,6 +32,7 @@ from proton.vpn.core.session_holder import ClientTypeMetadata
 from proton.vpn.core.connection import VPNConnectorWrapper
 from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.core.session.servers import LogicalServer
+from proton.vpn.core.session.session import FeatureFlags
 
 from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
@@ -260,6 +261,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     def is_connection_disconnected(self) -> bool:
         """Returns whether the current connection is in disconnected state or not."""
         return isinstance(self._connector.current_state, states.Disconnected)
+
+    @property
+    def feature_flags(self) -> FeatureFlags:
+        """Returns object which specifies which features are to be enabled or not."""
+        return self.vpn_data_refresher.feature_flags
 
     def submit_bug_report(self, bug_report: BugReportForm) -> Future:
         """Submits an issue report.

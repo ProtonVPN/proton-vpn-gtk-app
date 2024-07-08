@@ -123,28 +123,6 @@ def test_netshield_upgrade_tag_override_interactive_object_if_plan_upgrade_is_re
         assert not feature_settings.netshield_row.overridden_by_upgrade_tag
 
 
-@pytest.mark.parametrize("is_client_config_netshield_enabled", [True, False])
-def test_netshield_when_clientconfig_dictates_the_setting_state(is_client_config_netshield_enabled, mocked_controller_and_netshield):
-    """The endpoint /clientconfig lets each client know if certain features are supported by the servers of not and thus should be respected.
-    If a feature is disabled then we shouldn't be passing it to the servers."""
-    controller_mock, netshield_mock = mocked_controller_and_netshield
-
-    client_config_property_mock = PropertyMock(return_value=is_client_config_netshield_enabled)
-    type(controller_mock.vpn_data_refresher.client_config.feature_flags).netshield = client_config_property_mock
-
-    netshield_mock = PropertyMock(return_value=NetShield.BLOCK_MALICIOUS_URL.value)
-    type(controller_mock.get_settings.return_value.features).netshield = netshield_mock
-
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_netshield()
-
-    if is_client_config_netshield_enabled:
-        netshield_mock.call_count == 1
-        assert feature_settings.netshield_row
-    else:
-        assert netshield_mock.call_args_list[1].args[0] == NetShield.NO_BLOCK.value
-        assert not feature_settings.netshield_row
-
 def test_port_forwarding_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_port_forwarding):
     controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
 
@@ -212,29 +190,6 @@ def test_port_forwarding_when_switching_switch_state_and_description_is_updated(
         assert feature_settings.port_forwarding_row.description.get_label() != feature_settings.PORT_FORWARDING_DESCRIPTION
     else:
         assert feature_settings.port_forwarding_row.description.get_label() == feature_settings.PORT_FORWARDING_DESCRIPTION
-
-@pytest.mark.parametrize("is_client_config_port_forwarding_enabled", [True, False])
-def test_port_forwarding_when_clientconfig_dictates_the_setting_state(is_client_config_port_forwarding_enabled, mocked_controller_and_port_forwarding):
-    """The endpoint /clientconfig lets each client know if certain features are supported by the servers of not and thus should be respected.
-    If a feature is disabled then we shouldn't be passing it to the servers."""
-
-    controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
-
-    feature_flag_port_forwarding_mock = PropertyMock(return_value=is_client_config_port_forwarding_enabled)
-    type(controller_mock.vpn_data_refresher.client_config.feature_flags).port_forwarding = feature_flag_port_forwarding_mock
-
-    port_forwarding_mock = PropertyMock(return_value=True)
-    type(controller_mock.get_settings.return_value.features).port_forwarding = port_forwarding_mock
-
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_port_forwarding()
-
-    if is_client_config_port_forwarding_enabled:
-        port_forwarding_mock.call_count == 1
-        assert feature_settings.port_forwarding_row
-    else:
-        assert port_forwarding_mock.call_args_list[1].args[0] == is_client_config_port_forwarding_enabled
-        assert not feature_settings.port_forwarding_row
 
 @pytest.mark.parametrize("is_connection_active", [False, True])    
 def test_port_forwarding_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_port_forwarding):

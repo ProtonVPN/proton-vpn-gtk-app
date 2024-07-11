@@ -30,7 +30,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.serverlist.country import CountryRow
-from proton.vpn.core.session.servers import Country, LogicalServer, ServerList
+from proton.vpn.session.servers import Country, LogicalServer, ServerList
 from proton.vpn import logging
 
 

@@ -21,9 +21,9 @@ from unittest.mock import Mock, patch
 from threading import Event
 
 import pytest
-from proton.vpn.core.session.client_config import ClientConfig
+from proton.vpn.session.client_config import ClientConfig
 
-from proton.vpn.core.session.servers import ServerList
+from proton.vpn.session.servers import ServerList
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget

@@ -20,7 +20,7 @@ from concurrent.futures import Future
 from unittest.mock import Mock
 
 import pytest
-from proton.vpn.core.session.dataclasses import LoginResult
+from proton.vpn.session.dataclasses import LoginResult
 
 from proton.vpn.app.gtk.widgets.login.login_form import LoginForm
 from tests.unit.testing_utils import process_gtk_events

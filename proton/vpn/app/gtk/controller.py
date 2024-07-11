@@ -31,8 +31,8 @@ from proton.vpn.core.api import ProtonVPNAPI, VPNAccount
 from proton.vpn.core.session_holder import ClientTypeMetadata
 from proton.vpn.core.connection import VPNConnectorWrapper
 from proton.vpn.core.cache_handler import CacheHandler
-from proton.vpn.core.session.servers import LogicalServer
-from proton.vpn.core.session.session import FeatureFlags
+from proton.vpn.session.servers import LogicalServer
+from proton.vpn.session.session import FeatureFlags
 
 from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor

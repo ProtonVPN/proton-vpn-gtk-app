@@ -27,7 +27,7 @@ from proton.vpn.app.gtk.utils.glib import run_after_seconds, cancel_task
 
 from proton.vpn import logging
 from proton.vpn.core.api import ProtonVPNAPI
-from proton.vpn.core.session.credentials import VPNPubkeyCredentials
+from proton.vpn.session.credentials import VPNPubkeyCredentials
 from proton.vpn.app.gtk.services.refresher.backoff import generate_backoff_value
 from proton.session.exceptions import (
     ProtonAPINotReachable, ProtonAPINotAvailable,

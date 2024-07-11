@@ -21,7 +21,7 @@ from datetime import timedelta
 
 from gi.repository import GLib, GObject
 from proton.vpn.core.api import ProtonVPNAPI
-from proton.vpn.core.session import FeatureFlags
+from proton.vpn.session import FeatureFlags
 
 from proton.vpn import logging
 from proton.session.exceptions import (

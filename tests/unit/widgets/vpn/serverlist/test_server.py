@@ -22,8 +22,8 @@ import pytest
 
 from gi.repository import GLib
 
-from proton.vpn.core.session.servers import LogicalServer
-from proton.vpn.core.session.servers.types import ServerLoad
+from proton.vpn.session.servers import LogicalServer
+from proton.vpn.session.servers.types import ServerLoad
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller

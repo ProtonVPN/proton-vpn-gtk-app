@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import random
-from proton.vpn.core.session.credentials import VPNPubkeyCredentials
+from proton.vpn.session.credentials import VPNPubkeyCredentials
 
 
 def generate_backoff_value(

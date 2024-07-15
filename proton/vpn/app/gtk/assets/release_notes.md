@@ -1,3 +1,6 @@
+## 4.3.3
+- Minor UI and stability improvements.
+
 ## 4.3.2
 - We fixed some minor issues related to caching and authentication.
 

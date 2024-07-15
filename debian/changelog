@@ -1,14 +1,9 @@
-proton-vpn-gtk-app (4.3.3~rc2) unstable; urgency=low
+proton-vpn-gtk-app (4.3.3) unstable; urgency=low
 
-  * Refactor settings.
+  * Refactor settings to ensure the settings file isn't created when we retrieve it (Luke Titley).
+  * Disable protocol selection if user is connected to vpn (Alexandru Cheltuitor).
 
- -- Luke Titley <luke.titley@proton.ch>  Fri, 24 May 2024 11:00:00
-
-proton-vpn-gtk-app (4.3.3~rc1) unstable; urgency=low
-
-  * Disable protocol selection if user is connected to vpn.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 08 May 2024 11:00:00
+ -- Luke Titley <luke.titley@proton.ch>  Fri, 24 May 2024 11:00:00 +0100
 
 proton-vpn-gtk-app (4.3.2) unstable; urgency=low
 

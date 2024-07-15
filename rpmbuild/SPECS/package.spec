@@ -28,7 +28,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.29.0
+BuildRequires: python3-proton-vpn-api-core >= 0.25.0
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
@@ -91,6 +91,8 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 
 * Wed May 29 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.0
 - Prepare wireguard release (Josep LLaneras).
+
+* Fri May 24 2024 Luke Titley <luke.titley@proton.ch> 4.3.3
 - Refactor settings to ensure the settings file isn't created when we retrieve it (Luke Titley).
 - Disable protocol selection if user is connected to vpn (Alexandru Cheltuitor).
 

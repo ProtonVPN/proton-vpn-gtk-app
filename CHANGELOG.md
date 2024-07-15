@@ -23,6 +23,8 @@
 
 ## [4.4.0] - 2024-05-29
 - Prepare wireguard release (Josep LLaneras).
+
+## [4.3.3] - 2024-05-24
 - Refactor settings to ensure the settings file isn't created when we retrieve it (Luke Titley).
 - Disable protocol selection if user is connected to vpn (Alexandru Cheltuitor).
 

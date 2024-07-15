@@ -63,6 +63,14 @@ urgency: low
 stability: unstable
 description:
 - Prepare wireguard release (Josep LLaneras).
+---
+version: 4.3.3
+time: 2024/05/24 11:00
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
 - Refactor settings to ensure the settings file isn't created when we retrieve it (Luke Titley).
 - Disable protocol selection if user is connected to vpn (Alexandru Cheltuitor).
 ---

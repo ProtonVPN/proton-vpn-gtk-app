@@ -157,3 +157,15 @@ def test_tray_pinned_servers_when_changing_entry_and_leaving_focus_ensuring_tray
     general_settings.tray_pinned_servers_row.interactive_object.emit("focus-out-event", Gdk.Event(Gdk.EventType.FOCUS_CHANGE))
 
     tray_indicator_mock.reload_pinned_servers.assert_called_once()
+
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_connect_at_app_startup")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_tray_pinned_servers")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_anonymous_crash_reports")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_beta_upgrade")
+def test_beta_upgrade_is_displayed_if_feature_flag_is_enabled(mock_build_beta_upgrade, *_):
+    controller_mock = Mock(name="controller")
+    controller_mock.feature_flags.get_feature.return_value = True
+
+    general_settings = GeneralSettings(controller_mock, Mock())
+    general_settings.build_ui()
+    mock_build_beta_upgrade.assert_called_once()

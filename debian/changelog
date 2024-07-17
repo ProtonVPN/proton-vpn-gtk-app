@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.4.2~rc6) unstable; urgency=low
+
+  * Only display WireGuard protocol if already selected or if feature flag is enabled, otherwise hide it.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 17 Jul 2024 15:00:00
+
 proton-vpn-gtk-app (4.4.2~rc5) unstable; urgency=low
 
   * Fix wrong imports after core api refactor.

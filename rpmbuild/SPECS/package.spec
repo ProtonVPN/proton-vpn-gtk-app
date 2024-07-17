@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.2~rc5
-%define upstream_version 4.4.2rc5
+%define version 4.4.2~rc6
+%define upstream_version 4.4.2rc6
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Jul 17 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.2~rc6
+- Only display WireGuard protocol if already selected or if feature flag is enabled, otherwise hide it.
+
 * Thu Jul 11 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.2~rc5
 - Fix wrong imports after core api refactor.
 

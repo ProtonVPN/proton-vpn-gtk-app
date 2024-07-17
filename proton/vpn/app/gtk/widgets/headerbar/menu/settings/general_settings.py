@@ -73,7 +73,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         self.build_connect_at_app_startup()
         self.build_tray_pinned_servers()
         self.build_anonymous_crash_reports()
-        if self._controller.feature_flags.beta_access_toggle_enabled:
+        if self._controller.feature_flags.get("LinuxBetaToggle"):
             self.build_beta_upgrade()
 
     @property

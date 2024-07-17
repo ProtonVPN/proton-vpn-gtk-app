@@ -19,7 +19,6 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 import pytest
 from unittest.mock import Mock, PropertyMock, patch
-from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings import ConnectionSettings
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import RECONNECT_MESSAGE
 
@@ -30,6 +29,9 @@ MockOpenVPNTCP.cls.ui_protocol = "OpenVPN (TCP)"
 MockOpenVPNUDP = Mock()
 MockOpenVPNUDP.cls.protocol = "openvpn-udp"
 MockOpenVPNUDP.cls.ui_protocol = "OpenVPN (UDP)"
+MockWireGuard = Mock()
+MockWireGuard.cls.protocol = "wireguard"
+MockWireGuard.cls.ui_protocol = "WireGuard (experimental)"
 
 
 FREE_TIER = 0
@@ -39,7 +41,7 @@ PLUS_TIER = 1
 @pytest.fixture
 def mocked_controller_and_protocol():
     controller_mock = Mock(name="controller")
-    controller_mock.get_available_protocols.return_value = [MockOpenVPNTCP, MockOpenVPNUDP]
+    controller_mock.get_available_protocols.return_value = [MockOpenVPNTCP, MockOpenVPNUDP, MockWireGuard]
 
     property_mock = PropertyMock(name="protocol", return_value=MockOpenVPNTCP.cls.protocol)
     type(controller_mock.get_settings.return_value).protocol = property_mock
@@ -235,7 +237,7 @@ def test_moderate_nat_when_switching_switch_state_and_ensure_changes_are_saved(m
 def test_moderate_nat_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_moderate_nat):
     controller_mock, moderate_nat_mock = mocked_controller_and_moderate_nat
     notification_bar_mock = Mock()
-    
+
     moderate_nat_mock.return_value = True
     controller_mock.is_connection_active = is_connection_active
 

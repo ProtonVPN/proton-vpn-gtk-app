@@ -369,6 +369,13 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             self.DEFAULT_BACKEND
         )
 
+        wireguard_selected = self.get_settings().protocol == "wireguard"
+        wireguard_disabled = not self.feature_flags.get("WireGuardExperimental")
+        if wireguard_disabled and not wireguard_selected:
+            available_protocols = filter(
+                lambda p: p.cls.protocol != "wireguard", available_protocols
+            )
+
         return sorted(
             available_protocols,
             key=lambda protocol: protocol.cls.ui_protocol

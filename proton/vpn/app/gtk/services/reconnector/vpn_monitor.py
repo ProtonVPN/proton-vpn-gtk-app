@@ -54,7 +54,8 @@ class VPNMonitor:
         """This method is called by the VPN connection state machine whenever
         the connection state changes."""
         if isinstance(connection_status, states.Error) and self.vpn_drop_callback:
-            GLib.idle_add(self.vpn_drop_callback)  # pylint: disable=not-callable
+            event = connection_status.context.event
+            GLib.idle_add(self.vpn_drop_callback, event)  # pylint: disable=not-callable
 
         if isinstance(connection_status, states.Connected) and self.vpn_up_callback:
             GLib.idle_add(self.vpn_up_callback)  # pylint: disable=not-callable

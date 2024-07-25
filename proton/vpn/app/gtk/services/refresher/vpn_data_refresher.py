@@ -109,6 +109,11 @@ class VPNDataRefresher(GObject.Object):  # pylint: disable=too-many-instance-att
         """Signal emitted when all the required VPN data to run the app
         has been downloaded from the REST API."""
 
+    def force_refresh_certificate(self):
+        """Force refresh certificate on demand."""
+        logger.info("Force refresh certificate.")
+        self._certificate_refresher.force_refresh()
+
     # pylint: disable=arguments-differ
     def connect(
         self, detailed_signal: str, handler: Callable[..., Any], *args: Any

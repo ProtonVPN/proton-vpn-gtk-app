@@ -77,6 +77,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
 
         self._executor = async_executor
 
+        self._new_certificate_src_id = None
         self._retry_src_id = None
         self.retry_counter = 0
 
@@ -186,9 +187,12 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
 
         self.schedule_reconnection()
 
-    def _on_vpn_drop(self):
+    def _on_vpn_drop(self, event: events.Event):
         """Callback called by the VPN monitor when a VPN connection drop was detected."""
         logger.info("VPN connection drop was detected.")
+        if isinstance(event, events.ExpiredCertificate):
+            self._handle_certificate_expired()
+            return
 
         if not self.is_connection_error_fatal:
             logger.info("VPN reconnection not possible: fatal connection error.")
@@ -197,6 +201,9 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
             return
 
         self.schedule_reconnection()
+
+    def _handle_certificate_expired(self):
+        self._vpn_data_refresher.force_refresh_certificate()
 
     def _on_vpn_up(self):
         """Callback called by the VPN monitor when the VPN connection is up."""

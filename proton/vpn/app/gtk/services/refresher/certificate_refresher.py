@@ -77,6 +77,11 @@ class CertificateRefresher(GObject.Object):
             delay_in_seconds=delay_in_seconds
         )
 
+    def force_refresh(self):
+        """Force refresh of certificate."""
+        self._unschedule_next_refresh()
+        self._schedule_next_certificate_refresh(delay_in_seconds=0)
+
     def disable(self):
         """Stops refreshing the client configuration."""
         self._unschedule_next_refresh()
@@ -124,11 +129,9 @@ class CertificateRefresher(GObject.Object):
         )
 
     def _unschedule_next_refresh(self):
-        if not self.enable:
-            return
-
-        cancel_task(self._refresh_task_id)
-        self._refresh_task_id = None
+        if self._refresh_task_id:
+            cancel_task(self._refresh_task_id)
+            self._refresh_task_id = None
 
     def _get_next_refresh_delay(self):
         return min(

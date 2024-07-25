@@ -59,10 +59,11 @@ def test_status_update_only_triggers_vpn_drop_callback_on_error_connection_state
     monitor = VPNMonitor(vpn_connector)
     monitor.vpn_drop_callback = Mock()
 
+    event = state.context.event
     monitor.status_update(state)
 
     if vpn_drop_callback_called:
-        glib_mock.idle_add.assert_called_with(monitor.vpn_drop_callback)
+        glib_mock.idle_add.assert_called_with(monitor.vpn_drop_callback, event)
     else:
         glib_mock.idle_add.assert_not_called()
 

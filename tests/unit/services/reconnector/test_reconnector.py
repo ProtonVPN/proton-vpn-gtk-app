@@ -225,7 +225,7 @@ def test_on_vpn_drop_raises_exception_on_authentication_denied_error(
     )
 
     # Simulate a VPN drop.
-    vpn_monitor.vpn_drop_callback()
+    vpn_monitor.vpn_drop_callback(vpn_connector.current_state.context.event)
 
     # An authentication error should have been raised since we currently fail to reconnect in such case.
     with pytest.raises(AuthenticationError):
@@ -249,7 +249,7 @@ def test_on_vpn_drop_a_reconnection_attempt_is_scheduled_with_an_exponential_bac
     random_mock.uniform.return_value = 1  # Get rid of randomness.
 
     for number_of_attempts in range(4):
-        vpn_monitor.vpn_drop_callback()  # Simulate VPN drop.
+        vpn_monitor.vpn_drop_callback(vpn_connector.current_state.context.event)  # Simulate VPN drop.
 
         glib_mock.timeout_add.assert_called_once()
         delay_in_ms, reconnect_func = glib_mock.timeout_add.call_args_list[0].args
@@ -298,7 +298,7 @@ def test_reconnection_is_rescheduled_if_connection_error_is_not_fatal_when_netwo
     random_mock.uniform.return_value = 1  # Get rid of randomness.
 
     # Simulate VPN drop.
-    vpn_monitor.vpn_drop_callback()
+    vpn_monitor.vpn_drop_callback(vpn_connector.current_state.context.event)
 
     # Make sure a reconnection attempt is scheduled.
     glib_mock.timeout_add.assert_called_once()
@@ -359,3 +359,16 @@ def test_on_vpn_up_resets_retry_counter_and_removes_pending_scheduled_attempt(
     assert reconnector.retry_counter == 0
     # and the pending scheduled connection has been unscheduled.
     assert not reconnector.is_reconnection_scheduled
+
+
+def test_on_vpn_drop_trigger_force_refresh_after_expired_certificate_event_is_received(
+    vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor, async_executor
+):
+    event = events.ExpiredCertificate()
+
+    reconnector = VPNReconnector(
+        vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor, async_executor
+    )
+
+    vpn_monitor.vpn_drop_callback(event)
+    vpn_data_refresher.force_refresh_certificate.assert_called_once()

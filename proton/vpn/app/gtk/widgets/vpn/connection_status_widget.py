@@ -67,7 +67,7 @@ class VPNConnectionStatusWidget(Gtk.Box):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
         self._update_connection_status_label(connection_status)
 
-    def _update_connection_status_label(self, connection_status):
+    def _update_connection_status_label(self, connection_status: states.State):
         connection = connection_status.context.connection
 
         label = ""

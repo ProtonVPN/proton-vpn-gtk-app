@@ -1,3 +1,6 @@
+## 4.4.2
+- Includes general fixes and enhancements related to Wireguard.
+
 ## 4.4.1
 - Includes general performance enhancements and improved handling when resuming from suspension.
 

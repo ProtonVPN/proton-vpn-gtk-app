@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.2~rc6
-%define upstream_version 4.4.2rc6
+%define version 4.4.2
+%define upstream_version 4.4.2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,23 +68,14 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Wed Jul 17 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.2~rc6
-- Only display WireGuard protocol if already selected or if feature flag is enabled, otherwise hide it.
-
-* Thu Jul 11 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.2~rc5
-- Fix wrong imports after core api refactor.
-
-* Wed Jul 10 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.2~rc4
-- Implement and refresh feature flags.
-
-* Tue Jul 02 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.2~rc3
-- When early access is toggled, ensure that repo package can be downloaded, otherwise display error message.
-
-* Wed Jun 26 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.2~rc2
-- Add early access toggle to settings window.
-
-* Tue Jun 11 2024 Luke Titley <luke.titley@proton.ch> 4.4.2~rc1
-- Move the scripts for generating the changelogs into a separate repo.
+* Thu Jul 25 2024 Luke Titley <luke.titley@proton.ch> 4.4.2
+- Official beta release
+- Only display WireGuard protocol if already selected or if feature flag is enabled, otherwise hide it. (Alexandru Cheltuitor)
+- Fix wrong imports after core api refactor. (Josep Llaneras)
+- Implement and refresh feature flags. (Alexandru Cheltuitor)
+- When early access is toggled, ensure that repo package can be downloaded, otherwise display error message. (Alexandru Cheltuitor)
+- Add early access toggle to settings window. (Alexandru Cheltuitor)
+- Move the scripts for generating the changelogs into a separate repo. (Luke Titley)
 
 * Tue Jun 11 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.1
 - Only allow kill switch settings modifications when disconnected from the VPN (Josep LLaneras).

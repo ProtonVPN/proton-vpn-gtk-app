@@ -1,56 +1,17 @@
-version: 4.4.2rc6
-time: 2024/07/17 15:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Only display WireGuard protocol if already selected or if feature flag is enabled, otherwise hide it.
----
-version: 4.4.2rc5
-time: 2024/07/11 15:00
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- Fix wrong imports after core api refactor.
----
-version: 4.4.2rc4
-time: 2024/07/10 12:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Implement and refresh feature flags.
----
-version: 4.4.2rc3
-time: 2024/07/02 10:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- When early access is toggled, ensure that repo package can be downloaded, otherwise display error message.
----
-version: 4.4.2rc2
-time: 2024/06/26 10:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Add early access toggle to settings window.
----
-version: 4.4.2rc1
-time: 2024/06/11 10:00
+version: 4.4.2
+time: 2024/07/25 11:00
 author: Luke Titley
 email: luke.titley@proton.ch
 urgency: low
 stability: unstable
 description:
-- Move the scripts for generating the changelogs into a separate repo.
+- Official beta release
+- Only display WireGuard protocol if already selected or if feature flag is enabled, otherwise hide it. (Alexandru Cheltuitor)
+- Fix wrong imports after core api refactor. (Josep Llaneras)
+- Implement and refresh feature flags. (Alexandru Cheltuitor)
+- When early access is toggled, ensure that repo package can be downloaded, otherwise display error message. (Alexandru Cheltuitor)
+- Add early access toggle to settings window. (Alexandru Cheltuitor)
+- Move the scripts for generating the changelogs into a separate repo. (Luke Titley)
 ---
 version: 4.4.1
 time: 2024/06/11 10:00

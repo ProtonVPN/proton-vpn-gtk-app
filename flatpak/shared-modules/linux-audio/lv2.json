@@ -1,0 +1,25 @@
+{
+    "name": "lv2",
+    "buildsystem": "meson",
+    "cleanup": [
+        "/bin",
+        "/include",
+        "/lib/pkgconfig",
+        "/share"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://lv2plug.in/spec/lv2-1.18.8.tar.xz",
+            "sha256": "b404cf14f776af40ca43808b45f4219dfa850a4f47aa33f89fa96ae719e174c8"
+        },
+        {
+            "type": "patch",
+            "path": "lv2-build.patch"
+        }
+    ],
+    "post-install": [
+        "install -Dm644 -t $FLATPAK_DEST/share/licenses/lv2 ../COPYING",
+        "ln -sf lv2.pc $FLATPAK_DEST/lib/pkgconfig/lv2core.pc"
+    ]
+}

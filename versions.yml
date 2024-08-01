@@ -1,11 +1,11 @@
-version: 4.4.3rc1
-time: 2024/07/26 15:00
+version: 4.4.3
+time: 2024/08/01 12:00
 author: Alexandru Cheltuitor
 email: alexandru.cheltuitor@proton.ch
 urgency: low
 stability: unstable
 description:
-- Refresh certificate whenever the app receives an expired certificate event.
+- Refresh certificate whenever the app receives an expired certificate event. (Alexandru Cheltuitor)
 ---
 version: 4.4.2
 time: 2024/07/25 11:00

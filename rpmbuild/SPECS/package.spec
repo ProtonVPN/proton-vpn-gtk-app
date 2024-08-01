@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.3~rc1
-%define upstream_version 4.4.3rc1
+%define version 4.4.3
+%define upstream_version 4.4.3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,8 +68,8 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Fri Jul 26 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.3~rc1
-- Refresh certificate whenever the app receives an expired certificate event.
+* Thu Aug 01 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.3
+- Refresh certificate whenever the app receives an expired certificate event. (Alexandru Cheltuitor)
 
 * Thu Jul 25 2024 Luke Titley <luke.titley@proton.ch> 4.4.2
 - Official beta release

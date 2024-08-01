@@ -1,8 +1,8 @@
-proton-vpn-gtk-app (4.4.3~rc1) unstable; urgency=low
+proton-vpn-gtk-app (4.4.3) unstable; urgency=low
 
-  * Refresh certificate whenever the app receives an expired certificate event.
+  * Refresh certificate whenever the app receives an expired certificate event. (Alexandru Cheltuitor)
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 26 Jul 2024 15:00:00 +0000
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 01 Aug 2024 12:00:00 +0000
 
 proton-vpn-gtk-app (4.4.2) unstable; urgency=low
 

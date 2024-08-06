@@ -194,6 +194,9 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
             self._handle_certificate_expired()
             return
 
+        if isinstance(event, events.MaximumSessionsReached):
+            return
+
         if not self.is_connection_error_fatal:
             logger.info("VPN reconnection not possible: fatal connection error.")
             # Raise exception on the next event loop iteration so that the app reacts to it.

@@ -22,7 +22,6 @@ from proton.vpn.connection import states, events
 from proton.vpn.connection.events import EventContext
 
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
-from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 import pytest
 
 
@@ -36,10 +35,12 @@ import pytest
     (states.Error, events.AuthDenied, "Connection error: authentication denied"),
     (states.Error, events.Timeout, "Connection error: timeout"),
     (states.Error, events.DeviceDisconnected, "Connection error: device disconnected"),
+    (states.Error, events.MaximumSessionsReached, "Connection error: session limit reached"),
 ])
 def test_vpn_connection_status_widget(connection_state_type, last_event_type, expected_message):
     overlay_widget_mock = Mock()
-    vpn_status_widget = VPNConnectionStatusWidget(Mock(), overlay_widget_mock)
+    mock_notifications = Mock()
+    vpn_status_widget = VPNConnectionStatusWidget(Mock(), overlay_widget_mock, mock_notifications)
 
     connection_state = connection_state_type()
     last_event = None
@@ -56,4 +57,10 @@ def test_vpn_connection_status_widget(connection_state_type, last_event_type, ex
     if isinstance(connection_state, states.Connecting):
         overlay_widget_mock.show.assert_called_once()
     else:
+        if isinstance(connection_state.context.event, events.MaximumSessionsReached):
+            mock_notifications.show_error_dialog.assert_called_once_with(
+                message=vpn_status_widget.MAXIMUM_SESSIONS_ERROR,
+                title="Connection error: session limit reached"
+            )
+
         assert vpn_status_widget.status_message == expected_message

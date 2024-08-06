@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.4.4~rc1) unstable; urgency=low
+
+  * Added a MaximumSessionsReached event to the list of events that can be emitted.
+
+ -- Luke Titley <luke.titley@proton.ch>  Thu, 08 Aug 2024 12:00:00 +0000
+
 proton-vpn-gtk-app (4.4.3) unstable; urgency=low
 
   * Refresh certificate whenever the app receives an expired certificate event. (Alexandru Cheltuitor)

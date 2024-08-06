@@ -24,6 +24,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.connection import events, states
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, LoadingConnectionWidget
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -31,12 +32,18 @@ logger = logging.getLogger(__name__)
 
 class VPNConnectionStatusWidget(Gtk.Box):
     """Displays the current connection status."""
+    MAXIMUM_SESSIONS_ERROR = "You've reached your maximum device limit. " \
+        "To reconnect to VPN, please disconnect from another device."
 
-    def __init__(self, controller: Controller, overlay_widget: OverlayWidget):
+    def __init__(
+        self, controller: Controller,
+        overlay_widget: OverlayWidget, notifications: Notifications
+    ):
         super().__init__(spacing=10)
 
         self._overlay_widget = overlay_widget
         self._controller = controller
+        self._notifications = notifications
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self._connection_status_label = Gtk.Label(label="")
@@ -94,6 +101,12 @@ class VPNConnectionStatusWidget(Gtk.Box):
                 label = f"{label}: timeout"
             elif isinstance(last_connection_event, events.DeviceDisconnected):
                 label = f"{label}: device disconnected"
+            elif isinstance(last_connection_event, events.MaximumSessionsReached):
+                label = f"{label}: session limit reached"
+                self._notifications.show_error_dialog(
+                    message=self.MAXIMUM_SESSIONS_ERROR,
+                    title=label
+                )
 
             self._overlay_widget.hide()
 

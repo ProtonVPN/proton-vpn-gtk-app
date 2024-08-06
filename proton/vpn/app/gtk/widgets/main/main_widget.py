@@ -159,7 +159,8 @@ class MainWidget(Gtk.Overlay):
         vpn_widget = VPNWidget(
             controller=self._controller,
             main_window=self._main_window,
-            overlay_widget=self._overlay_widget
+            overlay_widget=self._overlay_widget,
+            notifications=self.notifications
         )
         vpn_widget.connect(
             "vpn-widget-ready", self._hide_overlay_widget

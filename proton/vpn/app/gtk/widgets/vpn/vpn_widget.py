@@ -36,6 +36,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidge
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.session.client_config import ClientConfig
 from proton.vpn.session.servers import ServerList
 
@@ -69,7 +70,8 @@ class VPNWidget(Gtk.Box):
 
     def __init__(
         self, controller: Controller,
-        main_window: "MainWindow", overlay_widget: OverlayWidget
+        main_window: "MainWindow", overlay_widget: OverlayWidget,
+        notifications=Notifications
     ):
         super().__init__(spacing=10)
 
@@ -78,7 +80,9 @@ class VPNWidget(Gtk.Box):
         self._state.load_start_time = time.time()
         self._controller = controller
 
-        self.connection_status_widget = VPNConnectionStatusWidget(controller, overlay_widget)
+        self.connection_status_widget = VPNConnectionStatusWidget(
+            controller, overlay_widget, notifications
+        )
         self.pack_start(self.connection_status_widget, expand=False, fill=False, padding=0)
 
         self.quick_connect_widget = QuickConnectWidget(self._controller)

@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.4~rc1
-%define upstream_version 4.4.4rc1
+%define version 4.4.4~rc2
+%define upstream_version 4.4.4rc2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Aug 08 2024 Luke Titley <luke.titley@proton.ch> 4.4.4~rc2
+- Request connection features via local agent if available.
+
 * Thu Aug 08 2024 Luke Titley <luke.titley@proton.ch> 4.4.4~rc1
 - Added a MaximumSessionsReached event to the list of events that can be emitted.
 

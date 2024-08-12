@@ -350,7 +350,13 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
             # If update certificate is invoked then we save and update the
             # certificate in the same call
-            if update_certificate and (settings.protocol == WIREGUARD_PROTOCOL):
+            if (
+                    update_certificate
+                    and settings.protocol == WIREGUARD_PROTOCOL
+                    and not self._local_agent_available
+            ):
+                # For wireguard, a new certificate with the hardcoded connection features
+                # is fetched while we work on local agent. This should be removed soon.
                 await self._api.fetch_certificate()
 
         future = self.executor.submit(
@@ -399,3 +405,12 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             check=False,
             shell=shell  # nosec B604
         )
+
+    @property
+    def _local_agent_available(self) -> bool:
+        try:
+            import proton.vpn.local_agent  # noqa: F401,E501 # pylint: disable=unused-import, import-outside-toplevel
+        except ModuleNotFoundError:
+            return False
+
+        return True

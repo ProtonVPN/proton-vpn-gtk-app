@@ -1,3 +1,12 @@
+version: 4.4.4rc2
+time: 2024/08/08 12:00
+author: Luke Titley
+email: luke.titley@proton.ch
+urgency: low
+stability: unstable
+description:
+- Request connection features via local agent if available.
+---
 version: 4.4.4rc1
 time: 2024/08/08 12:00
 author: Luke Titley

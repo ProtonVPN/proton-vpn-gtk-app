@@ -1,3 +1,6 @@
+## 4.4.4
+- Improves WireGuard protocol functionality.
+
 ## 4.4.3
 - Bug fixes and stability improvements.
 

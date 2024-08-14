@@ -1,20 +1,13 @@
-version: 4.4.4rc2
-time: 2024/08/08 12:00
-author: Luke Titley
-email: luke.titley@proton.ch
+version: 4.4.4
+time: 2024/08/14 10:00
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
-- Request connection features via local agent if available.
----
-version: 4.4.4rc1
-time: 2024/08/08 12:00
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Added a MaximumSessionsReached event to the list of events that can be emitted.
+- Request connection features via local agent if available. (Luke Titley and Josep Llaneras)
+- Added a MaximumSessionsReached event to the list of events that can be emitted. (Luke Titley and Alexandru Cheltuitor)
+- Update package URL used by early release settings toggle. (Josep Llaneras)
 ---
 version: 4.4.3
 time: 2024/08/01 12:00

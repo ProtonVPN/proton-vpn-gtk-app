@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.4~rc2
-%define upstream_version 4.4.4rc2
+%define version 4.4.4
+%define upstream_version 4.4.4
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,11 +68,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Thu Aug 08 2024 Luke Titley <luke.titley@proton.ch> 4.4.4~rc2
-- Request connection features via local agent if available.
-
-* Thu Aug 08 2024 Luke Titley <luke.titley@proton.ch> 4.4.4~rc1
-- Added a MaximumSessionsReached event to the list of events that can be emitted.
+* Wed Aug 14 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.4
+- Request connection features via local agent if available. (Luke Titley and Josep Llaneras)
+- Added a MaximumSessionsReached event to the list of events that can be emitted. (Luke Titley and Alexandru Cheltuitor)
+- Update package URL used by early release settings toggle. (Josep Llaneras)
 
 * Thu Aug 01 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.3
 - Refresh certificate whenever the app receives an expired certificate event. (Alexandru Cheltuitor)

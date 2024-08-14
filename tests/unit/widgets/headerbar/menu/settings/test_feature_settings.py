@@ -21,7 +21,6 @@ import pytest
 from unittest.mock import Mock, PropertyMock, patch
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings, KillSwitchSetting, KillSwitchSettingEnum
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import RECONNECT_MESSAGE
 from proton.vpn.core.settings import NetShield
 
 
@@ -91,22 +90,6 @@ def test_netshield_when_switching_netshield_and_ensure_changes_are_saved(mocked_
     netshield_mock.assert_called_once_with(NetShield.BLOCK_MALICIOUS_URL.value)
     controller_mock.save_settings.assert_called_once()
 
-@pytest.mark.parametrize("is_connection_active", [False, True])    
-def test_netshield_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_netshield):
-    controller_mock, netshield_mock = mocked_controller_and_netshield
-    notification_bar_mock = Mock()
-
-    controller_mock.is_connection_active = is_connection_active
-
-    feature_settings = FeatureSettings(controller_mock, notification_bar_mock)
-    feature_settings.build_netshield()
-
-    feature_settings.netshield_row.interactive_object.set_active_id(str(NetShield.BLOCK_MALICIOUS_URL.value))
-
-    if is_connection_active:
-        notification_bar_mock.show_info_message.assert_called_once_with(RECONNECT_MESSAGE)
-    else:
-        notification_bar_mock.show_info_message.assert_not_called()
 
 @pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])
 def test_netshield_upgrade_tag_override_interactive_object_if_plan_upgrade_is_required(user_tier, mocked_controller_and_netshield):
@@ -191,23 +174,6 @@ def test_port_forwarding_when_switching_switch_state_and_description_is_updated(
     else:
         assert feature_settings.port_forwarding_row.description.get_label() == feature_settings.PORT_FORWARDING_DESCRIPTION
 
-@pytest.mark.parametrize("is_connection_active", [False, True])    
-def test_port_forwarding_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_port_forwarding):
-    controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
-    notification_bar_mock = Mock()
-    
-    port_forwarding_mock.return_value = True
-    controller_mock.is_connection_active = is_connection_active
-
-    feature_settings = FeatureSettings(controller_mock, notification_bar_mock)
-    feature_settings.build_port_forwarding()
-
-    feature_settings.port_forwarding_row.interactive_object.set_state(False)
-
-    if is_connection_active:
-        notification_bar_mock.show_info_message.assert_called_once_with(RECONNECT_MESSAGE)
-    else:
-        notification_bar_mock.show_info_message.assert_not_called()
 
 @pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])
 def test_port_forwarding_upgrade_tag_override_interactive_object_if_plan_upgrade_is_required(user_tier, mocked_controller_and_port_forwarding):

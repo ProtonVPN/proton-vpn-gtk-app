@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.5~rc1
-%define upstream_version 4.4.5rc1
+%define version 4.4.5~rc2
+%define upstream_version 4.4.5rc2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -28,7 +28,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.33.0
+BuildRequires: python3-proton-vpn-api-core >= 0.33.3
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
@@ -36,7 +36,7 @@ BuildRequires: python3-packaging
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.33.0
+Requires: python3-proton-vpn-api-core >= 0.33.3
 Requires: python3-proton-vpn-logger
 Requires: librsvg2
 Requires: python3-packaging
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Aug 22 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.5~rc2
+- Don't display reconnect message when connected via WireGuard protocol and settings are switched.
+
 * Wed Aug 21 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.5~rc1
 - Changes due to api-core refactor (Luke titley and Josep Llaneras)
 

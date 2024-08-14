@@ -19,13 +19,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from typing import TYPE_CHECKING
 
 from gi.repository import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    RECONNECT_MESSAGE, BaseCategoryContainer, SettingRow, SettingName, SettingDescription
+    BaseCategoryContainer, SettingRow, SettingName, SettingDescription
 )
+
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window import \
+        SettingsWindow
 
 
 class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
@@ -42,14 +46,14 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
     SWITCH_PROTOCOL_IF_CONNECTION_ACTIVE_DESCRIPTION = "Protocol selection "\
         "is disabled while VPN is active. Disconnect to make changes."
 
-    def __init__(self, controller: Controller, notification_bar: NotificationBar):
+    def __init__(self, controller: Controller, settings_window: "SettingsWindow"):
         super().__init__(self.CATEGORY_NAME)
         self._controller = controller
-        self._notification_bar = notification_bar
 
         self.vpn_accelerator_row = None
         self.protocol_row = None
         self.moderate_nat_row = None
+        self._settings_window = settings_window
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
@@ -104,10 +108,6 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
             treeiter = combobox.get_active_iter()
             protocol = model[treeiter][1]
             self.protocol = protocol
-            if self._controller.is_connection_active:
-                self._notification_bar.show_info_message(
-                    f"{RECONNECT_MESSAGE}"
-                )
 
         available_protocols = self._controller.get_available_protocols()
         combobox = Gtk.ComboBoxText()
@@ -133,10 +133,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         """Builds and adds the `vpn_accelerator` setting to the widget."""
         def on_switch_state(_, new_value: bool):
             self.vpn_accelerator = new_value
-            if self._controller.is_connection_active:
-                self._notification_bar.show_info_message(
-                    f"{RECONNECT_MESSAGE}"
-                )
+            self._settings_window.notify_user_with_reconnect_message()
 
         switch = Gtk.Switch()
 
@@ -154,10 +151,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         """Builds and adds the `moderate_nat` setting to the widget."""
         def on_switch_state(_, new_value: bool):
             self.moderate_nat = new_value
-            if self._controller.is_connection_active:
-                self._notification_bar.show_info_message(
-                    f"{RECONNECT_MESSAGE}"
-                )
+            self._settings_window.notify_user_with_reconnect_message()
 
         switch = Gtk.Switch()
 

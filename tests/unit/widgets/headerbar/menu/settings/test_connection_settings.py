@@ -20,7 +20,6 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import pytest
 from unittest.mock import Mock, PropertyMock, patch
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings import ConnectionSettings
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import RECONNECT_MESSAGE
 
 
 MockOpenVPNTCP = Mock()
@@ -106,24 +105,6 @@ def test_protocol_when_switching_switch_protocol_and_ensure_changes_are_saved(mo
     controller_mock.save_settings.assert_called_once()
 
 
-@pytest.mark.parametrize("is_connection_active", [False, True])    
-def test_protocol_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_protocol):
-    controller_mock, protocol_mock = mocked_controller_and_protocol
-    notification_bar_mock = Mock()
-
-    controller_mock.is_connection_active = is_connection_active
-
-    connection_settings = ConnectionSettings(controller_mock, notification_bar_mock)
-    connection_settings.build_protocol()
-
-    connection_settings.protocol_row.interactive_object.set_active_id(MockOpenVPNUDP.cls.protocol)
-
-    if is_connection_active:
-        notification_bar_mock.show_info_message.assert_called_once_with(RECONNECT_MESSAGE)
-    else:
-        notification_bar_mock.show_info_message.assert_not_called()
-
-
 def test_protocol_when_connection_is_active_and_widget_is_not_interactive(mocked_controller_and_protocol):
     controller_mock, protocol_mock = mocked_controller_and_protocol
     notification_bar_mock = Mock()
@@ -175,25 +156,6 @@ def test_vpn_accelerator_when_switching_switch_state_and_ensure_changes_are_save
     controller_mock.save_settings.assert_called_once()
 
 
-@pytest.mark.parametrize("is_connection_active", [False, True])    
-def test_vpn_accelerator_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_vpn_accelerator):
-    controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
-    notification_bar_mock = Mock()
-
-    vpn_accelerator_mock.return_value = True
-    controller_mock.is_connection_active = is_connection_active
-
-    connection_settings = ConnectionSettings(controller_mock, notification_bar_mock)
-    connection_settings.build_vpn_accelerator()
-
-    connection_settings.vpn_accelerator_row.interactive_object.set_state(False)
-
-    if is_connection_active:
-        notification_bar_mock.show_info_message.assert_called_once_with(RECONNECT_MESSAGE)
-    else:
-        notification_bar_mock.show_info_message.assert_not_called()
-
-
 def test_moderate_nat_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_moderate_nat):
     controller_mock, moderate_nat_mock = mocked_controller_and_moderate_nat
 
@@ -231,25 +193,6 @@ def test_moderate_nat_when_switching_switch_state_and_ensure_changes_are_saved(m
 
     moderate_nat_mock.assert_called_once_with(not moderate_nat_enabled)
     controller_mock.save_settings.assert_called_once()
-
-
-@pytest.mark.parametrize("is_connection_active", [False, True])    
-def test_moderate_nat_when_reconnect_message_reacts_accordingly_if_there_is_an_active_connection_or_not(is_connection_active, mocked_controller_and_moderate_nat):
-    controller_mock, moderate_nat_mock = mocked_controller_and_moderate_nat
-    notification_bar_mock = Mock()
-
-    moderate_nat_mock.return_value = True
-    controller_mock.is_connection_active = is_connection_active
-
-    connection_settings = ConnectionSettings(controller_mock, notification_bar_mock)
-    connection_settings.build_moderate_nat()
-
-    connection_settings.moderate_nat_row.interactive_object.set_state(False)
-
-    if is_connection_active:
-        notification_bar_mock.show_info_message.assert_called_once_with(RECONNECT_MESSAGE)
-    else:
-        notification_bar_mock.show_info_message.assert_not_called()
 
 
 @pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])

@@ -1,3 +1,12 @@
+version: 4.4.5rc2
+time: 2024/08/22 09:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+  - Don't display reconnect message when connected via WireGuard protocol and settings are switched.
+---
 version: 4.4.5rc1
 time: 2024/08/21 10:00
 author: Josep Llaneras

@@ -19,15 +19,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from typing import TYPE_CHECKING
 
 from gi.repository import Gtk
 from proton.vpn.core.settings import NetShield
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    RECONNECT_MESSAGE, BaseCategoryContainer, SettingRow, SettingName, SettingDescription
+    BaseCategoryContainer, SettingRow, SettingName, SettingDescription
 )
 from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
+
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window import \
+        SettingsWindow
 
 
 class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -180,10 +184,10 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     SWITCH_KILLSWITCH_IF_CONNECTION_ACTIVE_DESCRIPTION = "Kill switch selection "\
         "is disabled while VPN is active. Disconnect to make changes."
 
-    def __init__(self, controller: Controller, notification_bar: NotificationBar):
+    def __init__(self, controller: Controller, settings_window: "SettingsWindow"):
         super().__init__(self.CATEGORY_NAME)
         self._controller = controller
-        self._notification_bar = notification_bar
+        self._settings_window = settings_window
 
         self.netshield_row = None
         self.killswitch_row = None
@@ -233,10 +237,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
             treeiter = combobox.get_active_iter()
             netshield = model[treeiter][1]
             self.netshield = netshield
-            if self._controller.is_connection_active:
-                self._notification_bar.show_info_message(
-                    f"{RECONNECT_MESSAGE}"
-                )
+            self._settings_window.notify_user_with_reconnect_message()
 
         netshield_options = [
             (str(NetShield.NO_BLOCK.value), "Off"),
@@ -282,10 +283,8 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
         def on_switch_state(_, new_value: bool):
             self.port_forwarding = new_value
-            if self._controller.is_connection_active:
-                self._notification_bar.show_info_message(
-                    f"{RECONNECT_MESSAGE}"
-                )
+            self._settings_window.notify_user_with_reconnect_message()
+
             edit_description_based_on_setting(new_value)
 
         switch = Gtk.Switch()

@@ -33,6 +33,8 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import 
     FeatureSettings
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings import \
     GeneralSettings
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
+    RECONNECT_MESSAGE
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator
@@ -63,10 +65,10 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
 
         self._account_settings = account_settings or AccountSettings(self._controller)
         self._feature_settings = feature_settings or FeatureSettings(
-            self._controller, self._notification_bar
+            self._controller, self
         )
         self._connection_settings = connection_settings or ConnectionSettings(
-            self._controller, self._notification_bar
+            self._controller, self
         )
         self._general_settings = general_settings or GeneralSettings(
             self._controller, tray_indicator
@@ -113,3 +115,13 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         self.main_container.pack_start(scrolled_window, False, False, 0)
 
         self.add(self.main_container)
+
+    def notify_user_with_reconnect_message(self):
+        """Notify user with a reconnect message when connected
+        and when the settings changes require a starting a new connection.
+        """
+        if (
+            self._controller.is_connection_active
+            and not self._controller.current_connection.are_feature_updates_applied_when_active
+        ):
+            self._notification_bar.show_info_message(f"{RECONNECT_MESSAGE}")

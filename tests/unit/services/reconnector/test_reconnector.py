@@ -22,7 +22,7 @@ import pytest
 
 from proton.vpn.connection import states, events
 from proton.vpn.connection.exceptions import AuthenticationError
-from proton.vpn.core.connection import VPNConnectorWrapper
+from proton.vpn.core.connection import VPNConnector
 
 from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
@@ -40,7 +40,7 @@ def async_executor():
 
 @pytest.fixture
 def vpn_connector():
-    return Mock(VPNConnectorWrapper)
+    return Mock(VPNConnector)
 
 
 @pytest.fixture

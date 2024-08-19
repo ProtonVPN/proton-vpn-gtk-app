@@ -29,7 +29,7 @@ from proton.vpn import logging
 from proton.vpn.connection import VPNConnection, states
 from proton.vpn.core.api import ProtonVPNAPI, VPNAccount
 from proton.vpn.core.session_holder import ClientTypeMetadata
-from proton.vpn.core.connection import VPNConnectorWrapper
+from proton.vpn.core.connection import VPNConnector
 from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.session.servers import LogicalServer
 from proton.vpn.session.session import FeatureFlags
@@ -66,7 +66,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         executor: AsyncExecutor,
         api: ProtonVPNAPI = None,
         vpn_data_refresher: VPNDataRefresher = None,
-        vpn_connector: VPNConnectorWrapper = None,
+        vpn_connector: VPNConnector = None,
         vpn_reconnector: VPNReconnector = None,
         app_config: AppConfig = None,
         cache_handler: CacheHandler = None
@@ -290,7 +290,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self._connector.unregister(subscriber)
 
     @property
-    def vpn_connector(self) -> VPNConnectorWrapper:
+    def vpn_connector(self) -> VPNConnector:
         """Returns the VPN connector"""
         return self._connector
 

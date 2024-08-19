@@ -24,7 +24,7 @@ from typing import Callable, Optional
 from gi.repository import GLib
 
 from proton.vpn.connection import states
-from proton.vpn.core.connection import VPNConnectorWrapper
+from proton.vpn.core.connection import VPNConnector
 
 
 class VPNMonitor:
@@ -37,7 +37,7 @@ class VPNMonitor:
         vpn_up_callback: callable to be called whenever the VPN connection is up.
     """
 
-    def __init__(self, vpn_connector: VPNConnectorWrapper):
+    def __init__(self, vpn_connector: VPNConnector):
         self._vpn_connector = vpn_connector
         self.vpn_drop_callback: Optional[Callable] = None
         self.vpn_up_callback: Optional[Callable] = None

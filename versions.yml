@@ -1,3 +1,12 @@
+version: 4.4.5rc1
+time: 2024/08/21 10:00
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+  - Changes due to api-core refactor (Luke titley and Josep Llaneras)
+---
 version: 4.4.4
 time: 2024/08/14 10:00
 author: Josep Llaneras

@@ -32,6 +32,7 @@ setup(
             "proton-vpn-killswitch-network-manager",
             "proton-vpn-network-manager-wireguard",
             "proton-vpn-killswitch-network-manager-wireguard",
+            "proton-vpn-local-agent",
             "behave",
             "pyotp",
             "pytest",

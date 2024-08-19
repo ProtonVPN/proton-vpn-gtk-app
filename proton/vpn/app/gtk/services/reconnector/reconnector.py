@@ -27,7 +27,7 @@ from gi.repository import GLib
 from proton.vpn import logging
 from proton.vpn.connection import states, VPNConnection, events
 from proton.vpn.connection.exceptions import VPNConnectionError, AuthenticationError
-from proton.vpn.core.connection import VPNConnectorWrapper
+from proton.vpn.core.connection import VPNConnector
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
@@ -55,7 +55,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-arguments
     def __init__(
             self,
-            vpn_connector: VPNConnectorWrapper,
+            vpn_connector: VPNConnector,
             vpn_data_refresher: "VPNDataRefresher",
             vpn_monitor: VPNMonitor,
             network_monitor: NetworkMonitor,

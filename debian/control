@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Proton Technologies AG <opensource@proton.me>
 Build-Depends: debhelper (>= 9), dh-python, python3-all, librsvg2-common, python3-setuptools,
-    python3-gi, python3-gi-cairo, gir1.2-gtk-3.0, python3-proton-vpn-api-core (>= 0.31.0),
+    python3-gi, python3-gi-cairo, gir1.2-gtk-3.0, python3-proton-vpn-api-core (>= 0.33.0),
     python3-proton-vpn-logger, python3-dbus, gir1.2-nm-1.0, python3-packaging, python3-distro,
     python3-requests, python3-proton-core
 Standards-Version: 4.1.1
@@ -12,7 +12,7 @@ X-Python3-Version: >= 3.8
 Package: proton-vpn-gtk-app
 Architecture: all
 Depends: ${python3:Depends}, ${misc:Depends}, librsvg2-common, python3-gi, python3-gi-cairo,
-    gir1.2-gtk-3.0, python3-proton-vpn-api-core (>= 0.31.0), python3-proton-vpn-logger, python3-dbus,
+    gir1.2-gtk-3.0, python3-proton-vpn-api-core (>= 0.33.0), python3-proton-vpn-logger, python3-dbus,
     gir1.2-nm-1.0, python3-packaging, python3-distro, python3-requests, python3-proton-core
 Suggests: libayatana-appindicator3-1, gir1.2-ayatanaappindicator3-0.1
 Description: Proton VPN App

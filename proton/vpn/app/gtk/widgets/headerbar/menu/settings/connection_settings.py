@@ -140,7 +140,8 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         self.vpn_accelerator_row = SettingRow(
             SettingName(self.VPN_ACCELERATOR_LABEL),
             switch,
-            SettingDescription(self.VPN_ACCELERATOR_DESCRIPTION)
+            SettingDescription(self.VPN_ACCELERATOR_DESCRIPTION),
+            self._controller.user_tier
         )
 
         switch.set_state(self.vpn_accelerator)

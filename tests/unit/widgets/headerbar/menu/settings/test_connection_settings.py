@@ -56,6 +56,9 @@ def mocked_controller_and_vpn_accelerator():
     property_mock = PropertyMock()
     type(controller_mock.get_settings.return_value.features).vpn_accelerator = property_mock
 
+    user_tier_mock = PropertyMock(return_value=PLUS_TIER)
+    type(controller_mock).user_tier = user_tier_mock
+
     return controller_mock, property_mock
 
 
@@ -209,3 +212,19 @@ def test_moderate_nat_upgrade_tag_override_interactive_object_if_plan_upgrade_is
         assert feature_settings.moderate_nat_row.overridden_by_upgrade_tag
     else:
         assert not feature_settings.moderate_nat_row.overridden_by_upgrade_tag
+
+
+@pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])
+def test_vpn_accelerator_upgrade_tag_override_interactive_object_if_plan_upgrade_is_required(user_tier, mocked_controller_and_vpn_accelerator):
+    controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
+
+    user_tier_mock = PropertyMock(return_value=user_tier)
+    type(controller_mock).user_tier = user_tier_mock
+
+    feature_settings = ConnectionSettings(controller_mock, Mock())
+    feature_settings.build_vpn_accelerator()
+
+    if user_tier == FREE_TIER:
+        assert feature_settings.vpn_accelerator_row.overridden_by_upgrade_tag
+    else:
+        assert not feature_settings.vpn_accelerator_row.overridden_by_upgrade_tag

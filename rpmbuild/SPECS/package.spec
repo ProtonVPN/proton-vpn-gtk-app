@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.5~rc2
-%define upstream_version 4.4.5rc2
+%define version 4.4.5~rc3
+%define upstream_version 4.4.5rc3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Aug 21 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.5~rc3
+- Show VPN accelerator setting disabled to free users.
+
 * Thu Aug 22 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.5~rc2
 - Don't display reconnect message when connected via WireGuard protocol and settings are switched.
 

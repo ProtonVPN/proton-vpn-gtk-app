@@ -28,9 +28,8 @@ setup(
         "development": [
             "proton-core-internal",
             "proton-keyring-linux-secretservice",
-            "proton-vpn-network-manager-openvpn",
+            "proton-vpn-network-manager",
             "proton-vpn-killswitch-network-manager",
-            "proton-vpn-network-manager-wireguard",
             "proton-vpn-killswitch-network-manager-wireguard",
             "proton-vpn-local-agent",
             "behave",

@@ -24,10 +24,6 @@ from typing import Callable
 
 from gi.repository import GLib
 
-from proton.vpn.app.gtk.utils.scheduler import Scheduler
-
-_scheduler = Scheduler()
-
 
 def run_once(function: Callable, *args, priority=GLib.PRIORITY_DEFAULT, **kwargs) -> int:
     """
@@ -63,21 +59,36 @@ def run_periodically(function, *args, interval_ms: int, **kwargs) -> int:
     return GLib.timeout_add(interval_ms, wrapper_function)
 
 
+def run_after_ms(function, *args, delay_ms: int, **kwargs) -> int:
+    """
+    Runs a function after the specified delay (in ms) on the GLib main loop.
+
+    :param function: function to be called.
+    :param *args: arguments to be passed to the function.
+    :param delay_ms: amount of milliseconds to wait before the function is called.
+    :param **kwargs: keyword arguments to be passed to the function.
+    """
+    def wrapper_function():
+        function(*args, **kwargs)
+        # Returning a falsy value is required so that GLib does not keep
+        # running the function over and over again.
+        return False
+
+    return GLib.timeout_add(delay_ms, wrapper_function)
+
+
 def run_after_seconds(function, *args, delay_seconds: int, **kwargs) -> int:
     """
     Runs a function after the specified delay (in seconds) on the GLib main loop.
 
     See :func:`run_after_ms`.
     """
-    if not _scheduler.is_started:
-        _scheduler.start()
-
-    return _scheduler.run_after(delay_seconds, function, *args, **kwargs)
+    return run_after_ms(function, *args, delay_ms=delay_seconds*1000, **kwargs)
 
 
 def cancel_task(task_id: int):
     """Remove task from the scheduler given its id."""
-    _scheduler.cancel_task(task_id)
+    GLib.source_remove(task_id)
 
 
 def bubble_up_errors(future: Future):

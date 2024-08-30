@@ -1,3 +1,12 @@
+version: 4.4.5rc4
+time: 2024/08/30 12:00
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+  - Switch back to old scheduler due to memory leak in new one.
+---
 version: 4.4.5rc3
 time: 2024/08/21 12:00
 author: Josep Llaneras

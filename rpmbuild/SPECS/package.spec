@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.5~rc3
-%define upstream_version 4.4.5rc3
+%define version 4.4.5~rc4
+%define upstream_version 4.4.5rc4
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Aug 30 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.5~rc4
+- Switch back to old scheduler due to memory leak in new one.
+
 * Wed Aug 21 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.5~rc3
 - Show VPN accelerator setting disabled to free users.
 

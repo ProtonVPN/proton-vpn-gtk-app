@@ -164,7 +164,7 @@ def test_tray_pinned_servers_when_changing_entry_and_leaving_focus_ensuring_tray
 @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_beta_upgrade")
 def test_beta_upgrade_is_displayed_if_feature_flag_is_enabled(mock_build_beta_upgrade, *_):
     controller_mock = Mock(name="controller")
-    controller_mock.feature_flags.get_feature.return_value = True
+    controller_mock.feature_flags.get.return_value = True
 
     general_settings = GeneralSettings(controller_mock, Mock())
     general_settings.build_ui()

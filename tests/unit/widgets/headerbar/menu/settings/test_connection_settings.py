@@ -76,6 +76,20 @@ def mocked_controller_and_moderate_nat():
     return controller_mock, property_mock
 
 
+@pytest.fixture
+def mocked_controller_and_ipv6():
+    controller_mock = Mock(name="controller")
+    controller_mock.get_settings.return_value = Mock()
+
+    property_mock = PropertyMock()
+    type(controller_mock.get_settings.return_value).ipv6 = property_mock
+
+    user_tier_mock = PropertyMock(return_value=PLUS_TIER)
+    type(controller_mock).user_tier = user_tier_mock
+
+    return controller_mock, property_mock
+
+
 def test_protocol_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_protocol):
     controller_mock, protocol_mock = mocked_controller_and_protocol
 
@@ -228,3 +242,42 @@ def test_vpn_accelerator_upgrade_tag_override_interactive_object_if_plan_upgrade
         assert feature_settings.vpn_accelerator_row.overridden_by_upgrade_tag
     else:
         assert not feature_settings.vpn_accelerator_row.overridden_by_upgrade_tag
+
+
+def test_ipv6_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_ipv6):
+    controller_mock, ipv6_mock = mocked_controller_and_ipv6
+
+    connection_settings = ConnectionSettings(controller_mock, Mock())
+    connection_settings.build_ipv6()
+
+    ipv6_mock.assert_called_once()
+
+
+@pytest.mark.parametrize("ipv6_enabled", [False, True])
+def test_ipv6_when_switch_is_set_to_initial_value(ipv6_enabled, mocked_controller_and_ipv6):
+    controller_mock, ipv6_mock = mocked_controller_and_ipv6
+
+    ipv6_mock.return_value = ipv6_enabled
+
+    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.Gtk.Switch.set_state") as set_state_mock:
+        connection_settings = ConnectionSettings(controller_mock, Mock())
+        connection_settings.build_ipv6()
+
+        set_state_mock.assert_called_once_with(ipv6_enabled)
+
+
+@pytest.mark.parametrize("ipv6_enabled", [False, True])
+def test_vpn_accelerator_when_switching_switch_state_and_ensure_changes_are_saved(ipv6_enabled, mocked_controller_and_ipv6):
+    controller_mock, ipv6_mock = mocked_controller_and_ipv6
+
+    ipv6_mock.return_value = ipv6_enabled
+
+    connection_settings = ConnectionSettings(controller_mock, Mock())
+    connection_settings.build_ipv6()
+
+    ipv6_mock.reset_mock()
+
+    connection_settings.ipv6_row.interactive_object.set_state(not ipv6_enabled)
+
+    ipv6_mock.assert_called_once_with(not ipv6_enabled)
+    controller_mock.save_settings.assert_called_once()

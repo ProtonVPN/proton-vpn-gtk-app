@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.5
-%define upstream_version 4.4.5
+%define version 4.4.6~rc1
+%define upstream_version 4.4.6rc1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -28,7 +28,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.33.3
+BuildRequires: python3-proton-vpn-api-core >= 0.33.11
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
@@ -36,7 +36,7 @@ BuildRequires: python3-packaging
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.33.3
+Requires: python3-proton-vpn-api-core >= 0.33.11
 Requires: python3-proton-vpn-logger
 Requires: librsvg2
 Requires: python3-packaging
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Aug 06 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.6~rc1
+- Add IPv6 toggle to settings window.
+
 * Thu Sep 05 2024 Luke Titley <luke.titley@proton.ch> 4.4.5
 - Switch back to old scheduler due to memory leak in new one (Josep Llaneras)
 - Show VPN accelerator setting disabled to free users (Josep Llaneras).

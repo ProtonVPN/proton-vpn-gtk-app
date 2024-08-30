@@ -45,6 +45,9 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         "connections for online gaming and similar purposes."
     SWITCH_PROTOCOL_IF_CONNECTION_ACTIVE_DESCRIPTION = "Protocol selection "\
         "is disabled while VPN is active. Disconnect to make changes."
+    IPV6_LABEL = "IPv6"
+    IPV6_DESCRIPTION = "Tunnels IPv6 traffic through the VPN. "\
+        "Can enhance compatibility with IPv6 networks."
 
     def __init__(self, controller: Controller, settings_window: "SettingsWindow"):
         super().__init__(self.CATEGORY_NAME)
@@ -53,6 +56,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         self.vpn_accelerator_row = None
         self.protocol_row = None
         self.moderate_nat_row = None
+        self.ipv6_row = None
         self._settings_window = settings_window
 
     def build_ui(self):
@@ -61,6 +65,8 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         self.build_protocol()
         self.build_vpn_accelerator()
         self.build_moderate_nat()
+        if self._controller.feature_flags.get("IPv6Support"):
+            self.build_ipv6()
 
     @property
     def protocol(self) -> str:
@@ -100,6 +106,19 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         settings = self._controller.get_settings()
         settings.features.moderate_nat = newvalue
         self._controller.save_settings(settings, update_certificate=True)
+
+    @property
+    def ipv6(self) -> str:
+        """Shortcut property that returns the current `ipv6` setting"""
+        return self._controller.get_settings().ipv6
+
+    @ipv6.setter
+    def ipv6(self, newvalue: str):
+        """Shortcut property that sets the `ipv6` setting and
+        stores to disk."""
+        settings = self._controller.get_settings()
+        settings.ipv6 = newvalue
+        self._controller.save_settings(settings)
 
     def build_protocol(self):
         """Builds and adds the `protocol` setting to the widget."""
@@ -166,3 +185,21 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         switch.set_state(self.moderate_nat)
         switch.connect("state-set", on_switch_state)
         self.pack_start(self.moderate_nat_row, False, False, 0)
+
+    def build_ipv6(self):
+        """Builds and adds the `ipv6` setting to the widget."""
+        def on_switch_state(_, new_value: bool):
+            self.ipv6 = new_value
+            self._settings_window.notify_user_with_reconnect_message()
+
+        switch = Gtk.Switch()
+
+        self.ipv6_row = SettingRow(
+            SettingName(self.IPV6_LABEL),
+            switch,
+            SettingDescription(self.IPV6_DESCRIPTION)
+        )
+
+        switch.set_state(self.ipv6)
+        switch.connect("state-set", on_switch_state)
+        self.pack_start(self.ipv6_row, False, False, 0)

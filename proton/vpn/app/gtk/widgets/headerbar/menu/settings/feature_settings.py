@@ -77,7 +77,7 @@ class KillSwitchSetting(SettingRow):  # noqa pylint: disable=too-many-instance-a
 
     @killswitch.setter
     def killswitch(self, newvalue: int):
-        """Shortcut property that sets the new `killswitch` setting and
+        """Shortcut property that sets the `killswitch` setting and
         stores to disk."""
         settings = self._controller.get_settings()
         settings.killswitch = newvalue
@@ -207,7 +207,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     @netshield.setter
     def netshield(self, newvalue: str):
-        """Shortcut property that sets the new `netshield` setting and
+        """Shortcut property that sets the `netshield` setting and
         stores to disk."""
         settings = self._controller.get_settings()
         settings.features.netshield = int(newvalue)
@@ -220,7 +220,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     @port_forwarding.setter
     def port_forwarding(self, newvalue: str):
-        """Shortcut property that sets the new `port_forwarding` setting and
+        """Shortcut property that sets the `port_forwarding` setting and
         stores to disk."""
         settings = self._controller.get_settings()
         settings.features.port_forwarding = newvalue
@@ -228,7 +228,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     def build_netshield(self):
         """Builds and adds the `netshield` setting to the widget.
-        It takes into considertaion the `clientconfig` value and if
+        It takes into consideration the `clientconfig` value and if
         the user has the expected `tier` to be used. If the user has a
         lower tier then required then an upgrade UI is displayed.
         """

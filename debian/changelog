@@ -1,26 +1,11 @@
-proton-vpn-gtk-app (4.4.5~rc4) unstable; urgency=low
+proton-vpn-gtk-app (4.4.5) unstable; urgency=low
 
-  * Switch back to old scheduler due to memory leak in new one.
-
- -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 30 Aug 2024 12:00:00 +0000
-
-proton-vpn-gtk-app (4.4.5~rc3) unstable; urgency=low
-
-  * Show VPN accelerator setting disabled to free users.
-
- -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 21 Aug 2024 12:00:00 +0000
-
-proton-vpn-gtk-app (4.4.5~rc2) unstable; urgency=low
-
-  * Don't display reconnect message when connected via WireGuard protocol and settings are switched.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 22 Aug 2024 09:00:00 +0000
-
-proton-vpn-gtk-app (4.4.5~rc1) unstable; urgency=low
-
+  * Switch back to old scheduler due to memory leak in new one (Josep Llaneras)
+  * Show VPN accelerator setting disabled to free users (Josep Llaneras).
+  * Don't display reconnect message when connected via WireGuard protocol and settings are switched (Alexandru Cheltuitor).
   * Changes due to api-core refactor (Luke titley and Josep Llaneras)
 
- -- Josep Llaneras <josep.llaneras@proton.ch>  Wed, 21 Aug 2024 10:00:00 +0000
+ -- Luke Titley <luke.titley@proton.ch>  Thu, 05 Sep 2024 12:30:00 +0000
 
 proton-vpn-gtk-app (4.4.4) unstable; urgency=low
 

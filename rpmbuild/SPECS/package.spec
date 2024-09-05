@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.5~rc4
-%define upstream_version 4.4.5rc4
+%define version 4.4.5
+%define upstream_version 4.4.5
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,16 +68,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Fri Aug 30 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.5~rc4
-- Switch back to old scheduler due to memory leak in new one.
-
-* Wed Aug 21 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.5~rc3
-- Show VPN accelerator setting disabled to free users.
-
-* Thu Aug 22 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.5~rc2
-- Don't display reconnect message when connected via WireGuard protocol and settings are switched.
-
-* Wed Aug 21 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.5~rc1
+* Thu Sep 05 2024 Luke Titley <luke.titley@proton.ch> 4.4.5
+- Switch back to old scheduler due to memory leak in new one (Josep Llaneras)
+- Show VPN accelerator setting disabled to free users (Josep Llaneras).
+- Don't display reconnect message when connected via WireGuard protocol and settings are switched (Alexandru Cheltuitor).
 - Changes due to api-core refactor (Luke titley and Josep Llaneras)
 
 * Wed Aug 14 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.4

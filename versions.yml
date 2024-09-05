@@ -1,37 +1,13 @@
-version: 4.4.5rc4
-time: 2024/08/30 12:00
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
+version: 4.4.5
+time: 2024/09/05 12:30
+author: Luke Titley
+email: luke.titley@proton.ch
 urgency: low
 stability: unstable
 description:
-  - Switch back to old scheduler due to memory leak in new one.
----
-version: 4.4.5rc3
-time: 2024/08/21 12:00
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- Show VPN accelerator setting disabled to free users.
----
-version: 4.4.5rc2
-time: 2024/08/22 09:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Don't display reconnect message when connected via WireGuard protocol and settings are switched.
----
-version: 4.4.5rc1
-time: 2024/08/21 10:00
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
+- Switch back to old scheduler due to memory leak in new one (Josep Llaneras)
+- Show VPN accelerator setting disabled to free users (Josep Llaneras).
+- Don't display reconnect message when connected via WireGuard protocol and settings are switched (Alexandru Cheltuitor).
 - Changes due to api-core refactor (Luke titley and Josep Llaneras)
 ---
 version: 4.4.4

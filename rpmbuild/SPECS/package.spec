@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.6~rc1
-%define upstream_version 4.4.6rc1
+%define version 4.4.6~rc2
+%define upstream_version 4.4.6rc2
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -28,7 +28,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.33.11
+BuildRequires: python3-proton-vpn-api-core >= 0.33.12
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
@@ -36,7 +36,7 @@ BuildRequires: python3-packaging
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.33.11
+Requires: python3-proton-vpn-api-core >= 0.33.12
 Requires: python3-proton-vpn-logger
 Requires: librsvg2
 Requires: python3-packaging
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Aug 09 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.6~rc2
+- When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh.
+
 * Tue Aug 06 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.6~rc1
 - Add IPv6 toggle to settings window.
 

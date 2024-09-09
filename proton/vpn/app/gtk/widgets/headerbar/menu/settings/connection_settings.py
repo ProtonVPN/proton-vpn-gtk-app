@@ -118,7 +118,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         stores to disk."""
         settings = self._controller.get_settings()
         settings.ipv6 = newvalue
-        self._controller.save_settings(settings)
+        self._controller.save_settings(settings, update_certificate=False)
 
     def build_protocol(self):
         """Builds and adds the `protocol` setting to the widget."""
@@ -190,7 +190,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         """Builds and adds the `ipv6` setting to the widget."""
         def on_switch_state(_, new_value: bool):
             self.ipv6 = new_value
-            self._settings_window.notify_user_with_reconnect_message()
+            self._settings_window.notify_user_with_reconnect_message(force_notify=True)
 
         switch = Gtk.Switch()
 

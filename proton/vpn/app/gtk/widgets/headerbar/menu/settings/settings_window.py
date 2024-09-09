@@ -116,12 +116,13 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
 
         self.add(self.main_container)
 
-    def notify_user_with_reconnect_message(self):
+    def notify_user_with_reconnect_message(self, force_notify: bool = False):
         """Notify user with a reconnect message when connected
         and when the settings changes require a starting a new connection.
         """
         if (
             self._controller.is_connection_active
             and not self._controller.current_connection.are_feature_updates_applied_when_active
+            or force_notify
         ):
             self._notification_bar.show_info_message(f"{RECONNECT_MESSAGE}")

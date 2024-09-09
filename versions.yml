@@ -1,3 +1,12 @@
+version: 4.4.6rc2
+time: 2024/08/09 11:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh.
+---
 version: 4.4.6rc1
 time: 2024/08/06 11:00
 author: Alexandru Cheltuitor

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.4.6~rc2) unstable; urgency=low
+
+  * When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 09 Aug 2024 11:00:00 +0000
+
 proton-vpn-gtk-app (4.4.6~rc1) unstable; urgency=low
 
   * Add IPv6 toggle to settings window.

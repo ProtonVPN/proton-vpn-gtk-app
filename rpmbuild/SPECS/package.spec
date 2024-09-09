@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.6~rc2
-%define upstream_version 4.4.6rc2
+%define version 4.4.6~rc3
+%define upstream_version 4.4.6rc3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,6 +68,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Aug 09 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.6~rc3
+- Add back scheduler after memory leak fix (Josep Llaneras).
+
 * Fri Aug 09 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.6~rc2
 - When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh.
 

@@ -23,9 +23,6 @@ from types import ModuleType
 from typing import Callable, Optional
 
 from gi.repository import GLib
-from proton.vpn import logging
-
-logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -50,20 +47,22 @@ class Scheduler:
     checks the lists for any tasks that should be executed and runs them.
     """
 
-    # The task list will be checked periodically according to this value.
-    _CHECK_INTERVAL_IN_SECS = 10
-
-    def __init__(self, glib: ModuleType = GLib):
+    def __init__(self, glib: ModuleType = GLib, check_interval_in_ms: int = 10_000):
+        self.check_interval_in_ms = check_interval_in_ms
         self._last_task_id: int = 0
         self._task_list = []
-        self._next_time_to_check_task_list: Optional[float] = None
         self._scheduler_handler_id: Optional[int] = None
         self._glib = glib
 
     @property
+    def task_list(self):
+        """Returns the list of tasks currently scheduled."""
+        return self._task_list
+
+    @property
     def is_started(self):
         """Returns whether the scheduler has been started or not."""
-        return bool(self._next_time_to_check_task_list)
+        return self._scheduler_handler_id is not None
 
     @property
     def number_of_remaining_tasks(self):
@@ -82,11 +81,11 @@ class Scheduler:
         if self.is_started:
             raise RuntimeError("Scheduler was already started.")
 
-        self._schedule_next_task_list_check()
+        self._schedule_periodic_task_list_check()
 
     def stop(self):
         """Stops the scheduler and discards all remaining tasks."""
-        self._cancel_next_task_list_check()
+        self._cancel_periodic_task_list_check()
         self._task_list = []
 
     def run_after(self, delay_in_seconds: float, task: Callable, *args, **kwargs):
@@ -103,17 +102,12 @@ class Scheduler:
         """
         def wrapper():
             task(*args, **kwargs)
+            return GLib.SOURCE_REMOVE
 
         self._last_task_id += 1
 
         record = TaskRecord(id=self._last_task_id, timestamp=timestamp, callable=wrapper)
         self._task_list.append(record)
-
-        # If the new task should be run before the next time to check the task list for
-        # tasks ready to be executed then the current check interval is shortened.
-        if self.is_started and record.timestamp < self._next_time_to_check_task_list:
-            self._cancel_next_task_list_check()
-            self._schedule_next_task_list_check()
 
         return record.id
 
@@ -124,26 +118,24 @@ class Scheduler:
                 self._task_list.remove(task)
                 break
 
-    def _cancel_next_task_list_check(self):
+    def _cancel_periodic_task_list_check(self):
         if self.is_started:
             self._glib.source_remove(self._scheduler_handler_id)
             self._scheduler_handler_id = None
-            self._next_time_to_check_task_list = None
 
-    def _schedule_next_task_list_check(self):
-        self._next_time_to_check_task_list = self._calculate_next_time_to_check_task_list()
-        seconds_to_wait = self._next_time_to_check_task_list - time.time()
-        self._scheduler_handler_id = self._glib.timeout_add_seconds(
-            max(0, seconds_to_wait),  # Avoid negative timeout.
-            self.run_tasks_ready_to_fire
+    def _schedule_periodic_task_list_check(self):
+        # Run the tasks ready to be executed immediately.
+        self._glib.idle_add(self.run_tasks_ready_to_fire)
+        # Schedule the next periodic checks (the first one happens at the end of the interval)
+        self._scheduler_handler_id = self._glib.timeout_add(
+            self.check_interval_in_ms,
+            self._run_tasks_ready_to_fire_periodically
         )
 
     def run_tasks_ready_to_fire(self):
         """
         Runs the tasks ready to be executed, that is the tasks with a timestamp lower or equal
         than the current unix time, and removes them from the list.
-
-        It also schedules the following task list check.
         """
         tasks_ready_to_fire = self.get_tasks_ready_to_fire()
 
@@ -155,23 +147,6 @@ class Scheduler:
         for task in tasks_ready_to_fire:
             self._task_list.remove(task)
 
-        self._schedule_next_task_list_check()
-
-    def get_next_task(self) -> Optional[TaskRecord]:
-        """Returns the timestamp of the next task to be executed."""
-        if not self._task_list:
-            return None
-
-        return min(self._task_list, key=lambda t: t.timestamp)
-
-    def _calculate_next_time_to_check_task_list(self) -> float:
-        if self._scheduler_handler_id is None:
-            return time.time()
-
-        next_time_to_check = time.time() + self._CHECK_INTERVAL_IN_SECS
-
-        next_task = self.get_next_task()
-        if next_task and next_task.timestamp < next_time_to_check:
-            next_time_to_check = next_task.timestamp
-
-        return next_time_to_check
+    def _run_tasks_ready_to_fire_periodically(self):
+        self.run_tasks_ready_to_fire()
+        return GLib.SOURCE_CONTINUE

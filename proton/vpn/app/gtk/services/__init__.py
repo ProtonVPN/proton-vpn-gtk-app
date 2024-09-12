@@ -27,6 +27,5 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from proton.vpn.app.gtk.services.reconnector.reconnector import VPNReconnector
-from proton.vpn.app.gtk.services.refresher.vpn_data_refresher import VPNDataRefresher
 
-__all__ = ["VPNDataRefresher", "VPNReconnector"]
+__all__ = ["VPNReconnector"]

@@ -25,7 +25,6 @@ from proton.vpn.session.client_config import ClientConfig
 
 from proton.vpn.session.servers import ServerList
 
-from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
 from proton.vpn.connection.states import Connected
 
@@ -73,10 +72,6 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
     controller_mock = Mock()
     api_mock = Mock()
     api_mock.account_data.vpn_credentials.pubkey_credentials.remaining_time_to_next_refresh = 1
-    controller_mock.vpn_data_refresher = VPNDataRefresher(
-        executor=Mock(),
-        proton_vpn_api=api_mock
-    )
     controller_mock.user_tier = PLUS_TIER
     api_mock.client_config.seconds_until_expiration = 10
     api_mock.feature_flags.seconds_until_expiration = 10
@@ -86,7 +81,7 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
         vpn_widget.load()
 
         # Simulate vpn-data-ready signal from VPNDataRefresher.
-        controller_mock.vpn_data_refresher.emit("vpn-data-ready", server_list, client_config)
+        controller_mock.enable_refresher.call_args[0][0](server_list)
 
         process_gtk_events()
 
@@ -159,4 +154,4 @@ def test_unload_resets_widget_state():
     controller_mock.disconnect.assert_called_once()  # (1)
     controller_mock.unregister_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (2)
     controller_mock.reconnector.disable.assert_called_once()  # (3)
-    controller_mock.vpn_data_refresher.disable.assert_called_once()  # (4)
+    controller_mock.disable_refresher.assert_called_once()  # (4)

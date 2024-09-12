@@ -21,8 +21,10 @@ from concurrent.futures import Future
 import subprocess  # nosec B404
 from importlib import metadata
 from types import TracebackType
+from typing import Optional, Type, Callable
 
-from typing import Optional, Type
+from gi.repository import GLib
+from proton.vpn.session import ServerList
 
 from proton.vpn import logging
 
@@ -34,7 +36,7 @@ from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.session.servers import LogicalServer
 from proton.vpn.session.session import FeatureFlags
 
-from proton.vpn.app.gtk.services import VPNDataRefresher, VPNReconnector
+from proton.vpn.app.gtk.services import VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
@@ -65,7 +67,6 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self,
         executor: AsyncExecutor,
         api: ProtonVPNAPI = None,
-        vpn_data_refresher: VPNDataRefresher = None,
         vpn_connector: VPNConnector = None,
         vpn_reconnector: VPNReconnector = None,
         app_config: AppConfig = None,
@@ -78,9 +79,6 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         )
 
         self._api = api or ProtonVPNAPI(client_type_metadata)
-        self.vpn_data_refresher = vpn_data_refresher or VPNDataRefresher(
-            self.executor, self._api
-        )
         self._connector = vpn_connector
         self.reconnector = vpn_reconnector
 
@@ -94,8 +92,8 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self._connector = await self._api.get_vpn_connector()
 
         self.reconnector = VPNReconnector(
+            vpn_data_refresher=self._api.refresher,
             vpn_connector=self._connector,
-            vpn_data_refresher=self.vpn_data_refresher,
             vpn_monitor=VPNMonitor(vpn_connector=self._connector),
             network_monitor=NetworkMonitor(pool=self.executor),
             session_monitor=SessionMonitor(),
@@ -204,7 +202,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
     def _connect_to_vpn(self, server: LogicalServer) -> Future:
         vpn_server = self._connector.get_vpn_server(
-            server, self.vpn_data_refresher.client_config
+            server, self._api.refresher.client_config
         )
 
         return self.executor.submit(
@@ -263,9 +261,14 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         return isinstance(self._connector.current_state, states.Disconnected)
 
     @property
+    def server_list(self) -> ServerList:
+        """Returns the current server list."""
+        return self._api.refresher.server_list
+
+    @property
     def feature_flags(self) -> FeatureFlags:
         """Returns object which specifies which features are to be enabled or not."""
-        return self.vpn_data_refresher.feature_flags
+        return self._api.refresher.feature_flags
 
     def submit_bug_report(self, bug_report: BugReportForm) -> Future:
         """Submits an issue report.
@@ -414,3 +417,44 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             return False
 
         return True
+
+    def enable_refresher(self, callback: Callable[[ServerList], None]):
+        """Enables the refresher and calls the callback when the server list is available."""
+        future = self.executor.submit(self._api.refresher.enable)
+
+        def on_refresher_enabled(future):
+            future.result()
+            GLib.idle_add(callback, self._api.server_list)
+
+        future.add_done_callback(on_refresher_enabled)
+
+    def disable_refresher(self):
+        """Disables the refresher."""
+        future = self.executor.submit(self._api.refresher.disable)
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
+    def set_server_list_updated_callback(self, callback: Callable[[], None]):
+        """Sets the callback that is called when the server list is updated."""
+        future = self.executor.submit(
+            self._api.refresher.set_server_list_updated_callback,
+            lambda: GLib.idle_add(callback)
+        )
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
+    def unset_server_list_updated_callback(self):
+        """Unsets the callback that is called when the server list is updated."""
+        future = self.executor.submit(self._api.refresher.set_server_list_updated_callback, None)
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
+    def set_server_loads_updated_callback(self, callback: Callable[[], None]):
+        """Sets the callback that is called when the server loads are updated."""
+        future = self.executor.submit(
+            self._api.refresher.set_server_loads_updated_callback,
+            lambda: GLib.idle_add(callback)
+        )
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
+    def unset_server_loads_updated_callback(self):
+        """Unsets the callback that is called when the server loads are updated."""
+        future = self.executor.submit(self._api.refresher.set_server_loads_updated_callback, None)
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))

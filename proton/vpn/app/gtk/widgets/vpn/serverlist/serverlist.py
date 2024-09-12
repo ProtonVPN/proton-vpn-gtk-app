@@ -21,6 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass, field
 from typing import List, Dict
 
@@ -28,7 +29,6 @@ from gi.repository import GLib, GObject
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.serverlist.country import CountryRow
 from proton.vpn.session.servers import Country, LogicalServer, ServerList
 from proton.vpn import logging
@@ -47,16 +47,10 @@ class ServerListWidgetState:
         user_tier: the tier the user has access to.
         server_list: list of servers to be displayed.
         country_rows: country rows indexed by country code.
-        new_server_list_handler_id: handler id obtained when connecting
-        to the new-server-list signal on VPNDataRefresher.
-        new_server_loads_handler_id: handler id obtained when connecting
-        to the new-server-loads signal on VPNDataRefresher.
     """
     user_tier: int = None
     server_list: ServerList = None
     country_rows: Dict[str, CountryRow] = field(default_factory=dict)
-    new_server_list_handler_id: int = None
-    new_server_loads_handler_id: int = None
 
     def get_server_by_id(self, server_id: str) -> LogicalServer:
         """Returns the server with the given name."""
@@ -124,20 +118,24 @@ class ServerListWidget(Gtk.ScrolledWindow):
             self._container.remove(row)
             row.destroy()
 
-    def _on_server_list_update(
-            self, _: VPNDataRefresher, server_list: ServerList
-    ):
+    def _on_server_list_update(self):
         """Whenever a new server list is received the UI should be updated."""
-        self._state.server_list = server_list
+        start = time.time()
+        self._state.server_list = self._controller.server_list
         self._build_country_rows()
+        logger.info(
+            "Full server list widget update completed in "
+            f"{time.time() - start:.2f} seconds."
+        )
 
-    def _on_server_loads_update(
-            self,
-            _vpn_data_refresher: VPNDataRefresher,
-            _server_list: ServerList
-    ):
+    def _on_server_loads_update(self):
+        start = time.time()
         for country_row in self._state.country_rows.values():
             country_row.update_server_loads()
+        logger.info(
+            "Partial server list widget update completed in "
+            f"{time.time() - start:.2f} seconds."
+        )
 
     def display(self, user_tier: int, server_list: int):
         """Update UI with the new server list."""
@@ -147,12 +145,8 @@ class ServerListWidget(Gtk.ScrolledWindow):
         )
 
         self._build_country_rows()
-        self._state.new_server_list_handler_id = self._controller.vpn_data_refresher.connect(
-            "new-server-list", self._on_server_list_update
-        )
-        self._state.new_server_loads_handler_id = self._controller.vpn_data_refresher.connect(
-            "new-server-loads", self._on_server_loads_update
-        )
+        self._controller.set_server_list_updated_callback(self._on_server_list_update)
+        self._controller.set_server_loads_updated_callback(self._on_server_loads_update)
 
     def _build_country_rows(self):
         self._remove_country_rows()
@@ -165,12 +159,8 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def unload(self):
         """Things to do before the widget is being removed from the window."""
-        self._controller.vpn_data_refresher.disconnect(
-            self._state.new_server_list_handler_id
-        )
-        self._controller.vpn_data_refresher.disconnect(
-            self._state.new_server_loads_handler_id
-        )
+        self._controller.unset_server_list_updated_callback()
+        self._controller.unset_server_loads_updated_callback()
 
     def _add_country_rows(self):
         """Adds country rows to the container."""

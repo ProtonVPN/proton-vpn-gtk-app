@@ -23,7 +23,6 @@ import pytest
 from proton.vpn.session.servers import ServerList
 from proton.vpn.connection.states import Connecting, Connected, Disconnected
 
-from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
 from tests.unit.testing_utils import process_gtk_events
 
@@ -146,10 +145,6 @@ SERVER_LIST_UPDATED = ServerList.from_dict({
 
 def test_server_list_widget_subscribes_to_server_list_updates_on_realize():
     mock_controller = Mock()
-    mock_controller.vpn_data_refresher = VPNDataRefresher(
-        executor=Mock(),
-        proton_vpn_api=Mock()
-    )
 
     server_list_widget = ServerListWidget(
         controller=mock_controller
@@ -160,7 +155,9 @@ def test_server_list_widget_subscribes_to_server_list_updates_on_realize():
     assert len(server_list_widget.country_rows) == 1
 
     # Simulate new-server-list signal.
-    mock_controller.vpn_data_refresher.emit("new-server-list", SERVER_LIST_UPDATED)
+    mock_controller.server_list = SERVER_LIST_UPDATED
+    server_list_updated_callback = mock_controller.set_server_list_updated_callback.call_args[0][0]
+    server_list_updated_callback()
 
     process_gtk_events()
 
@@ -180,8 +177,9 @@ def test_unload_disconnects_from_server_list_updates_and_removes_country_rows():
 
     server_list_widget.unload()
 
-    # Disconnects from new-server-list and new-server-loads signals.
-    assert mock_controller.vpn_data_refresher.disconnect.call_count == 2
+    # Assert that server list/loads update callbacks were unset
+    mock_controller.unset_server_list_updated_callback.assert_called_once_with()
+    mock_controller.unset_server_loads_updated_callback.assert_called_once_with()
 
 
 @pytest.mark.parametrize(

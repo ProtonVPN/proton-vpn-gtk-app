@@ -20,9 +20,9 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import random
-from typing import TYPE_CHECKING
 
 from gi.repository import GLib
+from proton.vpn.core.refresher import VPNDataRefresher
 
 from proton.vpn import logging
 from proton.vpn.connection import states, VPNConnection, events
@@ -33,9 +33,6 @@ from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonit
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
-
-if TYPE_CHECKING:
-    from proton.vpn.app.gtk.services import VPNDataRefresher
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +53,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
     def __init__(
             self,
             vpn_connector: VPNConnector,
-            vpn_data_refresher: "VPNDataRefresher",
+            vpn_data_refresher: VPNDataRefresher,
             vpn_monitor: VPNMonitor,
             network_monitor: NetworkMonitor,
             session_monitor: SessionMonitor,
@@ -206,7 +203,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
         self.schedule_reconnection()
 
     def _handle_certificate_expired(self):
-        self._vpn_data_refresher.force_refresh_certificate()
+        self._executor.submit(self._vpn_data_refresher.force_refresh_certificate)
 
     def _on_vpn_up(self):
         """Callback called by the VPN monitor when the VPN connection is up."""

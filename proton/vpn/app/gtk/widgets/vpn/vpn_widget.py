@@ -30,14 +30,12 @@ from proton.vpn import logging
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
-from proton.vpn.session.client_config import ClientConfig
 from proton.vpn.session.servers import ServerList
 
 if TYPE_CHECKING:
@@ -54,13 +52,10 @@ class VPNWidgetState:
     Attributes:
         is_widget_ready: flag set to True once the widget has been initialized.
         user_tier: tier of the logged-in user.
-        vpn_data_ready_handler_id: handler id obtained when connecting to the
-        vpn-data-ready signal on VPNDataRefresher.
-        after VPN disconnection.
+        load_start_time: timestamp set when the widget starts loading.
     """
     is_widget_ready: bool = False
     user_tier: int = None
-    vpn_data_ready_handler_id: int = None
     load_start_time: int = None
 
 
@@ -137,14 +132,11 @@ class VPNWidget(Gtk.Box):
 
         GLib.idle_add(update_widget)
 
-    def _on_vpn_data_ready(
+    def _on_refresher_enabled(
             self,
-            _vpn_data_refresher: VPNDataRefresher,
-            server_list: ServerList,
-            _client_config: ClientConfig
+            server_list: ServerList
     ):
-        if not self._state.is_widget_ready:
-            self.display(self._controller.user_tier, server_list)
+        self.display(self._controller.user_tier, server_list)
 
     def load(self):
         """
@@ -155,10 +147,7 @@ class VPNWidget(Gtk.Box):
         data has been downloaded, the widget will be automatically displayed.
         """
         self._state.load_start_time = time.time()
-        self._state.vpn_data_ready_handler_id = self._controller.vpn_data_refresher.connect(
-            "vpn-data-ready", self._on_vpn_data_ready
-        )
-        self._controller.vpn_data_refresher.enable()
+        self._controller.enable_refresher(self._on_refresher_enabled)
 
     def display(self, user_tier: int, server_list: ServerList):
         """Displays the widget once all necessary data from API has been acquired."""
@@ -188,13 +177,10 @@ class VPNWidget(Gtk.Box):
     def unload(self):
         """Unloads the widget and resets its state."""
         self._controller.disconnect()
-        self._controller.vpn_data_refresher.disconnect(
-            self._state.vpn_data_ready_handler_id
-        )
 
         self._controller.unregister_connection_status_subscriber(self)
         self._controller.reconnector.disable()
-        self._controller.vpn_data_refresher.disable()
+        self._controller.disable_refresher()
 
         for widget in [
             self.connection_status_widget,

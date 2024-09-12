@@ -23,8 +23,8 @@ import pytest
 from proton.vpn.connection import states, events
 from proton.vpn.connection.exceptions import AuthenticationError
 from proton.vpn.core.connection import VPNConnector
+from proton.vpn.core.refresher import VPNDataRefresher
 
-from proton.vpn.app.gtk.services import VPNDataRefresher
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.reconnector import VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
@@ -366,9 +366,10 @@ def test_on_vpn_drop_trigger_force_refresh_after_expired_certificate_event_is_re
 ):
     event = events.ExpiredCertificate()
 
-    reconnector = VPNReconnector(
+    VPNReconnector(
         vpn_connector, vpn_data_refresher, vpn_monitor, network_monitor, session_monitor, async_executor
     )
 
     vpn_monitor.vpn_drop_callback(event)
-    vpn_data_refresher.force_refresh_certificate.assert_called_once()
+
+    async_executor.submit.assert_called_with(vpn_data_refresher.force_refresh_certificate)

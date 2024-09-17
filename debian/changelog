@@ -1,27 +1,17 @@
-proton-vpn-gtk-app (4.4.6~rc3) unstable; urgency=low
+proton-vpn-gtk-app (4.5.0) unstable; urgency=low
 
   * Add back scheduler after memory leak fix (Josep Llaneras).
+  * When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh (Alexandru Cheltuitor).
+  * Add IPv6 toggle to settings window (Alexandru Cheltuitor).
 
- -- Josep Llaneras <josep.llaneras@proton.ch>  Fri, 09 Aug 2024 15:00:00 +0000
-
-proton-vpn-gtk-app (4.4.6~rc2) unstable; urgency=low
-
-  * When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 09 Aug 2024 11:00:00 +0000
-
-proton-vpn-gtk-app (4.4.6~rc1) unstable; urgency=low
-
-  * Add IPv6 toggle to settings window.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 06 Aug 2024 11:00:00 +0000
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 17 Sep 2024 10:00:00 +0000
 
 proton-vpn-gtk-app (4.4.5) unstable; urgency=low
 
-  * Switch back to old scheduler due to memory leak in new one (Josep Llaneras)
+  * Switch back to old scheduler due to memory leak in new one (Josep Llaneras).
   * Show VPN accelerator setting disabled to free users (Josep Llaneras).
   * Don't display reconnect message when connected via WireGuard protocol and settings are switched (Alexandru Cheltuitor).
-  * Changes due to api-core refactor (Luke titley and Josep Llaneras)
+  * Changes due to api-core refactor (Luke titley and Josep Llaneras).
 
  -- Luke Titley <luke.titley@proton.ch>  Thu, 05 Sep 2024 12:30:00 +0000
 

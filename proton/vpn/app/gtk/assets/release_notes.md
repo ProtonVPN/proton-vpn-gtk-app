@@ -1,3 +1,6 @@
+## 4.5.0
+- IPv6 support now available for WireGuard. Server support has expanded. If you experience issues, try switching servers and check IPv6 compatibility.
+
 ## 4.4.5
 - Minor UI and stability improvements
 

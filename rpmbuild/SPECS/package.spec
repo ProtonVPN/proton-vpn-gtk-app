@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.4.6~rc3
-%define upstream_version 4.4.6rc3
+%define version 4.5.0
+%define upstream_version 4.5.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -68,20 +68,16 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Fri Aug 09 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.6~rc3
+* Tue Sep 17 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.0
 - Add back scheduler after memory leak fix (Josep Llaneras).
-
-* Fri Aug 09 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.6~rc2
-- When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh.
-
-* Tue Aug 06 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.4.6~rc1
-- Add IPv6 toggle to settings window.
+- When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh (Alexandru Cheltuitor).
+- Add IPv6 toggle to settings window (Alexandru Cheltuitor).
 
 * Thu Sep 05 2024 Luke Titley <luke.titley@proton.ch> 4.4.5
-- Switch back to old scheduler due to memory leak in new one (Josep Llaneras)
+- Switch back to old scheduler due to memory leak in new one (Josep Llaneras).
 - Show VPN accelerator setting disabled to free users (Josep Llaneras).
 - Don't display reconnect message when connected via WireGuard protocol and settings are switched (Alexandru Cheltuitor).
-- Changes due to api-core refactor (Luke titley and Josep Llaneras)
+- Changes due to api-core refactor (Luke titley and Josep Llaneras).
 
 * Wed Aug 14 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.4.4
 - Request connection features via local agent if available. (Luke Titley and Josep Llaneras)

@@ -1,29 +1,13 @@
-version: 4.4.6rc3
-time: 2024/08/09 15:00
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
+version: 4.5.0
+time: 2024/09/17 10:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
 urgency: low
 stability: unstable
 description:
   - Add back scheduler after memory leak fix (Josep Llaneras).
----
-version: 4.4.6rc2
-time: 2024/08/09 11:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh.
----
-version: 4.4.6rc1
-time: 2024/08/06 11:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Add IPv6 toggle to settings window.
+  - When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh (Alexandru Cheltuitor).
+  - Add IPv6 toggle to settings window (Alexandru Cheltuitor).
 ---
 version: 4.4.5
 time: 2024/09/05 12:30
@@ -32,10 +16,10 @@ email: luke.titley@proton.ch
 urgency: low
 stability: unstable
 description:
-- Switch back to old scheduler due to memory leak in new one (Josep Llaneras)
+- Switch back to old scheduler due to memory leak in new one (Josep Llaneras).
 - Show VPN accelerator setting disabled to free users (Josep Llaneras).
 - Don't display reconnect message when connected via WireGuard protocol and settings are switched (Alexandru Cheltuitor).
-- Changes due to api-core refactor (Luke titley and Josep Llaneras)
+- Changes due to api-core refactor (Luke titley and Josep Llaneras).
 ---
 version: 4.4.4
 time: 2024/08/14 10:00

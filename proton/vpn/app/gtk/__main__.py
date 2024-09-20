@@ -24,6 +24,7 @@ import sys
 
 from proton.vpn.app.gtk.app import App
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 
 
@@ -31,7 +32,7 @@ def main():
     """Runs the app."""
 
     with AsyncExecutor() as executor:
-        controller = Controller.get(executor)
+        controller = Controller.get(executor, exception_handler=ExceptionHandler())
         sys.exit(App(controller).run(sys.argv))
 
 

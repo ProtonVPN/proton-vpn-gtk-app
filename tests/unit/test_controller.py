@@ -33,6 +33,7 @@ def test_autoconnect_feature(
 
     controller = Controller(
         executor=Mock(),
+        exception_handler=Mock(),
         api=Mock(),
         vpn_reconnector=Mock(),
         app_config=app_configuration_mock
@@ -53,6 +54,7 @@ def test_get_available_protocols_returns_list_of_protocols_which_excludes_wiregu
     mock_api = Mock()
     controller = Controller(
         executor=Mock(),
+        exception_handler=Mock(),
         api=mock_api,
         vpn_reconnector=Mock(),
         app_config=Mock(),
@@ -71,6 +73,7 @@ def test_get_available_protocols_returns_list_of_protocols_which_includes_wiregu
     mock_api = Mock()
     controller = Controller(
         executor=Mock(),
+        exception_handler=Mock(),
         api=Mock(),
         vpn_reconnector=Mock(),
         app_config=Mock(),
@@ -89,6 +92,7 @@ def test_get_available_protocols_returns_list_of_protocols_which_includes_wiregu
     mock_api = Mock()
     controller = Controller(
         executor=Mock(),
+        exception_handler=Mock(),
         api=mock_api,
         vpn_reconnector=Mock(),
         app_config=Mock(),

@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-from concurrent.futures import Future
 import subprocess  # nosec B404
+from concurrent.futures import Future
 from importlib import metadata
 from types import TracebackType
 from typing import Optional, Type, Callable
@@ -42,6 +42,7 @@ from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonit
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 from proton.vpn.core.settings import Settings
 from proton.vpn.app.gtk.utils import semver, glib
+from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
@@ -57,15 +58,16 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     DEFAULT_BACKEND = "linuxnetworkmanager"
 
     @staticmethod
-    def get(executor: AsyncExecutor):
+    def get(executor: AsyncExecutor, exception_handler: "ExceptionHandler") -> Controller:
         """Preferred method to get an instance of Controller."""
-        controller = Controller(executor)
+        controller = Controller(executor, exception_handler)
         executor.submit(controller.initialize_vpn_connector).result()
         return controller
 
     def __init__(
         self,
         executor: AsyncExecutor,
+        exception_handler: ExceptionHandler,
         api: ProtonVPNAPI = None,
         vpn_connector: VPNConnector = None,
         vpn_reconnector: VPNReconnector = None,
@@ -73,6 +75,9 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         cache_handler: CacheHandler = None
     ):  # pylint: disable=too-many-arguments
         self.executor = executor
+
+        self.exception_handler = exception_handler
+        self.exception_handler.controller = self
 
         client_type_metadata = ClientTypeMetadata(
             type="gui", version=semver.from_pep440(self.app_version)
@@ -418,19 +423,32 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
         return True
 
-    def enable_refresher(self, callback: Callable[[ServerList], None]):
+    def enable_refresher(self, callback: Callable[[Future], None]):
         """Enables the refresher and calls the callback when the server list is available."""
-        future = self.executor.submit(self._api.refresher.enable)
+        def error_callback(exception: Exception):
+            GLib.idle_add(
+                self.exception_handler.handle_exception,
+                type(exception), exception, exception.__traceback__
+            )
+
+        async def enable():
+            self._api.refresher.set_error_callback(error_callback)
+            await self._api.refresher.enable()
+
+        future = self.executor.submit(enable)
 
         def on_refresher_enabled(future):
-            future.result()
-            GLib.idle_add(callback, self._api.server_list)
+            GLib.idle_add(callback, future)
 
         future.add_done_callback(on_refresher_enabled)
 
     def disable_refresher(self):
         """Disables the refresher."""
-        future = self.executor.submit(self._api.refresher.disable)
+        async def disable():
+            await self._api.refresher.disable()
+            self._api.refresher.unset_error_callback()
+
+        future = self.executor.submit(disable)
         future.add_done_callback(lambda f: GLib.idle_add(f.result))
 
     def set_server_list_updated_callback(self, callback: Callable[[], None]):

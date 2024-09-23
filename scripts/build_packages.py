@@ -52,7 +52,7 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.34.0
+BuildRequires: python3-proton-vpn-api-core >= 0.35.1
 BuildRequires: python3-proton-vpn-logger
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
@@ -60,7 +60,7 @@ BuildRequires: python3-packaging
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.34.0
+Requires: python3-proton-vpn-api-core >= 0.35.1
 Requires: python3-proton-vpn-logger
 Requires: librsvg2
 Requires: python3-packaging

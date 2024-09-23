@@ -18,16 +18,16 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import sys
 import threading
-from collections import namedtuple
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 from types import SimpleNamespace
 
 import pytest
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
     ProtonAPIAuthenticationNeeded
 
-from proton.vpn.app.gtk.widgets.main.exception_handler import ExceptionHandler
+from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
+from tests.unit.testing_utils import process_gtk_events
 
 
 def test_enable_exception_handler_adds_excepthooks():
@@ -45,16 +45,19 @@ def test_enable_exception_handler_adds_excepthooks():
         threading.excepthook = original_threading_excepthook
 
 
-@patch("proton.vpn.app.gtk.widgets.main.exception_handler.ExceptionHandler.handle_exception")
-def test_handle_thread_exception_delegates_to_handle_exception(patched_handle_exception):
-    exception_handler = ExceptionHandler(main_widget=None)
+def test_handle_thread_exception_delegates_to_handle_exception():
+    def raise_exception():
+        raise Exception("")
 
-    ExceptHookArgs = namedtuple("ExceptHookArgs", "exc_type exc_value exc_traceback thread")
-    args = ExceptHookArgs(exc_type=Exception, exc_value=Exception(""), exc_traceback=None, thread=None)
-    exception_handler.handle_thread_exception(args)
+    thread = threading.Thread(target=raise_exception)
+    main_widget = Mock()
 
-    patched_handle_exception.assert_called_once_with(args.exc_type, args.exc_value, args.exc_traceback)
-
+    with ExceptionHandler(main_widget=main_widget):
+        thread.start()
+        thread.join()
+        process_gtk_events()
+        main_widget.notifications.show_error_dialog.assert_called_once()
+    main_widget.notifications.show_error_dialog.assert_called_once()
 
 def test_disable_exception_handler_removes_excepthooks():
     exception_handler = ExceptionHandler(main_widget=None)

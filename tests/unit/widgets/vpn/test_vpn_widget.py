@@ -16,9 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-import time
-from unittest.mock import Mock, patch
+from concurrent.futures import Future
 from threading import Event
+from unittest.mock import Mock, patch
 
 import pytest
 from proton.vpn.session.client_config import ClientConfig
@@ -81,11 +81,12 @@ def test_load_enables_vpn_data_refresher_and_displays_widget_when_data_is_ready(
         vpn_widget.load()
 
         # Simulate vpn-data-ready signal from VPNDataRefresher.
-        controller_mock.enable_refresher.call_args[0][0](server_list)
+        callback = controller_mock.enable_refresher.call_args[0][0]
+        callback(Mock(Future))
 
         process_gtk_events()
 
-        vpn_widget.display.assert_called_with(PLUS_TIER, server_list)
+        vpn_widget.display.assert_called_with(PLUS_TIER, controller_mock.server_list)
 
 
 def test_display_initializes_widget(server_list):

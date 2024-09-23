@@ -21,12 +21,19 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import sys
 import threading
+from typing import TYPE_CHECKING
+
+from gi.repository import GLib
 
 from proton.vpn.connection.exceptions import AuthenticationError
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
     ProtonAPIAuthenticationNeeded
 from proton.vpn.session.exceptions import ServerNotFoundError
 from proton.vpn import logging
+
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.controller import Controller
+    from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 
 logger = logging.getLogger(__name__)
 
@@ -46,12 +53,12 @@ class ExceptionHandler:
         "If the issue persists please try to sign out and in."
     )
 
-    def __init__(self, main_widget, controller=None):
+    def __init__(self, main_widget: "MainWidget" = None, controller: "Controller" = None):
         super().__init__()
-        self._main_widget = main_widget
+        self.main_widget = main_widget
+        self.controller = controller
         self._previous_sys_excepthook = sys.excepthook
         self._previous_threading_excepthook = threading.excepthook
-        self._controller = controller
 
     def enable(self):
         """
@@ -88,7 +95,10 @@ class ExceptionHandler:
         :param args: dictionary passed to threading.excepthook. For more info:
         https://docs.python.org/3/library/threading.html#threading.excepthook
         """
-        return self.handle_exception(args.exc_type, args.exc_value, args.exc_traceback)
+        GLib.idle_add(
+            self.handle_exception,
+            args.exc_type, args.exc_value, args.exc_traceback
+        )
 
     def handle_exception(self, exc_type, exc_value, exc_traceback):
         """
@@ -107,7 +117,7 @@ class ExceptionHandler:
                 category="API", event="ERROR",
                 exc_info=(exc_type, exc_value, exc_traceback)
             )
-            self._main_widget.session_expired()
+            self.main_widget.session_expired()
             return
 
         if issubclass(exc_type, ProtonAPINotReachable):
@@ -127,9 +137,10 @@ class ExceptionHandler:
             raise exc_value if exc_value else exc_type
 
     def _on_proton_api_not_reachable(self, exc_type, exc_value, exc_traceback):
-        self._main_widget.notifications.show_error_message(
-            self.PROTON_API_NOT_REACHABLE_MESSAGE,
-        )
+        if self.main_widget:
+            self.main_widget.notifications.show_error_message(
+                self.PROTON_API_NOT_REACHABLE_MESSAGE,
+            )
         logger.warning(
             "API not reachable.",
             category="API", event="ERROR",
@@ -137,7 +148,8 @@ class ExceptionHandler:
         )
 
     def _on_proton_api_error(self, exc_type, exc_value, exc_traceback):
-        self._main_widget.notifications.show_error_message(exc_value.error)
+        if self.main_widget:
+            self.main_widget.notifications.show_error_message(exc_value.error)
         logger.error(
             exc_value.error,
             category="APP", event="ERROR",
@@ -145,10 +157,11 @@ class ExceptionHandler:
         )
 
     def _on_server_not_found(self, exc_type, exc_value, exc_traceback):
-        self._main_widget.notifications.show_error_dialog(
-            title=self.SERVER_NOT_FOUND_TITLE,
-            message=str(exc_value)
-        )
+        if self.main_widget:
+            self.main_widget.notifications.show_error_dialog(
+                title=self.SERVER_NOT_FOUND_TITLE,
+                message=str(exc_value)
+            )
         logger.error(
             exc_value,
             category="APP", event="ERROR",
@@ -156,10 +169,11 @@ class ExceptionHandler:
         )
 
     def _on_vpn_authentication_error(self, exc_type, exc_value, exc_traceback):
-        self._main_widget.notifications.show_error_dialog(
-            title=self.VPN_AUTHENTICATION_ERROR_TITLE,
-            message=self.VPN_AUTHENTICATION_ERROR_MESSAGE
-        )
+        if self.main_widget:
+            self.main_widget.notifications.show_error_dialog(
+                title=self.VPN_AUTHENTICATION_ERROR_TITLE,
+                message=self.VPN_AUTHENTICATION_ERROR_MESSAGE
+            )
 
         logger.error(
             exc_value,
@@ -168,16 +182,24 @@ class ExceptionHandler:
         )
 
     def _on_exception(self, exc_type, exc_value, exc_traceback):
-        self._main_widget.notifications.show_error_dialog(
-            title=self.GENERIC_ERROR_TITLE,
-            message=self.GENERIC_ERROR_MESSAGE,
-        )
+        if self.main_widget:
+            self.main_widget.notifications.show_error_dialog(
+                title=self.GENERIC_ERROR_TITLE,
+                message=self.GENERIC_ERROR_MESSAGE,
+            )
         logger.critical(
             "Unexpected error.",
             category="APP", event="CRASH",
             exc_info=(exc_type, exc_value, exc_traceback)
         )
 
-        if self._controller:
-            self._controller.send_error_to_proton(
+        if self.controller:
+            self.controller.send_error_to_proton(
                 (exc_type, exc_value, exc_traceback))
+
+    def __enter__(self):
+        self.enable()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.disable()

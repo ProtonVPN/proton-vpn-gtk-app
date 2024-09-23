@@ -20,6 +20,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from concurrent.futures import Future
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 import time
@@ -134,9 +135,10 @@ class VPNWidget(Gtk.Box):
 
     def _on_refresher_enabled(
             self,
-            server_list: ServerList
+            future: Future
     ):
-        self.display(self._controller.user_tier, server_list)
+        future.result()
+        self.display(self._controller.user_tier, self._controller.server_list)
 
     def load(self):
         """

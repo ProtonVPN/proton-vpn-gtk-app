@@ -11,11 +11,10 @@ setup(
     version=VERSION,
     description="Proton VPN GTK app",
     author="Proton AG",
-    author_email="contact@protonmail.com",
+    author_email="opensource@proton.me",
     url="https://github.com/ProtonVPN/proton-vpn-gtk-app",
     install_requires=[
         "proton-vpn-api-core",
-        "proton-vpn-logger",
         "pygobject",
         "pycairo",
         "dbus-python",

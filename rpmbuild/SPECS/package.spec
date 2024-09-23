@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.5.1~rc2
-%define upstream_version 4.5.1rc2
+%define version 4.5.1~rc3
+%define upstream_version 4.5.1rc3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -22,24 +22,23 @@ Source4: %{logo_filename}
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{unmangled_name}-%{version}-%{release}-buildroot
 
-BuildRequires: gtk3
 BuildRequires: desktop-file-utils
 BuildRequires: python3-devel
 BuildRequires: python3-setuptools
+BuildRequires: gtk3
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.35.1
-BuildRequires: python3-proton-vpn-logger
+BuildRequires: python3-proton-vpn-api-core >= 0.35.2
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
 
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.35.1
-Requires: python3-proton-vpn-logger
+Requires: python3-proton-vpn-api-core >= 0.35.2
 Requires: librsvg2
 Requires: python3-packaging
+
 Suggests: libappindicator-gtk3
 
 %{?python_disable_dependency_generator}
@@ -68,11 +67,14 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Mon Sep 23 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.1~rc3
+- Drop logger package.
+
 * Mon Sep 23 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.5.1~rc2
-- Fix regression when moving refreshers (Josep Llaneras).
+- Fix regression when moving refreshers.
 
 * Tue Sep 17 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.5.1~rc1
-- Move refreshers to core API (Josep Llaneras).
+- Move refreshers to core API.
 
 * Tue Sep 17 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.0
 - Add back scheduler after memory leak fix (Josep Llaneras).

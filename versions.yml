@@ -1,3 +1,12 @@
+version: 4.5.1rc3
+time: 2024/09/23 12:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Drop logger package.
+---
 version: 4.5.1rc2
 time: 2024/09/23 11:00
 author: Josep Llaneras
@@ -5,7 +14,7 @@ email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
-  - Fix regression when moving refreshers (Josep Llaneras).
+- Fix regression when moving refreshers.
 ---
 version: 4.5.1rc1
 time: 2024/09/17 15:00
@@ -14,7 +23,7 @@ email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
-- Move refreshers to core API (Josep Llaneras).
+- Move refreshers to core API.
 ---
 version: 4.5.0
 time: 2024/09/17 10:00
@@ -23,9 +32,9 @@ email: alexandru.cheltuitor@proton.ch
 urgency: low
 stability: unstable
 description:
-  - Add back scheduler after memory leak fix (Josep Llaneras).
-  - When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh (Alexandru Cheltuitor).
-  - Add IPv6 toggle to settings window (Alexandru Cheltuitor).
+- Add back scheduler after memory leak fix (Josep Llaneras).
+- When toggling IPv6 ensure that user is notified that a reconnection is necessary and prevent certificate refresh (Alexandru Cheltuitor).
+- Add IPv6 toggle to settings window (Alexandru Cheltuitor).
 ---
 version: 4.4.5
 time: 2024/09/05 12:30

@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.5.1~rc4) unstable; urgency=low
+
+  * Drop secret service package.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 24 Sep 2024 16:00:00 +0000
+
 proton-vpn-gtk-app (4.5.1~rc3) unstable; urgency=low
 
   * Drop logger package.

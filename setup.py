@@ -26,7 +26,7 @@ setup(
     extras_require={
         "development": [
             "proton-core-internal",
-            "proton-keyring-linux-secretservice",
+            "proton-keyring-linux",
             "proton-vpn-network-manager",
             "proton-vpn-killswitch-network-manager",
             "proton-vpn-killswitch-network-manager-wireguard",

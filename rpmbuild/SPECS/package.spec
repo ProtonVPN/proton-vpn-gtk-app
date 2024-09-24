@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.5.1~rc3
-%define upstream_version 4.5.1rc3
+%define version 4.5.1~rc4
+%define upstream_version 4.5.1rc4
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Tue Sep 24 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.1~rc4
+- Drop secret service package.
+
 * Mon Sep 23 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.1~rc3
 - Drop logger package.
 

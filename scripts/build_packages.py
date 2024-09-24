@@ -46,24 +46,23 @@ Source4: %{{logo_filename}}
 BuildArch: noarch
 BuildRoot: %{{_tmppath}}/%{{unmangled_name}}-%{{version}}-%{{release}}-buildroot
 
-BuildRequires: gtk3
 BuildRequires: desktop-file-utils
 BuildRequires: python3-devel
 BuildRequires: python3-setuptools
+BuildRequires: gtk3
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.35.1
-BuildRequires: python3-proton-vpn-logger
+BuildRequires: python3-proton-vpn-api-core >= 0.35.2
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
 
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.35.1
-Requires: python3-proton-vpn-logger
+Requires: python3-proton-vpn-api-core >= 0.35.2
 Requires: librsvg2
 Requires: python3-packaging
+
 Suggests: libappindicator-gtk3
 
 %{{?python_disable_dependency_generator}}

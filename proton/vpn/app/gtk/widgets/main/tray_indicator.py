@@ -192,7 +192,7 @@ class TrayIndicator:
 
             # 0 = Quick Connect
             # 1 = Disconnect
-            # 2 = Seperator
+            # 2 = Separator
             # 3 = First pinned server
             base_pos = 3
 

@@ -104,7 +104,7 @@ class App(Gtk.Application):
         self.window.present()
         self.emit("app-ready")
 
-    def do_handle_local_options(self, options: GLib.VariantDict): # pylint: disable=arguments-differ
+    def do_handle_local_options(self, options: GLib.VariantDict):  # noqa: E501 pylint: disable=arguments-differ
         """
         Handles the options defined in add_options
         Returns:
@@ -132,7 +132,7 @@ class App(Gtk.Application):
     @GObject.Signal(name="app-ready")
     def app_ready(self):
         """Signal emitted when the app is ready for interaction."""
-        if self._start_minimized and (self.tray_indicator is not None):
+        if self._start_minimized and self.tray_indicator is not None:
             self.window.hide()
 
     def quit_safely(self):

@@ -1,3 +1,13 @@
+version: 4.5.1rc5
+time: 2024/09/25 13:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Merge community MR to allow the app to start minimized based on CLI arguments (thanks to https://github.com/hsiurebgjk).
+- MR https://github.com/ProtonVPN/proton-vpn-gtk-app/pull/58.
+---
 version: 4.5.1rc4
 time: 2024/09/24 16:00
 author: Alexandru Cheltuitor

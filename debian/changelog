@@ -1,3 +1,10 @@
+proton-vpn-gtk-app (4.5.1~rc5) unstable; urgency=low
+
+  * Merge community MR to allow the app to start minimized based on CLI arguments (thanks to https://github.com/hsiurebgjk).
+  * MR https://github.com/ProtonVPN/proton-vpn-gtk-app/pull/58.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 25 Sep 2024 13:00:00 +0000
+
 proton-vpn-gtk-app (4.5.1~rc4) unstable; urgency=low
 
   * Drop secret service package.

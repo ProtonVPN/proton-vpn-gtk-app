@@ -1,3 +1,12 @@
+version: 4.5.1rc6
+time: 2024/09/26 10:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Remove killswitch dependencies in setup.py as packages have been deprecated.
+---
 version: 4.5.1rc5
 time: 2024/09/25 13:00
 author: Alexandru Cheltuitor

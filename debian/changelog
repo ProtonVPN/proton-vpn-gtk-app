@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.5.1~rc6) unstable; urgency=low
+
+  * Remove killswitch dependencies in setup.py as packages have been deprecated.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 26 Sep 2024 10:00:00 +0000
+
 proton-vpn-gtk-app (4.5.1~rc5) unstable; urgency=low
 
   * Merge community MR to allow the app to start minimized based on CLI arguments (thanks to https://github.com/hsiurebgjk).

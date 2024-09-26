@@ -28,8 +28,6 @@ setup(
             "proton-core-internal",
             "proton-keyring-linux",
             "proton-vpn-network-manager",
-            "proton-vpn-killswitch-network-manager",
-            "proton-vpn-killswitch-network-manager-wireguard",
             "proton-vpn-local-agent",
             "behave",
             "pyotp",

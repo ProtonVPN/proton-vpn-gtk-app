@@ -1,39 +1,14 @@
-proton-vpn-gtk-app (4.5.1~rc6) unstable; urgency=low
+proton-vpn-gtk-app (4.6.0) unstable; urgency=low
 
-  * Remove killswitch dependencies in setup.py as packages have been deprecated.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 26 Sep 2024 10:00:00 +0000
-
-proton-vpn-gtk-app (4.5.1~rc5) unstable; urgency=low
-
+  * Remove killswitch dependencies in setup.py as packages have been deprecated (Alexandru Cheltuitor).
   * Merge community MR to allow the app to start minimized based on CLI arguments (thanks to https://github.com/hsiurebgjk).
-  * MR https://github.com/ProtonVPN/proton-vpn-gtk-app/pull/58.
+  * MR https://github.com/ProtonVPN/proton-vpn-gtk-app/pull/58 (Alexandru Cheltuitor).
+  * Drop secret service package (Alexandru Cheltuitor).
+  * Drop logger package (Alexandru Cheltuitor).
+  * Fix regression when moving refreshers (Josep Llaneras).
+  * Move refreshers to core API (Josep Llaneras).
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 25 Sep 2024 13:00:00 +0000
-
-proton-vpn-gtk-app (4.5.1~rc4) unstable; urgency=low
-
-  * Drop secret service package.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Tue, 24 Sep 2024 16:00:00 +0000
-
-proton-vpn-gtk-app (4.5.1~rc3) unstable; urgency=low
-
-  * Drop logger package.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 23 Sep 2024 12:00:00 +0000
-
-proton-vpn-gtk-app (4.5.1~rc2) unstable; urgency=low
-
-  * Fix regression when moving refreshers.
-
- -- Josep Llaneras <josep.llaneras@proton.ch>  Mon, 23 Sep 2024 11:00:00 +0000
-
-proton-vpn-gtk-app (4.5.1~rc1) unstable; urgency=low
-
-  * Move refreshers to core API.
-
- -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 17 Sep 2024 15:00:00 +0000
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Mon, 30 Sep 2024 10:00:00 +0000
 
 proton-vpn-gtk-app (4.5.0) unstable; urgency=low
 

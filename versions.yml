@@ -1,57 +1,17 @@
-version: 4.5.1rc6
-time: 2024/09/26 10:00
+version: 4.6.0
+time: 2024/09/30 10:00
 author: Alexandru Cheltuitor
 email: alexandru.cheltuitor@proton.ch
 urgency: low
 stability: unstable
 description:
-- Remove killswitch dependencies in setup.py as packages have been deprecated.
----
-version: 4.5.1rc5
-time: 2024/09/25 13:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
+- Remove killswitch dependencies in setup.py as packages have been deprecated (Alexandru Cheltuitor).
 - Merge community MR to allow the app to start minimized based on CLI arguments (thanks to https://github.com/hsiurebgjk).
-- MR https://github.com/ProtonVPN/proton-vpn-gtk-app/pull/58.
----
-version: 4.5.1rc4
-time: 2024/09/24 16:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Drop secret service package.
----
-version: 4.5.1rc3
-time: 2024/09/23 12:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Drop logger package.
----
-version: 4.5.1rc2
-time: 2024/09/23 11:00
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- Fix regression when moving refreshers.
----
-version: 4.5.1rc1
-time: 2024/09/17 15:00
-author: Josep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- Move refreshers to core API.
+- MR https://github.com/ProtonVPN/proton-vpn-gtk-app/pull/58 (Alexandru Cheltuitor).
+- Drop secret service package (Alexandru Cheltuitor).
+- Drop logger package (Alexandru Cheltuitor).
+- Fix regression when moving refreshers (Josep Llaneras).
+- Move refreshers to core API (Josep Llaneras).
 ---
 version: 4.5.0
 time: 2024/09/17 10:00

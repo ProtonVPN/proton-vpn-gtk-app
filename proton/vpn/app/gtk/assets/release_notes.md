@@ -1,3 +1,6 @@
+## 4.6.0
+- Improved error tracking to ensure better diagnostics and faster resolution for connection failures.
+
 ## 4.5.0
 - IPv6 support now available for WireGuard. Server support has expanded. If you experience issues, try switching servers and check IPv6 compatibility.
 

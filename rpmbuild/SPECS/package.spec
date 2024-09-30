@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.5.1~rc6
-%define upstream_version 4.5.1rc6
+%define version 4.6.0
+%define upstream_version 4.6.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,24 +67,14 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Thu Sep 26 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.1~rc6
-- Remove killswitch dependencies in setup.py as packages have been deprecated.
-
-* Wed Sep 25 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.1~rc5
+* Mon Sep 30 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.6.0
+- Remove killswitch dependencies in setup.py as packages have been deprecated (Alexandru Cheltuitor).
 - Merge community MR to allow the app to start minimized based on CLI arguments (thanks to https://github.com/hsiurebgjk).
-- MR https://github.com/ProtonVPN/proton-vpn-gtk-app/pull/58.
-
-* Tue Sep 24 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.1~rc4
-- Drop secret service package.
-
-* Mon Sep 23 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.1~rc3
-- Drop logger package.
-
-* Mon Sep 23 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.5.1~rc2
-- Fix regression when moving refreshers.
-
-* Tue Sep 17 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.5.1~rc1
-- Move refreshers to core API.
+- MR https://github.com/ProtonVPN/proton-vpn-gtk-app/pull/58 (Alexandru Cheltuitor).
+- Drop secret service package (Alexandru Cheltuitor).
+- Drop logger package (Alexandru Cheltuitor).
+- Fix regression when moving refreshers (Josep Llaneras).
+- Move refreshers to core API (Josep Llaneras).
 
 * Tue Sep 17 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.5.0
 - Add back scheduler after memory leak fix (Josep Llaneras).

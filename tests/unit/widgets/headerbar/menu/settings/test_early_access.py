@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from unittest.mock import patch, Mock, PropertyMock
 import pytest
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access import DistroManager, EarlyAccessDialog, EarlyAccessSwitch
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access import DistroManager, EarlyAccessDialog, EarlyAccessWidget, ToggleWidget
 
 @pytest.fixture
 def early_access_raw_data():
@@ -116,11 +116,11 @@ class TestEarlyAccessDialog:
         mock_show.assert_called_once()
 
 
-class TestEarlyAccessSwitch:
+class TestEarlyAccessWidget:
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessSwitch._find_installed_repo_packages")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget._find_installed_repo_packages")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.shutil.which")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessSwitch._get_system_distro_manager")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget._get_system_distro_manager")
     @pytest.mark.parametrize("which_return,installed_repo_packages,distro_manager,can_early_access_be_displayed", [
         pytest.param(True, (True, False), Mock(), True),
         pytest.param(True, (False, True), Mock(), True),
@@ -143,31 +143,41 @@ class TestEarlyAccessSwitch:
         mock_get_system_distro_manager.return_value = distro_manager
         mock_which.return_value = which_return
         mock_find_installed_repo_packages.return_value = installed_repo_packages
-        switch = EarlyAccessSwitch(Mock(), distro_manager, Mock())
+        switch = EarlyAccessWidget(Mock(), distro_manager, Mock())
 
         assert switch.can_early_access_be_displayed() == can_early_access_be_displayed
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessSwitch.set_state")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.set_state")
     @pytest.mark.parametrize("early_access_enabled_value", [True, False])
     def test_set_initial_state_based_on_if_early_access_is_enabled_or_not(self, set_state, early_access_enabled_value):
         with patch(
-            "proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessSwitch.early_access_enabled",
-            new_callable=PropertyMock(return_value=early_access_enabled_value)
+            "proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.get_setting",
+            return_value=early_access_enabled_value
         ):
-            switch = EarlyAccessSwitch(Mock(), Mock(), Mock())
+            switch = EarlyAccessWidget(Mock(), Mock(), Mock())
             switch.set_initial_state()
             set_state.assert_called_once_with(early_access_enabled_value)
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessSwitch._process")
-    def test_enable_early_access(self, mock_process, distro_manager):
-        switch = EarlyAccessSwitch(Mock(), distro_manager, Mock())
-        switch.enable_early_access()
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.get_setting")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget._process")
+    def test_enable_early_access(self, mock_process, get_setting_mock, distro_manager):
+        with patch.object(ToggleWidget, '__init__', return_value=None) as mock_parent_init:
+            get_setting_mock.return_value = False
+            EarlyAccessWidget(Mock(), distro_manager, Mock())
+            callback = mock_parent_init.call_args[1]["callback"]
 
-        mock_process.assert_called_once_with(distro_manager.beta_url, distro_manager.stable_package_name, early_access_enabled=True)
+            callback(None, True, None)
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessSwitch._process")
-    def test_disable_early_access(self, mock_process, distro_manager):
-        switch = EarlyAccessSwitch(Mock(), distro_manager, Mock())
-        switch.disable_early_access()
+            mock_process.assert_called_once_with(distro_manager.beta_url, distro_manager.stable_package_name, early_access_enabled=True)
 
-        mock_process.assert_called_once_with(distro_manager.stable_url, distro_manager.beta_package_name)
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.get_setting")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget._process")
+    def test_disable_early_access(self, mock_process, get_setting_mock, distro_manager):
+        with patch.object(ToggleWidget, '__init__', return_value=None) as mock_parent_init:
+            get_setting_mock.return_value = True
+            EarlyAccessWidget(Mock(), distro_manager, Mock())
+            callback = mock_parent_init.call_args[1]["callback"]
+
+            callback(None, False, None)
+
+            mock_process.assert_called_once_with(distro_manager.stable_url, distro_manager.beta_package_name)

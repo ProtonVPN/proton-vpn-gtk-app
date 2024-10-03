@@ -37,9 +37,9 @@ def test_tray_indicator_not_supported_error_is_raised_if_required_runtime_indica
 @pytest.fixture
 def controller_mock():
     controller = Mock()
-    controller.app_configuration.tray_pinned_servers = None
+    controller.get_app_configuration.return_value.tray_pinned_servers = None
     return controller
-    
+
 
 def test_toggle_app_visibility_menu_entry_activate_shows_app_window_when_it_was_hidden(controller_mock):
     main_window = Mock()
@@ -303,7 +303,7 @@ def test_connect_pinned_server_entry_connects_to_vpn_when_activated(controller_m
     pinned_server = "TEST#30"
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = states.Disconnected()
-    controller_mock.app_configuration.tray_pinned_servers = [pinned_server]
+    controller_mock.get_app_configuration.return_value.tray_pinned_servers = [pinned_server]
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
     process_gtk_events()
@@ -320,7 +320,7 @@ def test_remove_pinned_server_entry_when_user_has_logged_out(controller_mock):
     pinned_server = "TEST#30"
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = states.Disconnected()
-    controller_mock.app_configuration.tray_pinned_servers = [pinned_server]
+    controller_mock.get_app_configuration.return_value.tray_pinned_servers = [pinned_server]
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
     process_gtk_events()
@@ -341,7 +341,7 @@ def test_ensure_pinned_server_entries_remain_in_order_after_user_has_logged_out_
     pinned_server3 = "TEST#50"
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = states.Disconnected()
-    controller_mock.app_configuration.tray_pinned_servers = [pinned_server1, pinned_server2, pinned_server3]
+    controller_mock.get_app_configuration.return_value.tray_pinned_servers = [pinned_server1, pinned_server2, pinned_server3]
 
     tray_indicator = TrayIndicator(controller=controller_mock, main_window=main_window, native_indicator=indicator_mock)
     process_gtk_events()

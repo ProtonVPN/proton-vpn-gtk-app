@@ -18,9 +18,9 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pytest
-from unittest.mock import Mock, PropertyMock, patch
+from unittest.mock import Mock, PropertyMock, patch, MagicMock
 from tests.unit.testing_utils import process_gtk_events
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings, KillSwitchSetting, KillSwitchSettingEnum
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings, KillSwitchSettingEnum, KillSwitchWidget, ToggleWidget
 from proton.vpn.core.settings import NetShield
 
 
@@ -31,284 +31,143 @@ KILLSWITCH_STANDARD = 1
 KILLSWITCH_ADVANCED = 2
 
 
-@pytest.fixture
-def mocked_controller_and_netshield():
-    controller_mock = Mock(name="controller")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.FeatureSettings.pack_start")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ComboboxWidget")
+def test_build_moderate_nat_save_new_value_when_callback_is_called(combobox_widget_mock, _):
+    settings_window_mock = Mock()
+    fs = FeatureSettings(MagicMock(), settings_window_mock)
+    fs.build_netshield()
+    new_value = "2"
 
-    setting_property_mock = PropertyMock()
-    type(controller_mock.get_settings.return_value.features).netshield = setting_property_mock
+    gtk_combobox_widget_mock = Mock()
+    # We need to simulate the structure for a Gtk.ComboBoxText
+    gtk_combobox_widget_mock.get_model.return_value = [[None, new_value]]
+    gtk_combobox_widget_mock.get_active_iter.return_value = 0
 
-    user_tier_mock = PropertyMock(return_value=PLUS_TIER)
-    type(controller_mock).user_tier = user_tier_mock
+    callback = combobox_widget_mock.call_args[1]["callback"]
 
-    return controller_mock, setting_property_mock
-
-
-@pytest.fixture
-def mocked_controller_and_port_forwarding():
-    controller_mock = Mock(name="controller")
-    controller_mock.get_settings.return_value = Mock()
-
-    property_mock = PropertyMock()
-    type(controller_mock.get_settings.return_value.features).port_forwarding = property_mock
-
-    user_tier_mock = PropertyMock(return_value=PLUS_TIER)
-    type(controller_mock).user_tier = user_tier_mock
-
-    return controller_mock, property_mock
+    callback(gtk_combobox_widget_mock, combobox_widget_mock)
+    combobox_widget_mock.save_setting.assert_called_once_with(int(new_value))
+    settings_window_mock.notify_user_with_reconnect_message.assert_called_once()
 
 
-def test_netshield_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_netshield):
-    controller_mock, netshield_mock = mocked_controller_and_netshield
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_netshield()
+@pytest.mark.parametrize("enabled", [False, True])
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.FeatureSettings.pack_start")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget")
+def test_build_port_forwarding_updates_description_when_being_initialized_if_enabled(toggle_widget_mock, _, enabled):
+    toggle_mock = Mock()
+    toggle_mock.get_setting.return_value = enabled
+    toggle_widget_mock.return_value = toggle_mock
 
-    netshield_mock.assert_called_once()
+    fs = FeatureSettings(MagicMock(), Mock())
+    fs.build_port_forwarding()
 
-def test_netshield_when_combobox_is_set_to_initial_value(mocked_controller_and_netshield):
-    controller_mock, netshield_mock = mocked_controller_and_netshield
-
-    netshield_option = NetShield.BLOCK_MALICIOUS_URL.value
-    netshield_mock.return_value = netshield_option
-
-    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.Gtk.ComboBoxText.set_active_id") as set_active_mock:
-        feature_settings = FeatureSettings(controller_mock, Mock())
-        feature_settings.build_netshield()
-
-        set_active_mock.assert_called_once_with(str(netshield_option))
-
-def test_netshield_when_switching_netshield_and_ensure_changes_are_saved(mocked_controller_and_netshield):
-    controller_mock, netshield_mock = mocked_controller_and_netshield
-    netshield_mock.return_value = NetShield.NO_BLOCK.value
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_netshield()
-
-    netshield_mock.reset_mock()
-
-    feature_settings.netshield_row.interactive_object.set_active_id(str(NetShield.BLOCK_MALICIOUS_URL.value))
-
-    netshield_mock.assert_called_once_with(NetShield.BLOCK_MALICIOUS_URL.value)
-    controller_mock.save_settings.assert_called_once()
-
-
-@pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])
-def test_netshield_upgrade_tag_override_interactive_object_if_plan_upgrade_is_required(user_tier, mocked_controller_and_netshield):
-    controller_mock, netshield_mock = mocked_controller_and_netshield
-    user_tier_mock = PropertyMock(return_value=user_tier)
-    type(controller_mock).user_tier = user_tier_mock
-
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_netshield()
-
-    if user_tier == FREE_TIER:
-        assert feature_settings.netshield_row.overridden_by_upgrade_tag
+    if enabled:
+        toggle_mock.description.set_label.assert_called_once_with(fs.PORT_FORWARDING_SETUP_GUIDE)
     else:
-        assert not feature_settings.netshield_row.overridden_by_upgrade_tag
-
-
-def test_port_forwarding_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_port_forwarding):
-    controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
-
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_port_forwarding()
-
-    port_forwarding_mock.assert_called_once()
-
-@pytest.mark.parametrize("port_forwarding_enabled", [False, True])
-def test_port_forwarding_when_switch_is_set_to_initial_value(port_forwarding_enabled, mocked_controller_and_port_forwarding):
-    controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
-
-    port_forwarding_mock.return_value = port_forwarding_enabled
-
-    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.Gtk.Switch.set_state") as set_state_mock:
-        feature_settings = FeatureSettings(controller_mock, Mock())
-        feature_settings.build_port_forwarding()
-
-        set_state_mock.assert_called_once_with(port_forwarding_enabled)
-    
-@pytest.mark.parametrize("is_port_forwarding_enabled", [True, False])
-def test_port_forwarding_when_switch_is_set_to_initial_value_and_description_is_displayed_accordingly(is_port_forwarding_enabled, mocked_controller_and_port_forwarding):
-    controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
-
-    port_forwarding_mock.return_value = is_port_forwarding_enabled
-
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_port_forwarding()
-
-    if is_port_forwarding_enabled:
-        assert feature_settings.port_forwarding_row.description.get_label() != feature_settings.PORT_FORWARDING_DESCRIPTION
-    else:
-        assert feature_settings.port_forwarding_row.description.get_label() == feature_settings.PORT_FORWARDING_DESCRIPTION
-
-@pytest.mark.parametrize("is_port_forwarding_enabled", [False, True])
-def test_port_forwarding_when_switching_switch_state_and_ensure_changes_are_saved(is_port_forwarding_enabled, mocked_controller_and_port_forwarding):
-    controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
-
-    port_forwarding_mock.return_value = is_port_forwarding_enabled
-
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_port_forwarding()
-
-    port_forwarding_mock.reset_mock()
-
-    feature_settings.port_forwarding_row.interactive_object.set_state(not is_port_forwarding_enabled)
-
-    port_forwarding_mock.assert_called_once_with(not is_port_forwarding_enabled)
-    controller_mock.save_settings.assert_called_once()
-
-@pytest.mark.parametrize("is_port_forwarding_enabled", [False, True])
-def test_port_forwarding_when_switching_switch_state_and_description_is_updated(is_port_forwarding_enabled, mocked_controller_and_port_forwarding):
-    controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
-
-    port_forwarding_mock.return_value = is_port_forwarding_enabled
-
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_port_forwarding()
-
-    port_forwarding_mock.reset_mock()
-
-    feature_settings.port_forwarding_row.interactive_object.set_state(not is_port_forwarding_enabled)
-
-    if not is_port_forwarding_enabled:
-        assert feature_settings.port_forwarding_row.description.get_label() != feature_settings.PORT_FORWARDING_DESCRIPTION
-    else:
-        assert feature_settings.port_forwarding_row.description.get_label() == feature_settings.PORT_FORWARDING_DESCRIPTION
-
-
-@pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])
-def test_port_forwarding_upgrade_tag_override_interactive_object_if_plan_upgrade_is_required(user_tier, mocked_controller_and_port_forwarding):
-    controller_mock, port_forwarding_mock = mocked_controller_and_port_forwarding
-    user_tier_mock = PropertyMock(return_value=user_tier)
-    type(controller_mock).user_tier = user_tier_mock
-
-    feature_settings = FeatureSettings(controller_mock, Mock())
-    feature_settings.build_port_forwarding()
-
-    if user_tier == FREE_TIER:
-        assert feature_settings.port_forwarding_row.overridden_by_upgrade_tag
-    else:
-        assert not feature_settings.port_forwarding_row.overridden_by_upgrade_tag
-
-
-class TestKillSwitchSetting:
-
-    @pytest.fixture
-    def mocked_controller_and_killswitch(self):
-        controller_mock = Mock(name="controller")
-        controller_mock.get_settings.return_value = Mock()
-
-        property_mock = PropertyMock(return_value=KillSwitchSettingEnum.OFF)
-        type(controller_mock.get_settings.return_value).killswitch = property_mock
-
-        user_tier_mock = PropertyMock(return_value=PLUS_TIER)
-        type(controller_mock).user_tier = user_tier_mock
-
-        return controller_mock, property_mock
-
-    def test_killswitch_when_setting_is_called_upon_building_ui_elements(self, mocked_controller_and_killswitch):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-
-        setting = KillSwitchSetting(controller_mock)
-
-        killswitch_mock.assert_called_once()
-
-    @pytest.mark.parametrize("killswitch_enabled", [False, True])
-    def test_killswitch_when_switch_is_set_to_initial_value(self, killswitch_enabled, mocked_controller_and_killswitch):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-
-        killswitch_mock.return_value = killswitch_enabled
-
-        with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.Gtk.Switch.set_state") as set_state_mock:
-            setting = KillSwitchSetting(controller_mock)
-
-            set_state_mock.assert_called_once_with(killswitch_enabled)
-
-    @pytest.mark.parametrize("initial_killswitch_state", [False, True])
-    def test_killswitch_when_switch_is_set_to_initial_value_and_revealer_reacts_accordingly(self, initial_killswitch_state, mocked_controller_and_killswitch):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-
-        killswitch_mock.return_value = initial_killswitch_state
-
-        setting = KillSwitchSetting(controller_mock)
-
-        assert setting.revealer.get_reveal_child() == initial_killswitch_state
-
-    @pytest.mark.parametrize("killswitch_state", [False, True])
-    def test_killswitch_when_switching_switch_state_and_ensure_changes_are_saved(self, killswitch_state, mocked_controller_and_killswitch):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-
-        killswitch_mock.return_value = not killswitch_state
-
-        setting = KillSwitchSetting(controller_mock)
-
-        killswitch_mock.reset_mock()
-
-        setting.interactive_object.set_state(killswitch_state)
-
-        killswitch_mock.assert_called_once_with(killswitch_state)
-        controller_mock.save_settings.assert_called_once()
-
-    @pytest.mark.parametrize("change_to_new_kill_switch_state, initial_kill_switch_state", [
-        (KILLSWITCH_ADVANCED, KILLSWITCH_STANDARD),
-        (KILLSWITCH_STANDARD, KILLSWITCH_ADVANCED)
-    ])
-    def test_killswitch_when_switching_between_standard_and_advanced_settings_and_ensure_changes_are_saved(self, change_to_new_kill_switch_state, initial_kill_switch_state, mocked_controller_and_killswitch):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-
-        killswitch_mock.return_value = initial_kill_switch_state
-
-        setting = KillSwitchSetting(controller_mock)
-
-        killswitch_mock.reset_mock()
-
-        if change_to_new_kill_switch_state == KILLSWITCH_ADVANCED:
-            setting.advanced_radio_button.set_active(True)
-        else:
-            setting.standard_radio_button.set_active(True)
-
-        killswitch_mock.assert_called_once_with(change_to_new_kill_switch_state)
-        controller_mock.save_settings.assert_called_once()
-
-    @pytest.mark.parametrize("is_killswitch_enabled", [False, True])
-    def test_killswitch_when_switching_switch_state_and_revealer_reacts_accordingly(self, is_killswitch_enabled, mocked_controller_and_killswitch):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-
-        killswitch_mock.return_value = not is_killswitch_enabled
-
-        setting = KillSwitchSetting(controller_mock)
-
-        killswitch_mock.reset_mock()
-
-        setting.interactive_object.set_state(is_killswitch_enabled)
-        assert setting.revealer.get_reveal_child() == is_killswitch_enabled
-
-    def test_killswitch_when_switching_from_adavanced_to_disabled_and_then_swithing_to_standard(self, mocked_controller_and_killswitch):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-
-        killswitch_mock.return_value = KILLSWITCH_ADVANCED
-
-        setting = KillSwitchSetting(controller_mock)
-
-        killswitch_mock.reset_mock()
-
-        setting.interactive_object.set_state(False)
-        killswitch_mock.assert_called_once_with(False)
-
-        killswitch_mock.reset_mock()
-
-        setting.interactive_object.set_state(True)
-        killswitch_mock.assert_called_once_with(True)
-
-    @pytest.mark.parametrize("is_vpn_connection_disconnected", [True, False])
-    def test_killswitch_setting_is_interactive_only_if_vpn_connection_is_disconnected(
-            self, is_vpn_connection_disconnected, mocked_controller_and_killswitch
-    ):
-        controller_mock, killswitch_mock = mocked_controller_and_killswitch
-
-        controller_mock.is_connection_disconnected = is_vpn_connection_disconnected
-
-        feature_settings = FeatureSettings(controller_mock, Mock())
-        feature_settings.build_killswitch()
-
-        # The kill switch setting should be interactive only if the VPN connection is disconnected.
-        assert feature_settings.killswitch_row.enabled is is_vpn_connection_disconnected
+        toggle_mock.description.set_label.assert_not_called()
+
+
+@pytest.mark.parametrize("new_value", [False, True])
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.FeatureSettings.pack_start")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget")
+def test_build_port_forwarding_save_new_value_when_callback_is_called(toggle_widget_mock, _, new_value):
+    settings_window_mock = Mock()
+    fs = FeatureSettings(MagicMock(), settings_window_mock)
+    fs.build_port_forwarding()
+
+    toggle_widget = toggle_widget_mock.call_args[1]
+    callback = toggle_widget["callback"]
+
+    callback(None, new_value, toggle_widget_mock)
+
+    toggle_widget_mock.save_setting.assert_called_once_with(new_value)
+    toggle_widget_mock.description.set_label.assert_called_once_with(
+        fs.PORT_FORWARDING_SETUP_GUIDE if new_value else fs.PORT_FORWARDING_DESCRIPTION
+    )
+    settings_window_mock.notify_user_with_reconnect_message.assert_called_once()
+
+
+class TestKillSwitchWidget:
+
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.KillSwitchWidget.attach")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.get_setting")
+    def test_save_setting_when_switching_killswitch_from_disabled_to_enabled_and_revealer_is_shown(self, get_setting_mock, save_setting_mock, _):
+        with patch.object(ToggleWidget, '__init__', return_value=None) as mock_parent_init:
+            simulate_toggled_switch = True
+            mock_gtk = Mock()
+            mock_standard_radio_button = Mock()
+            mock_advanced_radio_button = Mock()
+            mock_revelear = Mock()
+            mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_standard_radio_button]
+            mock_gtk.Revealer.return_value = mock_revelear
+            get_setting_mock.return_value = KillSwitchSettingEnum.OFF
+
+            ks = KillSwitchWidget(Mock(), gtk=mock_gtk)
+            ks.build_revealer()
+
+            mock_standard_radio_button.reset_mock()
+            mock_revelear.reset_mock()
+
+            callback = mock_parent_init.call_args[1]["callback"]
+            callback(None, True, simulate_toggled_switch)
+
+            save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.ON.value)
+            mock_revelear.set_reveal_child.assert_called_once_with(True)
+            mock_standard_radio_button.set_active.assert_called_once_with(True)
+
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.KillSwitchWidget.attach")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.get_setting")
+    def test_save_setting_when_switching_killswitch_from_standard_to_advanced(self, get_setting_mock, save_setting_mock, _):
+        mock_gtk = Mock()
+        mock_standard_radio_button = Mock()
+        mock_advanced_radio_button = Mock()
+        mock_revelear = Mock()
+        mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_advanced_radio_button]
+        mock_gtk.Revealer.return_value = mock_revelear
+        get_setting_mock.return_value = KillSwitchSettingEnum.ON
+
+        ks = KillSwitchWidget(Mock(), gtk=mock_gtk)
+        ks.build_revealer()
+        mock_revelear.reset_mock()
+
+        mock_advanced_radio_button_callback = mock_advanced_radio_button.connect.call_args[0][1]
+        mock_advanced_radio_button.reset_mock()
+
+        mock_revelear.get_reveal_child.return_value = True
+        mock_advanced_radio_button.get_active.return_value = True
+
+        mock_advanced_radio_button_callback(
+            mock_advanced_radio_button, KillSwitchSettingEnum.PERMANENT.value
+        )
+
+        save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.PERMANENT.value)
+
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.KillSwitchWidget.attach")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.get_setting")
+    def test_save_setting_when_switching_killswitch_from_permanent_to_disabled_and_revealer_is_hidden(self, get_setting_mock, save_setting_mock, _):
+        with patch.object(ToggleWidget, '__init__', return_value=None) as mock_parent_init:
+            simulate_toggled_switch = True
+            mock_gtk = Mock()
+            mock_standard_radio_button = Mock()
+            mock_advanced_radio_button = Mock()
+            mock_revelear = Mock()
+            mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_advanced_radio_button]
+            mock_gtk.Revealer.return_value = mock_revelear
+            get_setting_mock.return_value = KillSwitchSettingEnum.PERMANENT
+
+            ks = KillSwitchWidget(Mock(), gtk=mock_gtk)
+            ks.build_revealer()
+
+            mock_revelear.reset_mock()
+            mock_standard_radio_button.reset_mock()
+
+            callback = mock_parent_init.call_args[1]["callback"]
+            callback(None, False, simulate_toggled_switch)
+
+            save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.OFF.value)
+            mock_revelear.set_reveal_child.assert_called_once_with(False)
+            mock_standard_radio_button.set_active.assert_called_once_with(True)

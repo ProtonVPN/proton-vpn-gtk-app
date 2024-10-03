@@ -28,7 +28,8 @@ from proton.utils.environment import VPNExecutionEnvironment
 
 DEFAULT_APP_CONFIG = {
     "tray_pinned_servers": [],
-    "connect_at_app_startup": None
+    "connect_at_app_startup": None,
+    "start_app_minimized": False
 }
 
 APP_CONFIG = os.path.join(
@@ -43,6 +44,7 @@ class AppConfig:
     """
     tray_pinned_servers: list
     connect_at_app_startup: Optional[str]
+    start_app_minimized: bool
 
     @staticmethod
     def from_dict(data: dict) -> AppConfig:
@@ -55,7 +57,8 @@ class AppConfig:
                 connect_at_app_startup.upper()
                 if connect_at_app_startup
                 else None
-            )
+            ),
+            start_app_minimized=data.get("start_app_minimized", False)
         )
 
     def to_dict(self) -> dict:
@@ -67,5 +70,6 @@ class AppConfig:
         """Creates and returns `AppConfig` from default app configurations."""
         return AppConfig(
             tray_pinned_servers=DEFAULT_APP_CONFIG["tray_pinned_servers"],
-            connect_at_app_startup=DEFAULT_APP_CONFIG["connect_at_app_startup"]
+            connect_at_app_startup=DEFAULT_APP_CONFIG["connect_at_app_startup"],
+            start_app_minimized=DEFAULT_APP_CONFIG["start_app_minimized"]
         )

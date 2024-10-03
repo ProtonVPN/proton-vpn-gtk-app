@@ -22,7 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from gi.repository import Gtk, Gdk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    BaseCategoryContainer, SettingRow, SettingName, SettingDescription
+    BaseCategoryContainer, CustomButton
 )
 
 
@@ -34,22 +34,17 @@ class AccountSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     def __init__(self, controller: Controller):
         super().__init__(self.CATEGORY_NAME)
         self._controller = controller
-        self.account_row = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
         under this category."""
-        manage_account_button = Gtk.Button()
-        manage_account_button.set_label("Manage Account")
-        manage_account_button.connect("clicked", self._on_click_manage_account_button)
-
-        self.account_row = SettingRow(
-            SettingName(self._controller.account_name, bold=True),
-            manage_account_button,
-            SettingDescription(f"VPN plan: {self._controller.account_data.plan_title or 'Free'}"),
-        )
-
-        self.pack_start(self.account_row, False, False, 0)
+        self.pack_start(CustomButton(
+            title=self._controller.account_name,
+            description=f"VPN plan: {self._controller.account_data.plan_title or 'Free'}",
+            button_label="Manage Account",
+            on_click_callback=self._on_click_manage_account_button,
+            bold_title=True
+        ), False, False, 0)
 
     def _on_click_manage_account_button(self, *_):
         Gtk.show_uri_on_window(

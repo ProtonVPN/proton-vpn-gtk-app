@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.6.0
-%define upstream_version 4.6.0
+%define version 4.7.0~rc1
+%define upstream_version 4.7.0rc1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Thu Oct 03 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.0~rc1
+- Add start-app-minimized to settings window.
+
 * Mon Sep 30 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.6.0
 - Remove killswitch dependencies in setup.py as packages have been deprecated (Alexandru Cheltuitor).
 - Merge community MR to allow the app to start minimized based on CLI arguments (thanks to https://github.com/hsiurebgjk).

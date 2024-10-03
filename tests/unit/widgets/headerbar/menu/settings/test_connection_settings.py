@@ -18,266 +18,65 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pytest
-from unittest.mock import Mock, PropertyMock, patch
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings import ConnectionSettings
-
-
-MockOpenVPNTCP = Mock()
-MockOpenVPNTCP.cls.protocol = "openvpn-tcp"
-MockOpenVPNTCP.cls.ui_protocol = "OpenVPN (TCP)"
-MockOpenVPNUDP = Mock()
-MockOpenVPNUDP.cls.protocol = "openvpn-udp"
-MockOpenVPNUDP.cls.ui_protocol = "OpenVPN (UDP)"
-MockWireGuard = Mock()
-MockWireGuard.cls.protocol = "wireguard"
-MockWireGuard.cls.ui_protocol = "WireGuard (experimental)"
+from unittest.mock import Mock, PropertyMock, patch, MagicMock
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings import ConnectionSettings, ToggleWidget, ComboboxWidget
 
 
 FREE_TIER = 0
 PLUS_TIER = 1
 
 
-@pytest.fixture
-def mocked_controller_and_protocol():
-    controller_mock = Mock(name="controller")
-    controller_mock.get_available_protocols.return_value = [MockOpenVPNTCP, MockOpenVPNUDP, MockWireGuard]
-
-    property_mock = PropertyMock(name="protocol", return_value=MockOpenVPNTCP.cls.protocol)
-    type(controller_mock.get_settings.return_value).protocol = property_mock
-
-    return controller_mock, property_mock
-
-
-@pytest.fixture
-def mocked_controller_and_vpn_accelerator():
-    controller_mock = Mock(name="controller")
-    controller_mock.get_settings.return_value = Mock()
-
-    property_mock = PropertyMock()
-    type(controller_mock.get_settings.return_value.features).vpn_accelerator = property_mock
-
-    user_tier_mock = PropertyMock(return_value=PLUS_TIER)
-    type(controller_mock).user_tier = user_tier_mock
-
-    return controller_mock, property_mock
-
-
-@pytest.fixture
-def mocked_controller_and_moderate_nat():
-    controller_mock = Mock(name="controller")
-    controller_mock.get_settings.return_value = Mock()
-
-    property_mock = PropertyMock()
-    type(controller_mock.get_settings.return_value.features).moderate_nat = property_mock
-
-    user_tier_mock = PropertyMock(return_value=PLUS_TIER)
-    type(controller_mock).user_tier = user_tier_mock
-
-    return controller_mock, property_mock
-
-
-@pytest.fixture
-def mocked_controller_and_ipv6():
-    controller_mock = Mock(name="controller")
-    controller_mock.get_settings.return_value = Mock()
-
-    property_mock = PropertyMock()
-    type(controller_mock.get_settings.return_value).ipv6 = property_mock
-
-    user_tier_mock = PropertyMock(return_value=PLUS_TIER)
-    type(controller_mock).user_tier = user_tier_mock
-
-    return controller_mock, property_mock
-
-
-def test_protocol_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_protocol):
-    controller_mock, protocol_mock = mocked_controller_and_protocol
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_protocol()
-
-    protocol_mock.assert_called_once()
-
-
-def test_protocol_when_combobox_is_set_to_initial_value(mocked_controller_and_protocol):
-    controller_mock, protocol_mock = mocked_controller_and_protocol
-
-    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.Gtk.ComboBoxText.set_active_id") as set_active_mock:
-        connection_settings = ConnectionSettings(controller_mock, Mock())
-        connection_settings.build_protocol()
-
-        set_active_mock.assert_called_once_with(MockOpenVPNTCP.cls.protocol)
-
-
-def test_protocol_when_switching_switch_protocol_and_ensure_changes_are_saved(mocked_controller_and_protocol):
-    controller_mock, protocol_mock = mocked_controller_and_protocol
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_protocol()
-
-    protocol_mock.reset_mock()
-
-    connection_settings.protocol_row.interactive_object.set_active_id(MockOpenVPNUDP.cls.protocol)
-
-    protocol_mock.assert_called_once_with(MockOpenVPNUDP.cls.protocol)
-    controller_mock.save_settings.assert_called_once()
-
-
-def test_protocol_when_connection_is_active_and_widget_is_not_interactive(mocked_controller_and_protocol):
-    controller_mock, protocol_mock = mocked_controller_and_protocol
-    notification_bar_mock = Mock()
-
-    controller_mock.is_connection_disconnected = False
-
-    connection_settings = ConnectionSettings(controller_mock, notification_bar_mock)
-    connection_settings.build_protocol()
-
-    assert not connection_settings.protocol_row.enabled
-
-
-def test_vpn_accelerator_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_vpn_accelerator):
-    controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_vpn_accelerator()
-
-    vpn_accelerator_mock.assert_called_once()
-
-
-@pytest.mark.parametrize("vpn_accelerator_enabled", [False, True])
-def test_vpn_accelerator_when_switch_is_set_to_initial_value(vpn_accelerator_enabled, mocked_controller_and_vpn_accelerator):
-    controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
-
-    vpn_accelerator_mock.return_value = vpn_accelerator_enabled
-
-    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.Gtk.Switch.set_state") as set_state_mock:
-        connection_settings = ConnectionSettings(controller_mock, Mock())
-        connection_settings.build_vpn_accelerator()
-
-        set_state_mock.assert_called_once_with(vpn_accelerator_enabled)
-
-
-@pytest.mark.parametrize("vpn_accelerator_enabled", [False, True])
-def test_vpn_accelerator_when_switching_switch_state_and_ensure_changes_are_saved(vpn_accelerator_enabled, mocked_controller_and_vpn_accelerator):
-    controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
-
-    vpn_accelerator_mock.return_value = vpn_accelerator_enabled
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_vpn_accelerator()
-
-    vpn_accelerator_mock.reset_mock()
-
-    connection_settings.vpn_accelerator_row.interactive_object.set_state(not vpn_accelerator_enabled)
-
-    vpn_accelerator_mock.assert_called_once_with(not vpn_accelerator_enabled)
-    controller_mock.save_settings.assert_called_once()
-
-
-def test_moderate_nat_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_moderate_nat):
-    controller_mock, moderate_nat_mock = mocked_controller_and_moderate_nat
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_moderate_nat()
-
-    moderate_nat_mock.assert_called_once()
-
-
-@pytest.mark.parametrize("moderate_nat_enabled", [False, True])
-def test_moderate_nat_when_switch_is_set_to_initial_value(moderate_nat_enabled, mocked_controller_and_moderate_nat):
-    controller_mock, moderate_nat_mock = mocked_controller_and_moderate_nat
-
-    moderate_nat_mock.return_value = moderate_nat_enabled
-
-    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.Gtk.Switch.set_state") as set_state_mock:
-        connection_settings = ConnectionSettings(controller_mock, Mock())
-        connection_settings.build_moderate_nat()
-
-        set_state_mock.assert_called_once_with(moderate_nat_enabled)
-
-
-@pytest.mark.parametrize("moderate_nat_enabled", [False, True])
-def test_moderate_nat_when_switching_switch_state_and_ensure_changes_are_saved(moderate_nat_enabled, mocked_controller_and_moderate_nat):
-    controller_mock, moderate_nat_mock = mocked_controller_and_moderate_nat
-
-    moderate_nat_mock.return_value = moderate_nat_enabled
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_moderate_nat()
-
-    moderate_nat_mock.reset_mock()
-
-    connection_settings.moderate_nat_row.interactive_object.set_state(not moderate_nat_enabled)
-
-    moderate_nat_mock.assert_called_once_with(not moderate_nat_enabled)
-    controller_mock.save_settings.assert_called_once()
-
-
-@pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])
-def test_moderate_nat_upgrade_tag_override_interactive_object_if_plan_upgrade_is_required(user_tier, mocked_controller_and_moderate_nat):
-    controller_mock, moderate_nat_mock = mocked_controller_and_moderate_nat
-
-    user_tier_mock = PropertyMock(return_value=user_tier)
-    type(controller_mock).user_tier = user_tier_mock
-
-    feature_settings = ConnectionSettings(controller_mock, Mock())
-    feature_settings.build_moderate_nat()
-
-    if user_tier == FREE_TIER:
-        assert feature_settings.moderate_nat_row.overridden_by_upgrade_tag
-    else:
-        assert not feature_settings.moderate_nat_row.overridden_by_upgrade_tag
-
-
-@pytest.mark.parametrize("user_tier", [FREE_TIER, PLUS_TIER])
-def test_vpn_accelerator_upgrade_tag_override_interactive_object_if_plan_upgrade_is_required(user_tier, mocked_controller_and_vpn_accelerator):
-    controller_mock, vpn_accelerator_mock = mocked_controller_and_vpn_accelerator
-
-    user_tier_mock = PropertyMock(return_value=user_tier)
-    type(controller_mock).user_tier = user_tier_mock
-
-    feature_settings = ConnectionSettings(controller_mock, Mock())
-    feature_settings.build_vpn_accelerator()
-
-    if user_tier == FREE_TIER:
-        assert feature_settings.vpn_accelerator_row.overridden_by_upgrade_tag
-    else:
-        assert not feature_settings.vpn_accelerator_row.overridden_by_upgrade_tag
-
-
-def test_ipv6_when_setting_is_called_upon_building_ui_elements(mocked_controller_and_ipv6):
-    controller_mock, ipv6_mock = mocked_controller_and_ipv6
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_ipv6()
-
-    ipv6_mock.assert_called_once()
-
-
-@pytest.mark.parametrize("ipv6_enabled", [False, True])
-def test_ipv6_when_switch_is_set_to_initial_value(ipv6_enabled, mocked_controller_and_ipv6):
-    controller_mock, ipv6_mock = mocked_controller_and_ipv6
-
-    ipv6_mock.return_value = ipv6_enabled
-
-    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.Gtk.Switch.set_state") as set_state_mock:
-        connection_settings = ConnectionSettings(controller_mock, Mock())
-        connection_settings.build_ipv6()
-
-        set_state_mock.assert_called_once_with(ipv6_enabled)
-
-
-@pytest.mark.parametrize("ipv6_enabled", [False, True])
-def test_vpn_accelerator_when_switching_switch_state_and_ensure_changes_are_saved(ipv6_enabled, mocked_controller_and_ipv6):
-    controller_mock, ipv6_mock = mocked_controller_and_ipv6
-
-    ipv6_mock.return_value = ipv6_enabled
-
-    connection_settings = ConnectionSettings(controller_mock, Mock())
-    connection_settings.build_ipv6()
-
-    ipv6_mock.reset_mock()
-
-    connection_settings.ipv6_row.interactive_object.set_state(not ipv6_enabled)
-
-    ipv6_mock.assert_called_once_with(not ipv6_enabled)
-    controller_mock.save_settings.assert_called_once()
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.ConnectionSettings.pack_start")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.ToggleWidget")
+def test_build_vpn_accelerator_save_new_value_when_callback_is_called(toggle_widget_mock, _):
+    controller_mock = Mock()
+    controller_mock.user_tier = FREE_TIER
+    settings_window_mock = Mock()
+    cs = ConnectionSettings(controller_mock, settings_window_mock)
+    cs.build_vpn_accelerator()
+    new_value = False
+
+    toggle_widget = toggle_widget_mock.call_args[1]
+    callback = toggle_widget["callback"]
+
+    callback(None, new_value, toggle_widget_mock)
+
+    toggle_widget_mock.save_setting.assert_called_once_with(new_value)
+    settings_window_mock.notify_user_with_reconnect_message.assert_called_once()
+
+
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.ConnectionSettings.pack_start")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.ToggleWidget")
+def test_build_moderate_nat_save_new_value_when_callback_is_called(toggle_widget_mock, _):
+    controller_mock = Mock()
+    controller_mock.user_tier = FREE_TIER
+    settings_window_mock = Mock()
+    cs = ConnectionSettings(controller_mock, settings_window_mock)
+    cs.build_moderate_nat()
+    new_value = False
+
+    toggle_widget = toggle_widget_mock.call_args[1]
+    callback = toggle_widget["callback"]
+
+    callback(None, new_value, toggle_widget_mock)
+
+    toggle_widget_mock.save_setting.assert_called_once_with(new_value)
+    settings_window_mock.notify_user_with_reconnect_message.assert_called_once()
+
+
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.ConnectionSettings.pack_start")
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings.ToggleWidget")
+def test_build_ipv6_save_new_value_when_callback_is_called(toggle_widget_mock, _):
+    controller_mock = Mock()
+    settings_window_mock = Mock()
+    cs = ConnectionSettings(controller_mock, settings_window_mock)
+    cs.build_ipv6()
+    new_value = False
+
+    toggle_widget = toggle_widget_mock.call_args[1]
+    callback = toggle_widget["callback"]
+
+    callback(None, new_value, toggle_widget_mock)
+
+    toggle_widget_mock.save_setting.assert_called_once_with(new_value)
+    settings_window_mock.notify_user_with_reconnect_message.assert_called_once()

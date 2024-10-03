@@ -52,7 +52,7 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         general_settings: GeneralSettings = None,
         account_settings: AccountSettings = None,
     ):
-        super().__init__(Gtk.WindowType.TOPLEVEL)
+        super().__init__(type=Gtk.WindowType.TOPLEVEL)
         self.set_modal(True)
         self.set_title("Settings")
         self.set_default_size(600, 500)

@@ -150,7 +150,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         )
         if (
             self.user_logged_in
-            and self.app_configuration.connect_at_app_startup
+            and self.get_app_configuration().connect_at_app_startup
         ):
             self.autoconnect()
 
@@ -158,7 +158,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """Connects to a server from app configuration.
             This method is intended to be called at app startup.
         """
-        connect_at_app_startup = self.app_configuration.connect_at_app_startup
+        connect_at_app_startup = self.get_app_configuration().connect_at_app_startup
 
         # Temporary hack for parsing. Should be improved
         if connect_at_app_startup == "FASTEST":
@@ -308,8 +308,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         settings.killswitch = KillSwitchSettingEnum.OFF
         return self.save_settings(settings)
 
-    @property
-    def app_configuration(self) -> AppConfig:
+    def get_app_configuration(self) -> AppConfig:
         """Return object with app specific configurations."""
         if self._app_config is not None:
             return self._app_config
@@ -318,16 +317,13 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
         if app_config is None:
             self._app_config = AppConfig.default()
-            self._cache_handler.save(
-                self._app_config.to_dict()
-            )
         else:
             self._app_config = AppConfig.from_dict(app_config)
 
         return self._app_config
 
-    @app_configuration.setter
-    def app_configuration(self, new_value: AppConfig):
+    def save_app_configuration(self, new_value: AppConfig):
+        """Save object with app specific configurations to disk."""
         self._app_config = new_value
         self._cache_handler.save(self._app_config.to_dict())
 
@@ -343,32 +339,17 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             self._api.load_settings
         ).result()
 
-    def save_settings(
-            self, settings: Settings, update_certificate: bool = False, bubble_up_errors=True
-    ) -> Future:
+    def save_settings(self, settings: Settings, bubble_up_errors=True) -> Future:
         """
         Saves current settings to disk and updates the wireguard certificate
         if necessary.
         """
-
-        async def save_and_update(settings):
-
+        async def save(settings):
             # Save the settings to disk
             await self._api.save_settings(settings)
 
-            # If update certificate is invoked then we save and update the
-            # certificate in the same call
-            if (
-                    update_certificate
-                    and settings.protocol == WIREGUARD_PROTOCOL
-                    and not self._local_agent_available
-            ):
-                # For wireguard, a new certificate with the hardcoded connection features
-                # is fetched while we work on local agent. This should be removed soon.
-                await self._api.fetch_certificate()
-
         future = self.executor.submit(
-            save_and_update,
+            save,
             settings
         )
 

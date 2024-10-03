@@ -31,6 +31,7 @@ from proton.utils.environment import VPNExecutionEnvironment
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.loading_widget import Spinner
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import ToggleWidget
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +167,7 @@ class EarlyAccessDialog(Gtk.Dialog):
         self.show()
 
 
-class EarlyAccessSwitch(Gtk.Switch):
+class EarlyAccessWidget(ToggleWidget):
     """Handles all early access operations.
     It takes care of checking if package manager exists, downloading,
     uninstall and installing packages.
@@ -175,17 +176,26 @@ class EarlyAccessSwitch(Gtk.Switch):
     DISABLE_BETA_ACCESS_MESSAGE = "Disabling Beta access..."
     ENABLE_BETA_ACCESS_MESSAGE = "Enabling Beta access..."
     UNABLE_TO_DOWNLOAD_REPO_PACKAGE_MESSAGE = "Unable to download package from repository."
+    BETA_LABEL = "Beta access"
+    BETA_DESCRIPTION = "Get early access and help us test new versions of Proton VPN."
 
     def __init__(
         self, controller: Controller,
         distro_manager: DistroManager = None,
-        early_access_dialog: EarlyAccessDialog = None
+        early_access_dialog: EarlyAccessDialog = None,
     ):
-        super().__init__()
-        self._controller = controller
         self._distro_manager = distro_manager
-        self._dialog = early_access_dialog or EarlyAccessDialog()
 
+        super().__init__(
+            controller=controller,
+            title=self.BETA_LABEL,
+            description=self.BETA_DESCRIPTION,
+            setting_name=None,
+            requires_subscription_to_be_active=False,
+            callback=self._on_switch_early_access_state
+        )
+        self._controller = controller
+        self._dialog = early_access_dialog or EarlyAccessDialog()
         self._dialog.connect("response", lambda w, _: w.hide())
 
     @property
@@ -215,18 +225,33 @@ class EarlyAccessSwitch(Gtk.Switch):
 
         return True
 
-    def set_initial_state(self):
+    def set_initial_state(self) -> None:
         """Sets the switch initial state."""
-        self.set_state(self.early_access_enabled)
+        self.set_state(self.get_setting())
 
-    @property
-    def early_access_enabled(self) -> bool:
+    def get_setting(self) -> bool:
         """Returns if early access is enabled, if the early access package
         was found on the system."""
         _, beta_package_installed = self._find_installed_repo_packages()
         return beta_package_installed
 
-    def disable_early_access(self) -> None:
+    def _on_switch_early_access_state(self, _, new_value: bool, __):
+        if new_value == self.get_setting():
+            return
+
+        logger.info(
+            f"Early access {'enabled' if new_value else 'disabled'}.",
+            category="ui",
+            subcategory="early_access",
+            event="toggle"
+        )
+
+        if new_value:
+            self._enable_early_access()
+        else:
+            self._disable_early_access()
+
+    def _disable_early_access(self) -> None:
         """Disables early access."""
         self._dialog.display_loading_view(self.DISABLE_BETA_ACCESS_MESSAGE)
         self._process(
@@ -234,7 +259,7 @@ class EarlyAccessSwitch(Gtk.Switch):
             self.distro_manager.beta_package_name
         )
 
-    def enable_early_access(self) -> None:
+    def _enable_early_access(self) -> None:
         """Enables early access."""
         self._dialog.display_loading_view(self.ENABLE_BETA_ACCESS_MESSAGE)
         self._process(
@@ -356,7 +381,7 @@ class EarlyAccessSwitch(Gtk.Switch):
         return None
 
     def _restore_switch_to_previous_state(self):
-        GLib.idle_add(self.set_state, self.early_access_enabled)
+        GLib.idle_add(self.set_state, self.get_setting())
 
     def _command_failed(self, result) -> bool:
         return result.returncode != 0

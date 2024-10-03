@@ -187,7 +187,8 @@ class TrayIndicator:
             if self._pinned_server_items:
                 self._remove_pinned_servers()
 
-            if not self._controller.app_configuration.tray_pinned_servers:
+            pinned_servers = self._controller.get_app_configuration().tray_pinned_servers
+            if not pinned_servers:
                 return
 
             # 0 = Quick Connect
@@ -196,7 +197,7 @@ class TrayIndicator:
             # 3 = First pinned server
             base_pos = 3
 
-            for server in self._controller.app_configuration.tray_pinned_servers:
+            for server in pinned_servers:
                 servername = str(server).upper()
                 server_entry = Gtk.MenuItem(label=f"{servername}")
                 server_entry.connect(
@@ -229,10 +230,11 @@ class TrayIndicator:
         return menu
 
     def _setup_pinned_server_entries(self, menu: Gtk.Menu):
-        if not self._controller.app_configuration.tray_pinned_servers:
+        tray_pinned_servers = self._controller.get_app_configuration().tray_pinned_servers
+        if not tray_pinned_servers:
             return
 
-        for server in self._controller.app_configuration.tray_pinned_servers:
+        for server in tray_pinned_servers:
             servername = str(server).upper()
             server_entry = Gtk.MenuItem(label=f"{servername}")
             server_entry.connect(

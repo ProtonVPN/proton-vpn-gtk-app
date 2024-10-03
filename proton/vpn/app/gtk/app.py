@@ -59,7 +59,7 @@ class App(Gtk.Application):
         self.window = None
         self.tray_indicator = None
         self._signal_connect_queue = []
-        self._start_minimized = False
+        self._start_minimized_from_cli = False
         self.add_options()
 
     def do_startup(self):  # pylint: disable=arguments-differ
@@ -117,7 +117,7 @@ class App(Gtk.Application):
             return 0
 
         if options.contains("start-minimized"):
-            self._start_minimized = True
+            self._start_minimized_from_cli = True
 
         return -1
 
@@ -132,7 +132,7 @@ class App(Gtk.Application):
     @GObject.Signal(name="app-ready")
     def app_ready(self):
         """Signal emitted when the app is ready for interaction."""
-        if self._start_minimized and self.tray_indicator is not None:
+        if self._start_app_minimized and self.tray_indicator is not None:
             self.window.hide()
 
     def quit_safely(self):
@@ -217,6 +217,11 @@ class App(Gtk.Application):
         except TrayIndicatorNotSupported as error:
             logger.info(f"{error}")
             return None
+
+    @property
+    def _start_app_minimized(self) -> bool:
+        return self._start_minimized_from_cli \
+            or self._controller.get_app_configuration().start_app_minimized
 
     def add_options(self):
         """Adds the --start-minimized and --version command line options"""

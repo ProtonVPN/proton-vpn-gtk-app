@@ -73,7 +73,8 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
                 controller=self._controller,
                 title=self.PROTOCOL_LABEL,
                 setting_name="settings.protocol",
-                combobox_options=protocol_list_of_tuples
+                combobox_options=protocol_list_of_tuples,
+                disable_on_active_connection=True
         ), False, False, 0)
 
     def build_vpn_accelerator(self):

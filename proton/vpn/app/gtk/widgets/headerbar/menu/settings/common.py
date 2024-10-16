@@ -222,6 +222,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         setting_name: str,
         requires_subscription_to_be_active: bool = False,
         callback: Callable = None,
+        disable_on_active_connection: bool = False
     ):
         super().__init__()
         self._apply_grid_styles()
@@ -229,6 +230,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         self._setting_name = setting_name
         self._callback = callback
         self._requires_subscription_to_be_active = requires_subscription_to_be_active
+        self._disable_on_active_connection = disable_on_active_connection
         self.label = SettingName(title)
         self.description = SettingDescription(description)
         self.switch = self._build_switch()
@@ -237,12 +239,12 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
     @property
     def active(self) -> bool:
         """Returns if the widget is active or not."""
-        return not self.get_property("sensitive")
+        return self.get_property("sensitive")
 
     @active.setter
     def active(self, new_value: bool):
         """Set if the widget should be active or not."""
-        self.set_property("sensitive", not new_value)
+        self.set_property("sensitive", new_value)
 
     def get_setting(self) -> bool:
         """Shortcut property that returns the current setting"""
@@ -295,6 +297,10 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         if self.description:
             self.attach(self.description, 0, 1, 2, 1)
 
+        if not self._controller.is_connection_disconnected \
+                and self._disable_on_active_connection:
+            self.active = False
+
     def _on_switch_state(self, _, new_value: bool):
         self.save_setting(new_value)
 
@@ -308,7 +314,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
 
 class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
-    """Default toggle widget."""
+    """Default combobox text widget."""
     def __init__(  # pylint: disable=too-many-arguments
         self,
         controller: Controller,
@@ -336,12 +342,12 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
     @property
     def active(self) -> bool:
         """Returns if the widget is active or not."""
-        return not self.get_property("sensitive")
+        return self.get_property("sensitive")
 
     @active.setter
     def active(self, new_value: bool):
         """Set if the widget should be active or not."""
-        self.set_property("sensitive", not new_value)
+        self.set_property("sensitive", new_value)
 
     def get_setting(self) -> str:
         """Shortcut property that returns the current setting"""
@@ -419,7 +425,7 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
 
 class EntryWidget(Gtk.Grid):
-    """Default toggle widget."""
+    """Default entry widget."""
     def __init__(  # pylint: disable=too-many-arguments
         self,
         controller: Controller,
@@ -443,12 +449,12 @@ class EntryWidget(Gtk.Grid):
     @property
     def active(self) -> bool:
         """Returns if the widget is active or not."""
-        return not self.get_property("sensitive")
+        return self.get_property("sensitive")
 
     @active.setter
     def active(self, new_value: bool):
         """Set if the widget should be active or not."""
-        self.set_property("sensitive", not new_value)
+        self.set_property("sensitive", new_value)
 
     def get_setting(self) -> Union[str, List[str]]:
         """Shortcut property that returns the current setting"""

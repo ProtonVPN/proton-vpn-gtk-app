@@ -57,6 +57,7 @@ class KillSwitchWidget(ToggleWidget):  # noqa pylint: disable=too-many-instance-
             description=self.KILLSWITCH_DESCRIPTION,
             setting_name=self.SETTING_NAME,
             callback=self._on_switch_button_toggle,
+            disable_on_active_connection=True
         )
 
         self._controller = controller
@@ -208,11 +209,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         """Builds and adds the `killswitch` setting to the widget."""
         killswitch = KillSwitchWidget(self._controller)
         killswitch.build_revealer()
-        if not self._controller.is_connection_disconnected:
-            killswitch.active = False
-            killswitch.set_tooltip(
-                self.SWITCH_KILLSWITCH_IF_CONNECTION_ACTIVE_DESCRIPTION
-            )
+
         self.pack_start(killswitch, False, False, 0)
 
     def build_port_forwarding(self):

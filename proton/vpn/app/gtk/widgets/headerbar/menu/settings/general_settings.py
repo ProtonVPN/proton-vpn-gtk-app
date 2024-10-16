@@ -105,10 +105,13 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         """Builds the UI, invoking all necessary methods that are
         under this category."""
         self.build_connect_at_app_startup()
+
         if self._tray_indicator:
             self.build_start_app_minimized()
-        self.build_tray_pinned_servers()
+            self.build_tray_pinned_servers()
+
         self.build_anonymous_crash_reports()
+
         if self._controller.feature_flags.get("LinuxBetaToggle"):
             self.build_beta_upgrade()
 

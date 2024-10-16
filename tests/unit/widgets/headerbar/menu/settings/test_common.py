@@ -139,6 +139,26 @@ class TestToggleWidget:
         )
         assert tw.switch.get_property("state") == is_enabled
 
+    @pytest.mark.parametrize(
+        "disable_on_active_connection,is_connection_disconnected,should_widget_be_active", [
+            (True, False, False),
+            (False, False, True),
+            (True, True, True),
+            (False, True, True)
+        ]
+    )
+    def test_widget_activation_depending_on_disable_on_active_connection_parameter_and_connection_state(self, disable_on_active_connection, is_connection_disconnected, should_widget_be_active):
+        controller_mock = Mock()
+        controller_mock.is_connection_disconnected = is_connection_disconnected
+        tw = ToggleWidget(
+            controller=controller_mock,
+            title=self.DEFAULT_TITLE,
+            description=self.DEFAULT_DESCRIPTION,
+            setting_name=self.DEFAULT_SETTING_NAME,
+            disable_on_active_connection=disable_on_active_connection
+        )
+        assert tw.active == should_widget_be_active
+
     def test_widget_displays_upgrade_tag_when_user_is_on_free_tier(self):
         mock_controller = Mock()
         mock_controller.user_tier = USER_TIER_FREE
@@ -199,17 +219,25 @@ class TestComboboxWidget:
         )
         assert cw.combobox.get_active_id() == selected_option
 
-    def test_widget_is_disabled_when_there_is_an_active_connection_upon_being_initialized(self):
+    @pytest.mark.parametrize(
+        "disable_on_active_connection,is_connection_disconnected,should_widget_be_active", [
+            (True, False, False),
+            (False, False, True),
+            (True, True, True),
+            (False, True, True)
+        ]
+    )
+    def test_widget_activation_depending_on_disable_on_active_connection_parameter_and_connection_state(self, disable_on_active_connection, is_connection_disconnected, should_widget_be_active):
         mock_controller = Mock()
-        mock_controller.is_connection_disconnected = False
+        mock_controller.is_connection_disconnected = is_connection_disconnected
         cw = ComboboxWidget(
             controller=mock_controller,
             title=self.DEFAULT_TITLE,
             setting_name=self.DEFAULT_SETTING_NAME,
             combobox_options=self.DEFAULT_OPTIONS,
-            disable_on_active_connection=True
+            disable_on_active_connection=disable_on_active_connection
         )
-        assert not cw.active
+        assert cw.active == should_widget_be_active
 
     def test_widget_displays_upgrade_tag_when_user_is_on_free_tier(self):
         mock_controller = Mock()

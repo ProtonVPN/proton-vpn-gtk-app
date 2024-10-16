@@ -55,7 +55,6 @@ class TestGeneralSettings:
 
         entry_widget_mock.save_setting.assert_called_once_with(None)
 
-
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.pack_start")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.EarlyAccessWidget")
     def test_build_beta_upgrade_is_only_displayed_if_condition_allows_it(self, early_access_widget, pack_start):
@@ -70,6 +69,20 @@ class TestGeneralSettings:
         # 1st time it's called inside class BaseCategoryContainer to add the category header, which is inherited by EarlyAccessWidget
         # 2nd time it's called only if the can_early_access_be_displayed is true, otherwise it does not add the widget to be displayed
         assert pack_start.call_count == 1
+
+    @pytest.mark.parametrize("tray_indicator_mock", [None, Mock()])
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_start_app_minimized")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_tray_pinned_servers")
+    def test_display_start_app_minimized_and_tray_pinned_servers_if_tray_indicator_is_found(self, build_tray_pinned_servers_mock, build_start_app_minimized_mock, tray_indicator_mock):
+        gs = GeneralSettings(Mock(), tray_indicator=tray_indicator_mock)
+        gs.build_ui()
+
+        if tray_indicator_mock:
+            build_tray_pinned_servers_mock.assert_called_once()
+            build_start_app_minimized_mock.assert_called_once()
+        else:
+            build_tray_pinned_servers_mock.assert_not_called()
+            build_start_app_minimized_mock.assert_not_called()
 
 
 class TestTrayPinnedServersWidget:

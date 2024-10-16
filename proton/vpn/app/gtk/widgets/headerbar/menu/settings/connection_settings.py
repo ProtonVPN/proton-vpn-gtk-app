@@ -35,6 +35,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
     """Settings related to connection are all grouped under this class."""
     CATEGORY_NAME = "Connection"
     PROTOCOL_LABEL = "Protocol"
+    PROTOCOL_DESCRIPTION = "Protocol can only be changed when VPN is disconnected."
     VPN_ACCELERATOR_LABEL = "VPN Accelerator"
     VPN_ACCELERATOR_DESCRIPTION = "Increase your connection speed by up to 400% "\
         "with performance enhancing technologies."
@@ -72,6 +73,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         self.pack_start(ComboboxWidget(
                 controller=self._controller,
                 title=self.PROTOCOL_LABEL,
+                description=self.PROTOCOL_DESCRIPTION,
                 setting_name="settings.protocol",
                 combobox_options=protocol_list_of_tuples,
                 disable_on_active_connection=True

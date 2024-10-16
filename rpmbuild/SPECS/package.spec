@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.7.0~rc2
-%define upstream_version 4.7.0rc2
+%define version 4.7.0~rc3
+%define upstream_version 4.7.0rc3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Oct 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.0~rc3
+- Update kill switch and protocol label, clarifying that they can be switched only when disconnected from vpn.
+
 * Wed Oct 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.0~rc2
 - Fix introduced regression as it was no longer deactivating the selection of protocol and kill switch while being connected to VPN.
 

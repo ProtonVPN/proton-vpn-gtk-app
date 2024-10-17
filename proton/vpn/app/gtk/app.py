@@ -132,7 +132,7 @@ class App(Gtk.Application):
     @GObject.Signal(name="app-ready")
     def app_ready(self):
         """Signal emitted when the app is ready for interaction."""
-        if self._start_app_minimized and self.tray_indicator is not None:
+        if self._start_app_minimized and not self.tray_indicator:
             self.window.hide()
 
     def quit_safely(self):

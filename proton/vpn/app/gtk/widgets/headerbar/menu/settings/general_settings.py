@@ -87,7 +87,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         " or Fastest for quick connection. Default value: Off."
     START_APP_MINIMIZED_LABEL = "Start app minimized"
     START_APP_MINIMIZED_DESCRIPTION = "When enabled, the app starts minimized "\
-        "to the tray or taskbar."
+        "to the tray."
     ANONYMOUS_CRASH_REPORTS_LABEL = "Share anonymous crash reports"
     ANONYMOUS_CRASH_REPORTS_DESCRIPTION = "Crash reports help us fix bugs, detect firewalls, "\
         "and avoid VPN blocks.\n\nThese statistics do not contain your IP address, and they "\

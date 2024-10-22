@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.7.0~rc4
-%define upstream_version 4.7.0rc4
+%define version 4.7.0
+%define upstream_version 4.7.0
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,17 +67,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
-* Thu Oct 17 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.0~rc4
-- Update start on minimized description.
-
-* Wed Oct 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.0~rc3
-- Update kill switch and protocol label, clarifying that they can be switched only when disconnected from vpn.
-
-* Wed Oct 16 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.0~rc2
-- Fix introduced regression as it was no longer deactivating the selection of protocol and kill switch while being connected to VPN.
-
-* Thu Oct 03 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.0~rc1
-- Add start-app-minimized to settings window.
+* Tue Oct 22 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.7.0
+- Update kill switch and protocol label, clarifying that they can be switched only when disconnected from vpn (Alexandru Cheltuitor).
+- Fix introduced regression as it was no longer deactivating the selection of protocol and kill switch while being connected to VPN (Alexandru Cheltuitor).
+- Add start-app-minimized to settings window (Alexandru Cheltuitor).
 
 * Mon Sep 30 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.6.0
 - Remove killswitch dependencies in setup.py as packages have been deprecated (Alexandru Cheltuitor).

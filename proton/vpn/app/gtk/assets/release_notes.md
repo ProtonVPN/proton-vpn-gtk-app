@@ -1,3 +1,6 @@
+## 4.7.0
+- Adds setting to start the app minimized to the tray (if available) or taskbar.
+
 ## 4.6.0
 - Improved error tracking to ensure better diagnostics and faster resolution for connection failures.
 

@@ -1,38 +1,13 @@
-version: 4.7.0rc4
-time: 2024/10/17 10:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
+version: 4.7.0
+time: 2024/10/22 07:00
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
-- Update start on minimized description.
----
-version: 4.7.0rc3
-time: 2024/10/16 12:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Update kill switch and protocol label, clarifying that they can be switched only when disconnected from vpn.
----
-version: 4.7.0rc2
-time: 2024/10/16 12:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Fix introduced regression as it was no longer deactivating the selection of protocol and kill switch while being connected to VPN.
----
-version: 4.7.0rc1
-time: 2024/10/03 16:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Add start-app-minimized to settings window.
+- Update kill switch and protocol label, clarifying that they can be switched only when disconnected from vpn (Alexandru Cheltuitor).
+- Fix introduced regression as it was no longer deactivating the selection of protocol and kill switch while being connected to VPN (Alexandru Cheltuitor).
+- Add start-app-minimized to settings window (Alexandru Cheltuitor).
 ---
 version: 4.6.0
 time: 2024/09/30 10:00

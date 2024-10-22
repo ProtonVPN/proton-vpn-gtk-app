@@ -1,26 +1,10 @@
-proton-vpn-gtk-app (4.7.0~rc4) unstable; urgency=low
+proton-vpn-gtk-app (4.7.0) unstable; urgency=low
 
-  * Update start on minimized description.
+  * Update kill switch and protocol label, clarifying that they can be switched only when disconnected from vpn (Alexandru Cheltuitor).
+  * Fix introduced regression as it was no longer deactivating the selection of protocol and kill switch while being connected to VPN (Alexandru Cheltuitor).
+  * Add start-app-minimized to settings window (Alexandru Cheltuitor).
 
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 17 Oct 2024 10:00:00 +0000
-
-proton-vpn-gtk-app (4.7.0~rc3) unstable; urgency=low
-
-  * Update kill switch and protocol label, clarifying that they can be switched only when disconnected from vpn.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 16 Oct 2024 12:00:00 +0000
-
-proton-vpn-gtk-app (4.7.0~rc2) unstable; urgency=low
-
-  * Fix introduced regression as it was no longer deactivating the selection of protocol and kill switch while being connected to VPN.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Wed, 16 Oct 2024 12:00:00 +0000
-
-proton-vpn-gtk-app (4.7.0~rc1) unstable; urgency=low
-
-  * Add start-app-minimized to settings window.
-
- -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Thu, 03 Oct 2024 16:00:00 +0000
+ -- Josep Llaneras <josep.llaneras@proton.ch>  Tue, 22 Oct 2024 07:00:00 +0000
 
 proton-vpn-gtk-app (4.6.0) unstable; urgency=low
 

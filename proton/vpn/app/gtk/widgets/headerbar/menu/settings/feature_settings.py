@@ -61,6 +61,7 @@ class KillSwitchWidget(ToggleWidget):  # noqa pylint: disable=too-many-instance-
             disable_on_active_connection=True
         )
 
+        self.gtk = gtk or Gtk
         self._controller = controller
         self._standard_radio_button_connect_id = None
         self._advanced_radio_button_connect_id = None
@@ -68,15 +69,12 @@ class KillSwitchWidget(ToggleWidget):  # noqa pylint: disable=too-many-instance-
         self.standard_radio_button = None
         self.advanced_radio_button = None
         self.revealer = None
-        self.gtk = gtk or Gtk
 
     def build_revealer(self):
         """Builds the revealer"""
-        revealer_container = self._build_revealer_container()
-
-        # Create and add revealer to self
         self.revealer = self.gtk.Revealer()
         self.attach(self.revealer, 0, 2, 2, 1)
+        revealer_container = self._build_revealer_container()
         self.revealer.add(revealer_container)
         self.revealer.set_reveal_child(self.get_setting() > KillSwitchSettingEnum.OFF)
 

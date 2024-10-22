@@ -1,3 +1,6 @@
+## 4.7.1
+- Bug fixes.
+
 ## 4.7.0
 - Adds setting to start the app minimized to the tray (if available).
 

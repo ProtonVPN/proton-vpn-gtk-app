@@ -70,7 +70,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self._password_entry.set_placeholder_text("Password")
         self.pack_start(self._password_entry, expand=False, fill=False, padding=0)
 
-        self._login_button = Gtk.Button(label="Login")
+        self._login_button = Gtk.Button(label="Sign in")
         self._login_button.connect("clicked", self._on_login_button_clicked)
         self._login_button.get_style_context().add_class("primary")
         self._login_button.get_style_context().add_class("spaced")

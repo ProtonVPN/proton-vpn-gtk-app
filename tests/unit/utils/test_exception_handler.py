@@ -23,7 +23,7 @@ from types import SimpleNamespace
 
 import pytest
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
-    ProtonAPIAuthenticationNeeded
+    ProtonAPIAuthenticationNeeded, ProtonAPIMissingScopeError
 
 from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
@@ -122,7 +122,7 @@ def test_handle_exceptions_showing_error_dialogs(
     )
 
 
-def test_handle_authentication_needed_exception_calls_main_widget_session_expired():
+def test_handle_authentication_needed_exception_calls_main_widget_on_session_expired():
     main_widget_mock = Mock(MainWidget)
     exception_handler = ExceptionHandler(main_widget=main_widget_mock)
 
@@ -132,7 +132,7 @@ def test_handle_authentication_needed_exception_calls_main_widget_session_expire
         exc_traceback=None
     )
 
-    main_widget_mock.session_expired.assert_called_once()
+    main_widget_mock.on_session_expired.assert_called_once()
 
 
 @pytest.mark.parametrize(
@@ -184,3 +184,34 @@ def test_handle_exceptions_reporting_remotely(
     )
 
     assert send_error.invoked, "send_error_to_proton not invoked"
+
+def test_handle_exception_logs_user_out_and_shows_missing_scope_dialog_on_proton_api_missing_scope_error():
+    main_widget_mock = Mock(MainWidget)
+    exception_handler = ExceptionHandler(main_widget=main_widget_mock)
+
+    missing_scope_error = ProtonAPIMissingScopeError(
+        http_code=403,
+        http_headers={},
+        json_data={
+            'Code': 86300,
+            'Error': 'You need first to assign connections to your account or any other sub-account',
+            'Details': {
+                'Type': 'DeviceLimit',
+                'Title': 'Thanks for upgrading to Professional / Visionary',
+                'Body': 'To start your journey in Proton VPN please assign VPN connections to your account or any other sub-account.',
+                'Hint': 'This step will just take few minutes. After that you will be able to sign in and protect all your devices.',
+                'Actions': [
+                    {'Code': 'AssignConnections', 'Name': 'Assign connections', 'Category': 'main_action', 'URL': '/vpn/dashboard'}
+                ]
+            }
+        }
+    )
+
+    exception_handler.handle_exception(
+        exc_type=ProtonAPIMissingScopeError,
+        exc_value=missing_scope_error,
+        exc_traceback=None
+    )
+
+    main_widget_mock.logout.assert_called_once()
+    main_widget_mock.notifications.show_error_dialog.assert_called_once()

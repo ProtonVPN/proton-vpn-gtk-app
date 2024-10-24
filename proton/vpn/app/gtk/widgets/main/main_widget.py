@@ -42,8 +42,8 @@ class MainWidget(Gtk.Overlay):
     VPNWidget, depending on whether the user is logged in or not.
     """
     ERROR_DIALOG_PRIMARY_TEXT = "Something went wrong"
-    SESSION_EXPIRED_ERROR_MESSAGE = "Your session is invalid. "\
-        "Please login to re-authenticate."
+    SESSION_EXPIRED_ERROR_MESSAGE = "Your session has expired. "\
+        "Please sign in again."
     SESSION_EXPIRED_ERROR_TITLE = "Invalid Session"
 
     def __init__(
@@ -62,7 +62,7 @@ class MainWidget(Gtk.Overlay):
         self._controller = controller
         self._main_window = main_window
 
-        self.notifications = notifications or Notifications(
+        self._notifications = notifications or Notifications(
             main_window, NotificationBar()
         )
         self.layout.pack_start(
@@ -84,6 +84,11 @@ class MainWidget(Gtk.Overlay):
         self._main_window.header_bar.menu.connect(
             "user-logged-out", self._on_user_logged_out
         )
+
+    @property
+    def notifications(self) -> Notifications:
+        """Returns the notifications object."""
+        return self._notifications
 
     @property
     def active_widget(self):
@@ -130,7 +135,7 @@ class MainWidget(Gtk.Overlay):
         else:
             self.notifications.show_error_message(error_message)
 
-    def session_expired(self):
+    def on_session_expired(self):
         """This method is called by the exception handler once the session
         expires."""
         self.notifications.show_error_dialog(
@@ -138,6 +143,10 @@ class MainWidget(Gtk.Overlay):
             message=self.SESSION_EXPIRED_ERROR_MESSAGE
         )
         self._display_login_widget()
+
+    def logout(self):
+        """Logs out the user."""
+        self._main_window.header_bar.menu.logout_button_click()
 
     def _on_user_logged_in(self, _login_widget: LoginWidget):
         self._display_vpn_widget()

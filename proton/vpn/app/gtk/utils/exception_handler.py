@@ -22,14 +22,18 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import sys
 import threading
 from typing import TYPE_CHECKING
+import gi
 
-from gi.repository import GLib
-
+from proton.vpn.app.gtk.widgets.main.notifications import DialogButton
 from proton.vpn.connection.exceptions import AuthenticationError
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
-    ProtonAPIAuthenticationNeeded
+    ProtonAPIAuthenticationNeeded, ProtonAPIMissingScopeError
 from proton.vpn.session.exceptions import ServerNotFoundError
 from proton.vpn import logging
+
+gi.require_version("Gtk", "3.0")
+from gi.repository import GLib, Gtk  # noqa: E402,E501 # pylint: disable=wrong-import-position,wrong-import-order
+
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.controller import Controller
@@ -112,16 +116,11 @@ class ExceptionHandler:
         :param exc_traceback: The exception traceback.
         """
         if issubclass(exc_type, ProtonAPIAuthenticationNeeded):
-            logger.warning(
-                "Authentication required.",
-                category="API", event="ERROR",
-                exc_info=(exc_type, exc_value, exc_traceback)
-            )
-            self.main_widget.session_expired()
-            return
-
-        if issubclass(exc_type, ProtonAPINotReachable):
+            self._on_proton_api_authentication_needed()
+        elif issubclass(exc_type, ProtonAPINotReachable):
             self._on_proton_api_not_reachable(exc_type, exc_value, exc_traceback)
+        elif isinstance(exc_value, ProtonAPIMissingScopeError):
+            self._on_proton_api_missing_scope_error(exc_value)
         elif isinstance(exc_value, ProtonAPIError) and exc_value.error:
             self._on_proton_api_error(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, ServerNotFoundError):
@@ -136,6 +135,14 @@ class ExceptionHandler:
         else:
             raise exc_value if exc_value else exc_type
 
+    def _on_proton_api_authentication_needed(self):
+        logger.warning(
+            "Authentication required.",
+            category="API", event="WARNING"
+        )
+        if self.main_widget:
+            self.main_widget.on_session_expired()
+
     def _on_proton_api_not_reachable(self, exc_type, exc_value, exc_traceback):
         if self.main_widget:
             self.main_widget.notifications.show_error_message(
@@ -145,6 +152,51 @@ class ExceptionHandler:
             "API not reachable.",
             category="API", event="ERROR",
             exc_info=(exc_type, exc_value, exc_traceback)
+        )
+
+    def _on_proton_api_missing_scope_error(self, missing_scope_error: ProtonAPIMissingScopeError):
+        """The user is valid but lacks VPN permissions."""
+        logger.warning(
+            missing_scope_error.error,
+            category="APP", event="WARNING"
+        )
+
+        if self.main_widget:
+            self._logout_and_show_missing_scope_dialog(missing_scope_error)
+
+    def _logout_and_show_missing_scope_dialog(self, error: ProtonAPIMissingScopeError):
+        """This method is called by the exception handler when the user
+        lacks VPN permissions."""
+        # future = self.controller.logout()
+        # future.add_done_callback(lambda future: GLib.idle_add(future.result))
+        self.main_widget.logout()
+
+        def on_dialog_closed(response_type: Gtk.ResponseType):
+            if Gtk.ResponseType.OK == response_type:
+                Gtk.show_uri_on_window(
+                    None, "https://protonvpn.com/support/assign-vpn-connection", 0
+                )
+
+        error_details = error.json_data["Details"]
+        actions = error_details.get("Actions", [])
+
+        buttons = []
+        for action in actions:
+            if action["Code"] == "AssignConnections":
+                buttons.append(
+                    DialogButton(label=action["Name"], response_type=Gtk.ResponseType.OK)
+                )
+        buttons.append(
+            DialogButton(label="Sign in again", response_type=Gtk.ResponseType.CLOSE)
+        )
+
+        self.main_widget.notifications.show_error_dialog(
+            title=error_details["Title"],
+            message=error_details["Body"],
+            hint=error_details.get("Hint"),
+            message_type=Gtk.MessageType.OTHER,
+            buttons=buttons,
+            on_dialog_closed=on_dialog_closed
         )
 
     def _on_proton_api_error(self, exc_type, exc_value, exc_traceback):

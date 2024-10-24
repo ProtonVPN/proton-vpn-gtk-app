@@ -39,7 +39,7 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
     is provided, it emits the `two-factor-auth-successful` signal.
     """
     LOGGING_IN_MESSAGE = "Logging in..."
-    SESSION_EXPIRED_MESSAGE = "Session expired. Please login again."
+    SESSION_EXPIRED_MESSAGE = "Session expired. Please sign in again."
     INCORRECT_TWOFA_CODE_MESSAGE = "Incorrect 2FA code."
 
     TWOFA_ENTRY_PLACEHOLDER = "Enter your 2FA code here"

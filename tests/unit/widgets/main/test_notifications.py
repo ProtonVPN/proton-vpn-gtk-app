@@ -35,7 +35,7 @@ def test_show_error_dialog_shows_error_in_popup_window(gtk_mock):
     notifications.show_error_dialog(ERROR_MESSAGE, ERROR_TITLE)
     process_gtk_events()
 
-    dialog_mock.format_secondary_text.assert_called_once()
+    dialog_mock.format_secondary_markup.assert_called_once()
     dialog_mock.run.assert_called_once()
     dialog_mock.destroy.assert_called_once()
 
@@ -44,21 +44,17 @@ def test_show_error_dialog_shows_error_in_popup_window(gtk_mock):
 def test_show_error_dialog_closes_previous_dialog_if_existing(gtk_mock):
     first_dialog_mock = Mock()
     second_dialog_mock = Mock()
-    gtk_mock.MessageDialog.side_effect = [first_dialog_mock, second_dialog_mock]
+    gtk_mock.MessageDialog.return_value = second_dialog_mock
     notifications = Notifications(Mock(), Mock())
 
+    # Simulate an existing dialog being shown.
+    notifications.error_dialog = first_dialog_mock
+
     notifications.show_error_dialog(ERROR_MESSAGE, ERROR_TITLE)
-    process_gtk_events()
-    first_dialog_mock.destroy.assert_called_once()
-    notifications.show_error_dialog(ERROR_MESSAGE, ERROR_TITLE)
+
     process_gtk_events()
 
-    # The `run()` method block the event loop from continuing, meaning that
-    # in a real scenario, if a second dialog is to be displayed while the first
-    # one is being displayed, the first dialog should be destroyed only once.
-    # first_dialog_mock but during unit tests the `run()` method 
-    # does not block the event loop, thus destroying the first dialog twice.
-    assert first_dialog_mock.destroy.call_count == 2
+    first_dialog_mock.destroy.assert_called_once()
     second_dialog_mock.destroy.assert_called_once()
 
 

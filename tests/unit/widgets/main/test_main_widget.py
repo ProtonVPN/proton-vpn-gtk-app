@@ -17,14 +17,16 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from unittest.mock import Mock
-import pytest
+from proton.session.exceptions import ProtonAPIMissingScopeError
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
-from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
-from tests.unit.testing_utils import process_gtk_events
 
 
 def test_main_widget_initially_shows_login_widget_if_the_user_did_not_log_in_yet():
@@ -94,7 +96,7 @@ def test_main_widget_switches_from_vpn_to_login_widget_after_logout():
     assert main_window_mock.header_bar.menu.logout_enabled is False
 
 
-def test_main_widget_switches_to_login_widget_when_session_expired():
+def test_main_widget_switches_to_login_widget_and_shows_error_dialog_on_session_expired_error():
     main_window_mock = Mock()
     notifications_mock = Mock()
     notifications_mock.notification_bar = NotificationBar()
@@ -108,7 +110,7 @@ def test_main_widget_switches_to_login_widget_when_session_expired():
         overlay_widget=OverlayWidget()
     )
     main_widget.active_widget = main_widget.vpn_widget
-    main_widget.session_expired()
+    main_widget.on_session_expired()
 
     assert main_widget.active_widget is main_widget.login_widget
     notifications_mock.show_error_dialog.assert_called_once_with(

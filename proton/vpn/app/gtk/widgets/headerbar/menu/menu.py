@@ -46,14 +46,14 @@ if TYPE_CHECKING:
 class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
     """App menu shown in the header bar."""
 
-    LOGOUT_LOADING_MESSAGE = "Logging out..."
-    UNABLE_TO_LOGOUT_MESSAGE = "Unable to logout, please ensure you have internet access."
-    DISCONNECT_ON_LOGOUT_MESSAGE = "Logging out of the application will cancel the current " \
-                                   "VPN connection.\n\nDo you want to continue?"
-    DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE = "Logging out of the application "\
+    LOGOUT_LOADING_MESSAGE = "Signing out..."
+    UNABLE_TO_LOGOUT_MESSAGE = "Unable to sign out, please ensure you have internet access."
+    DISCONNECT_ON_LOGOUT_MESSAGE = "Signing out will cancel the current VPN connection.\n\n" \
+                                   "Do you want to continue?"
+    DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE = "Signing out "\
         "will cancel the current VPN connection and disable the kill switch."\
         "\n\nDo you want to continue?"
-    LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE = "Logging out of the application will "\
+    LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE = "Signing out will "\
         "disable the kill switch, potentially exposing your internet traffic. "\
         "\n\nDo you want to continue?"
     DISCONNECT_ON_QUIT_MESSAGE = "Quitting the application will cancel the current" \
@@ -84,7 +84,7 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self.append_item(Gio.MenuItem.new("Settings", "win.settings"))
         self.append_item(Gio.MenuItem.new("Release notes", "win.release_notes"))
         self.append_item(Gio.MenuItem.new("Report an issue", "win.report"))
-        self.append_item(Gio.MenuItem.new("Logout", "win.logout"))
+        self.append_item(Gio.MenuItem.new("Sign out", "win.logout"))
         self.append_item(Gio.MenuItem.new("Quit", "win.quit"))
 
         self._settings_window = None

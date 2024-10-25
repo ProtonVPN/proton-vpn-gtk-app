@@ -34,6 +34,7 @@ from proton.vpn import logging
 gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gtk  # noqa: E402,E501 # pylint: disable=wrong-import-position,wrong-import-order
 
+NO_SPACE_LEFT_ON_DEVICE_ERRNO = 28
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.controller import Controller
@@ -127,6 +128,8 @@ class ExceptionHandler:
             self._on_server_not_found(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, AuthenticationError):
             self._on_vpn_authentication_error(exc_type, exc_value, exc_traceback)
+        elif isinstance(exc_value, OSError) and exc_value.errno == NO_SPACE_LEFT_ON_DEVICE_ERRNO:
+            self._on_no_space_left_on_device(exc_type, exc_value, exc_traceback)
         elif issubclass(exc_type, AssertionError):
             # We shouldn't catch assertion errors raised by tests.
             raise exc_value
@@ -232,6 +235,18 @@ class ExceptionHandler:
             category="APP", event="ERROR",
             exc_info=(exc_type, exc_value, exc_traceback)
         )
+
+    def _on_no_space_left_on_device(self, exc_type, exc_value, exc_traceback):
+        logger.error(
+            exc_value,
+            category="APP", event="ERROR",
+            exc_info=(exc_type, exc_value, exc_traceback)
+        )
+        if self.main_widget:
+            self.main_widget.notifications.show_error_dialog(
+                title="No space left on device",
+                message="There is not enough space left on your device."
+            )
 
     def _on_exception(self, exc_type, exc_value, exc_traceback):
         if self.main_widget:

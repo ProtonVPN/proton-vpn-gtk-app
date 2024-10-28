@@ -282,6 +282,10 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
 
 class CountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attributes
+    """Base class for rows containing all servers in a country."""
+
+
+class ImmediateCountryRow(CountryRow):  # pylint: disable=too-many-instance-attributes
     """Row containing all servers from a country."""
 
     # pylint: disable=too-many-arguments
@@ -294,6 +298,8 @@ class CountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             show_country_servers: bool = False,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        self.set_can_focus(True)
+
         self._controller = controller
         self._indexed_server_rows = {}
 
@@ -372,6 +378,10 @@ class CountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
         if show_country_servers:
             self._server_rows_revealer.set_reveal_child(True)
+
+    def toggle_row(self):
+        """Toggles the view of the children of the country row."""
+        self._country_header.click_toggle_country_servers_button()
 
     @property
     def country_name(self):
@@ -455,6 +465,250 @@ class CountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         server_id = connection_state.context.connection.server_id
         server = self._get_server_row(server_id)
         server.connection_state = connection_state.type
+
+    def click_connect_button(self):
+        """Clicks the button to connect to the country.
+        This method was made available for tests."""
+        self._country_header.click_connect_button()
+
+    def update_server_loads(self):
+        """Refreshes the UI after new server loads were retrieved."""
+        # Start by setting the country under maintenance until the opposite is proven.
+        self._under_maintenance = True
+        for server_row in self._indexed_server_rows.values():
+            server_row.update_server_load()
+            self._under_maintenance = (
+                    self._under_maintenance and server_row.under_maintenance
+            )
+        self._country_header.update_under_maintenance_status(
+            self._under_maintenance
+        )
+
+
+class DeferredCountryRow(CountryRow):  # pylint: disable=too-many-instance-attributes
+    """Row containing all servers, servers are loaded lazily"""
+
+    # pylint: disable=too-many-arguments
+    def __init__(
+            self,
+            country: Country,
+            user_tier: int,
+            controller: Controller,
+            connected_server_id: str = None,
+            show_country_servers: bool = False,
+    ):
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        self.set_can_focus(True)
+
+        self._controller = controller
+        self._indexed_server_rows = {}
+
+        free_servers, plus_servers = self._group_servers_by_tier(country.servers)
+        is_free_user = user_tier == 0
+
+        # Properties initialized after building all server rows.
+        self._is_free_country = None
+        self._upgrade_required = None
+        self._country_features = set()
+        self._under_maintenance = None
+
+        self._server_rows_revealer = Gtk.Revealer()
+        server_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._server_rows_revealer.add(server_rows_container)
+
+        ordered_servers = []
+        if is_free_user:
+            ordered_servers.extend(free_servers)
+            ordered_servers.extend(plus_servers)
+        else:
+            ordered_servers.extend(plus_servers)
+            ordered_servers.extend(free_servers)
+
+        (country_connection_state,
+         smart_routing_country,
+         self._under_maintenance,
+         self._is_free_country,
+         self._country_features) = self._analyze_servers(ordered_servers,
+                                                         connected_server_id)
+        self._connected_server_id = connected_server_id
+
+        def add_servers_to_country():
+            for server in ordered_servers:
+                server_row = ServerRow(
+                    server=server,
+                    user_tier=user_tier,
+                    controller=self._controller
+                )
+                server_rows_container.pack_start(
+                    server_row,
+                    expand=False, fill=False, padding=5
+                )
+
+                self._indexed_server_rows[server.id] = server_row
+
+                # If we are currently connected to a server then set its row
+                # state to "connected".
+                #
+                # We use self._connected_server_id instead of
+                # connected_server_id because there's a chance it might change
+                # before this function is called.
+                if self._connected_server_id == server.id:
+                    server_row.connection_state = ConnectionStateEnum.CONNECTED
+
+        self._add_servers_to_country = add_servers_to_country
+
+        self._upgrade_required = is_free_user and not self._is_free_country
+
+        self._country_header = CountryHeader(
+            country=country,
+            under_maintenance=self._under_maintenance,
+            upgrade_required=self._upgrade_required,
+            server_features=self._country_features,
+            smart_routing=smart_routing_country,
+            connection_state=country_connection_state,
+            controller=controller,
+            show_country_servers=show_country_servers
+        )
+        self._country_header.connect(
+            "toggle-country-servers", self._on_toggle_country_servers
+        )
+
+        self.pack_start(self._country_header, expand=False, fill=False, padding=5)
+        self.pack_start(self._server_rows_revealer, expand=False, fill=False, padding=5)
+
+        if show_country_servers:
+            self._server_rows_revealer.set_reveal_child(True)
+
+    def _analyze_servers(self,
+                         ordered_servers: List[LogicalServer],
+                         connected_server_id: str = None,):
+        """
+        Iterates over the ordered list of servers and extracts information
+        to be displayed for the country.
+        """
+        # Properties initialized after analysing the servers.
+        is_free_country = None
+
+        country_features = set()
+
+        # The country is set under maintenance until the opposite is proven.
+        under_maintenance = True
+
+        # The country connection state is set as disconnected until the opposite is proven.
+        country_connection_state = ConnectionStateEnum.DISCONNECTED
+
+        # Smart routing is assumed to be used until the opposite is proven.
+        smart_routing_country = True
+
+        for server in ordered_servers:
+            country_features.update(server.features)
+
+            is_free_country = is_free_country or server.tier == 0
+
+            # The country is under maintenance if (1) that was the case up until now and
+            # (2) the current server is also under maintenance (i.e. is not enabled).
+            under_maintenance = (under_maintenance and not server.enabled)
+            # A country is flagged as a "Smart rouging" location if *all* servers are
+            # actually physically located in a neighbouring country.
+            smart_routing_country = (smart_routing_country and
+                                     server.host_country is not None)
+
+            # If we are currently connected to a server then set its row state to "connected".
+            if connected_server_id == server.id:
+                country_connection_state = ConnectionStateEnum.CONNECTED
+
+        return (country_connection_state, smart_routing_country,
+                under_maintenance, is_free_country, country_features)
+
+    def _generate_servers_if_needed(self, country_header: CountryHeader):
+        if country_header.show_country_servers:
+            if self._add_servers_to_country:
+                self._add_servers_to_country()
+                self._add_servers_to_country = None
+                self._server_rows_revealer.show_all()
+
+    def toggle_row(self):
+        """Toggles the view of the children of the country row."""
+        self._country_header.click_toggle_country_servers_button()
+
+    @property
+    def country_name(self):
+        """Returns the name of the country.
+        This method was made available for tests."""
+        return self._country_header.country_name
+
+    @property
+    def upgrade_required(self):
+        """Returns True if this country is not in the currently logged-in
+        user tier, and therefore it requires a plan upgrade. Otherwise, it
+        returns False."""
+        return self._upgrade_required
+
+    @property
+    def is_free_country(self) -> bool:
+        """Returns True if this country has any servers available to
+        users with a free account. Otherwise, it returns False."""
+        return self._is_free_country
+
+    @property
+    def showing_servers(self):
+        """Returns True if the servers are being showed and False otherwise.
+        This method was made available for tests."""
+        return self._server_rows_revealer.get_reveal_child()
+
+    def click_toggle_country_servers_button(self):
+        """
+        Clicks the button to toggle the visibility of the country servers.
+        This method was made available for tests.
+        """
+        self._country_header.click_toggle_country_servers_button()
+
+    @property
+    def server_rows(self) -> List[ServerRow]:
+        """Returns the list of server rows for this server.
+        This method was made available for tests."""
+        return self._server_rows_revealer.get_child().get_children()
+
+    @property
+    def connection_state(self):
+        """Returns the connection state for this row."""
+        return self._country_header.connection_state
+
+    @property
+    def header_searchable_content(self) -> str:
+        """Returns the normalized searchable content for the country header."""
+        return normalize(self.country_name)
+
+    @staticmethod
+    def _group_servers_by_tier(country_servers) -> Tuple[List[LogicalServer]]:
+        free_servers = []
+        plus_servers = []
+        for server in country_servers:
+            if server.tier == 0:
+                free_servers.append(server)
+            else:
+                plus_servers.append(server)
+
+        return free_servers, plus_servers
+
+    def _on_toggle_country_servers(self, country_header: CountryHeader):
+        self._server_rows_revealer.set_reveal_child(
+            country_header.show_country_servers)
+        self._generate_servers_if_needed(country_header)
+
+    def set_servers_visibility(self, visible: bool):
+        """Country servers will be shown if set to True. Otherwise, they'll be hidden."""
+        self._country_header.show_country_servers = visible
+        self._server_rows_revealer.set_reveal_child(visible)
+
+    def connection_status_update(self, connection_state):
+        """This method is called by VPNWidget whenever the VPN connection status changes."""
+        self._country_header.connection_state = connection_state.type
+        self._connected_server_id =\
+            connection_state.context.connection.server_id
+        server = self._indexed_server_rows.get(self._connected_server_id, None)
+        if server:
+            server.connection_state = connection_state.type
 
     def click_connect_button(self):
         """Clicks the button to connect to the country.

@@ -1,3 +1,13 @@
+version: 4.7.2rc3
+time: 2024/10/30 14:00
+author: Alexandru Cheltuitor and Luke Titley
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Added lazily loading of server list for improved speed.
+- Re-wrote search wiget for improved speed.
+---
 version: 4.7.2rc2
 time: 2024/10/30 16:00
 author: Josep Llaneras

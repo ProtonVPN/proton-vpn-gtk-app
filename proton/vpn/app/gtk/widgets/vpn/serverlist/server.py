@@ -44,6 +44,7 @@ class ServerRow(Gtk.Box):
     """Displays a single server as a row in the server list."""
     def __init__(self, server: LogicalServer, user_tier: int, controller: Controller):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+        self.set_can_focus(True)
         self._server = server
         self._user_tier = user_tier
         self._controller = controller

@@ -25,7 +25,7 @@ from proton.vpn.connection.states import ConnectionStateEnum, Connecting, Connec
 from proton.vpn.session.servers import ServerList, Country, LogicalServer
 
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.vpn.serverlist.country import CountryRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.country import ImmediateCountryRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import UnderMaintenanceIcon
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.logging import logging
@@ -79,7 +79,7 @@ def mock_controller():
 def test_country_row_toggles_servers_when_requested(
         country, mock_controller
 ):
-    country_row = CountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
+    country_row = ImmediateCountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
 
     # Initially the servers should not be shown
     assert not country_row.showing_servers
@@ -99,7 +99,7 @@ def test_country_row_toggles_servers_when_requested(
 def test_country_row_shows_upgrade_link_when_country_servers_are_not_in_the_users_plan(
         country, mock_controller
 ):
-    country_row = CountryRow(country=country, user_tier=FREE_TIER, controller=mock_controller)
+    country_row = ImmediateCountryRow(country=country, user_tier=FREE_TIER, controller=mock_controller)
 
     assert country_row.upgrade_required
 
@@ -110,7 +110,7 @@ def test_country_row_shows_upgrade_link_when_country_servers_are_not_in_the_user
 def test_country_row_updates_server_rows_on_connection_status_update(
         connection_state, country, mock_controller
 ):
-    country_row = CountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
+    country_row = ImmediateCountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
 
     connection_state = Mock()
     connection_state.context.connection.server_id = country.servers[0].id
@@ -124,7 +124,7 @@ def test_country_row_updates_server_rows_on_connection_status_update(
 
 
 def test_connect_button_click_triggers_vpn_connection_to_country(country, mock_controller):
-    country_row = CountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
+    country_row = ImmediateCountryRow(country=country, user_tier=PLUS_TIER, controller=mock_controller)
 
     country_row.click_connect_button()
 
@@ -144,7 +144,7 @@ def test_initialize_currently_connected_country(
     currently connected to, we need to initialize both the new country row
     and its child server row in a "connected" state.
     """
-    country_row = CountryRow(
+    country_row = ImmediateCountryRow(
         country=country,
         user_tier=PLUS_TIER,
         controller=mock_controller,
@@ -187,7 +187,7 @@ def test_initialize_currently_connected_server_when_server_is_flagged_for_mainte
     by a label displaying that the server is under maintenance.
     """
     caplog.set_level(logging.WARNING)
-    CountryRow(
+    ImmediateCountryRow(
         country=country_with_server_under_maintenance,
         user_tier=PLUS_TIER,
         controller=mock_controller,
@@ -207,7 +207,7 @@ def test_initialize_country_row_showing_country_servers(
     servers) when reloading the server list, then it needs to be recreated in
     the expanded state. This is what we test here.
     """
-    country_row = CountryRow(
+    country_row = ImmediateCountryRow(
         country=country,
         user_tier=PLUS_TIER,
         controller=mock_controller,
@@ -257,7 +257,7 @@ def test_country_widget_shows_user_tier_servers_first(
     servers = ServerList(user_tier=user_tier, logicals=free_and_plus_servers)
     country = Country(code="jp", servers=free_and_plus_servers)
 
-    country_row = CountryRow(
+    country_row = ImmediateCountryRow(
         country=country,
         user_tier=user_tier,
         controller=mock_controller

@@ -106,14 +106,16 @@ def server_list_widget(server_list):
 
 
 def test_search_shows_matching_server_row_and_its_country_when_searching_for_a_server_name(server_list_widget):
-    search_widget = SearchEntry(server_list_widget)
+    search_widget = SearchEntry()
 
     main_loop = GLib.MainLoop()
 
     # Changing the search widget text triggers the search.
     GLib.idle_add(search_widget.set_text, "jp-free#10")
 
-    search_widget.connect("search-complete", lambda _: main_loop.quit())
+    server_list_widget.connect("filter-complete", lambda _: main_loop.quit())
+    search_widget.connect("search-changed",
+                          server_list_widget._legacy_filter_ui)
 
     run_main_loop(main_loop)
 
@@ -134,14 +136,16 @@ def test_search_shows_matching_server_row_and_its_country_when_searching_for_a_s
 
 
 def test_search_shows_matching_country_with_servers_collapsed_when_search_only_matches_country_name(server_list_widget):
-    search_widget = SearchEntry(server_list_widget)
+    search_widget = SearchEntry()
 
     main_loop = GLib.MainLoop()
 
     # Changing the search widget text triggers the search.
     GLib.idle_add(search_widget.set_text, "argentina")
 
-    search_widget.connect("search-complete", lambda _: main_loop.quit())
+    search_widget.connect("search-changed",
+                          server_list_widget._legacy_filter_ui)
+    server_list_widget.connect("filter-complete", lambda _: main_loop.quit())
 
     run_main_loop(main_loop)
 
@@ -161,14 +165,16 @@ def test_search_shows_matching_country_with_servers_collapsed_when_search_only_m
 
 
 def test_search_does_not_show_any_countries_nor_servers_when_search_does_not_match_anything(server_list_widget):
-    search_widget = SearchEntry(server_list_widget)
+    search_widget = SearchEntry()
 
     main_loop = GLib.MainLoop()
 
     # Changing the search widget text triggers the search.
     GLib.idle_add(search_widget.set_text, "foobar")
 
-    search_widget.connect("search-complete", lambda _: main_loop.quit())
+    search_widget.connect("search-changed",
+                          server_list_widget._legacy_filter_ui)
+    server_list_widget.connect("filter-complete", lambda _: main_loop.quit())
 
     run_main_loop(main_loop)
 

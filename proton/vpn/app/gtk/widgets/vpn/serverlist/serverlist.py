@@ -29,7 +29,8 @@ from gi.repository import GLib, GObject
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.vpn.serverlist.country import CountryRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.country import (
+    CountryRow, ImmediateCountryRow, DeferredCountryRow)
 from proton.vpn.session.servers import Country, LogicalServer, ServerList
 from proton.vpn import logging
 
@@ -67,7 +68,8 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def __init__(
         self,
-        controller: Controller
+        controller: Controller,
+        deferred_country_row: bool = False,
     ):
         super().__init__()
         self.set_policy(
@@ -76,15 +78,21 @@ class ServerListWidget(Gtk.ScrolledWindow):
         )
         self._controller = controller
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._container.set_can_focus(True)
         self._container.set_margin_end(15)  # Leave space for the scroll bar.
         self.add(self._container)
 
         self._state = ServerListWidgetState()
+        self._deferred_country_row = deferred_country_row
 
         self.connect("unrealize", self._on_unrealize)
 
     def _on_unrealize(self, _widget):
         self.unload()
+
+    @GObject.Signal(name="filter-complete")
+    def filter_complete(self):
+        """Signal emitted after the UI finalized filtering the UI."""
 
     @GObject.Signal(name="ui-updated")
     def ui_updated(self):
@@ -137,6 +145,51 @@ class ServerListWidget(Gtk.ScrolledWindow):
             f"{time.time() - start:.2f} seconds."
         )
 
+    def _legacy_filter_ui(self, search_entry: Gtk.SearchEntry):
+        """This filters the countries in the server list based on the contents
+           of the given search entry.
+        """
+        start_time = time.time()
+        entry_text = search_entry.get_text().lower().replace(" ", "")
+
+        for country_row in self.country_rows:
+            country_match = entry_text in country_row.header_searchable_content
+
+            server_match = False
+            for server_row in country_row.server_rows:
+                # Show server rows if they match the search text, or if they belong to
+                # a country that matches the search text. Otherwise, hide them.
+                server_row_visible = entry_text in server_row.searchable_content
+                server_row.set_visible(server_row_visible or country_match)
+                if server_row_visible and entry_text:
+                    server_match = True
+
+            # If there was at least a server in the current country row matching
+            # the search text then expand country servers. Otherwise, collapse them.
+            country_row.set_servers_visibility(server_match)
+
+            # Show the whole country row if there was either a server match or
+            # a country match. Otherwise, hide it.
+            country_row.set_visible(server_match or country_match)
+
+        self.emit("filter-complete")
+        end_time = time.time()
+        logger.info(f"Filter done in {(end_time - start_time) * 1000:.2f} ms.")
+
+    def focus_on_entry(self, _widget, name_to_search: str) -> None:
+        """Searches for an entry by name and either connects to it directly,
+           or focuses on it."""
+        for country in self.country_rows:
+            if "#" in name_to_search:
+                future = self._controller.connect_to_server(name_to_search)
+                future.add_done_callback(lambda f: GLib.idle_add(f.result))
+            else:
+                if country.country_name.lower() == name_to_search.lower():
+                    if not country.showing_servers:
+                        country.toggle_row()
+                    country.grab_focus()
+                    break
+
     def display(self, user_tier: int, server_list: int):
         """Update UI with the new server list."""
         self._state = ServerListWidgetState(
@@ -182,13 +235,18 @@ class ServerListWidget(Gtk.ScrolledWindow):
         if self._controller.is_connection_active:
             connected_server_id = self._controller.current_server_id
 
+        # Chose the deferred loading country row if that was the configuration
+        # given to this widget.
+        Row = (DeferredCountryRow
+               if self._deferred_country_row else ImmediateCountryRow)
+
         new_country_rows = {}
         for country in countries:
             show_country_servers = False
             if old_country_rows and old_country_rows.get(country.code):
                 show_country_servers = old_country_rows[country.code].showing_servers
 
-            country_row = CountryRow(
+            country_row = Row(
                 country=country,
                 user_tier=self._state.user_tier,
                 controller=self._controller,

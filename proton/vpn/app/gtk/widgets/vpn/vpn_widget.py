@@ -33,6 +33,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
 from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
+from proton.vpn.app.gtk.widgets.vpn.search_results import SearchResults
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
@@ -43,6 +44,9 @@ if TYPE_CHECKING:
     from proton.vpn.app.gtk.app import MainWindow
 
 logger = logging.getLogger(__name__)
+
+# The feature flag that enables the lazy loading serverlist UI
+LINUX_DEFERRED_UI = "LinuxDeferredUI"
 
 
 @dataclass
@@ -79,22 +83,57 @@ class VPNWidget(Gtk.Box):
         self.connection_status_widget = VPNConnectionStatusWidget(
             controller, overlay_widget, notifications
         )
-        self.pack_start(self.connection_status_widget, expand=False, fill=False, padding=0)
+        self.pack_start(self.connection_status_widget, expand=False,
+                        fill=False, padding=0)
 
         self.quick_connect_widget = QuickConnectWidget(self._controller)
-        self.pack_start(self.quick_connect_widget, expand=False, fill=False, padding=0)
+        self.pack_start(self.quick_connect_widget, expand=False, fill=False,
+                        padding=0)
 
-        self.server_list_widget = ServerListWidget(self._controller)
+        new_search_enabled =\
+            self._controller.feature_flags.get(LINUX_DEFERRED_UI)
+        self.server_list_widget =\
+            ServerListWidget(self._controller,
+                             deferred_country_row=new_search_enabled)
         self.pack_end(self.server_list_widget, expand=True, fill=True, padding=0)
-        self.server_list_widget.connect("ui-updated", self._on_server_list_updated)
+        self.server_list_widget.connect("ui-updated",
+                                        self._on_server_list_updated)
 
-        self.search_widget = SearchEntry(self.server_list_widget)
+        self.search_widget = SearchEntry()
         main_window.add_keyboard_shortcut(
             target_widget=self.search_widget,
             target_signal="request_focus",
             shortcut="<Control>f"
         )
-        self.pack_start(self.search_widget, expand=False, fill=True, padding=0)
+        if new_search_enabled:
+            # self.set_vexpand(False)
+            self.search_results_widget = SearchResults(self._controller)
+            revealer = Gtk.Revealer()
+            revealer.add(self.search_results_widget)
+
+            self.search_widget.connect(
+                "search-changed",
+                self.search_results_widget.on_search_changed,
+                revealer
+            )
+            self.search_results_widget.connect(
+                "result-chosen",
+                self.server_list_widget.focus_on_entry
+            )
+            self.search_results_widget.connect(
+                "result-chosen",
+                lambda _, row: self.search_widget.reset()
+            )
+            self.pack_start(self.search_widget, expand=False, fill=True,
+                            padding=0)
+            self.pack_start(revealer, expand=False, fill=False, padding=0)
+        else:
+            self.search_widget.connect(
+                "search-changed", self.server_list_widget._legacy_filter_ui)
+            self.server_list_widget.connect(
+                "ui-updated", lambda _: self.search_widget.reset())
+            self.pack_start(self.search_widget, expand=False, fill=True,
+                            padding=0)
 
         self.connection_status_subscribers = []
         for widget in [

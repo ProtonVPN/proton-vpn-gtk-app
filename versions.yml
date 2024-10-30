@@ -1,3 +1,12 @@
+version: 4.8.0rc1
+time: 2024/11/08 12:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Add custom DNS to settings window.
+---
 version: 4.7.2
 time: 2024/11/07 09:00
 author: Josep Llaneras

@@ -25,6 +25,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, ToggleWidget, ComboboxWidget
 )
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import CustomDNSWidget
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window import \
@@ -60,8 +61,10 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         self.build_protocol()
         self.build_vpn_accelerator()
         self.build_moderate_nat()
+        # TO-DO: Discuss if we still need this feature flag
         if self._controller.feature_flags.get("IPv6Support"):
             self.build_ipv6()
+        self.build_custom_dns()
 
     def build_protocol(self):
         """Builds and adds the `protocol` setting to the widget."""
@@ -122,3 +125,8 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
             setting_name="settings.ipv6",
             callback=on_switch_state
         ), False, False, 0)
+
+    def build_custom_dns(self):
+        """Builds and adds the `ipv6` setting to the widget."""
+        killswitch = CustomDNSWidget.build(self._controller)
+        self.pack_start(killswitch, False, False, 0)

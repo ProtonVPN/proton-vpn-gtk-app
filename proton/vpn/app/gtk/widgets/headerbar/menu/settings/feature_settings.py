@@ -78,6 +78,13 @@ class KillSwitchWidget(ToggleWidget):  # noqa pylint: disable=too-many-instance-
         self.revealer.add(revealer_container)
         self.revealer.set_reveal_child(self.get_setting() > KillSwitchSettingEnum.OFF)
 
+    @staticmethod
+    def build(controller: Controller) -> "KillSwitchWidget":
+        """Shortcut method to initialize widget."""
+        widget = KillSwitchWidget(controller)
+        widget.build_revealer()
+        return widget
+
     def _build_revealer_container(self) -> Gtk.Box:
         # Add both containers that contain all children that are to be displayed in the revealer
         revealer_container = self.gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -206,9 +213,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     def build_killswitch(self):
         """Builds and adds the `killswitch` setting to the widget."""
-        killswitch = KillSwitchWidget(self._controller)
-        killswitch.build_revealer()
-
+        killswitch = KillSwitchWidget.build(self._controller)
         self.pack_start(killswitch, False, False, 0)
 
     def build_port_forwarding(self):

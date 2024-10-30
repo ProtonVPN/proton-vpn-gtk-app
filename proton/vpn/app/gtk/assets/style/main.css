@@ -87,3 +87,7 @@ label.success {
     padding: 15px 0px;
     margin-top: 20px;
 }
+
+label.signal-danger {
+    color: @signal-danger
+}

@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.7.1
-%define upstream_version 4.7.1
+%define version 4.7.2~rc1
+%define upstream_version 4.7.2rc1
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,6 +67,10 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Wed Oct 30 2024 Josep Llaneras <josep.llaneras@proton.ch> 4.7.2~rc1
+- Handle no VPN connections assigned error
+- Do not report disk full errors to sentry
+
 * Tue Oct 22 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.1
 - Fix bug when opening the settings window and advanced kill switch is enabled the settings would crash.
 

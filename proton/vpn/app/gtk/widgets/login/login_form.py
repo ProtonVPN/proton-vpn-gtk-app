@@ -45,7 +45,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
     TwoFactorAuthForm.
 
     """
-    LOGGING_IN_MESSAGE = "Logging in..."
+    LOGGING_IN_MESSAGE = "Signing in..."
     INVALID_USERNAME_MESSAGE = "Invalid username."
     INCORRECT_CREDENTIALS_MESSAGE = "Incorrect credentials."
 

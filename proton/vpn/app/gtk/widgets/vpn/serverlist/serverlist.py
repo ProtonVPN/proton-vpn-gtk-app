@@ -78,7 +78,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
         )
         self._controller = controller
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self._container.set_can_focus(True)
         self._container.set_margin_end(15)  # Leave space for the scroll bar.
         self.add(self._container)
 
@@ -138,8 +137,16 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def _on_server_loads_update(self):
         start = time.time()
+
+        new_countries = {
+            country.code: country
+            for country in self._controller.server_list.group_by_country()
+        }
+
         for country_row in self._state.country_rows.values():
-            country_row.update_server_loads()
+            new_country = new_countries.get(country_row.country_code, None)
+            country_row.update_server_loads(new_country)
+
         logger.info(
             "Partial server list widget update completed in "
             f"{time.time() - start:.2f} seconds."
@@ -180,15 +187,21 @@ class ServerListWidget(Gtk.ScrolledWindow):
         """Searches for an entry by name and either connects to it directly,
            or focuses on it."""
         for country in self.country_rows:
+
+            # Server
             if "#" in name_to_search:
                 future = self._controller.connect_to_server(name_to_search)
                 future.add_done_callback(lambda f: GLib.idle_add(f.result))
-            else:
-                if country.country_name.lower() == name_to_search.lower():
-                    if not country.showing_servers:
-                        country.toggle_row()
-                    country.grab_focus()
-                    break
+                return
+
+            # Country
+            if country.country_name.lower() == name_to_search.lower():
+                if not country.showing_servers:
+                    country.toggle_row()
+                country.set_can_focus(True)   # required to focus on the expanded country
+                country.grab_focus()
+                country.set_can_focus(False)  # required to navigate countries with keyboard
+                return
 
     def display(self, user_tier: int, server_list: int):
         """Update UI with the new server list."""

@@ -29,6 +29,17 @@ from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
 
+# We're hittig a bug in the GTK treeview where x11 crashes with BadAlloc
+# if we try to display > 1500 rows in certain configurations.
+# This avoids the issue by limiting the number of results displayed.
+# This is ultimately a better user experience as the whole point of
+# the search is to find a specific item.
+MAX_SEARCH_RESULTS_PER_SECTION = 100
+
+# Column indexes in the tree model for the FilteredList.
+COLUMN_NAME = 0  # The name of the item.
+COLUMN_SENSITIVE = 1  # Whether the item is sensitive to selection.
+
 
 class FilteredList(Gtk.TreeView):
     """
@@ -45,10 +56,15 @@ class FilteredList(Gtk.TreeView):
         self.set_model(Gtk.TreeModelSort(model=self._model))
 
         self.set_show_expanders(False)
+        self.set_activate_on_single_click(True)
 
-        def select_function(_treeselection, _model, path, _current):
-            server, country = ("0", "1")
-            return path.to_string() not in [server, country]
+        def select_function(_treeselection, model, path, _current):
+            tree_iter = model.get_iter(path)
+            if tree_iter:
+                sensitivity = model.get_value(tree_iter, COLUMN_SENSITIVE)
+                return sensitivity
+
+            return False
         self.get_selection().set_select_function(select_function)
 
         column = Gtk.TreeViewColumn(cell_renderer=Gtk.CellRendererText(),
@@ -73,8 +89,11 @@ class FilteredList(Gtk.TreeView):
             if data:
                 row = [f"{section_name} ({len(data)})", False]
                 root = self._model.append(None, row)
-                for item in data:
+                for i, item in enumerate(data):
                     self._model.append(root, [item, True])
+                    if i == MAX_SEARCH_RESULTS_PER_SECTION:
+                        self._model.append(None, ["...", False])
+                        break
 
         self.expand_all()
 
@@ -138,13 +157,12 @@ class SearchResults(Gtk.ScrolledWindow):
     def _on_row_activated(
         self,
         tree_view: FilteredList,
-        _: Gtk.TreePath,
-        tree_view_column: Gtk.TreeViewColumn
+        path: Gtk.TreePath,
+        _tree_view_column: Gtk.TreeViewColumn
     ):
-        tree_view_selection = tree_view.get_selection()
-        model, tree_iter = tree_view_selection.get_selected()
+        model = tree_view.get_model()
+        tree_iter = model.get_iter(path)
         if tree_iter:
-            selected_value = model.get_value(tree_iter,
-                                             tree_view_column.get_sort_column_id())
+            selected_value = model.get_value(tree_iter, COLUMN_NAME)
             self._revealer.set_reveal_child(False)
             self.emit("result-chosen", selected_value)

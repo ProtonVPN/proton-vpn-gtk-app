@@ -22,6 +22,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from typing import List, Tuple, Set
 from gi.repository import Atk, GLib, GObject
 
@@ -39,6 +41,61 @@ from proton.vpn.session.servers import LogicalServer
 from proton.vpn.session.servers import ServerFeatureEnum
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class CountryAnalysis:
+    """Contains a summary of the state all the servers in a given country."""
+    country_connection_state: ConnectionStateEnum
+    smart_routing_country: bool
+    under_maintenance: bool
+    is_free_country: bool
+    country_features: Set[ServerFeatureEnum]
+
+
+def _analyze_servers(ordered_servers: List[LogicalServer],
+                     connected_server_id: str = None) -> CountryAnalysis:
+    """
+    Iterates over the ordered list of servers and extracts information
+    to be displayed for the country.
+    """
+    # Properties initialized after analysing the servers.
+    is_free_country = None
+
+    country_features = set()
+
+    # The country is set under maintenance until the opposite is proven.
+    under_maintenance = True
+
+    # The country connection state is set as disconnected until the opposite is proven.
+    country_connection_state = ConnectionStateEnum.DISCONNECTED
+
+    # Smart routing is assumed to be used until the opposite is proven.
+    smart_routing_country = True
+
+    for server in ordered_servers:
+        country_features.update(server.features)
+
+        is_free_country = is_free_country or server.tier == 0
+
+        # The country is under maintenance if (1) that was the case up until now and
+        # (2) the current server is also under maintenance (i.e. is not enabled).
+        under_maintenance = (under_maintenance and not server.enabled)
+        # A country is flagged as a "Smart rouging" location if *all* servers are
+        # actually physically located in a neighbouring country.
+        smart_routing_country = (smart_routing_country and
+                                 server.host_country is not None)
+
+        # If we are currently connected to a server then set its row state to "connected".
+        if connected_server_id == server.id:
+            country_connection_state = ConnectionStateEnum.CONNECTED
+
+    return CountryAnalysis(
+        country_connection_state,
+        smart_routing_country,
+        under_maintenance,
+        is_free_country,
+        country_features)
 
 
 class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
@@ -298,7 +355,6 @@ class ImmediateCountryRow(CountryRow):  # pylint: disable=too-many-instance-attr
             show_country_servers: bool = False,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
-        self.set_can_focus(True)
 
         self._controller = controller
         self._indexed_server_rows = {}
@@ -382,6 +438,11 @@ class ImmediateCountryRow(CountryRow):  # pylint: disable=too-many-instance-attr
     def toggle_row(self):
         """Toggles the view of the children of the country row."""
         self._country_header.click_toggle_country_servers_button()
+
+    @property
+    def country_code(self):
+        """Returns the code of the country. A short unique string"""
+        return self._country_header.country_code
 
     @property
     def country_name(self):
@@ -471,7 +532,7 @@ class ImmediateCountryRow(CountryRow):  # pylint: disable=too-many-instance-attr
         This method was made available for tests."""
         self._country_header.click_connect_button()
 
-    def update_server_loads(self):
+    def update_server_loads(self, _new_country: Country):
         """Refreshes the UI after new server loads were retrieved."""
         # Start by setting the country under maintenance until the opposite is proven.
         self._under_maintenance = True
@@ -498,12 +559,12 @@ class DeferredCountryRow(CountryRow):  # pylint: disable=too-many-instance-attri
             show_country_servers: bool = False,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
-        self.set_can_focus(True)
 
         self._controller = controller
         self._indexed_server_rows = {}
 
-        free_servers, plus_servers = self._group_servers_by_tier(country.servers)
+        free_servers, plus_servers =\
+            self._group_servers_by_tier(country.servers)
         is_free_user = user_tier == 0
 
         # Properties initialized after building all server rows.
@@ -524,12 +585,11 @@ class DeferredCountryRow(CountryRow):  # pylint: disable=too-many-instance-attri
             ordered_servers.extend(plus_servers)
             ordered_servers.extend(free_servers)
 
-        (country_connection_state,
-         smart_routing_country,
-         self._under_maintenance,
-         self._is_free_country,
-         self._country_features) = self._analyze_servers(ordered_servers,
-                                                         connected_server_id)
+        analysis = _analyze_servers(ordered_servers, connected_server_id)
+
+        self._under_maintenance = analysis.under_maintenance
+        self._is_free_country = analysis.is_free_country
+        self._country_features = analysis.country_features
         self._connected_server_id = connected_server_id
 
         def add_servers_to_country():
@@ -564,8 +624,8 @@ class DeferredCountryRow(CountryRow):  # pylint: disable=too-many-instance-attri
             under_maintenance=self._under_maintenance,
             upgrade_required=self._upgrade_required,
             server_features=self._country_features,
-            smart_routing=smart_routing_country,
-            connection_state=country_connection_state,
+            smart_routing=analysis.smart_routing_country,
+            connection_state=analysis.country_connection_state,
             controller=controller,
             show_country_servers=show_country_servers
         )
@@ -579,47 +639,6 @@ class DeferredCountryRow(CountryRow):  # pylint: disable=too-many-instance-attri
         if show_country_servers:
             self._server_rows_revealer.set_reveal_child(True)
 
-    def _analyze_servers(self,
-                         ordered_servers: List[LogicalServer],
-                         connected_server_id: str = None,):
-        """
-        Iterates over the ordered list of servers and extracts information
-        to be displayed for the country.
-        """
-        # Properties initialized after analysing the servers.
-        is_free_country = None
-
-        country_features = set()
-
-        # The country is set under maintenance until the opposite is proven.
-        under_maintenance = True
-
-        # The country connection state is set as disconnected until the opposite is proven.
-        country_connection_state = ConnectionStateEnum.DISCONNECTED
-
-        # Smart routing is assumed to be used until the opposite is proven.
-        smart_routing_country = True
-
-        for server in ordered_servers:
-            country_features.update(server.features)
-
-            is_free_country = is_free_country or server.tier == 0
-
-            # The country is under maintenance if (1) that was the case up until now and
-            # (2) the current server is also under maintenance (i.e. is not enabled).
-            under_maintenance = (under_maintenance and not server.enabled)
-            # A country is flagged as a "Smart rouging" location if *all* servers are
-            # actually physically located in a neighbouring country.
-            smart_routing_country = (smart_routing_country and
-                                     server.host_country is not None)
-
-            # If we are currently connected to a server then set its row state to "connected".
-            if connected_server_id == server.id:
-                country_connection_state = ConnectionStateEnum.CONNECTED
-
-        return (country_connection_state, smart_routing_country,
-                under_maintenance, is_free_country, country_features)
-
     def _generate_servers_if_needed(self, country_header: CountryHeader):
         if country_header.show_country_servers:
             if self._add_servers_to_country:
@@ -630,6 +649,11 @@ class DeferredCountryRow(CountryRow):  # pylint: disable=too-many-instance-attri
     def toggle_row(self):
         """Toggles the view of the children of the country row."""
         self._country_header.click_toggle_country_servers_button()
+
+    @property
+    def country_code(self):
+        """Returns the code of the country. A short unique string"""
+        return self._country_header.country_code
 
     @property
     def country_name(self):
@@ -715,15 +739,16 @@ class DeferredCountryRow(CountryRow):  # pylint: disable=too-many-instance-attri
         This method was made available for tests."""
         self._country_header.click_connect_button()
 
-    def update_server_loads(self):
+    def update_server_loads(self, new_country: Country):
         """Refreshes the UI after new server loads were retrieved."""
         # Start by setting the country under maintenance until the opposite is proven.
-        self._under_maintenance = True
         for server_row in self._indexed_server_rows.values():
             server_row.update_server_load()
-            self._under_maintenance = (
-                    self._under_maintenance and server_row.under_maintenance
+
+        if new_country is not None:
+            self._under_maintenance =\
+                _analyze_servers(new_country.servers,
+                                 self._connected_server_id).under_maintenance
+            self._country_header.update_under_maintenance_status(
+                self._under_maintenance
             )
-        self._country_header.update_under_maintenance_status(
-            self._under_maintenance
-        )

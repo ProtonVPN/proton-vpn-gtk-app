@@ -91,7 +91,8 @@ class VPNWidget(Gtk.Box):
                         padding=0)
 
         new_search_enabled =\
-            self._controller.feature_flags.get(LINUX_DEFERRED_UI)
+            self._controller.feature_flags.get(LINUX_DEFERRED_UI)\
+            if self._controller.feature_flags else False
         self.server_list_widget =\
             ServerListWidget(self._controller,
                              deferred_country_row=new_search_enabled)

@@ -230,6 +230,10 @@ class EarlyAccessWidget(ToggleWidget):
         self.set_state(self.get_setting())
 
     def get_setting(self) -> bool:
+        # If we couldn't determine the package manager, don't show early access.
+        if self.distro_manager is None:
+            return False
+
         """Returns if early access is enabled, if the early access package
         was found on the system."""
         _, beta_package_installed = self._find_installed_repo_packages()

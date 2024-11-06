@@ -125,11 +125,13 @@ class SearchResults(Gtk.ScrolledWindow):
             return result
 
         def servers(search_text: str = None):
+            user_tier = controller.user_tier
             server_list = controller.server_list
             if server_list:
                 for server in controller.server_list:
-                    if search_text and (search_text in server.name.lower()):
-                        yield server.name
+                    if server.tier <= user_tier:
+                        if search_text and (search_text in server.name.lower()):
+                            yield server.name
 
         self._filtered_country_list = FilteredList(countries, servers)
         self._filtered_country_list.connect("row-activated",

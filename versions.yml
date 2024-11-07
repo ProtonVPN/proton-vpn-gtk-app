@@ -1,3 +1,12 @@
+version: 4.7.2rc6
+time: 2024/11/07 09:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Fix for issue where app was not opening in minimized state.
+---
 version: 4.7.2rc5
 time: 2024/11/06 16:00
 author: Luke Titley

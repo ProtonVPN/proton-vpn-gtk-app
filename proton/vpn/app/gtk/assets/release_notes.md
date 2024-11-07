@@ -1,3 +1,6 @@
+## 4.7.2
+- Bug fixes and performance improvements.
+
 ## 4.7.1
 - Bug fixes.
 

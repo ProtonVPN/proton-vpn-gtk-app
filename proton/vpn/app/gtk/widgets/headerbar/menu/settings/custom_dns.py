@@ -21,10 +21,10 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import List
 from contextlib import contextmanager
-import ipaddress
 
 from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.core.settings import CustomDNSEntry
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     ToggleWidget, save_setting, get_setting
 )
@@ -33,18 +33,14 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
 class CustomDNSRow(Gtk.Box):  # pylint: disable=too-few-public-methods
     """A simple row that contains the label of the DNS server and a button to
     make it easily removable."""
-    def __init__(self, dns_ip: str, gtk: Gtk = None):
+    def __init__(self, custom_dns_entry: CustomDNSEntry, gtk: Gtk = None):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.gtk = gtk or Gtk
-        ip_label = self.gtk.Label(label=dns_ip)
-        self.button = self.gtk.Button.new_from_icon_name("window-close", 1)
+        self.custom_dns_entry = custom_dns_entry
+        ip_label = self.gtk.Label(label=custom_dns_entry.convert_ip_to_short_format())
+        self.button = self.gtk.Button.new_from_icon_name("edit-delete-symbolic", 1)
         self.pack_start(ip_label, False, False, 0)
         self.pack_end(self.button, False, False, 0)
-
-    @property
-    def ip(self) -> str:  # pylint: disable=invalid-name
-        """Returns the stored IP in the label."""
-        return self.get_children()[0].get_label()
 
 
 class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
@@ -54,7 +50,7 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
     Nowhere else is the settings file modified, in regards to custom dns setting.
     """
 
-    def __init__(self, ip_list: List[str]):
+    def __init__(self, ip_list: List[CustomDNSEntry]):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.set_spacing(5)
 
@@ -63,11 +59,11 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
             custom_dns_row.button.connect("clicked", self._on_dns_delete_clicked)
             self.pack_start(custom_dns_row, False, False, 0)
 
-    @GObject.Signal(name="dns-ip-removed", arg_types=(str,))
-    def dns_ip_removed(self, ip: str):  # pylint: disable=invalid-name
+    @GObject.Signal(name="dns-ip-removed", arg_types=(object,))
+    def dns_ip_removed(self, custom_dns_entry: CustomDNSEntry):
         """Signal emitted after a dns IP is removed from the list."""
 
-    def add_ip(self, new_dns: str):
+    def add_dns(self, new_dns: CustomDNSEntry):
         """Add a new DNS entry to the list"""
         custom_dns_row = CustomDNSRow(new_dns)
         custom_dns_row.button.connect("clicked", self._on_dns_delete_clicked)
@@ -77,13 +73,12 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
     def _on_dns_delete_clicked(self, button: Gtk.Button):
         parent_widget = button.get_parent()
         self.remove(parent_widget)
-        self.emit("dns-ip-removed", parent_widget.ip)
+        self.emit("dns-ip-removed", parent_widget.custom_dns_entry)
 
 
 class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
     """Serves as a container for everything related to management of custom DNS entries."""
-    SETTING_NAME = "settings.custom_dns_ips"
-    DNS_LIMIT = 3
+    SETTING_NAME = "settings.custom_dns.ip_list"
     INVALID_IP_ERROR_MESSAGE = "Enter a valid IPv4 or IPv6 address"
 
     def __init__(
@@ -115,8 +110,6 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         self.pack_start(entry_row, False, False, 0)
         self.pack_start(error_message_revealer, False, False, 0)
         self.pack_start(self._custom_dns_list, False, False, 0)
-
-        self._ensure_user_can_still_add()
 
     def _build_entry_row(self, error_message_revealer: Gtk.Revealer) -> Gtk.Grid:
         row = self.gtk.Grid(orientation=Gtk.Orientation.HORIZONTAL)
@@ -153,55 +146,27 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         string_from_entry = self._dns_entry.get_text().lower().strip()
 
         try:
-            addr = ipaddress.ip_address(string_from_entry)
+            new_custom_dns_entry = CustomDNSEntry.new_from_string(string_from_entry)
         except ValueError:
             self._notify_user_of_invalid_dns_entry(error_message_revealer)
             return
 
-        ip_in_string_type = addr.exploded
-
-        self._add_dns(ip_in_string_type)
+        self._add_dns(new_custom_dns_entry)
         self._dns_entry.set_text("")
 
-    def _add_dns(self, new_dns_ip: str):
+    def _add_dns(self, new_custom_dns_entry: CustomDNSEntry):
         with self._edit_ip_list() as ip_list:
-            ip_list.append(new_dns_ip)
+            ip_list.append(new_custom_dns_entry)
 
-        self._custom_dns_list.add_ip(new_dns_ip)
-        self._ensure_user_can_still_add()
+        self._custom_dns_list.add_dns(new_custom_dns_entry)
 
-    def _on_dns_delete_clicked(self, _: CustomDNSList, existing_dns_ip: str):
+    def _on_dns_delete_clicked(self, _: CustomDNSList, existing_dns_ip_entry: CustomDNSEntry):
         with self._edit_ip_list() as ip_list:
-            ip_list.remove(existing_dns_ip)
-
-        self._ensure_user_can_still_add()
+            ip_list.remove(existing_dns_ip_entry)
 
     def _notify_user_of_invalid_dns_entry(self, error_message_revealer: Gtk.Revealer):
         error_message_revealer.get_children()[0].set_label(self.INVALID_IP_ERROR_MESSAGE)
         error_message_revealer.set_reveal_child(True)
-
-    def _ensure_user_can_still_add(self):
-        self._ui_enabled = self._allow_to_add_more
-
-    @property
-    def _allow_to_add_more(self) -> bool:
-        with self._get_ip_list() as ip_list:
-            return bool(len(ip_list) < CustomDNSManager.DNS_LIMIT)
-
-    @property
-    def _ui_enabled(self) -> bool:
-        return bool(
-            self._dns_entry.get_sensitive()
-            and self._add_button.get_sensitive()
-        )
-
-    @_ui_enabled.setter
-    def _ui_enabled(self, new_value: bool):
-        if self._ui_enabled and new_value or not self._ui_enabled and not new_value:
-            return
-
-        self._dns_entry.set_sensitive(new_value)
-        self._add_button.set_sensitive(new_value)
 
     @contextmanager
     def _get_ip_list(self):
@@ -232,7 +197,7 @@ class CustomDNSWidget(ToggleWidget):
     """
     LABEL = "Custom DNS servers"
     DESCRIPTION = "Connect to Proton VPN using your own domain name servers (DNS)."
-    SETTING_NAME = "settings.custom_dns_enabled"
+    SETTING_NAME = "settings.custom_dns.enabled"
 
     def __init__(self, controller: Controller, gtk: Gtk = None):
         super().__init__(

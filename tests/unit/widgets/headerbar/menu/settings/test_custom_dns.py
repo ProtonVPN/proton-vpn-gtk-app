@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import pytest
+from proton.vpn.core.settings import CustomDNSEntry
 from tests.unit.testing_utils import process_gtk_events
 from unittest.mock import MagicMock, Mock, patch
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import \
@@ -27,9 +28,9 @@ class TestCustomDNSList:
 
     @pytest.mark.parametrize("ips_to_add", [
         [],
-        ["1.1.1.1"],
-        ["1.1.1.1", "2.2.2.2"],
-        ["1.1.1.1", "2.2.2.2", "3.3.3.3"]
+        [CustomDNSEntry.new_from_string("1.1.1.1")],
+        [CustomDNSEntry.new_from_string("1.1.1.1"), CustomDNSEntry.new_from_string("2.2.2.2")],
+        [CustomDNSEntry.new_from_string("1.1.1.1"), CustomDNSEntry.new_from_string("2.2.2.2"), CustomDNSEntry.new_from_string("3.3.3.3")]
     ])
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSList.pack_start")
     def test_initialize_ensure_ips_are_added_to_ui_when_a_list_with_ips_is_passed(self, pack_start_mock, ips_to_add):
@@ -39,16 +40,16 @@ class TestCustomDNSList:
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSList.pack_start")
     def test_successfully_add_ip_after_list_has_been_generated(self, pack_start_mock):
         new_ip = "192.159.1.1"
-        existing_ips = ["1.1.1.1", "2.2.2.2", "3.3.3.3"]
+        existing_ips = [CustomDNSEntry.new_from_string("1.1.1.1"), CustomDNSEntry.new_from_string("2.2.2.2"), CustomDNSEntry.new_from_string("3.3.3.3")]
         custom_dns_list = CustomDNSList(ip_list=existing_ips)
-        custom_dns_list.add_ip(new_ip)
+        custom_dns_list.add_dns(CustomDNSEntry.new_from_string(new_ip))
 
         # Since `existing_ips` is never stored internally, we need to add +1 which is the `new_ip` that we added.
         assert pack_start_mock.call_count == len(existing_ips) + 1
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSList.pack_start")
     def test_successfully_delete_ip_from_list(self, pack_start_mock):
-        existing_ip = "1.1.1.1"
+        existing_ip = CustomDNSEntry.new_from_string("1.1.1.1")
         on_dns_ip_removed = Mock()
         custom_dns_list = CustomDNSList(ip_list=[existing_ip])
 
@@ -61,56 +62,6 @@ class TestCustomDNSList:
 
 
 class TestCustomDNSManager:
-
-    @pytest.mark.parametrize("initial_ip_list", [
-        [], ["1.1.1.1"], ["1.1.1.1", "2.2.2.2"], ["1.1.1.1", "2.2.2.2", "3.3.3.3"]
-    ])
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.get_setting")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.pack_start")
-    def test_ui_allows_user_to_add_new_dns_entries_after_initializing(self, pack_start_mock, get_setting_mock, initial_ip_list):
-        get_setting_mock.return_value = initial_ip_list
-        custom_dns_manager = CustomDNSManager(controller=Mock(), custom_dns_list=Mock())
-
-        if len(initial_ip_list) < CustomDNSManager.DNS_LIMIT:
-            assert custom_dns_manager._ui_enabled
-        else:
-            assert not custom_dns_manager._ui_enabled
-
-    @pytest.mark.parametrize("initial_ip_list", [
-        [], ["1.1.1.1"], ["1.1.1.1", "2.2.2.2"], ["1.1.1.1", "2.2.2.2", "3.3.3.3"]
-    ])
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.get_setting")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.pack_start")
-    def test_add_new_dns_ensure_ui_allows_user_to_add_new_dns_entries(self, pack_start_mock, get_setting_mock, initial_ip_list):
-        get_setting_mock.return_value = initial_ip_list
-        new_dns_to_be_added = "192.1.1.1"
-        custom_dns_manager = CustomDNSManager(controller=Mock(), custom_dns_list=Mock())
-        custom_dns_manager.set_entry_text(new_dns_to_be_added)
-        custom_dns_manager.add_button_click()
-
-        # Since the `new_dns_to_be_added` is added to initial_ip_list, it thus grows in size.
-        if len(initial_ip_list) < CustomDNSManager.DNS_LIMIT:
-            assert custom_dns_manager._ui_enabled
-        else:
-            assert not custom_dns_manager._ui_enabled
-
-    @pytest.mark.parametrize("initial_ip_list", [
-        ["1.1.1.1"], ["1.1.1.1", "2.2.2.2"], ["1.1.1.1", "2.2.2.2", "3.3.3.3"]
-    ])
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.get_setting")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.pack_start")
-    def test_on_delete_dns_ensure_ui_allows_user_to_add_new_dns_entries(self, pack_start_mock, get_setting_mock, initial_ip_list):
-        ip_to_remove = initial_ip_list[0]
-        get_setting_mock.return_value = initial_ip_list
-        custom_dns_list_mock = Mock()
-        custom_dns_manager = CustomDNSManager(controller=Mock(), custom_dns_list=custom_dns_list_mock)
-
-        on_delete_callback = custom_dns_list_mock.connect.call_args[0][1]
-
-        on_delete_callback(custom_dns_list_mock, ip_to_remove)
-
-        assert ip_to_remove not in initial_ip_list
-        assert custom_dns_manager._ui_enabled
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.get_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.pack_start")
@@ -140,23 +91,23 @@ class TestCustomDNSManager:
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.save_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.get_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.pack_start")
-    def test_add_new_dns_ensure_it_stores_new_dns_to_file(self, pack_start_mock, get_setting_mock, save_setting):
+    def test_add_new_dns_ensure_it_stores_new_dns_to_file(self, pack_start_mock, get_setting_mock, save_setting_mock):
         controller_mock = Mock(name="controller_mock")
-        new_dns_to_be_added = "192.1.1.1"
+        new_dns_to_be_added = CustomDNSEntry.new_from_string("192.1.1.1")
         get_setting_mock.return_value = []
         custom_dns_manager = CustomDNSManager(controller=controller_mock, custom_dns_list=Mock())
-        custom_dns_manager.set_entry_text(new_dns_to_be_added)
+        custom_dns_manager.set_entry_text(str(new_dns_to_be_added.ip))
         custom_dns_manager.add_button_click()
 
-        save_setting.assert_called_once_with(controller_mock, CustomDNSManager.SETTING_NAME, [new_dns_to_be_added])
+        save_setting_mock.assert_called_once_with(controller_mock, CustomDNSManager.SETTING_NAME, [new_dns_to_be_added])
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.save_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.get_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.pack_start")
-    def test_on_delete_dns_ensure_it_removes_dns_from_file(self, pack_start_mock, get_setting_mock, save_setting):
+    def test_on_delete_dns_ensure_it_removes_dns_from_file(self, pack_start_mock, get_setting_mock, save_setting_mock):
         controller_mock = Mock(name="controller_mock")
         custom_dns_list_mock = Mock(name="custom_dns_list_mock")
-        existing_dns_ip = "192.1.1.1"
+        existing_dns_ip = CustomDNSEntry.new_from_string("192.1.1.1")
         get_setting_mock.return_value = [existing_dns_ip]
         custom_dns_manager = CustomDNSManager(controller=controller_mock, custom_dns_list=custom_dns_list_mock)
 
@@ -164,4 +115,4 @@ class TestCustomDNSManager:
 
         on_delete_dns_entry_callback(custom_dns_list_mock, existing_dns_ip)
 
-        save_setting.assert_called_once_with(controller_mock, CustomDNSManager.SETTING_NAME, [])
+        save_setting_mock.assert_called_once_with(controller_mock, CustomDNSManager.SETTING_NAME, [])

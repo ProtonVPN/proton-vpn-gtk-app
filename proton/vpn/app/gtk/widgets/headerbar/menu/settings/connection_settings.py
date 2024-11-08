@@ -61,10 +61,10 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         self.build_protocol()
         self.build_vpn_accelerator()
         self.build_moderate_nat()
-        # TO-DO: Discuss if we still need this feature flag
         if self._controller.feature_flags.get("IPv6Support"):
             self.build_ipv6()
-        self.build_custom_dns()
+        if self._controller.feature_flags.get("CustomDNS"):
+            self.build_custom_dns()
 
     def build_protocol(self):
         """Builds and adds the `protocol` setting to the widget."""

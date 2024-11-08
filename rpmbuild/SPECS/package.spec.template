@@ -27,14 +27,14 @@ BuildRequires: python3-setuptools
 BuildRequires: gtk3
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 0.37.0
+BuildRequires: python3-proton-vpn-api-core >= 0.37.1
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
 
 Requires: gtk3
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 0.37.0
+Requires: python3-proton-vpn-api-core >= 0.37.1
 Requires: librsvg2
 Requires: python3-packaging
 

@@ -232,6 +232,12 @@ class EarlyAccessWidget(ToggleWidget):
     def get_setting(self) -> bool:
         """Returns if early access is enabled, if the early access package
         was found on the system."""
+        # If it's None then it means that we're running on either:
+        # - Unsupported distribution
+        # - Unsupported install method that does not allow to identify a package manager
+        if self.distro_manager is None:
+            return False
+
         _, beta_package_installed = self._find_installed_repo_packages()
         return beta_package_installed
 

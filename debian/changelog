@@ -1,3 +1,9 @@
+proton-vpn-gtk-app (4.7.3) unstable; urgency=low
+
+  * Fix bug when opening settings window, if installed via unsupported methods the early access toggle would crash.
+
+ -- Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch>  Fri, 08 Nov 2024 08:00:00 +0000
+
 proton-vpn-gtk-app (4.7.1) unstable; urgency=low
 
   * Fix bug when opening the settings window and advanced kill switch is enabled the settings would crash.

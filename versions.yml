@@ -1,3 +1,12 @@
+version: 4.7.3
+time: 2024/11/08 08:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Fix bug when opening settings window, if installed via unsupported methods the early access toggle would crash.
+---
 version: 4.7.1
 time: 2024/10/22 12:00
 author: Alexandru Cheltuitor

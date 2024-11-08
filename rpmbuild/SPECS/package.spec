@@ -1,7 +1,7 @@
 
 %define unmangled_name proton-vpn-gtk-app
-%define version 4.7.1
-%define upstream_version 4.7.1
+%define version 4.7.3
+%define upstream_version 4.7.3
 %define logo_filename proton-vpn-logo.svg
 %define desktop_entry_filename protonvpn-app.desktop
 %define release 1
@@ -67,6 +67,9 @@ python3 setup.py install --single-version-externally-managed -O1 --root=$RPM_BUI
 %defattr(-,root,root)
 
 %changelog
+* Fri Nov 08 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.3
+- Fix bug when opening settings window, if installed via unsupported methods the early access toggle would crash.
+
 * Tue Oct 22 2024 Alexandru Cheltuitor <alexandru.cheltuitor@proton.ch> 4.7.1
 - Fix bug when opening the settings window and advanced kill switch is enabled the settings would crash.
 

@@ -1,3 +1,6 @@
+## 4.7.3
+- Bug fixes and stability improvements.
+
 ## 4.7.1
 - Bug fixes.
 

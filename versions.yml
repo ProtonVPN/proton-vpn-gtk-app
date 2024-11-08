@@ -1,3 +1,21 @@
+version: 4.7.4
+time: 2024/11/08 16:00
+author: Josep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+  - Backport hotfix introduced in 4.7.3.
+---
+version: 4.7.3
+time: 2024/11/08 08:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+  - Fix bug when opening settings window, if installed via unsupported methods the early access toggle would crash.
+---
 version: 4.7.2
 time: 2024/11/07 09:00
 author: Josep Llaneras

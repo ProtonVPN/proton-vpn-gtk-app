@@ -57,7 +57,7 @@ class DistroManager:  # pylint: disable=too-many-instance-attributes
         file = url.split("/")[-1]
         filepath = os.path.join(self.runtime_path, file)
 
-        with requests.get(url, stream=True, timeout=2) as req:
+        with requests.get(url, stream=True, timeout=2) as req:  # pylint: disable=line-too-long # noqa: E501 # nosemgrep: python.requests.best-practice.use-raise-for-status.use-raise-for-status
             req.raise_for_status()
             with open(filepath, "wb") as file:
                 for chunk in req.iter_content(chunk_size=8192):
@@ -148,7 +148,7 @@ class EarlyAccessDialog(Gtk.Dialog):
         content_area.pack_start(self._label, expand=False, fill=False, padding=0)
         content_area.pack_start(self._spinner, expand=False, fill=False, padding=0)
 
-        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member
+        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
     def display_loading_view(self, new_label_value: str):
         """Displays a loading view and blocking the close button."""
@@ -196,7 +196,7 @@ class EarlyAccessWidget(ToggleWidget):
         )
         self._controller = controller
         self._dialog = early_access_dialog or EarlyAccessDialog()
-        self._dialog.connect("response", lambda w, _: w.hide())
+        self._dialog.connect("response", lambda w, _: w.hide())  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
     @property
     def distro_manager(self) -> DistroManager:
@@ -376,7 +376,7 @@ class EarlyAccessWidget(ToggleWidget):
             f"&& {self.distro_manager.reinstall_app_command}'"
 
         # Requires shell access to be able to run all commands under one `pkexec` prompt.
-        future = self._controller.run_subprocess(full_command, shell=True)  # nosec B604
+        future = self._controller.run_subprocess(full_command, shell=True)  # noqa E501 # pylint: disable=no-member, disable=line-too-long # nosec B604 # nosemgrep: gitlab.bandit.B604
         future.add_done_callback(on_handle_early_access)
 
     def _get_system_distro_manager(self) -> Optional[DistroManager]:

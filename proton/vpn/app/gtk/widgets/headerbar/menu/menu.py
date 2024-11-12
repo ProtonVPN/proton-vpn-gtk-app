@@ -189,7 +189,7 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         kill_switch_state = self._controller.get_settings().killswitch
         confirm_logout = True
 
-        if not self._controller.is_connection_disconnected:
+        if not self._controller.is_connection_disconnected:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             dialog = ConfirmationDialog(
                 self.DISCONNECT_ON_LOGOUT_MESSAGE
                 if kill_switch_state < KillSwitchSettingEnum.ON
@@ -223,7 +223,7 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         kill_switch_state = self._controller.get_settings().killswitch
         confirm_quit = True
 
-        if not self._controller.is_connection_disconnected:
+        if not self._controller.is_connection_disconnected:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             dialog = ConfirmationDialog(
                 self.DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE
                 if kill_switch_state == KillSwitchSettingEnum.PERMANENT

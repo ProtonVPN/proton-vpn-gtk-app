@@ -109,7 +109,8 @@ class TwoFactorAuthForm(Gtk.Box):  # pylint: disable=too-many-instance-attribute
         # Pressing enter on the password entry triggers the clicked event
         # on the login button.
         self._code_entry.connect(
-            "activate", lambda _: self._submission_button.clicked())
+            "activate",
+            lambda _: self._submission_button.clicked())  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
         self._display_2fa_ui()
         self.reset()

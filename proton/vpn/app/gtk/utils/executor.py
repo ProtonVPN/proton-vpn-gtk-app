@@ -70,7 +70,7 @@ class AsyncExecutor:
 
         It starts a thread that runs the asyncio loop.
         """
-        if self.is_running:
+        if self.is_running:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             raise RuntimeError("The executor is already running.")
 
         self._thread = Thread(target=self._run_asyncio_loop_forever, daemon=True)
@@ -101,7 +101,7 @@ class AsyncExecutor:
         It schedules a call to stop the asyncio loop and waits for the thread
         running it to stop.
         """
-        if not self.is_running:
+        if not self.is_running:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             logger.warning("The executor has already been stopped.")
             return
 

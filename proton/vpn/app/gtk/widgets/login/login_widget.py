@@ -123,17 +123,17 @@ class LoginStack(Gtk.Stack):
         self.login_form.connect(
             "user-authenticated",
             lambda _, two_factor_auth_required:
-            self._on_user_authenticated(two_factor_auth_required)
+                self._on_user_authenticated(two_factor_auth_required)  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
         )
 
         self.two_factor_auth_form.connect(
             "two-factor-auth-successful",
-            lambda _: self._on_two_factor_auth_successful()
+            lambda _: self._on_two_factor_auth_successful()  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
         )
 
         self.two_factor_auth_form.connect(
             "session-expired",
-            lambda _: self._on_session_expired_during_2fa()
+            lambda _: self._on_session_expired_during_2fa()  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
         )
 
     def _on_user_authenticated(self, two_factor_auth_required: bool):

@@ -123,7 +123,7 @@ class VPNWidget(Gtk.Box):
             )
             self.search_results_widget.connect(
                 "result-chosen",
-                lambda _, row: self.search_widget.reset()
+                lambda _, row: self.search_widget.reset()  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
             )
             self.pack_start(self.search_widget, expand=False, fill=True,
                             padding=0)
@@ -132,7 +132,8 @@ class VPNWidget(Gtk.Box):
             self.search_widget.connect(
                 "search-changed", self.server_list_widget._legacy_filter_ui)
             self.server_list_widget.connect(
-                "ui-updated", lambda _: self.search_widget.reset())
+                "ui-updated", lambda _: self.search_widget.reset()  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
+            )
             self.pack_start(self.search_widget, expand=False, fill=True,
                             padding=0)
 
@@ -205,10 +206,10 @@ class VPNWidget(Gtk.Box):
         self.server_list_widget.display(user_tier=user_tier, server_list=server_list)
 
     def _on_server_list_updated(self, *_):
-        if not self._state.is_widget_ready:
+        if not self._state.is_widget_ready:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             # Only update the status at this point as widgets are already generated
             self.status_update(self._controller.current_connection_status)
-            self._state.is_widget_ready = True
+            self._state.is_widget_ready = True  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             self.emit("vpn-widget-ready")
             logger.info(
                 f"VPN widget is ready "

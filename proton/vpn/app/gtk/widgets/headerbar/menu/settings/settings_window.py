@@ -121,7 +121,7 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         and when the settings changes require a starting a new connection.
         """
         if (
-            self._controller.is_connection_active
+            self._controller.is_connection_active  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             and not self._controller.current_connection.are_feature_updates_applied_when_active
             or force_notify
         ):

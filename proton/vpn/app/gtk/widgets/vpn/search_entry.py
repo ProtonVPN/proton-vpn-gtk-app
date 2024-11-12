@@ -35,8 +35,8 @@ class SearchEntry(Gtk.SearchEntry):
     def __init__(self):
         super().__init__()
         self.set_placeholder_text("Press Ctrl+F to search")
-        self.connect("request-focus", lambda _: self.grab_focus())
-        self.connect("unrealize", lambda _: self.reset())
+        self.connect("request-focus", lambda _: self.grab_focus())  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
+        self.connect("unrealize", lambda _: self.reset())  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
     @GObject.Signal(name="request_focus", flags=GObject.SignalFlags.ACTION)
     def request_focus(self, _):

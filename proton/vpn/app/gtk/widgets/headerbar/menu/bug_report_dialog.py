@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import io
 import re
-import subprocess  # nosec B404
+import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from tempfile import NamedTemporaryFile
 from concurrent.futures import Future
 
@@ -86,7 +86,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         submit_button.get_style_context().add_class("primary")
 
         self.connect("response", self._on_response)
-        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member
+        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
         self._generate_fields()
         self.set_response_sensitive(Gtk.ResponseType.OK, False)
@@ -338,9 +338,13 @@ class LogCollector:  # pylint: disable=too-few-public-methods
                     "journalctl", "-u", "NetworkManager", "--no-pager",
                     "--utc", "--since=-1d", "--no-hostname"
                 ]
-                process = subprocess.run(args, stdout=temp_file, check=False)  # nosec B603
+                process = subprocess.run(args,  # nosec B603 # noqa E501 # pylint: disable=no-member, disable=line-too-long # nosemgrep: gitlab.bandit.B604, python.lang.security.audit.dangerous-subprocess-use-audit.dangerous-subprocess-use-audit
+                                         stdout=temp_file,
+                                         check=False)
                 if process.returncode == 0:
-                    return open(temp_file.name, "rb")
+                    # We're waiting for the process to terminate before
+                    # reading the file, so we should be okay to open it.
+                    return open(temp_file.name, "rb")  # pylint: disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.tempfile.flush.tempfile-without-flush
 
                 raise RuntimeError("Network Manager logs could not be generated.")
 

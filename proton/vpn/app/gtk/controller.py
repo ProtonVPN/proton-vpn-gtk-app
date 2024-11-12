@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-import subprocess  # nosec B404
+import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import Future
 from importlib import metadata
 from types import TracebackType
@@ -258,7 +258,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         A connection is considered active in the connecting, connected
         and disconnecting states.
         """
-        return self._connector.is_connection_active
+        return self._connector.is_connection_active  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
 
     @property
     def is_connection_disconnected(self) -> bool:

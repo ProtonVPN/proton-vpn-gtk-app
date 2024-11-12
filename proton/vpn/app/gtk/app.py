@@ -202,8 +202,8 @@ class App(Gtk.Application):
             for widget_path_segment in widget_path.split("."):
                 obj = getattr(obj, widget_path_segment)
 
-            assert isinstance(obj, GObject.Object), (                  # nosec: B101
-                f"{type(obj)} does not inherit from GObject.Object.")  # nosec: B101
+            assert isinstance(obj, GObject.Object), (                  # nosec B311, B101 # noqa: E501 # pylint: disable=line-too-long # nosemgrep: gitlab.bandit.B101
+                f"{type(obj)} does not inherit from GObject.Object.")  # nosec B311, B101 # noqa: E501 # pylint: disable=line-too-long # nosemgrep: gitlab.bandit.B101
             obj.connect(signal_name, callback)
 
     @staticmethod

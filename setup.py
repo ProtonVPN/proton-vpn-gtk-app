@@ -4,7 +4,8 @@ from setuptools import setup, find_namespace_packages
 import re
 
 VERSIONS = 'versions.yml'
-VERSION = re.search(r'version: (\S+)', open(VERSIONS).readline()).group(1)
+VERSION = re.search(r'version: (\S+)', open(VERSIONS, encoding='utf-8')
+                    .readline()).group(1)
 
 setup(
     name="proton-vpn-gtk-app",

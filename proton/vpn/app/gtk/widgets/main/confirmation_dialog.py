@@ -53,4 +53,4 @@ class ConfirmationDialog(Gtk.Dialog):
         self.vbox.set_border_width(20)  # pylint: disable=no-member
         self.vbox.set_spacing(20)  # pylint: disable=no-member
         self.vbox.add(label)  # pylint: disable=no-member
-        self.connect("realize", lambda _: self.show_all())
+        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init

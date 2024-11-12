@@ -245,7 +245,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
             countries.sort(key=free_countries_first_sorting_key)
 
         connected_server_id = None
-        if self._controller.is_connection_active:
+        if self._controller.is_connection_active:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             connected_server_id = self._controller.current_server_id
 
         # Chose the deferred loading country row if that was the configuration
@@ -294,4 +294,4 @@ def free_countries_first_sorting_key(country: Country):
     :param country: country row to generate the comparison key for.
     :return: The comparison key.
     """
-    return f"{0 if country.is_free else 1}__{country.name}"
+    return f"{0 if country.is_free else 1}__{country.name}"  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses

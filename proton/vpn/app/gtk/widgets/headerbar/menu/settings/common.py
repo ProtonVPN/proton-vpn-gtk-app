@@ -297,8 +297,8 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         if self.description:
             self.attach(self.description, 0, 1, 2, 1)
 
-        if not self._controller.is_connection_disconnected \
-                and self._disable_on_active_connection:
+        if (not self._controller.is_connection_disconnected  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+                and self._disable_on_active_connection):
             self.active = False
 
     def _on_switch_state(self, _, new_value: bool):
@@ -387,8 +387,8 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         else:
             combobox.connect("changed", self._on_combobox_change)
 
-        if not self._controller.is_connection_disconnected \
-                and self._disable_on_active_connection:
+        if (not self._controller.is_connection_disconnected  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+                and self._disable_on_active_connection):
             self.active = False
 
         return combobox

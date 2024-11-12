@@ -45,7 +45,7 @@ class ReleaseNotesDialog(Gtk.Dialog):
         self._content_area = self.get_content_area()
 
         self.build()
-        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member
+        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
     def build(self):
         """Build the release notes UI."""

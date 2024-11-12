@@ -587,9 +587,9 @@ class DeferredCountryRow(CountryRow):  # pylint: disable=too-many-instance-attri
 
         analysis = _analyze_servers(ordered_servers, connected_server_id)
 
-        self._under_maintenance = analysis.under_maintenance
-        self._is_free_country = analysis.is_free_country
-        self._country_features = analysis.country_features
+        self._under_maintenance = analysis.under_maintenance  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+        self._is_free_country = analysis.is_free_country  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+        self._country_features = analysis.country_features  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
         self._connected_server_id = connected_server_id
 
         def add_servers_to_country():

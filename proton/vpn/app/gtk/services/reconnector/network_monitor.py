@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-import subprocess  # nosec B404
+import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import ThreadPoolExecutor, Future
 from typing import Callable
 
@@ -95,7 +95,8 @@ class NetworkMonitor:
     def _poll_network_state(self):
 
         network_up = check_for_network_connectivity()
-        network_just_went_up = not self.is_network_up and network_up
+        network_just_went_up = (not self.is_network_up  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+                                and network_up)
         self._is_network_up = network_up
 
         if network_just_went_up and self.network_up_callback:

@@ -85,7 +85,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
 
     def enable(self):
         """Enables the auto reconnect feature."""
-        if not self._vpn_data_refresher.is_vpn_data_ready:
+        if not self._vpn_data_refresher.is_vpn_data_ready:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             raise RuntimeError("VPN data refresher is not ready.")
         self._reset_retry_counter()
         self._vpn_monitor.enable()
@@ -159,7 +159,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
             logger.debug("VPN reconnection not necessary: connection didn't drop.")
             return
 
-        if not self.is_connection_error_fatal:
+        if not self.is_connection_error_fatal:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             logger.debug("VPN reconnection not possible: fatal connection error.")
             return
 
@@ -178,7 +178,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
             logger.debug("VPN reconnection not necessary: connection didn't drop.")
             return
 
-        if not self.is_connection_error_fatal:
+        if not self.is_connection_error_fatal:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             logger.debug("VPN reconnection not possible: fatal connection error.")
             return
 
@@ -194,7 +194,7 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
         if isinstance(event, events.MaximumSessionsReached):
             return
 
-        if not self.is_connection_error_fatal:
+        if not self.is_connection_error_fatal:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             logger.info("VPN reconnection not possible: fatal connection error.")
             # Raise exception on the next event loop iteration so that the app reacts to it.
             GLib.idle_add(self._on_reconnection_error)
@@ -214,13 +214,13 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
         logger.info(f"Reconnecting (attempt #{self.retry_counter})...")
         connection = self._vpn_connector.current_connection
 
-        if not self._network_monitor.is_network_up:
+        if not self._network_monitor.is_network_up:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             logger.info("VPN reconnection not possible: network is down.")
             self._increase_retry_counter()
             self.schedule_reconnection()
             return False
 
-        if not self._session_monitor.is_session_unlocked:
+        if not self._session_monitor.is_session_unlocked:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             logger.info("VPN reconnection not possible: session is locked.")
             self._increase_retry_counter()
             self.schedule_reconnection()
@@ -260,7 +260,8 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
         The amount of time increases exponentially based on the number of
         previous attempts.
         """
-        return 2 ** self.retry_counter * random.uniform(0.9, 1.1) * 1000  # nosec B311
+        return (2 ** self.retry_counter *
+                random.uniform(0.9, 1.1) * 1000)  # nosec B311 # noqa: E501 # pylint: disable=line-too-long # nosemgrep: gitlab.bandit.B311
 
     def _reset_retry_counter(self):
         if self._retry_src_id:

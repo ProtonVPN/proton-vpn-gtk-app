@@ -36,7 +36,7 @@ class MainWindow(Gtk.ApplicationWindow):
     """Main window."""
 
     WIDTH = 400
-    HEIGTH = 600
+    HEIGHT = 600
 
     # pylint: disable=too-many-arguments
     def __init__(
@@ -89,7 +89,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         :param target_widget: The widget the keyboard shortcut will trigger the signal on.
         :param target_signal: The signal the keyboard shortcut will trigger on the target widget.
-        :param shortcut: The keyboard shortcut should be a string parseable with
+        :param shortcut: The keyboard shortcut should be a string parsable with
         Gtk.parse_accelerator:
         https://lazka.github.io/pgi-docs/#Gtk-3.0/functions.html#Gtk.accelerator_parse
         """
@@ -116,7 +116,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # The window should be able to be resized on the vertical axis but not
         # on the horizontal axis.
-        self.set_size_request(MainWindow.WIDTH, MainWindow.HEIGTH)
+        self.set_size_request(MainWindow.WIDTH, MainWindow.HEIGHT)
         geometry = Gdk.Geometry()
         geometry.min_width = 0
         geometry.max_width = MainWindow.WIDTH

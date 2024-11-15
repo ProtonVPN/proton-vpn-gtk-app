@@ -21,13 +21,15 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import TYPE_CHECKING
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
+from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.core.settings import NetShield
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, ComboboxWidget, ToggleWidget, SettingName, SettingDescription
 )
 from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import CustomDNSWidget
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window import \
@@ -174,6 +176,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         super().__init__(self.CATEGORY_NAME)
         self._controller = controller
         self._settings_window = settings_window
+        self.netshield = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
@@ -191,17 +194,17 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         def on_combobox_changed(combobox: Gtk.ComboBoxText, combobox_widget: ComboboxWidget):
             model = combobox.get_model()
             treeiter = combobox.get_active_iter()
-            netshield = model[treeiter][1]
-            combobox_widget.save_setting(int(netshield))
+            netshield = int(model[treeiter][1])
+            combobox_widget.save_setting(netshield)
             self._settings_window.notify_user_with_reconnect_message()
+            self.emit("netshield-setting-changed", netshield)
 
         netshield_options = [
-            (str(NetShield.NO_BLOCK.value), "Off"),
-            (str(NetShield.BLOCK_MALICIOUS_URL.value), "Block Malware"),
-            (str(NetShield.BLOCK_ADS_AND_TRACKING.value), "Block ads, trackers and malware"),
+            (str(NetShield.NO_BLOCK), "Off"),
+            (str(NetShield.BLOCK_MALICIOUS_URL), "Block Malware"),
+            (str(NetShield.BLOCK_ADS_AND_TRACKING), "Block ads, trackers and malware"),
         ]
-
-        self.pack_start(ComboboxWidget(
+        self.netshield = ComboboxWidget(
             controller=self._controller,
             title=self.NETSHIELD_LABEL,
             description=self.NETSHIELD_DESCRIPTION,
@@ -209,7 +212,8 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
             combobox_options=netshield_options,
             requires_subscription_to_be_active=True,
             callback=on_combobox_changed
-        ), False, False, 0)
+        )
+        self.pack_start(self.netshield, False, False, 0)
 
     def build_killswitch(self):
         """Builds and adds the `killswitch` setting to the widget."""
@@ -240,3 +244,61 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
             port_forwarding_widget.description.set_label(self.PORT_FORWARDING_SETUP_GUIDE)
 
         self.pack_start(port_forwarding_widget, False, False, 0)
+
+    @GObject.Signal(name="netshield-setting-changed", arg_types=(int,))
+    def netshield_setting_changed(self, new_setting: int):
+        """Signal emitted after a netshield setting is set."""
+
+    def on_custom_dns_setting_changed(
+        self, custom_dns_widget: CustomDNSWidget, new_setting: int
+    ):
+        """temp"""
+        def _on_dialog_button_click(confirmation_dialog: ConfirmationDialog, response_type: int):
+            enable_custom_dns = Gtk.ResponseType(response_type) == Gtk.ResponseType.YES
+            if enable_custom_dns:
+                self.netshield.off()
+            else:
+                # We need to reverse back the option here since gtk does not allow an easy way to
+                # intercept changes before they happen.
+                custom_dns_widget.off()
+
+            confirmation_dialog.destroy()
+
+        netshield_enabled = int(self.netshield.get_setting())
+        if netshield_enabled == NetShield.NO_BLOCK or not new_setting:
+            return
+
+        dialog = ConfirmationDialog(
+            message=self._build_dialog_content(),
+            title="Enable Custom DNS",
+            yes_text="_Enable", no_text="_Cancel"
+        )
+        dialog.set_default_size(400, 200)
+        dialog.connect("response", _on_dialog_button_click)
+        dialog.set_modal(True)
+        dialog.set_transient_for(self._settings_window)
+        dialog.show()
+
+    def _build_dialog_content(self):
+        container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        container.set_spacing(10)
+
+        question = Gtk.Label(label="Enable Custom DNS ?")
+        question.set_halign(Gtk.Align.START)
+
+        clarification = Gtk.Label(label="This will disable Netshield.")
+        clarification.set_halign(Gtk.Align.START)
+        clarification.get_style_context().add_class("dim-label")
+
+        # learn_more = Gtk.Label(
+        #     label='<a href="https://protonvpn.com/support/custom-dns">Learn more</a>'
+        # )
+        # learn_more.set_halign(Gtk.Align.START)
+        # learn_more.get_style_context().add_class("dim-label")
+        # learn_more.set_use_markup(True)
+
+        container.pack_start(question, False, False, 0)
+        container.pack_start(clarification, False, False, 0)
+        # container.pack_start(learn_more, False, False, 0)
+
+        return container

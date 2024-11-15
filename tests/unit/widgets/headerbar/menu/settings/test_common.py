@@ -201,6 +201,20 @@ class TestToggleWidget:
 
         tw.switch.emit("state-set", control_bool_val)
 
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.ToggleWidget.save_setting")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.ToggleWidget.get_setting")
+    def test_off_setting_is_saves_to_file_when_calling_it(self, get_setting_mock, save_setting_mock):
+        get_setting_mock.return_value = True
+        tw = ToggleWidget(
+            controller=Mock(),
+            title=self.DEFAULT_TITLE,
+            description=self.DEFAULT_DESCRIPTION,
+            setting_name=self.DEFAULT_SETTING_NAME,
+        )
+
+        tw.off()
+        save_setting_mock.assert_called_once_with(False)
+
 
 class TestComboboxWidget:
     DEFAULT_SETTING_NAME = "settings.test_value"
@@ -281,6 +295,20 @@ class TestComboboxWidget:
         )
 
         cw.combobox.set_active_id(control_bool_val)
+
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.ComboboxWidget.save_setting")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.ComboboxWidget.get_setting")
+    def test_off_setting_is_saves_to_file_when_calling_it(self, get_setting_mock, save_setting_mock):
+        controller_mock = Mock(name="controller_mock")
+        get_setting_mock.return_value = "1"
+        cw = ComboboxWidget(
+            controller=controller_mock,
+            title=self.DEFAULT_TITLE,
+            setting_name=self.DEFAULT_SETTING_NAME,
+            combobox_options=self.DEFAULT_OPTIONS,
+        )
+        cw.off()
+        save_setting_mock.assert_called_once_with(str(self.DEFAULT_OPTIONS[0][0]))
 
 
 class TestEntryWidget:

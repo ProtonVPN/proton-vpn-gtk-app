@@ -22,6 +22,11 @@ from tests.unit.testing_utils import process_gtk_events
 from unittest.mock import MagicMock, Mock, patch
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import \
     CustomDNSList, CustomDNSManager, CustomDNSWidget
+from proton.vpn.core.settings import NetShield
+
+
+FREE_TIER = 0
+PLUS_TIER = 1
 
 
 class TestCustomDNSList:
@@ -116,3 +121,56 @@ class TestCustomDNSManager:
         on_delete_dns_entry_callback(custom_dns_list_mock, existing_dns_ip)
 
         save_setting_mock.assert_called_once_with(controller_mock, CustomDNSManager.SETTING_NAME, [])
+
+
+class TestCustomDNSWidget:
+
+    @pytest.mark.parametrize("response_type", [-8, -9])
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.ConfirmationDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSWidget.off")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.get_setting")
+    def test_disable_custom_dns_and_prompt_user_via_dialog_when_enabling_netshield_while_custom_dns_is_enabled_and_ensure_that_either_custom_dns_or_netshield_is_disabled(self, get_setting_mock, custom_dns_off_mock, confirmation_dialog_mock, response_type):
+        get_setting_mock.return_value = False
+        controller_mock = Mock(name="controller_mock")
+        controller_mock.user_tier = PLUS_TIER
+        settings_window_mock = Mock(name="settings_window_mock")
+        feature_settings_mock = Mock(name="feature_settings_mock")
+        gtk_mock = Mock(name="gtk_mock")
+        confirmation_dialog_instance_mock = Mock(name="confirmation_dialog_instance_mock")
+        confirmation_dialog_mock.return_value = confirmation_dialog_instance_mock
+
+        dns_widget = CustomDNSWidget(controller=controller_mock, settings_window=settings_window_mock, gtk=gtk_mock)
+
+        dns_widget.on_netshield_setting_changed(feature_settings_mock, new_setting=NetShield.BLOCK_MALICIOUS_URL)
+
+        on_dialog_button_click_callback = confirmation_dialog_instance_mock.connect.call_args[0][1]
+
+        on_dialog_button_click_callback(confirmation_dialog_instance_mock, response_type)
+
+        # -8: Gtk.ResponseType.YES
+        # -9: Gtk.ResponseType.NO
+        Gtk_ResponseType_YES = -8
+
+        if response_type == Gtk_ResponseType_YES:
+            custom_dns_off_mock.assert_called_once()
+            feature_settings_mock.netshield.off.assert_not_called()
+        else:
+            feature_settings_mock.netshield.off.assert_called_once()
+            custom_dns_off_mock.assert_not_called()
+
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.ConfirmationDialog")
+    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.get_setting")
+    def test_custom_dns_prompt_is_not_shown_to_the_user_when_custom_dns_is_disabled_while_enabling_netshield(self, get_setting_mock, confirmation_dialog_mock):
+        get_setting_mock.return_value = False
+        controller_mock = Mock(name="controller_mock")
+        controller_mock.user_tier = PLUS_TIER
+        settings_window_mock = Mock(name="settings_window_mock")
+        feature_settings_mock = Mock(name="feature_settings_mock")
+        confirmation_dialog_instance_mock = Mock(name="confirmation_dialog_instance_mock")
+        confirmation_dialog_mock.return_value = confirmation_dialog_instance_mock
+
+        dns_widget = CustomDNSWidget(controller=controller_mock, settings_window=settings_window_mock)
+
+        dns_widget.on_netshield_setting_changed(feature_settings_mock, new_setting=NetShield.NO_BLOCK)
+
+        confirmation_dialog_mock.assert_not_called()

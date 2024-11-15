@@ -83,7 +83,31 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         self._connection_settings.build_ui()
         self._feature_settings.build_ui()
         self._general_settings.build_ui()
+
+        if self._controller.feature_flags.get("CustomDNS"):
+            self._feature_settings \
+                .connect(
+                    "netshield-setting-changed",
+                    self._connection_settings.custom_dns.on_netshield_setting_changed
+                )
+            self._connection_settings.custom_dns \
+                .connect(
+                    "custom-dns-setting-changed",
+                    self._feature_settings.on_custom_dns_setting_changed
+                )
+
         self.show_all()
+
+    def notify_user_with_reconnect_message(self, force_notify: bool = False):
+        """Notify user with a reconnect message when connected
+        and when the settings changes require a starting a new connection.
+        """
+        if (
+            self._controller.is_connection_active  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+            and not self._controller.current_connection.are_feature_updates_applied_when_active
+            or force_notify
+        ):
+            self._notification_bar.show_info_message(f"{RECONNECT_MESSAGE}")
 
     def _create_elastic_window(self):
         """This allows for the content to be always centered and expand or contract
@@ -115,14 +139,3 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         self.main_container.pack_start(scrolled_window, False, False, 0)
 
         self.add(self.main_container)
-
-    def notify_user_with_reconnect_message(self, force_notify: bool = False):
-        """Notify user with a reconnect message when connected
-        and when the settings changes require a starting a new connection.
-        """
-        if (
-            self._controller.is_connection_active  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
-            and not self._controller.current_connection.are_feature_updates_applied_when_active
-            or force_notify
-        ):
-            self._notification_bar.show_info_message(f"{RECONNECT_MESSAGE}")

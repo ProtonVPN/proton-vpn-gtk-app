@@ -54,6 +54,7 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         super().__init__(self.CATEGORY_NAME)
         self._controller = controller
         self._settings_window = settings_window
+        self.custom_dns = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
@@ -127,6 +128,6 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
         ), False, False, 0)
 
     def build_custom_dns(self):
-        """Builds and adds the `ipv6` setting to the widget."""
-        killswitch = CustomDNSWidget.build(self._controller)
-        self.pack_start(killswitch, False, False, 0)
+        """Builds and adds the `custom_dns` setting to the widget."""
+        self.custom_dns = CustomDNSWidget.build(self._controller, self._settings_window)
+        self.pack_start(self.custom_dns, False, False, 0)

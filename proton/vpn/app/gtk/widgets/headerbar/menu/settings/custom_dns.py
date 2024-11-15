@@ -19,15 +19,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import List
+from typing import List, TYPE_CHECKING
 from contextlib import contextmanager
 
 from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.core.settings import CustomDNSEntry
+from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
+from proton.vpn.core.settings import CustomDNSEntry, NetShield
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     ToggleWidget, save_setting, get_setting
 )
+
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import \
+        FeatureSettings
+    from proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window import \
+        SettingsWindow
 
 
 class CustomDNSRow(Gtk.Box):  # pylint: disable=too-few-public-methods
@@ -199,7 +206,7 @@ class CustomDNSWidget(ToggleWidget):
     DESCRIPTION = "Connect to Proton VPN using your own domain name servers (DNS)."
     SETTING_NAME = "settings.custom_dns.enabled"
 
-    def __init__(self, controller: Controller, gtk: Gtk = None):
+    def __init__(self, controller: Controller, settings_window: Gtk.Window, gtk: Gtk = None, ):
         super().__init__(
             controller=controller,
             title=self.LABEL,
@@ -212,11 +219,12 @@ class CustomDNSWidget(ToggleWidget):
         self.gtk = gtk or Gtk
         self._controller = controller
         self.revealer = None
+        self._settings_window = settings_window
 
     @staticmethod
-    def build(controller: Controller) -> "CustomDNSWidget":
+    def build(controller: Controller, settings_window: "SettingsWindow") -> "CustomDNSWidget":
         """Shortcut method to initialize widget."""
-        widget = CustomDNSWidget(controller)
+        widget = CustomDNSWidget(controller, settings_window)
         widget.build_revealer()
         widget.show_all()
         return widget
@@ -236,3 +244,62 @@ class CustomDNSWidget(ToggleWidget):
     def _on_switch_button_toggle(self, _, new_value: bool, __):
         self.revealer.set_reveal_child(new_value)
         self.save_setting(new_value)
+        self.emit("custom-dns-setting-changed", new_value)
+
+    @GObject.Signal(name="custom-dns-setting-changed", arg_types=(bool,))
+    def custom_dns_setting_changed(self, new_setting: bool):
+        """Signal emitted after a custom DNS setting is set."""
+
+    def on_netshield_setting_changed(self, feature_settings: "FeatureSettings", new_setting: int):
+        """temp"""
+        def _on_dialog_button_click(confirmation_dialog: ConfirmationDialog, response_type: int):
+            enable_netshield = Gtk.ResponseType(response_type) == Gtk.ResponseType.YES
+            if enable_netshield:
+                self.off()
+            else:
+                # We need to reverse back the option here since gtk does not allow an easy way to
+                # intercept changes before they happen.
+                feature_settings.netshield.off()
+
+            confirmation_dialog.destroy()
+
+        custom_dns_enabled = self.get_setting()
+        if not custom_dns_enabled or new_setting == NetShield.NO_BLOCK:
+            return
+
+        dialog = ConfirmationDialog(
+            message=self._build_dialog_content(),
+            title="Enable Netshield",
+            yes_text="_Enable", no_text="_Cancel"
+        )
+        #  pylint: disable=duplicate-code
+        dialog.set_default_size(400, 200)
+        dialog.connect("response", _on_dialog_button_click)
+        dialog.set_modal(True)
+        dialog.set_transient_for(self._settings_window)
+        dialog.show()
+
+    def _build_dialog_content(self):
+        #  pylint: disable=duplicate-code
+        container = self.gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        container.set_spacing(10)
+
+        question = self.gtk.Label(label="Enable Netshield ?")
+        question.set_halign(Gtk.Align.START)
+
+        clarification = self.gtk.Label(label="This will disable custom DNS.")
+        clarification.set_halign(Gtk.Align.START)
+        clarification.get_style_context().add_class("dim-label")
+
+        # learn_more = self.gtk.Label(
+        #     label='<a href="https://protonvpn.com/support/custom-dns">Learn more</a>'
+        # )
+        # learn_more.set_halign(Gtk.Align.START)
+        # learn_more.get_style_context().add_class("dim-label")
+        # learn_more.set_use_markup(True)
+
+        container.pack_start(question, False, False, 0)
+        container.pack_start(clarification, False, False, 0)
+        # container.pack_start(learn_more, False, False, 0)
+
+        return container

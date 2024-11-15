@@ -312,6 +312,10 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
             self._controller.user_tier
         )
 
+    def off(self):
+        """Shortcut to toggle the widget to disabled."""
+        self.switch.set_state(False)
+
 
 class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
     """Default combobox text widget."""
@@ -422,6 +426,10 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         treeiter = combobox.get_active_iter()
         value = model[treeiter][1]
         self.save_setting(value)
+
+    def off(self):
+        """Shortcut to set the combobox to disabled."""
+        self.combobox.set_active_id(str(0))
 
 
 class EntryWidget(Gtk.Grid):

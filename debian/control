@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9), dh-python, python3-all, librsvg2-common, python
     python3-dbus, gir1.2-nm-1.0, python3-packaging, python3-distro,
     python3-requests, python3-proton-core
 Standards-Version: 4.1.1
-X-Python3-Version: >= 3.8
+X-Python3-Version: >= 3.9
 
 Package: proton-vpn-gtk-app
 Architecture: all

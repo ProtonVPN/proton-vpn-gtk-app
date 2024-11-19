@@ -257,6 +257,7 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
             enable_custom_dns = Gtk.ResponseType(response_type) == Gtk.ResponseType.YES
             if enable_custom_dns:
                 self.netshield.off()
+                self._settings_window.notify_user_with_reconnect_message()
             else:
                 # We need to reverse back the option here since gtk does not allow an easy way to
                 # intercept changes before they happen.

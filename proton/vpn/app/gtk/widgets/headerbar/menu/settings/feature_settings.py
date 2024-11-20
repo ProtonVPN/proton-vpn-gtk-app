@@ -200,9 +200,9 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
             self.emit("netshield-setting-changed", netshield)
 
         netshield_options = [
-            (str(NetShield.NO_BLOCK), "Off"),
-            (str(NetShield.BLOCK_MALICIOUS_URL), "Block Malware"),
-            (str(NetShield.BLOCK_ADS_AND_TRACKING), "Block ads, trackers and malware"),
+            (str(NetShield.NO_BLOCK.value), "Off"),
+            (str(NetShield.BLOCK_MALICIOUS_URL.value), "Block Malware"),
+            (str(NetShield.BLOCK_ADS_AND_TRACKING.value), "Block ads, trackers and malware"),
         ]
         self.netshield = ComboboxWidget(
             controller=self._controller,
@@ -246,11 +246,11 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         self.pack_start(port_forwarding_widget, False, False, 0)
 
     @GObject.Signal(name="netshield-setting-changed", arg_types=(int,))
-    def netshield_setting_changed(self, new_setting: int):
+    def netshield_setting_changed(self, custom_dns_enabled: int):
         """Signal emitted after a netshield setting is set."""
 
     def on_custom_dns_setting_changed(
-        self, custom_dns_widget: CustomDNSWidget, new_setting: int
+        self, custom_dns_widget: CustomDNSWidget, custom_dns_enabled: int
     ):
         """temp"""
         def _on_dialog_button_click(confirmation_dialog: ConfirmationDialog, response_type: int):
@@ -265,8 +265,12 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
             confirmation_dialog.destroy()
 
-        netshield_enabled = int(self.netshield.get_setting())
-        if netshield_enabled == NetShield.NO_BLOCK or not new_setting:
+        netshield_disabled = int(self.netshield.get_setting()) == NetShield.NO_BLOCK
+
+        if not custom_dns_enabled or netshield_disabled:
+            self._settings_window.notify_user_with_reconnect_message(
+                only_notify_on_active_connection=True
+            )
             return
 
         dialog = ConfirmationDialog(

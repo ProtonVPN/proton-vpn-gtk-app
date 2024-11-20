@@ -99,3 +99,24 @@ def test_notify_user_with_reconnect_message_do_not_display_message_when_user_is_
     settings_window.notify_user_with_reconnect_message()
 
     mock_show_info_message.assert_not_called()
+
+
+@pytest.mark.parametrize("is_connection_active,are_feature_updates_applied_when_active,display_message", [
+    (True, True, True),
+    (False, True, False),
+    (True, False, True),
+    (False, False, False),
+])
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window.NotificationBar.show_info_message")
+def test_notify_user_with_reconnect_message_display_message_when_user_is_connected_and_only_display_message_while_connected_regardless_of_protocol(mock_show_info_message, is_connection_active, are_feature_updates_applied_when_active, display_message):
+    mock_controller = Mock()
+    mock_controller.is_connection_active = is_connection_active
+    mock_controller.current_connection.are_feature_updates_applied_when_active = are_feature_updates_applied_when_active
+    settings_window = SettingsWindow(controller=mock_controller)
+
+    settings_window.notify_user_with_reconnect_message(only_notify_on_active_connection=True)
+
+    if display_message:
+        mock_show_info_message.assert_called_once()
+    else:    
+        mock_show_info_message.assert_not_called()

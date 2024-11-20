@@ -192,7 +192,7 @@ class TestNetshield:
         feature_settings.build_netshield()
 
         feature_settings.on_custom_dns_setting_changed(
-            custom_dns_widget=custom_dns_widget_mock, new_setting=True
+            custom_dns_widget=custom_dns_widget_mock, custom_dns_enabled=True
         )
 
         on_dialog_button_click_callback = confirmation_dialog_instance_mock.connect.call_args[0][1]

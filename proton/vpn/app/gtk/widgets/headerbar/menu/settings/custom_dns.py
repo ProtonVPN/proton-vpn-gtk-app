@@ -264,7 +264,9 @@ class CustomDNSWidget(ToggleWidget):
             confirmation_dialog.destroy()
 
         custom_dns_enabled = self.get_setting()
-        if not custom_dns_enabled or new_setting == NetShield.NO_BLOCK:
+        netshield_disabled = new_setting == NetShield.NO_BLOCK
+
+        if not custom_dns_enabled or netshield_disabled:
             return
 
         dialog = ConfirmationDialog(

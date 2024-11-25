@@ -20,6 +20,7 @@ from concurrent.futures import Future
 from unittest.mock import Mock, patch, PropertyMock, call
 import pytest
 
+from proton.vpn.connection.states import Disconnected
 from proton.session.exceptions import ProtonAPINotReachable
 from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
 from proton.vpn.app.gtk.widgets.headerbar.menu.menu import Menu
@@ -393,6 +394,7 @@ class TestQuitMenuEntry:
         )
 
         menu.quit_button_click()
+        menu.status_update(Disconnected())
         main_window_mock.quit.assert_called_once()
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.ConfirmationDialog")

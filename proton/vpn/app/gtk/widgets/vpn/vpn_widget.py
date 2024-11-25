@@ -29,6 +29,7 @@ from gi.repository import GObject, GLib
 
 from proton.vpn import logging
 
+from proton.vpn.connection.states import State
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
@@ -141,7 +142,7 @@ class VPNWidget(Gtk.Box):
         for widget in [
             self.connection_status_widget,
             self.quick_connect_widget,
-            self.server_list_widget
+            self.server_list_widget,
         ]:
             self.connection_status_subscribers.append(widget)
 
@@ -161,7 +162,7 @@ class VPNWidget(Gtk.Box):
     def _on_unrealize(self, _widget):
         self.unload()
 
-    def status_update(self, connection_state):
+    def status_update(self, connection_state: State):
         """This method is called whenever the VPN connection status changes."""
         logger.debug(
             f"VPN widget received connection status update: "

@@ -25,6 +25,7 @@ from concurrent.futures import Future
 from gi.repository import Gio, GLib, GObject
 from proton.vpn.app.gtk import Gtk
 
+from proton.vpn.connection.states import State, Disconnected
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportDialog
 from proton.vpn.app.gtk.widgets.headerbar.menu.about_dialog import AboutDialog
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
@@ -90,6 +91,14 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self._settings_window = None
 
         self._setup_actions()
+
+    def status_update(self, connection_status: State):
+        """
+        This method is set as a callback to monitor the VPN connection after
+        the user clicks on the quit menu option.
+        """
+        if isinstance(connection_status, Disconnected):
+            self._main_window.quit()
 
     @property
     def logout_enabled(self) -> bool:
@@ -221,9 +230,10 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
 
     def _on_quit_clicked(self, *_):
         kill_switch_state = self._controller.get_settings().killswitch
-        confirm_quit = True
 
-        if not self._controller.is_connection_disconnected:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+        if self._controller.is_connection_disconnected:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+            self._main_window.quit()
+        else:
             dialog = ConfirmationDialog(
                 self.DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE
                 if kill_switch_state == KillSwitchSettingEnum.PERMANENT
@@ -232,9 +242,11 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
             )
             confirm_quit = self._display_dialog(dialog)
 
-        if confirm_quit:
-            logger.info("Yes", category="ui", subcategory="dialog", event="quit")
-            self._main_window.quit()
+            if confirm_quit:
+                logger.info("Yes", category="ui", subcategory="dialog", event="quit")
+                self._controller.register_connection_status_subscriber(self)
+                future = self._controller.disconnect()
+                future.add_done_callback(lambda f: GLib.idle_add(f.result))
 
     def _on_killswitch_disabled_logout(self, future: Future):
         future.result()

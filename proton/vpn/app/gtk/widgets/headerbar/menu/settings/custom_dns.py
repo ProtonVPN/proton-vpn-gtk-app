@@ -293,15 +293,15 @@ class CustomDNSWidget(ToggleWidget):
         clarification.set_halign(Gtk.Align.START)
         clarification.get_style_context().add_class("dim-label")
 
-        # learn_more = self.gtk.Label(
-        #     label='<a href="https://protonvpn.com/support/custom-dns">Learn more</a>'
-        # )
-        # learn_more.set_halign(Gtk.Align.START)
-        # learn_more.get_style_context().add_class("dim-label")
-        # learn_more.set_use_markup(True)
+        learn_more = self.gtk.Label(
+            label='<a href="https://protonvpn.com/support/custom-dns#netshield">Learn more</a>'
+        )
+        learn_more.set_halign(Gtk.Align.START)
+        learn_more.get_style_context().add_class("dim-label")
+        learn_more.set_use_markup(True)
 
         container.pack_start(question, False, False, 0)
         container.pack_start(clarification, False, False, 0)
-        # container.pack_start(learn_more, False, False, 0)
+        container.pack_start(learn_more, False, False, 0)
 
         return container

@@ -1,3 +1,7 @@
+## 4.8.0
+- Introducing Custom DNS. Enhance your online privacy by choosing third-party DNS resolvers and customize your browsing experience.
+- Bug fixes and stability improvements.
+
 ## 4.7.4
 - Bug fixes and stability improvements.
 

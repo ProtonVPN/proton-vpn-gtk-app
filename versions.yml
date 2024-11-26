@@ -1,74 +1,14 @@
-version: 4.8.0rc8
+version: 4.8.0
 time: 2024/11/26 14:00
 author: Alexandru Cheltuitor
 email: alexandru.cheltuitor@proton.ch
 urgency: low
 stability: unstable
 description:
-- Add learn more labels with URL.
----
-version: 4.8.0rc7
-time: 2024/11/25 16:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Fix kill switch leak when quitting the app.
----
-version: 4.8.0rc6
-time: 2024/11/20 11:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Fix custom DNS bugs.
----
-version: 4.8.0rc5
-time: 2024/11/19 13:30
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Drop Ubuntu 20.04 support.
----
-version: 4.8.0rc4
-time: 2024/11/19 13:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Add conflict pop-up for custom DNS and netshield.
----
-version: 4.8.0rc3
-time: 2024/11/15 11:22
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- Added semgrep scanning to CI.
----
-version: 4.8.0rc2
-time: 2024/11/08 16:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Improve custom DNS and use new format.
----
-version: 4.8.0rc1
-time: 2024/11/08 12:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- Add custom DNS to settings window.
+- Add custom DNS to settings window (Alexandru Cheltuitor).
+- Added semgrep scanning to CI (Luke Titley).
+- Drop Ubuntu 20.04 support (Alexandru Cheltuitor).
+- Fix kill switch leak when quitting the app (Alexandru Cheltuitor, Josep Llaneras).
 ---
 version: 4.7.4
 time: 2024/11/08 16:00

@@ -1,5 +1,5 @@
 ## 4.8.0
-- Introducing Custom DNS. Enhance your online privacy by choosing third-party DNS resolvers and customize your browsing experience.
+- Introducing Custom DNS. Take control of your browsing experience with the flexibility to use third-party DNS resolvers tailored to your preferences.
 - Bug fixes and stability improvements.
 
 ## 4.7.4

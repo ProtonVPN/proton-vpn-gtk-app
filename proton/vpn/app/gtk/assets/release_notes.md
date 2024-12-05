@@ -1,3 +1,6 @@
+## 4.8.1
+- Bug fixes.
+
 ## 4.8.0
 - Introducing Custom DNS. Take control of your browsing experience with the flexibility to use third-party DNS resolvers tailored to your preferences.
 - Bug fixes and stability improvements.

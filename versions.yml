@@ -1,3 +1,12 @@
+version: 4.8.2rc1
+time: 2024/12/09 12:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: low
+description:
+- Ensure UI is using latest feature flags after login, by recreating the VPN widget whenever it's displayed.
+---
 version: 4.8.1
 time: 2024/12/05 10:00
 author: Josep Llaneras

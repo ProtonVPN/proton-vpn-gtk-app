@@ -70,7 +70,7 @@ class MainWidget(Gtk.Overlay):
             expand=False, fill=False, padding=0
         )
         self.login_widget = self._create_login_widget()
-        self.vpn_widget = self._create_vpn_widget()
+        self.vpn_widget = None
 
         def register_to_exception_handler(*_):
             self._controller.exception_handler.main_widget = self
@@ -110,12 +110,12 @@ class MainWidget(Gtk.Overlay):
         login widget depending on whether the user is authenticated or not.
         """
         if self._controller.user_logged_in:
+            self._display_vpn_widget()
             connect_once(
                 self.vpn_widget,
                 "vpn-widget-ready",
                 self._controller.run_startup_actions
             )
-            self._display_vpn_widget()
         else:
             self._display_login_widget()
 
@@ -179,6 +179,7 @@ class MainWidget(Gtk.Overlay):
         return vpn_widget
 
     def _display_vpn_widget(self):
+        self.vpn_widget = self._create_vpn_widget()
         self._main_window.header_bar.menu.logout_enabled = True
         self._main_window.header_bar.menu.settings_enabled = True
         self._overlay_widget.show(

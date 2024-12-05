@@ -87,6 +87,7 @@ def test_main_widget_switches_from_vpn_to_login_widget_after_logout():
         main_window=main_window_mock,
         overlay_widget=OverlayWidget()
     )
+    main_widget.vpn_widget = main_widget._create_vpn_widget()
     main_widget.active_widget = main_widget.vpn_widget
 
     logout_callback = main_window_mock.header_bar.menu.connect.call_args.args[1]
@@ -109,6 +110,7 @@ def test_main_widget_switches_to_login_widget_and_shows_error_dialog_on_session_
         notifications=notifications_mock,
         overlay_widget=OverlayWidget()
     )
+    main_widget.vpn_widget = main_widget._create_vpn_widget()
     main_widget.active_widget = main_widget.vpn_widget
     main_widget.on_session_expired()
 

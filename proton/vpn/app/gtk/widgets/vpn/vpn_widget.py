@@ -108,7 +108,6 @@ class VPNWidget(Gtk.Box):
             shortcut="<Control>f"
         )
         if new_search_enabled:
-            # self.set_vexpand(False)
             self.search_results_widget = SearchResults(self._controller)
             revealer = Gtk.Revealer()
             revealer.add(self.search_results_widget)

@@ -224,7 +224,10 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         """Builds and adds the `port_forwarding` setting to the widget."""
         def on_switch_state(_, new_value: bool, toggle_widget: ToggleWidget):
             description_value = self.PORT_FORWARDING_DESCRIPTION
-            if new_value:
+
+            # When we start displaying port forwarding, we no longer want to be showing the
+            # setup guide.
+            if new_value and not self._controller.feature_flags.get("DisplayPortForwarding"):
                 description_value = self.PORT_FORWARDING_SETUP_GUIDE
 
             toggle_widget.save_setting(new_value)

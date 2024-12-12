@@ -91,3 +91,27 @@ label.success {
 label.signal-danger {
     color: @signal-danger
 }
+
+#connection-status-label {
+    font-weight: bold;
+}
+
+#port-forwarding-widget {
+    background-image: None;
+    transition: background-color 0.2s;
+    border-radius: 5px;
+}
+
+#port-forwarding-widget:hover {
+    background-image: None;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+#port-forwarding-widget:active {
+    background-image: None;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+#port-forwarding-widget>box {
+    padding: 5px;
+}

@@ -68,22 +68,29 @@ def test_build_port_forwarding_updates_description_when_being_initialized_if_ena
         toggle_mock.description.set_label.assert_not_called()
 
 
-@pytest.mark.parametrize("new_value", [False, True])
+@pytest.mark.parametrize("new_value,feature_flag_enabled", [
+    (False, True),
+    (True, True),
+    (False, False),
+    (True, False),
+])
 @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.FeatureSettings.pack_start")
 @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget")
-def test_build_port_forwarding_save_new_value_when_callback_is_called(toggle_widget_mock, _, new_value):
+def test_build_port_forwarding_save_new_value_when_callback_is_called(toggle_widget_mock, _, new_value, feature_flag_enabled):
     settings_window_mock = Mock()
-    fs = FeatureSettings(MagicMock(), settings_window_mock)
+    controller_mock = Mock(name="controller")
+    controller_mock.feature_flags.get.return_value = feature_flag_enabled
+    fs = FeatureSettings(controller_mock, settings_window_mock)
     fs.build_port_forwarding()
 
     toggle_widget = toggle_widget_mock.call_args[1]
     callback = toggle_widget["callback"]
 
     callback(None, new_value, toggle_widget_mock)
-
     toggle_widget_mock.save_setting.assert_called_once_with(new_value)
+
     toggle_widget_mock.description.set_label.assert_called_once_with(
-        fs.PORT_FORWARDING_SETUP_GUIDE if new_value else fs.PORT_FORWARDING_DESCRIPTION
+        fs.PORT_FORWARDING_SETUP_GUIDE if new_value and not feature_flag_enabled else fs.PORT_FORWARDING_DESCRIPTION 
     )
     settings_window_mock.notify_user_with_reconnect_message.assert_called_once()
 

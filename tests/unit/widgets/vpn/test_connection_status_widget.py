@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from proton.vpn.connection import states, events
 from proton.vpn.connection.events import EventContext
@@ -37,10 +37,16 @@ import pytest
     (states.Error, events.DeviceDisconnected, "Connection error: device disconnected"),
     (states.Error, events.MaximumSessionsReached, "Connection error: session limit reached"),
 ])
-def test_vpn_connection_status_widget(connection_state_type, last_event_type, expected_message):
+@patch("proton.vpn.app.gtk.widgets.vpn.connection_status_widget.VPNConnectionStatusWidget.pack_start")
+def test_vpn_connection_status_widget(pack_start_mock, connection_state_type, last_event_type, expected_message):
     overlay_widget_mock = Mock()
     mock_notifications = Mock()
-    vpn_status_widget = VPNConnectionStatusWidget(Mock(), overlay_widget_mock, mock_notifications)
+    vpn_status_widget = VPNConnectionStatusWidget(
+        Mock(),
+        overlay_widget_mock,
+        mock_notifications,
+        port_forward_revealer=Mock()
+    )
 
     connection_state = connection_state_type()
     last_event = None

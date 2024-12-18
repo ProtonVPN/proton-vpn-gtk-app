@@ -1,3 +1,7 @@
+## 4.8.2
+- WireGuard is now the default protocol for new users.
+- Bug fixes and performance improvements.
+
 ## 4.8.1
 - Bug fixes.
 

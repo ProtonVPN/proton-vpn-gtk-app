@@ -1,38 +1,13 @@
-version: 4.8.2rc4
-time: 2024/12/18 11:00
+version: 4.8.2
+time: 2024/12/18 12:00
 author: Alexandru Cheltuitor
 email: alexandru.cheltuitor@proton.ch
 urgency: low
 stability: low
 description:
-- Only display port forwarding UI if environment variable is set.
----
-version: 4.8.2rc3
-time: 2024/12/17 12:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: low
-description:
-- Add port forwarding UI.
----
-version: 4.8.2rc2
-time: 2024/12/09 14:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: low
-description:
-- Ensure app does not crash when attempting to logout after doing a search.
----
-version: 4.8.2rc1
-time: 2024/12/09 12:00
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: low
-description:
-- Ensure UI is using latest feature flags after login, by recreating the VPN widget whenever it's displayed.
+- Display port forwarding UI if environment variable is set (Alexandru Cheltuitor).
+- Ensure app does not crash when attempting to logout after doing a search (Alexandru Cheltuitor).
+- Ensure UI is using latest feature flags after login, by recreating the VPN widget whenever it's displayed (Alexandru Cheltuitor).
 ---
 version: 4.8.1
 time: 2024/12/05 10:00

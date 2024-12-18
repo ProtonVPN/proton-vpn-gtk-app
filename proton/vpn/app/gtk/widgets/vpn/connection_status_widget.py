@@ -19,6 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import os
 from gi.repository import GLib
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.connection import events, states
@@ -54,7 +55,9 @@ class VPNConnectionStatusWidget(Gtk.Box):
 
         self.pack_start(self._connection_status_label, expand=False, fill=False, padding=0)
 
-        if self._controller.feature_flags.get("DisplayPortForwarding"):
+        env_variable = os.environ.get("DisplayPortForwarding", "False").lower()
+
+        if env_variable in ("true", "1", "t"):
             self._port_forward_revealer = port_forward_revealer \
                 or PortForwardRevealer()
             self.pack_start(self._port_forward_revealer, expand=False, fill=False, padding=0)

@@ -1,3 +1,12 @@
+version: 4.8.2rc4
+time: 2024/12/18 11:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: low
+description:
+- Only display port forwarding UI if environment variable is set.
+---
 version: 4.8.2rc3
 time: 2024/12/17 12:00
 author: Alexandru Cheltuitor

@@ -92,7 +92,7 @@ We automate the versioning of the debian and rpm files.
 All versions of the application are recorded in versions.yml.
 To bump the version, add the following text to the top of versions.yml
 
-```
+```yaml
 version: <latest version>
 time: <date> <time>
 author: <your name>

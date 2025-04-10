@@ -1,1 +1,3 @@
 -e ".[development]"
+
+please explain to how to install in ubuntu 

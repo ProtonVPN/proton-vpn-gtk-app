@@ -20,13 +20,15 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import TYPE_CHECKING
+from typing import Union
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.core.settings import NetShield
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    BaseCategoryContainer, ComboboxWidget, ToggleWidget, SettingName, SettingDescription
+    BaseCategoryContainer, ComboboxWidget, ToggleWidget,
+    SettingName, SettingDescription, EntryWidget
 )
 from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import CustomDNSWidget
@@ -156,6 +158,41 @@ class KillSwitchWidget(ToggleWidget):  # noqa pylint: disable=too-many-instance-
             self.standard_radio_button.set_active(True)
 
 
+class SplitTunnelingWidget(EntryWidget):
+    """Contains the split tunneling widget.
+    """
+    def __init__(self, controller):
+        super().__init__(
+            controller,
+            "Split Tunneling",
+            "settings.features.split_tunneling.app_paths",
+            "Prevent traffic from going through VPN"
+        )
+
+    def _on_focus_out_callback(self, entry_widget: Gtk.Entry, _: Gdk.EventFocus):
+        app_paths = []
+        for app_path in entry_widget.get_text().split(","):
+            app_paths.append(app_path.strip())
+
+        self.save_setting(app_paths)
+
+    def _build_entry(self) -> Gtk.Entry:
+        entry = Gtk.Entry()
+        value = self._get_setting()
+        if value is None:
+            value = ""
+
+        entry.set_text(str(value))
+        entry.connect("focus-out-event", self._on_focus_out_callback)
+
+        return entry
+
+    def _get_setting(self) -> Union[str, list[str]]:
+        """Shortcut property that returns the current setting"""
+        app_paths = super().get_setting()
+        return ', '.join(app_paths)
+
+
 class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
     CATEGORY_NAME = "Features"
@@ -187,6 +224,11 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         self.build_netshield()
         self.build_killswitch()
         self.build_port_forwarding()
+        if (
+            self._controller.split_tunneling_available
+            and self._controller.feature_flags.get("DisplaySplitTunneling")
+        ):
+            self.build_split_tunneling()
 
     def build_netshield(self):
         """Builds and adds the `netshield` setting to the widget.
@@ -321,3 +363,10 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         container.pack_start(learn_more, False, False, 0)
 
         return container
+
+    def build_split_tunneling(self):
+        """Build split tunneling UI.
+        """
+        self.pack_start(
+            SplitTunnelingWidget(self._controller), False, False, 0
+        )

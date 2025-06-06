@@ -21,7 +21,7 @@ import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import Future
 from importlib import metadata
 from types import TracebackType
-from typing import Optional, Type, Callable
+from typing import Optional, Type, Callable, Union
 
 from gi.repository import GLib
 from proton.vpn.session import ServerList
@@ -370,11 +370,16 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             key=lambda protocol: protocol.cls.ui_protocol
         )
 
-    def send_error_to_proton(self,
-                             error: BaseException |
-                             tuple[Optional[Type[BaseException]],
-                                   Optional[BaseException],
-                                   Optional[TracebackType]]):
+    def send_error_to_proton(
+        self,
+        error: Union[
+            BaseException,
+            tuple[
+                Optional[Type[BaseException]],
+                Optional[BaseException],
+                Optional[TracebackType]]
+            ]
+    ):
         """Sends the error to Sentry."""
         self._api.usage_reporting.report_error(error)
 
@@ -451,3 +456,12 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """Unsets the callback that is called when the server loads are updated."""
         future = self.executor.submit(self._api.refresher.set_server_loads_updated_callback, None)
         future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
+    @property
+    def split_tunneling_available(self) -> bool:
+        """Returns if split tunneling is available.
+
+        Returns:
+            bool: `True` if available, `False` otherwise
+        """
+        return self._api.split_tunneling_available

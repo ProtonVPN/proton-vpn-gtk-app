@@ -1,3 +1,12 @@
+version: 4.10.0rc1
+time: 2025/06/12 11:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Implement basic split tunneling UI.
+---
 version: 4.9.7
 time: 2025/06/06 14:30
 author: Richard Paterson

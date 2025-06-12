@@ -1,3 +1,12 @@
+version: 4.10.0rc2
+time: 2025/06/13 11:00
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- Refactor code and update settings name.
+---
 version: 4.10.0rc1
 time: 2025/06/12 11:00
 author: Alexandru Cheltuitor

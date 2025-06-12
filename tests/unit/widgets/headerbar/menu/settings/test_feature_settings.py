@@ -20,7 +20,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import pytest
 from unittest.mock import Mock, PropertyMock, patch, MagicMock
 from tests.unit.testing_utils import process_gtk_events
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings, KillSwitchSettingEnum, KillSwitchWidget, ToggleWidget
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings, ToggleWidget
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.kill_switch import KillSwitchSettingEnum, KillSwitchWidget
 from proton.vpn.core.settings import NetShield
 
 

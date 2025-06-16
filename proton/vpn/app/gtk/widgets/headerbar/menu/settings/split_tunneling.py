@@ -35,7 +35,6 @@ class AppPathWidget(EntryWidget):
             title="App paths",
             setting_name="settings.features.split_tunneling.config.app_paths",
             description="",
-            requires_subscription_to_be_active=True
         )
 
     # pylint: disable=R0801
@@ -77,7 +76,8 @@ class SplitTunnelingWidget(ToggleWidget):
             title="Split Tunneling",
             setting_name="settings.features.split_tunneling.enabled",
             description="Prevent traffic from going through VPN",
-            callback=self._on_switch_button_toggle
+            callback=self._on_switch_button_toggle,
+            requires_subscription_to_be_active=True
         )
         self.gtk = gtk or Gtk
         self.revealer = None
@@ -97,7 +97,6 @@ class SplitTunnelingWidget(ToggleWidget):
         self.attach(self.revealer, 0, 2, 2, 1)
         revealer_container = self._build_revealer_container()
         self.revealer.add(revealer_container)
-        print("is ST enabled: ", self.get_setting())
         self.revealer.set_reveal_child(self.get_setting())
 
     def _build_revealer_container(self) -> Gtk.Box:

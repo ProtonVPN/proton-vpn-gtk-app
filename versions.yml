@@ -1,3 +1,12 @@
+version: 4.10.0rc3
+time: 2025/06/17 10:59
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: toggle widget should not be displayed for free users"
+---
 version: 4.10.0rc2
 time: 2025/06/13 11:00
 author: Alexandru Cheltuitor

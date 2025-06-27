@@ -115,3 +115,25 @@ label.signal-danger {
 #port-forwarding-widget>box {
     padding: 5px;
 }
+
+#split-tunneling-app-selection-window viewport {
+    margin: 30px 0px 30px 30px;
+}
+
+#split-tunneling-app-based-settings {
+    margin-top: 10px;
+}
+
+#split-tunneling-app-based-settings #split-tunneling-app-add-button {
+    margin: 15px 10px 5px 10px;
+}
+
+#split-tunneling-app-selection-window #split-tunneling-app-done-button {
+    margin: 15px 30px 30px
+}
+
+#selected-app-list {
+    padding: 12px 16px 12px 16px;
+    border-radius: 5px;
+    border: 1px solid rgba(155, 155, 155, 0.2);
+}

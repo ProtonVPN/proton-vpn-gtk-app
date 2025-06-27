@@ -30,7 +30,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
 )
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import CustomDNSWidget
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.kill_switch import KillSwitchWidget
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling import SplitTunnelingWidget
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling import SplitTunnelingToggle
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.headerbar.menu.settings.settings_window import \
@@ -212,5 +212,5 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         """Build split tunneling UI.
         """
         self.pack_start(
-            SplitTunnelingWidget.build(self._controller), False, False, 0
+            SplitTunnelingToggle.build(self._controller), False, False, 0
         )

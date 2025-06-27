@@ -19,16 +19,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import List, Tuple, Callable, Union
+from typing import List, Tuple, Callable
 from gi.repository import Gtk, Gdk
 from proton.vpn.app.gtk.controller import Controller
 
 
 RECONNECT_MESSAGE = "Please establish a new VPN connection for "\
         "changes to take effect."
-
-
-DOT = "."  # pylint: disable=invalid-name
 
 
 class CategoryHeader(Gtk.Label):
@@ -121,49 +118,6 @@ def is_upgrade_required(requires_subscription_to_be_active: bool, user_tier: int
     return requires_subscription_to_be_active and user_tier < 1
 
 
-def get_setting(controller: Controller, setting_path_name: str):
-    """Helper method to get the settings.
-
-    In this case the setting_path_name can be a multi-layered setting, for example
-    the kill switch can be access via `settings.killswtich` while netshield can be accessed
-    via `settings.features.netshield`. Since this method tries to abstract the depth,
-    we'll be searching based on the hierarchy, example:
-    ```
-    setting_path_name = "settings.features.netshield"
-    setting_type = "settings"
-    setting_attrs_split = "features.netshield".split(".") # <- will become ["features", "netshield"]
-    ```
-    So the for loop will loop for each attribute and attempt to get it from the original
-    settings object, thus solving the nesting situation.
-    """
-    setting_type, setting_attrs = setting_path_name.split(DOT, maxsplit=1)
-    settings = getattr(controller, f"get_{setting_type}")()
-    setting_attrs_split = setting_attrs.split(DOT)
-
-    for attr in setting_attrs_split:
-        settings = getattr(settings, attr)
-
-    return settings
-
-
-def save_setting(controller: Controller, setting_path_name: str, new_value: Union[str, int]):
-    """Helper method to save the settings."""
-    def set_setting(root, attr, value):
-        if attr.count(DOT) == 0:
-            setattr(root, attr, value)
-        else:
-            name, path = attr.split(DOT, maxsplit=1)
-            set_setting(getattr(root, name), path, value)
-
-    setting_type, setting_attrs = setting_path_name.split(DOT, maxsplit=1)
-
-    save_settings_method = getattr(controller, f"save_{setting_type}")
-    settings = getattr(controller, f"get_{setting_type}")()
-    set_setting(settings, setting_attrs, new_value)
-
-    save_settings_method(settings)
-
-
 class CustomButton(Gtk.Grid):
     """Custom button setting."""
     def __init__(  # pylint: disable=too-many-arguments
@@ -222,7 +176,8 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         setting_name: str,
         requires_subscription_to_be_active: bool = False,
         callback: Callable = None,
-        disable_on_active_connection: bool = False
+        disable_on_active_connection: bool = False,
+        enabled: bool = None
     ):
         super().__init__()
         self._apply_grid_styles()
@@ -231,9 +186,12 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         self._callback = callback
         self._requires_subscription_to_be_active = requires_subscription_to_be_active
         self._disable_on_active_connection = disable_on_active_connection
+        self._enabled = enabled
+
         self.label = SettingName(title)
         self.description = SettingDescription(description)
         self.switch = self._build_switch()
+
         self._build_ui()
 
     @property
@@ -248,11 +206,11 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
     def get_setting(self) -> bool:
         """Shortcut property that returns the current setting"""
-        return get_setting(self._controller, self._setting_name)
+        return self._controller.get_setting_attr(self._setting_name)
 
     def save_setting(self, new_value: bool):
         """Shortcut property that sets the new setting and stores to disk."""
-        save_setting(self._controller, self._setting_name, new_value)
+        self._controller.save_setting_attr(self._setting_name, new_value)
 
     @property
     def overridden_by_upgrade_tag(self) -> bool:
@@ -273,7 +231,10 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
     def _build_switch(self) -> Gtk.Switch:
         switch = Gtk.Switch()
-        switch.set_state(self.get_setting())
+        if self._enabled is None:
+            self._enabled = self.get_setting()
+        switch.set_state(self._enabled)
+
         if self._callback:
             switch.connect("state-set", self._callback, self)
         else:
@@ -354,11 +315,11 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
     def get_setting(self) -> str:
         """Shortcut property that returns the current setting"""
-        return str(get_setting(self._controller, self._setting_name))
+        return str(self._controller.get_setting_attr(self._setting_name))
 
-    def save_setting(self, new_value: Union[str, int]):
+    def save_setting(self, new_value: int):
         """Shortcut property that sets the new setting and stores to disk."""
-        save_setting(self._controller, self._setting_name, new_value)
+        self._controller.save_setting_attr(self._setting_name, new_value)
 
     @property
     def overridden_by_upgrade_tag(self) -> bool:
@@ -463,13 +424,13 @@ class EntryWidget(Gtk.Grid):
         """Set if the widget should be active or not."""
         self.set_property("sensitive", new_value)
 
-    def get_setting(self) -> Union[str, List[str]]:
+    def get_setting(self) -> bool:
         """Shortcut property that returns the current setting"""
-        return get_setting(self._controller, self._setting_name)
+        return self._controller.get_setting_attr(self._setting_name)
 
-    def save_setting(self, new_value: str):
+    def save_setting(self, new_value: bool):
         """Shortcut property that sets the new setting and stores to disk."""
-        save_setting(self._controller, self._setting_name, new_value)
+        self._controller.save_setting_attr(self._setting_name, new_value)
 
     @property
     def overridden_by_upgrade_tag(self) -> bool:

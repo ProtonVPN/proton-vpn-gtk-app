@@ -26,9 +26,8 @@ from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.core.settings import CustomDNSEntry, NetShield
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    ToggleWidget, save_setting, get_setting
-)
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import ToggleWidget
+
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import \
@@ -178,14 +177,14 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
     @contextmanager
     def _get_ip_list(self):
         """Helper method to view the ip list."""
-        yield get_setting(self._controller, CustomDNSManager.SETTING_NAME)
+        yield self._controller.get_setting_attr(CustomDNSManager.SETTING_NAME)
 
     @contextmanager
     def _edit_ip_list(self):
         """Helper method to edit the ip list and save it."""
-        ip_list = get_setting(self._controller, CustomDNSManager.SETTING_NAME)
+        ip_list = self._controller.get_setting_attr(CustomDNSManager.SETTING_NAME)
         yield ip_list
-        save_setting(self._controller, CustomDNSManager.SETTING_NAME, ip_list)
+        self._controller.save_setting_attr(CustomDNSManager.SETTING_NAME, ip_list)
 
     def set_entry_text(self, new_value: str):
         """Simulate typing content to entry."""

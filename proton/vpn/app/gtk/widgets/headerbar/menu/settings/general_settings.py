@@ -24,8 +24,7 @@ from gi.repository import Gtk, Gdk
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    BaseCategoryContainer, ToggleWidget, EntryWidget, get_setting,
-    save_setting
+    BaseCategoryContainer, ToggleWidget, EntryWidget,
 )
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access import \
     EarlyAccessWidget
@@ -60,7 +59,7 @@ class TrayPinnedServersWidget(EntryWidget):
 
     def get_setting(self):
         """Shortcut property that sets the new setting and stores to disk."""
-        tray_pinned_servers = get_setting(self._controller, self.SETTING_NAME)
+        tray_pinned_servers = self._controller.get_setting_attr(self.SETTING_NAME)
         return ', '.join(tray_pinned_servers)
 
     def save_setting(self, new_value: List[str]):  # noqa: F811
@@ -74,7 +73,7 @@ class TrayPinnedServersWidget(EntryWidget):
             if cleaned_pinned_server:
                 server_list.append(cleaned_pinned_server)
 
-        save_setting(self._controller, self.SETTING_NAME, server_list)
+        self._controller.save_setting_attr(self.SETTING_NAME, server_list)
 
 
 class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes

@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from unittest.mock import Mock, PropertyMock, patch
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import UpgradePlusTag, ToggleWidget, ComboboxWidget, \
-    EntryWidget, is_upgrade_required, get_setting, save_setting
+    EntryWidget, is_upgrade_required
 from proton.vpn.core.settings import NetShield
 
 
@@ -66,60 +66,6 @@ class MockDataclass:
 @dataclass
 class MockSubDataclass:
     another_nest: MockDataclass
-
-
-@pytest.mark.parametrize(
-    "setting_type,nested,setting_path_name,expected_value",
-    [
-        ("settings", False, "settings.test_value", "Test value"),
-        ("settings", False, "settings.test_value", True),
-        ("settings", True, "settings.another_nest.test_value", "Test value"),
-        ("app_configuration", False, "app_configuration.test_value", "Test value"),
-        ("app_configuration", False, "app_configuration.test_value", True),
-        ("app_configuration", True, "app_configuration.another_nest.test_value", "Test value"),
-    ]
-)
-def test_get_setting_returns_expected_value_when_getting_value_from_settings(setting_type, nested, setting_path_name, expected_value):
-    mock_controller = Mock()
-
-    if nested:
-        data = MockSubDataclass(MockDataclass(expected_value))
-    else:
-        data = MockDataclass(expected_value)
-
-    if setting_type == "settings":
-        mock_controller.get_settings.return_value = data
-    else:
-        mock_controller.get_app_configuration.return_value = data
-
-    received_value = get_setting(controller=mock_controller, setting_path_name=setting_path_name)
-    assert received_value == expected_value
-
-
-def test_save_setting_saves_value_to_disk():
-    mock_controller = Mock()
-    setting_path_name = "settings.test_value"
-    new_value = "New value"
-    old_value = "Old value"
-
-    mock_controller.get_settings.return_value = MockDataclass(old_value)
-
-    save_setting(controller=mock_controller, setting_path_name=setting_path_name, new_value=new_value)
-
-    assert mock_controller.save_settings.call_args[0][0].test_value == new_value
-
-
-def test_save_setting_saves_value_to_disk_from_a_nested_setting_structure():
-    mock_controller = Mock()
-    setting_path_name = "settings.another_nest.test_value"
-    new_value = "New value"
-    old_value = "Old value"
-
-    mock_controller.get_settings.return_value = MockSubDataclass(MockDataclass(old_value))
-
-    save_setting(controller=mock_controller, setting_path_name=setting_path_name, new_value=new_value)
-
-    assert mock_controller.save_settings.call_args[0][0].another_nest.test_value == new_value
 
 
 class TestToggleWidget:

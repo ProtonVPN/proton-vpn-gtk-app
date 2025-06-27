@@ -1,3 +1,12 @@
+version: 4.10.0rc4
+time: 2025/06/27 16:05
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: implement split tunneling front-end"
+---
 version: 4.10.0rc3
 time: 2025/06/17 10:59
 author: Alexandru Cheltuitor

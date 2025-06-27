@@ -87,15 +87,14 @@ class TestGeneralSettings:
 
 class TestTrayPinnedServersWidget:
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.get_setting")
-    def test_build_populates_entry_when_being_initialized(self, get_setting_mock):
-        get_setting_mock.return_value = ["PT", "CH"]
-        psw = TrayPinnedServersWidget(Mock(), Mock())
+    def test_build_populates_entry_when_being_initialized(self):
+        mock_controller = Mock(name="controller")
+        mock_controller.get_setting_attr.return_value = ["PT", "CH"]
+        psw = TrayPinnedServersWidget(mock_controller, Mock())
 
         assert psw.entry.get_text() == "PT, CH"
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.save_setting")
-    def test_save_setting_when_invoking_callback(self, save_setting_mock):
+    def test_save_setting_when_invoking_callback(self):
         with patch.object(EntryWidget, '__init__', return_value=None) as mock_parent_init:
             tray_indicator_mock = Mock()
             controller_mock = Mock()
@@ -109,7 +108,7 @@ class TestTrayPinnedServersWidget:
             callback = mock_parent_init.call_args[1]["callback"]
             callback(gtk_entry_mock, None, None)
 
-            save_setting_mock.assert_called_once_with(
-                controller_mock, psw.SETTING_NAME, expected_format_when_passed_to_save_setting
+            controller_mock.save_setting_attr.assert_called_once_with(
+                psw.SETTING_NAME, expected_format_when_passed_to_save_setting
             )
             tray_indicator_mock.reload_pinned_servers.assert_called_once()

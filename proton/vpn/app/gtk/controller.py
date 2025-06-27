@@ -51,6 +51,7 @@ from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnu
 logger = logging.getLogger(__name__)
 
 WIREGUARD_PROTOCOL = "wireguard"
+DOT = "."  # pylint: disable=invalid-name
 
 
 class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-attributes
@@ -358,6 +359,56 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             glib.bubble_up_errors(future)
 
         return future
+
+    def get_setting_attr(self, setting_path_name: str) -> object:
+        """Helper method to get the settings.
+
+        In this case the setting_path_name can be a multi-layered setting, for example
+        the kill switch can be access via `settings.killswtich` while netshield can be accessed
+        via `settings.features.netshield`. Since this method tries to abstract the depth,
+        we'll be searching based on the hierarchy, example:
+
+        ```
+        setting_path_name = "settings.features.netshield"
+        setting_type = "settings"
+
+        # The below will become ["features", "netshield"]
+        setting_attrs_split = "features.netshield".split(".")
+        ```
+        So the for loop will loop for each attribute and attempt to get it from the original
+        settings object, thus solving the nesting situation.
+
+        Args:
+            setting_path_name (str):
+
+        Returns:
+            object:
+        """
+        setting_type, setting_attrs = setting_path_name.split(DOT, maxsplit=1)
+        settings = getattr(self, f"get_{setting_type}")()
+        setting_attrs_split = setting_attrs.split(DOT)
+
+        for attr in setting_attrs_split:
+            settings = getattr(settings, attr)
+
+        return settings
+
+    def save_setting_attr(self, setting_path_name: str, new_value: object):
+        """Helper method to save the settings."""
+        def set_setting(root, attr, value):
+            if attr.count(DOT) == 0:
+                setattr(root, attr, value)
+            else:
+                name, path = attr.split(DOT, maxsplit=1)
+                set_setting(getattr(root, name), path, value)
+
+        setting_type, setting_attrs = setting_path_name.split(DOT, maxsplit=1)
+
+        save_settings_method = getattr(self, f"save_{setting_type}")
+        settings = getattr(self, f"get_{setting_type}")()
+        set_setting(settings, setting_attrs, new_value)
+
+        save_settings_method(settings)
 
     def get_available_protocols(self) -> Optional[str]:
         """Returns an alphabetically sorted list of available protocol to use."""

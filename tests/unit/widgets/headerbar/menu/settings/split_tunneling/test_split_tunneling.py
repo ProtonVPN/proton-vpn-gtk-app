@@ -15,13 +15,10 @@ def mock_controller():
     return mock
 
 
-@patch(target="proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.split_tunneling.SplitTunnelingToggle.attach", autospec=True, name="mock_attach")
-def test_build_revealer_is_hides_app_list_when_setting_is_disabled(_, mock_controller,):
-    mock_settings_container = Mock(name="settings_container")
+def test_build_revealer_is_hides_app_list_when_setting_is_disabled(mock_controller):
 
     st = SplitTunnelingToggle(
         controller=mock_controller,
-        settings_container=mock_settings_container,
         setting_name="test.setting",
         enabled=False,
     )

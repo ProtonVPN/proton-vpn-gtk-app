@@ -19,6 +19,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 from typing import Union
 import shutil
+import html
 
 
 from gi.repository import Gio
@@ -109,7 +110,7 @@ def _get_all_installed_apps() -> list[AppData]:
                 icon = received_icon.get_names()[0]
 
         app_list.append(AppData(
-            name=app.get_display_name(),
+            name=html.escape(app.get_display_name()),
             executable=executable,
             icon_name=icon,
             native=native

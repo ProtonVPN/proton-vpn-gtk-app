@@ -88,10 +88,6 @@ class AppSelectionWindow(Gtk.Window):
     def _build_ui(self, _: Gtk.Window):
         for app_data in self._installed_apps:
 
-            # Probably flatpak/snap or some other non-native app
-            if not app_data.native:
-                continue
-
             self.content_container.add(
                 AppRowWithCheckbox.build(
                     app_data=app_data,

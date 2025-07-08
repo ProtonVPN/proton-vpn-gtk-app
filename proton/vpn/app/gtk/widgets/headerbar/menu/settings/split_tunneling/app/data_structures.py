@@ -21,7 +21,7 @@ from typing import Union
 
 from dataclasses import dataclass, asdict
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GdkPixbuf
 
 
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
@@ -62,7 +62,7 @@ class AppData:  # pylint: disable=missing-class-docstring
         )
 
 
-def get_icon(img_path: str, gtk: Gtk = Gtk) -> Gtk.Image:
+def get_icon(img_path: Union[str, None], gtk: Gtk = Gtk) -> Gtk.Image:
     """Returns a Gtk.Image based either on the app path image or else
     uses a default one.
 
@@ -73,6 +73,15 @@ def get_icon(img_path: str, gtk: Gtk = Gtk) -> Gtk.Image:
     Returns:
         Gtk.Image
     """
+    # If it starts with / then we've received a path to an image
+    if img_path and img_path.startswith("/"):
+        return gtk.Image.new_from_pixbuf(
+            GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                filename=img_path, width=16, height=-1,
+                preserve_aspect_ratio=True
+            )
+        )
+
     return gtk.Image.new_from_icon_name(img_path, gtk.IconSize.MENU) \
         if img_path \
         else gtk.Image.new_from_pixbuf(icons.get("no-app-icon.svg"))

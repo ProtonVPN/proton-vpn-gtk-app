@@ -117,7 +117,15 @@ label.signal-danger {
 }
 
 #split-tunneling-app-selection-window viewport {
-    margin: 30px 0px 30px 30px;
+    padding: 30px 0px 30px 25px;
+}
+
+#split-tunneling-app-selection-window viewport > box {
+    margin: 0px 0px 0px 5px;
+}
+
+#split-tunneling-app-selection-window #split-tunneling-app-done-button {
+    margin: 15px 30px 30px
 }
 
 #split-tunneling-app-based-settings {
@@ -128,9 +136,6 @@ label.signal-danger {
     margin: 15px 10px 5px 10px;
 }
 
-#split-tunneling-app-selection-window #split-tunneling-app-done-button {
-    margin: 15px 30px 30px
-}
 
 #selected-app-list {
     padding: 12px 16px 12px 16px;

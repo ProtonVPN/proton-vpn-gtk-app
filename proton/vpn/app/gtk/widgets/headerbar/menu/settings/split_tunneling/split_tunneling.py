@@ -112,7 +112,7 @@ class SplitTunnelingToggle(ToggleWidget):
             setting_name=setting_name,
             description="Prevent traffic from going through VPN",
             callback=callback or self._on_switch_button_toggle,
-            requires_subscription_to_be_active=False,
+            requires_subscription_to_be_active=True,
             enabled=enabled
         )
         self._controller = controller

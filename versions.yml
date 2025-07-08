@@ -1,3 +1,12 @@
+version: 4.10.0rc6
+time: 2025/07/08 10:03
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: ensure st is only allowed for paid users"
+---
 version: 4.10.0rc5
 time: 2025/07/04 10:26
 author: Alexandru Cheltuitor

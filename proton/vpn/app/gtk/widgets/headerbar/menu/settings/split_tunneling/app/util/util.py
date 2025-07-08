@@ -116,4 +116,4 @@ def _get_all_installed_apps() -> list[AppData]:
             native=native
         ))
 
-    return app_list
+    return sorted(app_list, key=lambda app: app.name)

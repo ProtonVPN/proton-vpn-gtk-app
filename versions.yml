@@ -1,3 +1,12 @@
+version: 4.10.0rc8
+time: 2025/07/08 16:14
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: properly display all app icons"
+---
 version: 4.10.0rc7
 time: 2025/07/08 12:09
 author: Alexandru Cheltuitor

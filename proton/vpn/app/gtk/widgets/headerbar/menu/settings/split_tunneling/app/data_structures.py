@@ -21,12 +21,15 @@ from typing import Union
 
 from dataclasses import dataclass, asdict
 
-from gi.repository import Gtk, GObject, GdkPixbuf
+from gi.repository import Gtk, GObject, GdkPixbuf, GLib
 
 
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
     SettingName
 from proton.vpn.app.gtk.assets import icons
+
+
+ICON_SIZE_IN_PX = 16
 
 
 @dataclass(eq=True, frozen=True)
@@ -62,6 +65,10 @@ class AppData:  # pylint: disable=missing-class-docstring
         )
 
 
+def _get_missing_icon_pixbuff() -> GdkPixbuf.Pixbuf:
+    return icons.get("no-app-icon.svg")
+
+
 def get_icon(img_path: Union[str, None], gtk: Gtk = Gtk) -> Gtk.Image:
     """Returns a Gtk.Image based either on the app path image or else
     uses a default one.
@@ -74,17 +81,32 @@ def get_icon(img_path: Union[str, None], gtk: Gtk = Gtk) -> Gtk.Image:
         Gtk.Image
     """
     # If it starts with / then we've received a path to an image
-    if img_path and img_path.startswith("/"):
-        return gtk.Image.new_from_pixbuf(
-            GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                filename=img_path, width=16, height=-1,
-                preserve_aspect_ratio=True
-            )
-        )
+    pixbuff = None
 
-    return gtk.Image.new_from_icon_name(img_path, gtk.IconSize.MENU) \
-        if img_path \
-        else gtk.Image.new_from_pixbuf(icons.get("no-app-icon.svg"))
+    if not img_path:
+        pixbuff = _get_missing_icon_pixbuff()
+    elif img_path.startswith("/"):
+        pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename=img_path,
+            width=ICON_SIZE_IN_PX,
+            height=-1,
+            preserve_aspect_ratio=True
+        )
+    else:
+        theme = Gtk.IconTheme.get_default()
+        try:
+            # This can still return None if the object is not found
+            pixbuff = theme.load_icon(img_path, ICON_SIZE_IN_PX, Gtk.IconLookupFlags.FORCE_SIZE)
+
+        # We don't want to crash if for some reason it's impossible to load the icon.
+        # Since it's not a full filepath we can not either check if it exists or not.
+        except GLib.Error:
+            pass
+
+    if not pixbuff:
+        pixbuff = _get_missing_icon_pixbuff()
+
+    return gtk.Image.new_from_pixbuf(pixbuff)
 
 
 class AppRowWithCheckbox(Gtk.Grid):

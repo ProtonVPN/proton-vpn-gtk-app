@@ -16,17 +16,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Union
+from typing import Callable, Any
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
+from proton.vpn.connection.enum import KillSwitchSetting\
+    as KillSwitchSettingEnum
 
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import ToggleWidget, EntryWidget, \
-    SettingDescription, SettingName
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common\
+    import ConflictableToggleWidget, SettingDescription, SettingName
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
+    ReactiveSetting
+)
 
-class KillSwitchWidget(ToggleWidget):  # noqa pylint: disable=too-many-instance-attributes,too-few-public-methods
+class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Kill switch setting widget.
 
     Since the kill switch can have multiple modes, we need to have a proper
@@ -43,14 +47,17 @@ class KillSwitchWidget(ToggleWidget):  # noqa pylint: disable=too-many-instance-
         "Advanced kill switch will remain active even when you restart your device."
     SETTING_NAME = "settings.killswitch"
 
-    def __init__(self, controller: Controller, gtk: Gtk = None):
+    def __init__(self, controller: Controller, gtk: Gtk = None,
+                 conflict_resolver: Callable[[str, Any], str] = None):
         super().__init__(
             controller=controller,
             title=self.KILLSWITCH_LABEL,
             description=self.KILLSWITCH_DESCRIPTION,
             setting_name=self.SETTING_NAME,
-            callback=self._on_switch_button_toggle,
-            disable_on_active_connection=True
+            do_set=self._do_set,
+            do_revert=self._do_revert,
+            disable_on_active_connection=True,
+            conflict_resolver=conflict_resolver,
         )
 
         self.gtk = gtk or Gtk
@@ -133,49 +140,38 @@ class KillSwitchWidget(ToggleWidget):  # noqa pylint: disable=too-many-instance-
             return
 
         if radio_button.get_active():
-            self._update(new_value, False)
+            self.save_setting(new_value)
 
-    def _on_switch_button_toggle(self, _, new_value: bool, __):
-        self._update(int(new_value), True)
+    def _do_set(self, _toggle, new_value: bool):
+        self.save_setting(int(new_value))
+        self.revealer.set_reveal_child(new_value)
 
-    def _update(self, value: int, new_value_comes_from_main_switch: bool):
-        self.save_setting(value)
-        self.revealer.set_reveal_child(value > KillSwitchSettingEnum.OFF)
+        self.standard_radio_button.set_active(True)
 
-        if new_value_comes_from_main_switch:
+    def _do_revert(self, _toggle):
+        self.switch.set_active(False)
+
+    def get_killswitch_state(self) -> KillSwitchSettingEnum:
+        """Returns the current kill switch state."""
+        if self.switch.get_active():
+            if self.standard_radio_button.get_active():
+                return KillSwitchSettingEnum.ON
+            if self.advanced_radio_button.get_active():
+                return KillSwitchSettingEnum.PERMANENT
+        return KillSwitchSettingEnum.OFF
+
+    def set_killswitch_state(self, state: KillSwitchSettingEnum):
+        """Returns the current kill switch state."""
+
+        if state == KillSwitchSettingEnum.ON:
+            self.switch.set_active(True)
             self.standard_radio_button.set_active(True)
+        elif state == KillSwitchSettingEnum.PERMANENT:
+            self.switch.set_active(True)
+            self.advanced_radio_button.set_active(True)
+        else:
+            self.switch.set_active(False)
 
-
-class SplitTunnelingWidget(EntryWidget):
-    """Contains the split tunneling widget.
-    """
-    def __init__(self, controller):
-        super().__init__(
-            controller,
-            "Split Tunneling",
-            "settings.features.split_tunneling.app_paths",
-            "Prevent traffic from going through VPN"
-        )
-
-    def _on_focus_out_callback(self, entry_widget: Gtk.Entry, _: Gdk.EventFocus):
-        app_paths = []
-        for app_path in entry_widget.get_text().split(","):
-            app_paths.append(app_path.strip())
-
-        self.save_setting(app_paths)
-
-    def _build_entry(self) -> Gtk.Entry:
-        entry = Gtk.Entry()
-        value = self._get_setting()
-        if value is None:
-            value = ""
-
-        entry.set_text(str(value))
-        entry.connect("focus-out-event", self._on_focus_out_callback)
-
-        return entry
-
-    def _get_setting(self) -> Union[str, list[str]]:
-        """Shortcut property that returns the current setting"""
-        app_paths = super().get_setting()
-        return ', '.join(app_paths)
+    def on_settings_changed(self, settings):
+        if self.get_killswitch_state() != settings.killswitch:
+            self.set_killswitch_state(settings.killswitch)

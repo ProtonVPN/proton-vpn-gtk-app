@@ -17,9 +17,8 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import pytest
-from unittest.mock import Mock, PropertyMock, patch, MagicMock
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings import ConnectionSettings, ToggleWidget, ComboboxWidget
+from unittest.mock import Mock, patch
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.connection_settings import ConnectionSettings
 
 
 FREE_TIER = 0

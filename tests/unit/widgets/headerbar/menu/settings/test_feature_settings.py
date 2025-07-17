@@ -114,28 +114,25 @@ class TestKillSwitchWidget:
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.get_setting")
     def test_save_setting_when_switching_killswitch_from_disabled_to_enabled_and_revealer_is_shown(self, get_setting_mock, save_setting_mock, _):
-        with patch.object(ToggleWidget, '__init__', return_value=None) as mock_parent_init:
-            simulate_toggled_switch = True
-            mock_gtk = Mock()
-            mock_standard_radio_button = Mock()
-            mock_advanced_radio_button = Mock()
-            mock_revelear = Mock()
-            mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_standard_radio_button]
-            mock_gtk.Revealer.return_value = mock_revelear
-            get_setting_mock.return_value = KillSwitchSettingEnum.OFF
+        mock_gtk = Mock()
+        mock_standard_radio_button = Mock()
+        mock_advanced_radio_button = Mock()
+        mock_revelear = Mock()
+        mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_standard_radio_button]
+        mock_gtk.Revealer.return_value = mock_revelear
+        get_setting_mock.return_value = KillSwitchSettingEnum.OFF
 
-            ks = KillSwitchWidget(Mock(), gtk=mock_gtk)
-            ks.build_revealer()
+        ks = KillSwitchWidget(Mock(), gtk=mock_gtk)
+        ks.build_revealer()
 
-            mock_standard_radio_button.reset_mock()
-            mock_revelear.reset_mock()
+        mock_standard_radio_button.reset_mock()
+        mock_revelear.reset_mock()
 
-            callback = mock_parent_init.call_args[1]["callback"]
-            callback(None, True, simulate_toggled_switch)
+        ks.do_set(None, True)
 
-            save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.ON.value)
-            mock_revelear.set_reveal_child.assert_called_once_with(True)
-            mock_standard_radio_button.set_active.assert_called_once_with(True)
+        save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.ON.value)
+        mock_revelear.set_reveal_child.assert_called_once_with(True)
+        mock_standard_radio_button.set_active.assert_called_once_with(True)
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.KillSwitchWidget.attach")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
@@ -169,28 +166,29 @@ class TestKillSwitchWidget:
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.get_setting")
     def test_save_setting_when_switching_killswitch_from_permanent_to_disabled_and_revealer_is_hidden(self, get_setting_mock, save_setting_mock, _):
-        with patch.object(ToggleWidget, '__init__', return_value=None) as mock_parent_init:
-            simulate_toggled_switch = True
-            mock_gtk = Mock()
-            mock_standard_radio_button = Mock()
-            mock_advanced_radio_button = Mock()
-            mock_revelear = Mock()
-            mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_advanced_radio_button]
-            mock_gtk.Revealer.return_value = mock_revelear
-            get_setting_mock.return_value = KillSwitchSettingEnum.PERMANENT
 
-            ks = KillSwitchWidget(Mock(), gtk=mock_gtk)
-            ks.build_revealer()
+        mock_gtk = Mock()
+        mock_standard_radio_button = Mock()
+        mock_advanced_radio_button = Mock()
+        mock_revelear = Mock()
+        mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_advanced_radio_button]
+        mock_gtk.Revealer.return_value = mock_revelear
+        get_setting_mock.return_value = KillSwitchSettingEnum.PERMANENT
 
-            mock_revelear.reset_mock()
-            mock_standard_radio_button.reset_mock()
+        ks = KillSwitchWidget(
+            Mock(),
+            gtk=mock_gtk,
+            conflict_resolver=lambda setting_name, value: "")
+        ks.build_revealer()
 
-            callback = mock_parent_init.call_args[1]["callback"]
-            callback(None, False, simulate_toggled_switch)
+        mock_revelear.reset_mock()
+        mock_standard_radio_button.reset_mock()
 
-            save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.OFF.value)
-            mock_revelear.set_reveal_child.assert_called_once_with(False)
-            mock_standard_radio_button.set_active.assert_called_once_with(True)
+        ks.do_set(None, False)
+
+        save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.OFF.value)
+        mock_revelear.set_reveal_child.assert_called_once_with(False)
+        mock_standard_radio_button.set_active.assert_called_once_with(True)
 
 
 class TestNetshield:

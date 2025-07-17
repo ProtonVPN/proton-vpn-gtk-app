@@ -43,11 +43,13 @@ def test_build_revealer_shows_app_list_when_setting_is_enabled(mock_controller):
 
 
 def test_toggle_enabled_revealer_reveals_app_list(mock_controller):
+
     st = SplitTunnelingToggle(
         controller=mock_controller,
         settings_container=None,
         setting_name="test.setting",
         enabled=False,
+        conflict_resolver=lambda setting_name, value: ""
     )
 
     st.build_revealer()
@@ -66,6 +68,7 @@ def test_toggle_disable_revealer_hides_app_list(mock_controller):
         settings_container=None,
         setting_name=setting_name,
         enabled=True,
+        conflict_resolver=lambda setting_name, value: ""
     )
 
     st.build_revealer()

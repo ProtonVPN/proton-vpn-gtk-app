@@ -20,7 +20,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Union
+from typing import Union, Callable
 from gi.repository import Pango
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
@@ -62,3 +62,40 @@ class ConfirmationDialog(Gtk.Dialog):
         self.vbox.set_spacing(20)  # pylint: disable=no-member
         self.vbox.add(widget)  # pylint: disable=no-member
         self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
+
+
+def show_confirmation_dialog(  # pylint: disable=too-many-arguments
+        parent: Gtk.Widget,
+        title: str,
+        question: str,
+        clarification: str,
+        yes_text: str,
+        no_text: str,
+        callback_result: Callable[[ConfirmationDialog, int], None]):
+    """
+    Shows a confirmation dialog with a question and a clarification.
+    """
+    container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+    container.set_spacing(10)
+
+    question_label = Gtk.Label(label=question)
+    question_label.set_halign(Gtk.Align.START)
+
+    clarification_label = Gtk.Label(label=clarification)
+    clarification_label.set_halign(Gtk.Align.START)
+    clarification_label.get_style_context().add_class("dim-label")
+
+    container.pack_start(question_label, False, False, 0)
+    container.pack_start(clarification_label, False, False, 0)
+
+    dialog = ConfirmationDialog(
+        message=container,
+        title=title,
+        yes_text=yes_text,
+        no_text=no_text
+    )
+    dialog.set_default_size(400, 200)
+    dialog.set_modal(True)
+    dialog.set_transient_for(parent)
+    dialog.connect("response", callback_result)
+    dialog.show()

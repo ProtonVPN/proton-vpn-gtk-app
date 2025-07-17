@@ -27,6 +27,7 @@ from proton.vpn.core.settings import NetShield
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, ComboboxWidget, ToggleWidget,
+    ReactiveSettingContainer
 )
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import CustomDNSWidget
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.kill_switch import KillSwitchWidget
@@ -37,7 +38,7 @@ if TYPE_CHECKING:
         SettingsWindow
 
 
-class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
+class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa: E501 # pylint: disable=line-too-long, too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
     CATEGORY_NAME = "Features"
     NETSHIELD_LABEL = "NetShield"
@@ -105,8 +106,8 @@ class FeatureSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     def build_killswitch(self):
         """Builds and adds the `killswitch` setting to the widget."""
-        killswitch = KillSwitchWidget.build(self._controller)
-        self.pack_start(killswitch, False, False, 0)
+        self.pack_start(
+            KillSwitchWidget.build(self._controller), False, False, 0)
 
     def build_port_forwarding(self):
         """Builds and adds the `port_forwarding` setting to the widget."""

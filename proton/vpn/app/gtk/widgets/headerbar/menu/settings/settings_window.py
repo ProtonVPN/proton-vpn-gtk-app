@@ -78,6 +78,16 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
 
         self.connect("realize", self._build_ui)
 
+        self._controller.settings_watchers.add(self._on_settings_changed)
+        self.connect("destroy", self._on_destroy)
+
+    def _on_settings_changed(self, settings):
+        self._connection_settings.on_settings_changed(settings)
+        self._feature_settings.on_settings_changed(settings)
+
+    def _on_destroy(self, _widget):
+        self._controller.settings_watchers.remove(self._on_settings_changed)
+
     def _build_ui(self, *_):
         self._account_settings.build_ui()
         self._connection_settings.build_ui()

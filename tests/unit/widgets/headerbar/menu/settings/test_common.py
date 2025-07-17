@@ -124,10 +124,10 @@ class TestToggleWidget:
             controller=Mock(),
             title=self.DEFAULT_TITLE,
             description=self.DEFAULT_DESCRIPTION,
-            setting_name=self.DEFAULT_SETTING_NAME,
+            setting_name=self.DEFAULT_SETTING_NAME
         )
 
-        tw.switch.emit("state-set", bool_val)
+        tw._on_switch_state(tw.switch, None)
 
         save_setting_mock.assert_called_once_with(bool_val)
 
@@ -145,7 +145,7 @@ class TestToggleWidget:
             callback=test_callback
         )
 
-        tw.switch.emit("state-set", control_bool_val)
+        tw.switch.set_active(control_bool_val)
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.ToggleWidget.save_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.ToggleWidget.get_setting")

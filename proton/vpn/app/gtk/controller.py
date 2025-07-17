@@ -21,7 +21,7 @@ import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import Future
 from importlib import metadata
 from types import TracebackType
-from typing import Optional, Type, Callable, Union
+from typing import Optional, Type, Callable, Union, Tuple
 
 from gi.repository import GLib
 from proton.vpn.session import ServerList
@@ -33,24 +33,27 @@ from proton.vpn.core.api import ProtonVPNAPI, VPNAccount
 from proton.vpn.core.session_holder import ClientTypeMetadata
 from proton.vpn.core.connection import VPNConnector
 from proton.vpn.core.cache_handler import CacheHandler
+from proton.vpn.core.settings import Settings
 from proton.vpn.session.servers import LogicalServer
 from proton.vpn.session.session import FeatureFlags
+
+from proton.vpn.connection.enum import KillSwitchSetting as\
+    KillSwitchSettingEnum
 
 from proton.vpn.app.gtk.services import VPNReconnector
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
-from proton.vpn.core.settings import Settings
+from proton.vpn.app.gtk.settings_watchers import SettingsWatchers
 from proton.vpn.app.gtk.utils import semver, glib
 from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
-from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnum
+from proton.vpn.app.gtk.conflicts import Conflicts, Conflict
 
 logger = logging.getLogger(__name__)
 
-WIREGUARD_PROTOCOL = "wireguard"
 DOT = "."  # pylint: disable=invalid-name
 
 
@@ -90,6 +93,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
         self._app_config = app_config
         self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
+        self._settings_watchers = SettingsWatchers()
 
     async def initialize_vpn_connector(self):
         """
@@ -142,6 +146,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     def user_tier(self):
         """Returns user tier."""
         return self._api.user_tier
+
+    @property
+    def settings_watchers(self):
+        """Returns a registry for settings changed callbacks."""
+        return self._settings_watchers
 
     def run_startup_actions(self, _):
         """Runs any startup actions that are necessary once the app has loaded."""
@@ -347,7 +356,6 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         if necessary.
         """
         async def save(settings):
-            # Save the settings to disk
             await self._api.save_settings(settings)
 
         future = self.executor.submit(
@@ -355,10 +363,59 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             settings
         )
 
+        future.add_done_callback(
+            lambda f: GLib.idle_add(self._settings_watchers.notify, settings)
+        )
+
         if bubble_up_errors:
             glib.bubble_up_errors(future)
 
         return future
+
+    def resolve_settings_type(self, setting_path_name: str) -> Tuple[str,
+                                                                     str,
+                                                                     Callable,
+                                                                     Callable]:
+        """
+        Resolves the type of the setting based on the setting path name.
+        :param setting_path_name: The path name of the setting.
+        :return: A tuple containing the setting type, setting attributes,
+        and the methods to get and save the settings.
+        """
+        setting_type, setting_attrs = setting_path_name.split(DOT, maxsplit=1)
+        if setting_type == "settings":
+            return (
+                setting_type,
+                setting_attrs,
+                self.get_settings,
+                self.save_settings
+            )
+        if setting_type == "app_configuration":
+            return (
+                setting_type,
+                setting_attrs,
+                self.get_app_configuration,
+                self.save_app_configuration
+            )
+
+        raise ValueError(
+            f"Unknown setting type: {setting_type}. "
+            "Expected 'settings' or 'app_config'."
+        )
+
+    def setting_attr_has_conflict(self, setting_path_name: str,
+                                  new_value: object) -> Optional[Conflict]:
+        """
+        Checks if the setting can be changed without conflicts.
+        Returns a string with the conflicts if there are any, otherwise returns
+        an empty string.
+        """
+
+        setting_type, setting_attrs, get_settings, _ =\
+            self.resolve_settings_type(setting_path_name)
+
+        return Conflicts.detect(setting_type, setting_attrs, new_value,
+                                get_settings())
 
     def get_setting_attr(self, setting_path_name: str) -> object:
         """Helper method to get the settings.
@@ -384,11 +441,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         Returns:
             object:
         """
-        setting_type, setting_attrs = setting_path_name.split(DOT, maxsplit=1)
-        settings = getattr(self, f"get_{setting_type}")()
-        setting_attrs_split = setting_attrs.split(DOT)
+        _, setting_attrs, get_settings, _ =\
+            self.resolve_settings_type(setting_path_name)
 
-        for attr in setting_attrs_split:
+        settings = get_settings()
+        for attr in setting_attrs.split(DOT):
             settings = getattr(settings, attr)
 
         return settings
@@ -402,13 +459,15 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
                 name, path = attr.split(DOT, maxsplit=1)
                 set_setting(getattr(root, name), path, value)
 
-        setting_type, setting_attrs = setting_path_name.split(DOT, maxsplit=1)
+        setting_type, setting_attrs, get_settings, save_settings =\
+            self.resolve_settings_type(setting_path_name)
 
-        save_settings_method = getattr(self, f"save_{setting_type}")
-        settings = getattr(self, f"get_{setting_type}")()
+        settings = get_settings()
+
         set_setting(settings, setting_attrs, new_value)
 
-        save_settings_method(settings)
+        save_settings(Conflicts.resolve(setting_type, setting_attrs, new_value,
+                                        settings))
 
     def get_available_protocols(self) -> Optional[str]:
         """Returns an alphabetically sorted list of available protocol to use."""

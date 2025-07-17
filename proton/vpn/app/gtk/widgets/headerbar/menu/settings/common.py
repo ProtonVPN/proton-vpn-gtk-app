@@ -19,9 +19,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, Any
 from gi.repository import Gtk, Gdk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.widgets.main.confirmation_dialog \
+    import ConfirmationDialog, show_confirmation_dialog
 
 
 RECONNECT_MESSAGE = "Please establish a new VPN connection for "\
@@ -36,6 +38,32 @@ class CategoryHeader(Gtk.Label):
         self.set_halign(Gtk.Align.START)
         style_context = self.get_style_context()
         style_context.add_class("heading")
+
+
+class ReactiveSetting:  # pylint: disable=too-few-public-methods
+    """Base class for reactive settings that need to be updated when settings change."""
+    def on_settings_changed(self, _settings):
+        """Method that is called when settings are changed.
+        This is used to update the widget when settings change."""
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+
+class ReactiveSettingContainer:  # pylint: disable=too-few-public-methods
+    """Base class for containers that hold reactive settings."""
+    def get_children(self):
+        """Returns the children of this container, normally implemented by
+        the Gtk.Container class, it must be implemented in order
+        for this class to work."""
+
+        raise NotImplementedError(
+            "This method should be implemented.")
+
+    def on_settings_changed(self, settings):
+        """Method that is called when settings are changed.
+        This is used to update the widget when settings change."""
+        for child in self.get_children():
+            if isinstance(child, ReactiveSetting):
+                child.on_settings_changed(settings)
 
 
 class BaseCategoryContainer(Gtk.Box):
@@ -235,10 +263,8 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
             self._enabled = self.get_setting()
         switch.set_state(self._enabled)
 
-        if self._callback:
-            switch.connect("state-set", self._callback, self)
-        else:
-            switch.connect("state-set", self._on_switch_state)
+        switch.connect("notify::active", self._on_switch_state)
+
         return switch
 
     def _build_ui(self):
@@ -261,8 +287,12 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
                 and self._disable_on_active_connection):
             self.active = False
 
-    def _on_switch_state(self, _, new_value: bool):
-        self.save_setting(new_value)
+    def _on_switch_state(self, switch, _gparam):
+        new_value = switch.get_state()
+        if self._callback:
+            self._callback(self, new_value, self)
+        else:
+            self.save_setting(new_value)
 
     @property
     def _is_upgrade_required(self) -> bool:
@@ -275,6 +305,81 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
     def off(self):
         """Shortcut to toggle the widget to disabled."""
         self.switch.set_state(False)
+
+
+class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instance-attributes
+    """
+    Toggle widget that can handle conflicts when toggling the switch.
+    It will show a confirmation dialog if the toggle is in conflict with
+    other settings.
+    """
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        controller: Controller,
+        title: str,
+        description: str,
+        setting_name: str,
+        do_set: Callable[[ToggleWidget, bool], None],
+        do_revert: Callable[[ToggleWidget], None],
+        requires_subscription: bool = False,
+        disable_on_active_connection: bool = False,
+        enabled: bool = None,
+        conflict_resolver: Callable[[str, Any], str] = None,
+    ):
+        super().__init__(
+            controller=controller, title=title,
+            description=description, setting_name=setting_name,
+            requires_subscription_to_be_active=requires_subscription,
+            callback=self._on_switch_button_toggle,
+            disable_on_active_connection=disable_on_active_connection,
+            enabled=enabled)
+        self.do_set = do_set
+        self.do_revert = do_revert
+
+        # Allow to pass a custom conflict resolver
+        if conflict_resolver is None:
+            conflict_resolver = controller.setting_attr_has_conflict
+        self._conflict_resolver = conflict_resolver
+
+    def _on_switch_button_toggle(self, _, new_value: bool, __):
+
+        if conflict := self._conflict_resolver(self._setting_name, new_value):
+
+            def confirm_change(dialog: ConfirmationDialog, response: int):
+                if response == Gtk.ResponseType.YES:
+                    # do_set can be any callable that takes
+                    # (ToggleWidget, int) as arguments so although it looks
+                    # like we are calling a method on self, we are actually
+                    # calling the method that was passed to the constructor.
+                    # This allows for instantiating this class with different
+                    # do_set and do_revert methods without having to
+                    # subclass it.
+                    #
+                    # We are passing `self` as the first argument
+                    # because the do_set method expects a ToggleWidget.
+                    self.do_set(self, new_value)
+                else:
+                    # Similarly to above, we are calling the
+                    # do_revert method that was passed to the constructor,
+                    # it's not a method of this class.
+                    # This is why we are passing `self` as the first argument.
+                    self.do_revert(self)
+
+                # We cant just close the dialog, instead we destroy it
+                # directly.
+                dialog.destroy()
+
+            show_confirmation_dialog(
+                self.get_toplevel(),
+                title="",
+                question=conflict.label,
+                clarification=conflict.description,
+                yes_text="_Yes",
+                no_text="_Cancel",
+                callback_result=confirm_change
+            )
+        else:
+            self.do_set(self, new_value)
 
 
 class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
@@ -390,6 +495,78 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
     def off(self):
         """Shortcut to set the combobox to disabled."""
         self.combobox.set_active_id(str(0))
+
+
+class ConflictableComboboxWidget(ComboboxWidget):
+    """
+    Combobox widget that can handle conflicts when changing the combobox value.
+    It will show a confirmation dialog if the combobox change is in conflict with
+    other settings.
+    """
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        controller: Controller,
+        title: str,
+        setting_name: str,
+        combobox_options: List[Tuple[int, str]],
+        do_set: Callable[[ComboboxWidget, int], None],
+        do_revert: Callable[[ComboboxWidget], None],
+        description: str = None,
+        requires_subscription: bool = False,
+        disable_on_active_connection: bool = False
+    ):
+        super().__init__(
+            controller=controller, title=title, setting_name=setting_name,
+            combobox_options=combobox_options, description=description,
+            requires_subscription_to_be_active=requires_subscription,
+            callback=self._on_conflictable_combobox_change,
+            disable_on_active_connection=disable_on_active_connection
+        )
+        self._do_set = do_set
+        self._do_revert = do_revert
+
+    def _on_conflictable_combobox_change(
+            self, combobox_text_widget, _combobox: Gtk.ComboBox):
+        new_value = combobox_text_widget.get_active_text()
+
+        if conflict := self._controller.setting_attr_has_conflict(
+                self._setting_name, new_value):
+
+            def confirm_change(dialog: ConfirmationDialog, response: int):
+                if response == Gtk.ResponseType.YES:
+                    # do_set can be any callable that takes
+                    # (ComboboxWidget, int) as arguments so although it looks
+                    # like we are calling a method on self, we are actually
+                    # calling the method that was passed to the constructor.
+                    # This allows for instantiating this class with different
+                    # do_set and do_revert methods without having to
+                    # subclass it.
+                    #
+                    # We are passing `self` as the first argument
+                    # because the do_set method expects a ComboboxWidget.
+                    self._do_set(self, new_value)
+                else:
+                    # Similarly to above, we are calling the
+                    # do_revert method that was passed to the constructor,
+                    # it's not a method of this class.
+                    # This is why we are passing `self` as the first argument.
+                    self._do_revert(self)
+
+                # We cant just close the dialog, instead we destroy it
+                # directly.
+                dialog.destroy()
+
+            show_confirmation_dialog(
+                self.get_toplevel(),
+                title="",
+                question=conflict.label,
+                clarification=conflict.description,
+                yes_text="_Yes",
+                no_text="_Cancel",
+                callback_result=confirm_change
+            )
+        else:
+            self._do_set(self, new_value)
 
 
 class EntryWidget(Gtk.Grid):

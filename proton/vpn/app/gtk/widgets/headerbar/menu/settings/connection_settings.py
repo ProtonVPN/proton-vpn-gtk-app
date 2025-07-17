@@ -21,9 +21,12 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import TYPE_CHECKING
 
+from proton.vpn.app.gtk.conflicts import WIREGUARD_PROTOCOL
+
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    BaseCategoryContainer, ToggleWidget, ComboboxWidget
+    BaseCategoryContainer, ToggleWidget, ConflictableComboboxWidget,
+    ReactiveSettingContainer, ReactiveSetting
 )
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import CustomDNSWidget
 
@@ -32,7 +35,14 @@ if TYPE_CHECKING:
         SettingsWindow
 
 
-class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
+class ProtocolComboboxWidget(ConflictableComboboxWidget, ReactiveSetting):
+    """Combobox widget for selecting the VPN protocol."""
+    def on_settings_changed(self, settings):
+        if self.combobox.get_active_text() != settings.protocol:
+            self.combobox.set_active_id(settings.protocol)
+
+
+class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa: E501 # pylint: disable=line-too-long, too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
     CATEGORY_NAME = "Connection"
     PROTOCOL_LABEL = "Protocol"
@@ -73,14 +83,24 @@ class ConnectionSettings(BaseCategoryContainer):  # pylint: disable=too-many-ins
             for protocol in self._controller.get_available_protocols()
         ]
 
-        self.pack_start(ComboboxWidget(
+        def do_set(combobox, new_value: str):
+            combobox.save_setting(new_value)
+
+        def do_revert(combobox):
+            combobox.combobox.set_active_id(WIREGUARD_PROTOCOL)
+
+        self.pack_start(
+            ProtocolComboboxWidget(
                 controller=self._controller,
                 title=self.PROTOCOL_LABEL,
                 description=self.PROTOCOL_DESCRIPTION,
                 setting_name="settings.protocol",
                 combobox_options=protocol_list_of_tuples,
-                disable_on_active_connection=True
-        ), False, False, 0)
+                disable_on_active_connection=True,
+                do_set=do_set,
+                do_revert=do_revert
+            ),
+            False, False, 0)
 
     def build_vpn_accelerator(self):
         """Builds and adds the `vpn_accelerator` setting to the widget."""

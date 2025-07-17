@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-from typing import Callable
+from typing import Callable, Any
 
 
 from gi.repository import Gtk
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
-    ToggleWidget
+    ConflictableToggleWidget, ReactiveSetting
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app import \
     AppBasedSplitTunnelingSettings
 
@@ -94,7 +94,7 @@ class SplitTunnelingSettings(Gtk.Box):
         self._split_tunneling_ips.build()
 
 
-class SplitTunnelingToggle(ToggleWidget):
+class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
     """Contains the split tunneling widget.
     """
     def __init__(
@@ -102,18 +102,22 @@ class SplitTunnelingToggle(ToggleWidget):
             controller: Controller,
             settings_container: SplitTunnelingSettings = None,
             setting_name: str = "settings.features.split_tunneling.enabled",
-            callback: Callable = None,
+            do_set: Callable = None,
+            do_revert: Callable = None,
             enabled: bool = None,
-            gtk: Gtk = Gtk
+            gtk: Gtk = Gtk,
+            conflict_resolver: Callable[[str, Any], str] = None
     ):  # pylint: disable=too-many-arguments
         super().__init__(
             controller=controller,
             title="Split Tunneling",
             setting_name=setting_name,
             description="Prevent traffic from going through VPN",
-            callback=callback or self._on_switch_button_toggle,
-            requires_subscription_to_be_active=True,
-            enabled=enabled
+            do_set=do_set or self._do_set,
+            do_revert=do_revert or self._do_revert,
+            requires_subscription=True,
+            enabled=enabled,
+            conflict_resolver=conflict_resolver,
         )
         self._controller = controller
         self.gtk = gtk
@@ -144,7 +148,7 @@ class SplitTunnelingToggle(ToggleWidget):
         self._build_and_add_split_tunneling_settings()
         self.revealer.set_reveal_child(True)
 
-    def _on_switch_button_toggle(self, _, new_value: bool, __):
+    def _do_set(self, _toggle, new_value: bool):
         self.save_setting(new_value)
         self.revealer.set_reveal_child(new_value)
 
@@ -154,11 +158,19 @@ class SplitTunnelingToggle(ToggleWidget):
             self._build_and_add_split_tunneling_settings()
             self.show_all()
 
+    def _do_revert(self, _toggle):
+        self.switch.set_active(False)
+
     def _build_and_add_split_tunneling_settings(self):
         self._settings_container = SplitTunnelingSettings(
                 controller=self._controller, gtk=self.gtk
             )
         self.revealer.add(self._settings_container)
+
+    def on_settings_changed(self, settings):
+        split_tunneling = settings.features.split_tunneling
+        if self.switch.get_active() != split_tunneling.enabled:
+            self.switch.set_active(split_tunneling.enabled)
 
 
 class IpBasedSplitTunnelingSettings(Gtk.Box):

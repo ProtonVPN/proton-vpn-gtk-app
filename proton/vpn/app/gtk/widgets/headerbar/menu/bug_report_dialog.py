@@ -309,15 +309,15 @@ class LogCollector:  # pylint: disable=too-few-public-methods
         Generates and returns all available logs asynchronously.
         The future result is a List of file objects.
         """
-        logs_future = Future()
 
-        app_log = self._get_app_log()
-        nm_log_future = self._generate_network_manager_log()
-        nm_log_future.add_done_callback(
-            lambda f: logs_future.set_result([app_log, f.result()])
-        )
+        def _collect_logs():
+            return [
+                self._get_app_log(),
+                self._generate_network_manager_log(),
+                self._get_daemon_log()
+            ]
 
-        return logs_future
+        return self._executor.submit(_collect_logs)
 
     def _get_app_log(self) -> io.IOBase:
         """Get app log"""
@@ -328,24 +328,39 @@ class LogCollector:  # pylint: disable=too-few-public-methods
 
         raise RuntimeError("App logs not found.")
 
-    def _generate_network_manager_log(self) -> Future:
+    def _get_daemon_log(self) -> io.IOBase:
+        with NamedTemporaryFile(
+            prefix="SplitTunneling-", suffix=".log", delete=False
+        ) as temp_file:
+            args = [
+                "journalctl", "-u", "me.proton.vpn.split_tunneling", "--no-pager",
+                "--utc", "--since=-1d", "--no-hostname"
+            ]
+            process = subprocess.run(args,  # nosec B603 # noqa E501 # pylint: disable=no-member, disable=line-too-long # nosemgrep: gitlab.bandit.B604, python.lang.security.audit.dangerous-subprocess-use-audit.dangerous-subprocess-use-audit
+                                            stdout=temp_file,
+                                            check=False)
+            if process.returncode == 0:
+                # We're waiting for the process to terminate before
+                # reading the file, so we should be okay to open it.
+                return open(temp_file.name, "rb")  # pylint: disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.tempfile.flush.tempfile-without-flush
+
+            raise RuntimeError("Split tunneling logs could not be generated.")
+
+    def _generate_network_manager_log(self) -> io.IOBase:
         """Generate Network Manager logs"""
-        def run_subprocess():
-            with NamedTemporaryFile(
-                prefix="NetworkManager-", suffix=".log", delete=False
-            ) as temp_file:
-                args = [
-                    "journalctl", "-u", "NetworkManager", "--no-pager",
-                    "--utc", "--since=-1d", "--no-hostname"
-                ]
-                process = subprocess.run(args,  # nosec B603 # noqa E501 # pylint: disable=no-member, disable=line-too-long # nosemgrep: gitlab.bandit.B604, python.lang.security.audit.dangerous-subprocess-use-audit.dangerous-subprocess-use-audit
-                                         stdout=temp_file,
-                                         check=False)
-                if process.returncode == 0:
-                    # We're waiting for the process to terminate before
-                    # reading the file, so we should be okay to open it.
-                    return open(temp_file.name, "rb")  # pylint: disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.tempfile.flush.tempfile-without-flush
+        with NamedTemporaryFile(
+            prefix="NetworkManager-", suffix=".log", delete=False
+        ) as temp_file:
+            args = [
+                "journalctl", "-u", "NetworkManager", "--no-pager",
+                "--utc", "--since=-1d", "--no-hostname"
+            ]
+            process = subprocess.run(args,  # nosec B603 # noqa E501 # pylint: disable=no-member, disable=line-too-long # nosemgrep: gitlab.bandit.B604, python.lang.security.audit.dangerous-subprocess-use-audit.dangerous-subprocess-use-audit
+                                            stdout=temp_file,
+                                            check=False)
+            if process.returncode == 0:
+                # We're waiting for the process to terminate before
+                # reading the file, so we should be okay to open it.
+                return open(temp_file.name, "rb")  # pylint: disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.tempfile.flush.tempfile-without-flush
 
-                raise RuntimeError("Network Manager logs could not be generated.")
-
-        return self._executor.submit(run_subprocess)
+            raise RuntimeError("Network Manager logs could not be generated.")

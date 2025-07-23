@@ -168,6 +168,8 @@ class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
         self.revealer.add(self._settings_container)
 
     def on_settings_changed(self, settings):
+        if self.overridden_by_upgrade_tag:
+            return
         split_tunneling = settings.features.split_tunneling
         if self.switch.get_active() != split_tunneling.enabled:
             self.switch.set_active(split_tunneling.enabled)

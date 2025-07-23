@@ -98,3 +98,19 @@ def test_build_display_upgrade_tag_for_free_tier_user(mock_controller):
     st.build_revealer()
 
     assert st.overridden_by_upgrade_tag
+
+
+def test_settings_change_for_free_tier_user(mock_controller):
+    mock_controller.user_tier = 0
+
+    setting_name = "test.setting"
+
+    st = SplitTunnelingToggle(
+        controller=mock_controller,
+        settings_container=None,
+        setting_name=setting_name,
+        enabled=True,
+    )
+
+    st.on_settings_changed(
+        Mock(features=Mock(split_tunneling=Mock(enabled=True))))

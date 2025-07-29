@@ -25,8 +25,12 @@ import html
 from gi.repository import Gio
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data_structures \
     import AppData
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.util.snap \
-    import get_snap_app_data
+from proton.vpn.app.gtk.widgets.headerbar.menu.\
+    settings.split_tunneling.app.util.get_containerized_app_data \
+    import get_snap_app_data, get_flatpak_executable
+from proton.vpn import logging
+
+logger = logging.getLogger(__name__)
 
 
 def check_is_flatpak(executable: str) -> bool:
@@ -91,15 +95,24 @@ def _get_all_installed_apps() -> list[AppData]:
         dot_desktop_filepath = app.get_filename()
 
         if check_is_flatpak(executable):
-            continue
+            native = False
+            executable = get_flatpak_executable(dot_desktop_filepath)
 
+            if not executable:
+                logger.warning(
+                    "Flatpak app %s is missing executable, skipping it.",
+                    dot_desktop_filepath.split("/")[-1]
+                )
+                continue
         if check_is_snap(dot_desktop_filepath):
             native = False
             executable, icon = get_snap_app_data(dot_desktop_filepath)
 
-            # If the app is missing executable then skip it as
-            # something is wrong with this app
             if not executable:
+                logger.warning(
+                    "Snap app %s is missing executable, skipping it.",
+                    dot_desktop_filepath.split("/")[-1]
+                )
                 continue
         elif check_is_only_executable(executable):
             executable = shutil.which(executable)

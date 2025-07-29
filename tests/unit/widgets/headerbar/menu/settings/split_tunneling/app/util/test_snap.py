@@ -3,7 +3,7 @@ import io
 from pathlib import Path
 import os
 
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.util.snap \
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.util.get_containerized_app_data \
     import get_snap_app_data
 
 

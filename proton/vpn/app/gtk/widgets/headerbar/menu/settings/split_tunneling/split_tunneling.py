@@ -97,6 +97,11 @@ class SplitTunnelingSettings(Gtk.Box):
 class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
     """Contains the split tunneling widget.
     """
+    TITLE = "Split Tunneling"
+    DESCRIPTION = "Customize your connection by deciding "\
+        "which apps are protected by VPN..\n\n"\
+        "Split Tunneling settings can only be changed when VPN is disconnected."
+
     def __init__(
             self,
             controller: Controller,
@@ -110,14 +115,15 @@ class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
     ):  # pylint: disable=too-many-arguments
         super().__init__(
             controller=controller,
-            title="Split Tunneling",
+            title=self.TITLE,
             setting_name=setting_name,
-            description="Prevent traffic from going through VPN",
+            description=self.DESCRIPTION,
             do_set=do_set or self._do_set,
             do_revert=do_revert or self._do_revert,
             requires_subscription=True,
             enabled=enabled,
             conflict_resolver=conflict_resolver,
+            disable_on_active_connection=True
         )
         self._controller = controller
         self.gtk = gtk

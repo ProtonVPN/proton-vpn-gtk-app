@@ -46,7 +46,7 @@ def test_remove_app_when_received_signal_app_removed(
     process_gtk_events()
 
     mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [])
-    assert sp.get_app_count_label() == f"{LABEL_CONVERSION[split_tunneling_mode]} Apps ({sp.amount_of_displayed_apps})"
+    assert sp.get_app_count_label() == f"{sp.SELECTED_APPS_COUNT_LABEL} ({sp.amount_of_selected_apps})"
 
 
 def test_refresh_app_list_when_received_signal_app_list_refreshed(
@@ -68,8 +68,7 @@ def test_refresh_app_list_when_received_signal_app_list_refreshed(
     sp._emit_signal_app_list_refreshed(mock_app_data_list)
 
     mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [mock_app_native.executable])
-    assert sp.get_app_count_label() == f"{LABEL_CONVERSION[split_tunneling_mode]} Apps ({sp.amount_of_displayed_apps})"
-
+    assert sp.get_app_count_label() == f"{sp.SELECTED_APPS_COUNT_LABEL} ({sp.amount_of_selected_apps})"
 
 @patch(target="proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.settings.AppSelectionWindow", name="app_selection_window")
 def test_receive_selected_apps_when_selecting_apps_from_app_selection_window(

@@ -24,7 +24,7 @@ from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
-    SettingName
+    SettingName, SettingDescription
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.selected_app_list \
     import SelectedAppList
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.app_select_window \
@@ -46,6 +46,9 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
     related to app based split tunneling, serving as an
     entry point to anything related with app based split tunneling.
     """
+    SELECTED_APPS_COUNT_LABEL = "Excluded apps"
+    EXCLUDE_MODE_DESCRIPTION = "Allow selected apps to connect without VPN protection."
+
     def __init__(
         self,
         controller: Controller,
@@ -76,14 +79,16 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
 
         self.gtk = gtk
 
-        self._setting_name = SettingName("")
+        self._app_count_label = SettingName("")
+        self._mode_description = SettingDescription(self.EXCLUDE_MODE_DESCRIPTION)
         self._add_button = self._create_add_button()
 
-        self.add(self._setting_name)
+        self.add(self._app_count_label)
+        self.add(self._mode_description)
         self.add(self._selected_app_list)
         self.add(self._add_button)
 
-        self._update_setting_name()
+        self._update_app_count_label()
 
         # We need to track whenever an app is removed or added to the list
         self._selected_app_list.connect("app-removed", self._on_app_removed)
@@ -137,11 +142,12 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
 
     def _save_and_update_app_count(self):
         self._save_settings()
-        self._update_setting_name()
+        self._update_app_count_label()
 
-    def _update_setting_name(self):
-        label = f"{LABEL_CONVERSION[self._mode]} Apps ({self.amount_of_displayed_apps})"
-        self._setting_name.set_label(label)
+    def _update_app_count_label(self):
+        self._app_count_label.set_label(
+            f"{self.SELECTED_APPS_COUNT_LABEL} ({self.amount_of_selected_apps})"
+        )
 
     def _get_settings(self) -> list[str]:
         return self._controller.get_setting_attr(self._settings_path_name)
@@ -155,11 +161,11 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         Returns:
             str:
         """
-        return self._setting_name.get_label()
+        return self._app_count_label.get_label()
 
     @property
-    def amount_of_displayed_apps(self) -> int:
-        """Returns the amount of displayed apps in the list.
+    def amount_of_selected_apps(self) -> int:
+        """Returns the amount of selected apps in the list.
 
         Returns:
             int:

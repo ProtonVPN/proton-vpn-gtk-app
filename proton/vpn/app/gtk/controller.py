@@ -272,7 +272,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         return self._connector.is_connection_active  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
 
     @property
-    def is_connection_disconnected(self) -> bool:
+    def connection_disconnected(self) -> bool:
         """Returns whether the current connection is in disconnected state or not."""
         return isinstance(self._connector.current_state, states.Disconnected)
 

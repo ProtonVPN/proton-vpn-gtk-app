@@ -14,7 +14,7 @@ def mock_controller():
     mock = Mock(name="controller", spec=Controller)
     mock.get_setting_attr.return_value = ["test-app-exec"]
     mock.user_tier = 1
-    mock_controller.is_connection_disconnected = True
+    mock_controller.connection_disconnected = True
 
     return mock
 

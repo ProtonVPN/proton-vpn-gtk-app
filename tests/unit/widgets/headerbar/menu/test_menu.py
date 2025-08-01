@@ -215,7 +215,7 @@ class TestLogoutMenuEntry:
         logout_future.set_result(None)
 
         controller_mock.logout.return_value = logout_future
-        controller_mock.is_connection_disconnected = False
+        controller_mock.connection_disconnected = False
 
         confirmation_dialog_mock = Mock()
         confirmation_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
@@ -245,7 +245,7 @@ class TestLogoutMenuEntry:
         logout_future.set_result(None)
 
         controller_mock.logout.return_value = logout_future
-        controller_mock.is_connection_disconnected = False
+        controller_mock.connection_disconnected = False
 
         confirmation_dialog_mock = Mock()
         confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
@@ -271,7 +271,7 @@ class TestLogoutMenuEntry:
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.ON
-        controller_mock.is_connection_disconnected = False
+        controller_mock.connection_disconnected = False
 
         confirmation_dialog_mock = Mock()
         confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
@@ -298,7 +298,7 @@ class TestLogoutMenuEntry:
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.PERMANENT
-        controller_mock.is_connection_disconnected = True
+        controller_mock.connection_disconnected = True
 
         confirmation_dialog_mock = Mock()
         confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
@@ -330,7 +330,7 @@ class TestLogoutMenuEntry:
         controller_mock.disable_killswitch.return_value = future
         property_mock = PropertyMock(return_value=kill_switch_state)
         type(controller_mock.get_settings.return_value).killswitch = property_mock
-        controller_mock.is_connection_disconnected = True
+        controller_mock.connection_disconnected = True
 
         confirmation_dialog_mock = Mock()
         confirmation_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
@@ -360,7 +360,7 @@ class TestQuitMenuEntry:
         main_window_mock = Mock()
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.OFF
-        controller_mock.is_connection_disconnected = True
+        controller_mock.connection_disconnected = True
 
         menu = Menu(
             controller=controller_mock,
@@ -381,7 +381,7 @@ class TestQuitMenuEntry:
         main_window_mock = Mock()
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.OFF
-        controller_mock.is_connection_disconnected = False
+        controller_mock.connection_disconnected = False
 
         quit_dialog_mock = Mock()
         quit_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
@@ -404,7 +404,7 @@ class TestQuitMenuEntry:
         main_window_mock = Mock()
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.OFF
-        controller_mock.is_connection_disconnected = False
+        controller_mock.connection_disconnected = False
 
         quit_dialog_mock = Mock()
         quit_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
@@ -425,7 +425,7 @@ class TestQuitMenuEntry:
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.OFF
-        controller_mock.is_connection_disconnected = False
+        controller_mock.connection_disconnected = False
 
         confirmation_dialog_mock = Mock()
         confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
@@ -449,7 +449,7 @@ class TestQuitMenuEntry:
     ):
         controller_mock = Mock()
         controller_mock.get_settings.return_value.killswitch = KillSwitchSettingEnum.PERMANENT
-        controller_mock.is_connection_disconnected = False
+        controller_mock.connection_disconnected = False
 
         quit_dialog_mock = Mock()
         quit_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
@@ -481,7 +481,7 @@ class TestQuitMenuEntry:
         controller_mock.disable_killswitch.return_value = future
         property_mock = PropertyMock(return_value=KillSwitchSettingEnum.ON)
         type(controller_mock.get_settings.return_value).killswitch = property_mock
-        controller_mock.is_connection_disconnected = True
+        controller_mock.connection_disconnected = True
 
         confirmation_dialog_mock = Mock()
         confirmation_dialog_mock.run.return_value = Gtk.ResponseType.YES.real

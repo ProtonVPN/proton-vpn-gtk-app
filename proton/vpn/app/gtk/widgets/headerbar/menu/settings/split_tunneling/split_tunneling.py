@@ -124,6 +124,7 @@ class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
             enabled=enabled,
             conflict_resolver=conflict_resolver,
             disable_on_active_connection=True,
+            display_tooltip_only_on_active_connection=True
         )
         self._controller = controller
         self.gtk = gtk

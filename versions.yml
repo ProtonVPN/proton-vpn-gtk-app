@@ -1,3 +1,12 @@
+version: 4.10.0rc14
+time: 2025/08/01 11:26
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: allow toggle widgets to display tooltips only when connected"
+---
 version: 4.10.0rc13
 time: 2025/07/31 11:32
 author: Alexandru Cheltuitor

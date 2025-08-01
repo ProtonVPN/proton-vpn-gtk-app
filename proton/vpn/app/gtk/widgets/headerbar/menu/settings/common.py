@@ -205,7 +205,8 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         requires_subscription_to_be_active: bool = False,
         callback: Callable = None,
         disable_on_active_connection: bool = False,
-        enabled: bool = None
+        enabled: bool = None,
+        display_tooltip_only_on_active_connection: bool = False
     ):
         super().__init__()
         self._apply_grid_styles()
@@ -215,6 +216,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         self._requires_subscription_to_be_active = requires_subscription_to_be_active
         self._disable_on_active_connection = disable_on_active_connection
         self._enabled = enabled
+        self._display_tooltip_only_on_active_connection = display_tooltip_only_on_active_connection
 
         self.label = SettingName(title)
         self.description = SettingDescription(description)
@@ -248,8 +250,12 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
     def set_tooltip(self, tooltip_text: str):
         """Set a tooltip to this row."""
-        self.set_has_tooltip(True)
-        self.set_tooltip_text(tooltip_text)
+        if (
+            self._display_tooltip_only_on_active_connection
+            and not self._controller.connection_disconnected
+        ):
+            self.set_has_tooltip(True)
+            self.set_tooltip_text(tooltip_text)
 
     def _apply_grid_styles(self):
         self.get_style_context().add_class("setting-item")
@@ -283,8 +289,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         if self.description:
             self.attach(self.description, 0, 1, 2, 1)
 
-        if (not self._controller.is_connection_disconnected  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
-                and self._disable_on_active_connection):
+        if not self._controller.connection_disconnected and self._disable_on_active_connection:
             self.active = False
 
     def _on_switch_state(self, switch, _gparam):
@@ -324,6 +329,7 @@ class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instan
         requires_subscription: bool = False,
         disable_on_active_connection: bool = False,
         enabled: bool = None,
+        display_tooltip_only_on_active_connection: bool = False,
         conflict_resolver: Callable[[str, Any], str] = None,
     ):
         super().__init__(
@@ -332,7 +338,9 @@ class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instan
             requires_subscription_to_be_active=requires_subscription,
             callback=self._on_switch_button_toggle,
             disable_on_active_connection=disable_on_active_connection,
-            enabled=enabled)
+            enabled=enabled,
+            display_tooltip_only_on_active_connection=display_tooltip_only_on_active_connection
+        )
         self.do_set = do_set
         self.do_revert = do_revert
 
@@ -456,8 +464,7 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         else:
             combobox.connect("changed", self._on_combobox_change)
 
-        if (not self._controller.is_connection_disconnected  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
-                and self._disable_on_active_connection):
+        if not self._controller.connection_disconnected and self._disable_on_active_connection:
             self.active = False
 
         return combobox

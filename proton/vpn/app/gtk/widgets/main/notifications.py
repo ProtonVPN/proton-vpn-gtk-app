@@ -107,6 +107,13 @@ class Notifications:
             message
         )
 
+    def show_info_message(self, message: str):
+        """Shows the info message in the notification bar."""
+        GLib.idle_add(
+            self.notification_bar.show_info_message,
+            message
+        )
+
     def show_success_message(self, message: str):
         """Shows a success message in the notification bar."""
         GLib.idle_add(

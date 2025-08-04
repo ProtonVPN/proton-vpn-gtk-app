@@ -28,6 +28,8 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app import \
     AppBasedSplitTunnelingSettings
 
+SPLIT_TUNNELING_TOGGLE_SETTING_NAME = "settings.features.split_tunneling.enabled"
+
 
 class SplitTunnelingSettings(Gtk.Box):
     """Container that holds all settings
@@ -106,7 +108,7 @@ class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
             self,
             controller: Controller,
             settings_container: SplitTunnelingSettings = None,
-            setting_name: str = "settings.features.split_tunneling.enabled",
+            setting_name: str = SPLIT_TUNNELING_TOGGLE_SETTING_NAME,
             do_set: Callable = None,
             do_revert: Callable = None,
             enabled: bool = None,

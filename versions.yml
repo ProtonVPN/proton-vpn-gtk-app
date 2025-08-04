@@ -1,3 +1,12 @@
+version: 4.10.0rc15
+time: 2025/08/04 15:19
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: notify user to restart apps when connected with st enabled"
+---
 version: 4.10.0rc14
 time: 2025/08/01 11:26
 author: Alexandru Cheltuitor

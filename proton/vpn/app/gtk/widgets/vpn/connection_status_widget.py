@@ -26,9 +26,14 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, LoadingConnectionWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.vpn.port_forward_widget import PortForwardRevealer
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.split_tunneling import \
+    SPLIT_TUNNELING_TOGGLE_SETTING_NAME
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
+
+SPLIT_TUNNELING_APP_RESTART_MESSAGE = \
+    "Split tunneling enabled. Remember to restart each excluded app."
 
 
 class VPNConnectionStatusWidget(Gtk.Box):
@@ -104,6 +109,10 @@ class VPNConnectionStatusWidget(Gtk.Box):
         elif isinstance(connection_state, states.Connected):
             label = f"You are connected to {connection.server_name}"
             self._overlay_widget.hide()
+            if self._split_tunneling_enabled:
+                self._notifications.show_info_message(
+                    message=SPLIT_TUNNELING_APP_RESTART_MESSAGE
+                )
         elif isinstance(connection_state, states.Disconnecting):
             label = f"Disconnecting from {connection.server_name}"
         elif isinstance(connection_state, states.Error):
@@ -131,3 +140,8 @@ class VPNConnectionStatusWidget(Gtk.Box):
             self._port_forward_revealer.on_new_state(connection_state)
 
         self._connection_status_label.set_label(label)
+
+    @property
+    def _split_tunneling_enabled(self) -> bool:
+        """Check if split tunneling is enabled."""
+        return self._controller.get_setting_attr(SPLIT_TUNNELING_TOGGLE_SETTING_NAME)

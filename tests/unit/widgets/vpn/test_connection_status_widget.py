@@ -21,7 +21,7 @@ from unittest.mock import Mock, patch
 from proton.vpn.connection import states, events
 from proton.vpn.connection.events import EventContext
 
-from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
+from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget, SPLIT_TUNNELING_APP_RESTART_MESSAGE
 import pytest
 
 
@@ -70,3 +70,30 @@ def test_vpn_connection_status_widget(pack_start_mock, connection_state_type, la
             )
 
         assert vpn_status_widget.status_message == expected_message
+
+
+@patch("proton.vpn.app.gtk.widgets.vpn.connection_status_widget.VPNConnectionStatusWidget.pack_start")
+def test_vpn_connection_status_widget_notifies_user_when_in_connected_state_and_split_tunneling_is_enabled(pack_start_mock):
+    controller_mock = Mock(name="controller")
+    controller_mock.get_setting_attr.return_value = True  # Simulate split tunneling being enabled
+
+    overlay_widget_mock = Mock()
+    mock_notifications = Mock()
+    vpn_status_widget = VPNConnectionStatusWidget(
+        controller_mock,
+        overlay_widget_mock,
+        mock_notifications,
+        port_forward_revealer=Mock()
+    )
+
+    connection_state = states.Connected()
+
+    connection_state.context.event = None
+    connection_state.context.connection = Mock()
+    connection_state.context.connection.server_name = "CH#1"
+
+    vpn_status_widget.connection_status_update(connection_state)
+
+    mock_notifications.show_info_message.assert_called_once_with(
+        message=SPLIT_TUNNELING_APP_RESTART_MESSAGE
+    )

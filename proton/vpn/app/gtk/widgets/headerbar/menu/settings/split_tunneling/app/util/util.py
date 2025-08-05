@@ -28,9 +28,12 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data
 from proton.vpn.app.gtk.widgets.headerbar.menu.\
     settings.split_tunneling.app.util.get_containerized_app_data \
     import get_snap_app_data, get_flatpak_executable
+from proton.vpn.app.gtk.util import APPLICATION_ID
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
+
+APP_ID_DOT_DESKTOP = f"{APPLICATION_ID}.desktop"
 
 
 def check_is_flatpak(executable: str) -> bool:
@@ -89,6 +92,14 @@ def _get_all_installed_apps() -> list[AppData]:
 
         # If there is not executable then we can skip it
         if not executable:
+            continue
+
+        app_id = app.get_id()
+
+        # If the app_id is not set,
+        # or if it is set and it matches the .desktop file of the app itself,
+        # we can skip it as we don't want to split tunnel it.
+        if not app_id or app_id == APP_ID_DOT_DESKTOP:
             continue
 
         # This is the .desktop file

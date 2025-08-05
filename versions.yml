@@ -1,3 +1,12 @@
+version: 4.11.0rc1
+time: 2025/08/06 14:12
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: hide proton vpn app from st"
+---
 version: 4.10.0
 time: 2025/08/06 07:53
 author: Alexandru Cheltuitor

@@ -21,6 +21,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from typing import Callable
 from gi.repository import Gtk
 
+APPLICATION_ID = "proton.vpn.app.gtk"
+
 
 def connect_once(widget: Gtk.Widget, signal: str, callback: Callable, *args):
     """Subscribes to the signal once."""

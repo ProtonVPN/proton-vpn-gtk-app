@@ -29,6 +29,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.assets.style import STYLE_PATH
+from proton.vpn.app.gtk.util import APPLICATION_ID
 
 logger = logging.getLogger(__name__)
 
@@ -48,12 +49,11 @@ class App(Gtk.Application):
        exits automatically when the last one is closed.
      - It allows desktop shell integration by exporting actions and menus.
     """
-
     def __init__(
             self,
             controller: Controller
     ):
-        super().__init__(application_id="proton.vpn.app.gtk")
+        super().__init__(application_id=APPLICATION_ID)
         logger.info(f"{self=}", category="APP", event="PROCESS_START")
         self._controller = controller
         self.window = None

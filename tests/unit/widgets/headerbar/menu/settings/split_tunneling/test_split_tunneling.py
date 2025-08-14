@@ -3,6 +3,7 @@ import pytest
 
 from tests.unit.testing_utils import process_gtk_events
 
+from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling import SplitTunnelingToggle
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
     UpgradePlusTag
@@ -12,7 +13,7 @@ from proton.vpn.app.gtk.controller import Controller
 @pytest.fixture
 def mock_controller():
     mock = Mock(name="controller", spec=Controller)
-    mock.get_setting_attr.return_value = ["test-app-exec"]
+    mock.get_setting_attr.side_effect = [SplitTunnelingMode.EXCLUDE, ["test-app-exec"]]
     mock.user_tier = 1
     mock_controller.connection_disconnected = True
 

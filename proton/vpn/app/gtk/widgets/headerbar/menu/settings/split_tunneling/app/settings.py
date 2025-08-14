@@ -23,8 +23,7 @@ from gi.repository import Gtk
 from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
-    SettingName, SettingDescription
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import SettingName
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.selected_app_list \
     import SelectedAppList
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.app_select_window \
@@ -46,14 +45,12 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
     related to app based split tunneling, serving as an
     entry point to anything related with app based split tunneling.
     """
-    SELECTED_APPS_COUNT_LABEL = "Excluded apps"
-    EXCLUDE_MODE_DESCRIPTION = "Allow selected apps to connect without VPN protection."
-
     def __init__(
         self,
         controller: Controller,
-        setting_path_name: str = "settings.features.split_tunneling.config.app_paths",
-        mode: SplitTunnelingMode = SplitTunnelingMode.EXCLUDE,
+        mode: SplitTunnelingMode,
+        setting_path_name_template: str =
+        "settings.features.split_tunneling.[mode].app_paths",
         stored_apps: list[str] = None,
         selected_app_list: SelectedAppList = None,
         installed_apps: list[AppData] = None,
@@ -63,28 +60,21 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         self.set_name("split-tunneling-app-based-settings")
 
         self._controller = controller
-        self._settings_path_name = setting_path_name
+        self._setting_path_name_template = setting_path_name_template
         self._mode = mode
         self._stored_apps = stored_apps if stored_apps is not None else \
-            self._controller.get_setting_attr(self._settings_path_name)
+            self._get_settings()
         self._installed_apps = installed_apps if installed_apps is not None else \
             _get_all_installed_apps()
         self._selected_app_list = selected_app_list if selected_app_list is not None else\
-            SelectedAppList([
-                    app
-                    for stored_app_path in self._stored_apps
-                    for app in self._installed_apps
-                    if stored_app_path == app.executable
-            ])
+            SelectedAppList(self._get_selected_app_list())
 
         self.gtk = gtk
 
         self._app_count_label = SettingName("")
-        self._mode_description = SettingDescription(self.EXCLUDE_MODE_DESCRIPTION)
         self._add_button = self._create_add_button()
 
         self.add(self._app_count_label)
-        self.add(self._mode_description)
         self.add(self._selected_app_list)
         self.add(self._add_button)
 
@@ -106,7 +96,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
 
     def _on_clicked_add(self, _: Gtk.Button):
         add_app_window = AppSelectionWindow(
-            title=f"Add {self._mode.value}d apps",
+            title=f"Add {LABEL_CONVERSION[self._mode].lower()} apps",
             controller=self._controller,
             stored_apps=self._stored_apps,
             installed_apps=self._installed_apps
@@ -129,6 +119,17 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         # This emits the app-list-refreshed signal
         self._selected_app_list.refresh(selected_apps)
 
+    def update_list_on_new_mode(self, mode: SplitTunnelingMode):
+        """Updates the list of split tunneled apps when the mode is switched.
+
+        Args:
+            mode (SplitTunnelingMode): the mode that we need to switch to
+        """
+        self._mode = mode
+        self._stored_apps = self._get_settings()
+        selected_app_list = self._get_selected_app_list()
+        self._selected_app_list.refresh(selected_app_list)
+
     def _on_app_removed(self, _: SelectedAppList, app_data: AppData):
         self._stored_apps = [
             app_exec for app_exec in self._stored_apps
@@ -146,14 +147,26 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
 
     def _update_app_count_label(self):
         self._app_count_label.set_label(
-            f"{self.SELECTED_APPS_COUNT_LABEL} ({self.amount_of_selected_apps})"
+            f"{LABEL_CONVERSION[self._mode]} apps ({self.amount_of_selected_apps})"
         )
 
+    def _get_selected_app_list(self) -> list[str]:
+        return [
+            app
+            for stored_app_path in self._stored_apps
+            for app in self._installed_apps
+            if stored_app_path == app.executable
+        ]
+
     def _get_settings(self) -> list[str]:
-        return self._controller.get_setting_attr(self._settings_path_name)
+        return self._controller.get_setting_attr(self._setting_path_name)
 
     def _save_settings(self):
-        self._controller.save_setting_attr(self._settings_path_name, self._stored_apps)
+        self._controller.save_setting_attr(self._setting_path_name, self._stored_apps)
+
+    @property
+    def _setting_path_name(self) -> str:
+        return self._setting_path_name_template.replace("[mode]", self._mode.value)
 
     def get_app_count_label(self) -> str:
         """Returns the label that holds the app counter.
@@ -172,11 +185,24 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         """
         return len(self._stored_apps)
 
-    def _emit_signal_app_removed(self, app_data: AppData):
+    def emit_signal_app_removed(self, app_data: AppData):
+        """Emits the app-removed signal to the selected app list.
+        Mainly used for testing purposes.
+
+        Args:
+            app_data (AppData): The app data that was removed.
+        """
         self._selected_app_list.emit("app-removed", app_data)
 
-    def _emit_signal_app_list_refreshed(self, app_data_list: list[AppData]):
+    def emit_signal_app_list_refreshed(self, app_data_list: list[AppData]):
+        """Emits the app-list-refreshed signal to the selected app list.
+        Mainly used for testing purposes.
+
+        Args:
+            app_data_list (list[AppData]): The list of app data that was refreshed.
+        """
         self._selected_app_list.emit("app-list-refreshed", app_data_list)
 
-    def _click_on_add_button(self):
+    def click_on_add_button(self):
+        """Clicks on the add button."""
         self._add_button.clicked()

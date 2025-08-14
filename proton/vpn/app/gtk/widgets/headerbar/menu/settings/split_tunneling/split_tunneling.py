@@ -27,6 +27,9 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
     ConflictableToggleWidget, ReactiveSetting
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app import \
     AppBasedSplitTunnelingSettings
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.mode import \
+    SplitTunnelingModeSetting
+from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 
 SPLIT_TUNNELING_TOGGLE_SETTING_NAME = "settings.features.split_tunneling.enabled"
 
@@ -38,7 +41,7 @@ class SplitTunnelingSettings(Gtk.Box):
     def __init__(
         self,
         controller: Controller,
-        split_tunneling_mode: SplitTunnelingMode = None,
+        split_tunneling_mode: SplitTunnelingModeSetting = None,
         split_tunneling_apps: AppBasedSplitTunnelingSettings = None,
         split_tunneling_ips: IpBasedSplitTunnelingSettings = None,
         gtk: Gtk = None,
@@ -50,9 +53,13 @@ class SplitTunnelingSettings(Gtk.Box):
         self._settings = None
 
         self._split_tunneling_mode = split_tunneling_mode\
-            or SplitTunnelingMode(controller=self._controller, gtk=self.gtk)
+            or SplitTunnelingModeSetting(controller=self._controller)
         self._split_tunneling_apps = split_tunneling_apps\
-            or AppBasedSplitTunnelingSettings(controller=self._controller, gtk=self.gtk)
+            or AppBasedSplitTunnelingSettings(
+                controller=self._controller,
+                mode=self._split_tunneling_mode.mode,
+                gtk=self.gtk
+            )
         self._split_tunneling_ips = split_tunneling_ips\
             or IpBasedSplitTunnelingSettings(controller=self._controller, gtk=self.gtk)
 
@@ -60,10 +67,12 @@ class SplitTunnelingSettings(Gtk.Box):
         self.add(self._split_tunneling_apps)
         self.add(self._split_tunneling_ips)
 
+        self._split_tunneling_mode.connect("mode-switched", self._on_mode_switched)
+
     @staticmethod
     def build(
         controller: Controller,
-        split_tunneling_mode: SplitTunnelingMode = None,
+        split_tunneling_mode: SplitTunnelingModeSetting = None,
         split_tunneling_apps: AppBasedSplitTunnelingSettings = None,
         split_tunneling_ips: IpBasedSplitTunnelingSettings = None,
         gtk: Gtk = None,
@@ -72,7 +81,7 @@ class SplitTunnelingSettings(Gtk.Box):
 
         Args:
             controller (Controller)
-            split_tunneling_mode (SplitTunnelingMode, optional): Defaults to None.
+            split_tunneling_mode (SplitTunnelingModeSetting, optional): Defaults to None.
             split_tunneling_apps (AppBasedSplitTunnelingSettings, optional): Defaults to None.
             split_tunneling_ips (IpBasedSplitTunnelingSettings, optional): Defaults to None.
             gtk (Gtk, optional): Defaults to None.
@@ -84,16 +93,11 @@ class SplitTunnelingSettings(Gtk.Box):
             controller, split_tunneling_mode,
             split_tunneling_apps, split_tunneling_ips, gtk
         )
-        settings_container.build_ui()
 
         return settings_container
 
-    def build_ui(self):
-        """Builds all UI related children.
-        """
-        self._split_tunneling_mode.build()
-        self._split_tunneling_apps.build()
-        self._split_tunneling_ips.build()
+    def _on_mode_switched(self, _: SplitTunnelingModeSetting, mode_changed: SplitTunnelingMode):
+        self._split_tunneling_apps.update_list_on_new_mode(mode_changed)
 
 
 class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
@@ -197,25 +201,6 @@ class IpBasedSplitTunnelingSettings(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller
         self._settings_path_name = setting_path_name
-        self.gtk = gtk
-
-    def build(self):
-        """Used to build UI.
-        """
-
-
-class SplitTunnelingMode(Gtk.Box):
-    """Object for building UI based on excluding or including split tunneling.
-    """
-    def __init__(
-            self,
-            controller: Controller,
-            setting_path_name: str = "settings.features.split_tunneling.config.mode",
-            gtk: Gtk = Gtk
-    ):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL)
-        self._controller = controller
-        self._setting_path_name = setting_path_name
         self.gtk = gtk
 
     def build(self):

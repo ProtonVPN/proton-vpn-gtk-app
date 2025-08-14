@@ -457,7 +457,8 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
                 setattr(root, attr, value)
             else:
                 name, path = attr.split(DOT, maxsplit=1)
-                set_setting(getattr(root, name), path, value)
+                next_root = getattr(root, name)
+                set_setting(next_root, path, value)
 
         setting_type, setting_attrs, get_settings, save_settings =\
             self.resolve_settings_type(setting_path_name)

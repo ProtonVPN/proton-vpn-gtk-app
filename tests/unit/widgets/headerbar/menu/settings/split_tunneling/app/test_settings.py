@@ -27,30 +27,30 @@ def mock_selected_app_list():
     yield Mock(spec=SelectedAppList, name="selected_app_list")
 
 
-def test_remove_app_when_received_signal_app_removed(
-    mock_controller, mock_selected_app_list, mock_app_native
+def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_removed_signal(
+    mock_controller, mock_app_native
 ):
     settings_path_name = "test.path"
     split_tunneling_mode = SplitTunnelingMode.EXCLUDE
 
     sp = AppBasedSplitTunnelingSettings(
         controller=mock_controller,
-        setting_path_name=settings_path_name,
+        setting_path_name_template=settings_path_name,
         mode=split_tunneling_mode,
         installed_apps=[mock_app_native],
         stored_apps=[mock_app_native.executable],
     )
 
-    sp._emit_signal_app_removed(mock_app_native)
+    sp.emit_signal_app_removed(mock_app_native)
 
     process_gtk_events()
 
     mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [])
-    assert sp.get_app_count_label() == f"{sp.SELECTED_APPS_COUNT_LABEL} ({sp.amount_of_selected_apps})"
+    assert sp.get_app_count_label() == f"{LABEL_CONVERSION[SplitTunnelingMode.EXCLUDE]} apps ({sp.amount_of_selected_apps})"
 
 
-def test_refresh_app_list_when_received_signal_app_list_refreshed(
-    mock_controller, mock_selected_app_list, mock_app_native
+def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_list_refreshed_signal(
+    mock_controller, mock_app_native
 ):
     settings_path_name = "test.path"
     split_tunneling_mode = SplitTunnelingMode.EXCLUDE
@@ -59,38 +59,47 @@ def test_refresh_app_list_when_received_signal_app_list_refreshed(
 
     sp = AppBasedSplitTunnelingSettings(
         controller=mock_controller,
-        setting_path_name=settings_path_name,
+        setting_path_name_template=settings_path_name,
         mode=SplitTunnelingMode.EXCLUDE,
         installed_apps=mock_app_data_list,
         stored_apps=[]
     )
 
-    sp._emit_signal_app_list_refreshed(mock_app_data_list)
+    sp.emit_signal_app_list_refreshed(mock_app_data_list)
 
     mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [mock_app_native.executable])
-    assert sp.get_app_count_label() == f"{sp.SELECTED_APPS_COUNT_LABEL} ({sp.amount_of_selected_apps})"
+    assert sp.get_app_count_label() == f"{LABEL_CONVERSION[SplitTunnelingMode.EXCLUDE]} apps ({sp.amount_of_selected_apps})"
 
-@patch(target="proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.settings.AppSelectionWindow", name="app_selection_window")
-def test_receive_selected_apps_when_selecting_apps_from_app_selection_window(
-    mock_app_selection_window,
-    mock_controller, mock_app_native
+
+def test_app_based_split_tunneling_settings_restores_app_list_when_st_mode_is_changed(
+    mock_controller
 ):
-    mock_app_selection_window_instance = Mock()
-    mock_app_selection_window.return_value = mock_app_selection_window_instance
-
-    settings_path_name = "test.path"
-    sp = AppBasedSplitTunnelingSettings(
-        controller=mock_controller,
-        setting_path_name=settings_path_name,
-        installed_apps=[mock_app_native],
-        stored_apps=[]
+    include_app = AppData(
+        name="test-app",
+        executable="test/path/include",
+        icon_name="test-icon",
+        native=True
+    )
+    exclude_app = AppData(
+        name="test-app",
+        executable="test/path/exclude",
+        icon_name="test-icon",
+        native=True
     )
 
-    sp._click_on_add_button()
+    settings_path_name = "test.path"
+    split_tunneling_mode = SplitTunnelingMode.EXCLUDE
+    mock_controller.get_setting_attr.side_effect = [["test/path/include"], ["test/path/exclude"]]
 
-    process_gtk_events()
+    mock_app_data_list = [include_app, exclude_app]
 
-    on_add_apps_to_list_callback = mock_app_selection_window_instance.connect.call_args_list[0][0][1]
-    on_add_apps_to_list_callback(None, [mock_app_native])
+    sp = AppBasedSplitTunnelingSettings(
+        controller=mock_controller,
+        setting_path_name_template=settings_path_name,
+        mode=SplitTunnelingMode.EXCLUDE,
+        installed_apps=mock_app_data_list,
+        stored_apps=[],
+    )
+    sp.update_list_on_new_mode(mode=SplitTunnelingMode.INCLUDE)
 
-    mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [mock_app_native.executable])
+    mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [include_app.executable])

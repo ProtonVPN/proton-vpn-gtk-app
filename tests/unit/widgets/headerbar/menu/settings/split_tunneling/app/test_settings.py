@@ -46,7 +46,7 @@ def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_remov
     process_gtk_events()
 
     mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [])
-    assert sp.get_app_count_label() == f"{LABEL_CONVERSION[SplitTunnelingMode.EXCLUDE]} apps ({sp.amount_of_selected_apps})"
+    assert sp.get_app_count_label() == f"({sp.amount_of_selected_apps})"
 
 
 def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_list_refreshed_signal(
@@ -68,7 +68,7 @@ def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_list_
     sp.emit_signal_app_list_refreshed(mock_app_data_list)
 
     mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [mock_app_native.executable])
-    assert sp.get_app_count_label() == f"{LABEL_CONVERSION[SplitTunnelingMode.EXCLUDE]} apps ({sp.amount_of_selected_apps})"
+    assert sp.get_app_count_label() == f"({sp.amount_of_selected_apps})"
 
 
 def test_app_based_split_tunneling_settings_restores_app_list_when_st_mode_is_changed(

@@ -103,7 +103,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
 
     def _on_clicked_add(self, _: Gtk.Button):
         add_app_window = AppSelectionWindow(
-            title=f"Add {LABEL_CONVERSION[self._mode].lower()} apps",
+            title=self._window_title,
             controller=self._controller,
             stored_apps=self._stored_apps,
             installed_apps=self._installed_apps
@@ -111,6 +111,10 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
 
         add_app_window.connect("app-selection-completed", self._on_app_selection_completed)
         add_app_window.present()
+
+    @property
+    def _window_title(self) -> str:
+        return f"Add {LABEL_CONVERSION[self._mode].lower()}"
 
     def _on_app_selection_completed(
         self, _: AppSelectionWindow,

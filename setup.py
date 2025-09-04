@@ -29,7 +29,7 @@ setup(
             "proton-core-internal",
             "proton-keyring-linux",
             "proton-vpn-network-manager",
-            "proton-vpn-local-agent",
+            "proton-vpn-daemon",
             "behave",
             "pyotp",
             "pytest",

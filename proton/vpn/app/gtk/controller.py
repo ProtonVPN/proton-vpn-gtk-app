@@ -575,4 +575,4 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         Returns:
             bool: `True` if available, `False` otherwise
         """
-        return self._api.split_tunneling_available
+        return self._connector.is_split_tunneling_available

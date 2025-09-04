@@ -33,7 +33,7 @@ from proton.vpn import logging
 logger = logging.getLogger(__name__)
 
 SPLIT_TUNNELING_APP_RESTART_MESSAGE = \
-    "Split tunneling enabled. Remember to restart each excluded app."
+    "Split tunneling enabled. Remember to restart affected apps."
 
 
 class VPNConnectionStatusWidget(Gtk.Box):

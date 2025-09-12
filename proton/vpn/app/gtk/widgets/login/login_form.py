@@ -50,8 +50,10 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
     INCORRECT_CREDENTIALS_MESSAGE = "Incorrect credentials."
 
     def __init__(
-        self, controller: Controller,
-        notifications: Notifications, overlay_widget: OverlayWidget
+        self,
+        controller: Controller,
+        notifications: Notifications,
+        overlay_widget: OverlayWidget
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
         self.set_name("login-form")

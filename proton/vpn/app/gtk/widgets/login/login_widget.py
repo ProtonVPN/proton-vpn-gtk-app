@@ -26,8 +26,7 @@ from gi.repository import GObject
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
-from proton.vpn.app.gtk.widgets.login.login_form import LoginForm
-from proton.vpn.app.gtk.widgets.login.two_factor_auth_form import TwoFactorAuthForm
+from proton.vpn.app.gtk.widgets.login.login_stack import LoginStack
 from proton.vpn.app.gtk.widgets.login.disable_killswitch import DisableKillSwitchWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
@@ -35,6 +34,7 @@ from proton.vpn.connection.enum import KillSwitchSetting as KillSwitchSettingEnu
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.app import MainWindow
+
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +47,11 @@ class LoginWidget(Gtk.Box):
     kill switch is enabled.
     """
     def __init__(
-        self, controller: Controller, notifications: Notifications,
-        overlay_widget: OverlayWidget, main_window: "MainWindow",
+        self,
+        controller: Controller,
+        notifications: Notifications,
+        overlay_widget: OverlayWidget,
+        main_window: "MainWindow",
         login_stack: "LoginStack" = None,
         disable_killswitch_widget: DisableKillSwitchWidget = None
     ):
@@ -93,78 +96,3 @@ class LoginWidget(Gtk.Box):
 
         self.disable_killswitch.set_reveal_child(False)
         self.login_stack.login_form.set_property("sensitive", True)
-
-
-class LoginStack(Gtk.Stack):
-    """Widget used to authenticate the user.
-
-    It inherits from Gtk.Stack and contains 2 widgets stacked on top of the
-    other: the LoginForm and the TwoFactorAuthForm. By default, the LoginForm
-    widget is shown. Once the user introduces the right username and password
-    (and 2FA is enabled) then the TwoFactorAuthForm widget is displayed instead.
-    """
-    def __init__(
-        self, controller: Controller,
-        notifications: Notifications, overlay_widget: OverlayWidget
-    ):
-        super().__init__()
-
-        self.set_name("login-stack")
-        self._controller = controller
-        self.active_form = None
-
-        self.login_form = LoginForm(controller, notifications, overlay_widget)
-        self.add_named(self.login_form, "login_form")
-        self.two_factor_auth_form = TwoFactorAuthForm(
-            controller, notifications, overlay_widget
-        )
-        self.add_named(self.two_factor_auth_form, "2fa_form")
-
-        self.login_form.connect(
-            "user-authenticated",
-            lambda _, two_factor_auth_required:
-                self._on_user_authenticated(two_factor_auth_required)  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
-        )
-
-        self.two_factor_auth_form.connect(
-            "two-factor-auth-successful",
-            lambda _: self._on_two_factor_auth_successful()  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
-        )
-
-        self.two_factor_auth_form.connect(
-            "session-expired",
-            lambda _: self._on_session_expired_during_2fa()  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
-        )
-
-    def _on_user_authenticated(self, two_factor_auth_required: bool):
-        if not two_factor_auth_required:
-            self._signal_user_logged_in()
-        else:
-            self.display_form(self.two_factor_auth_form)
-
-    def _on_two_factor_auth_successful(self):
-        self._signal_user_logged_in()
-
-    def _on_session_expired_during_2fa(self):
-        self.display_form(self.login_form)
-
-    @GObject.Signal
-    def user_logged_in(self):
-        """Signal emitted after a successful login."""
-
-    def _signal_user_logged_in(self):
-        self.emit("user-logged-in")
-
-    def display_form(self, form):
-        """
-        Displays the specified form to the user. That is, either the login
-        form (user/password) or the 2FA form.
-        :param form: The form to be displayed to the user.
-        """
-        self.active_form = form
-        self.set_visible_child(form)
-        form.reset()
-
-    def reset(self):
-        """Resets the widget to its initial state."""
-        self.display_form(self.login_form)

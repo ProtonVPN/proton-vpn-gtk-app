@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
+import os
 import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import Future
 from importlib import metadata
@@ -52,9 +53,12 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugRepor
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
 from proton.vpn.app.gtk.conflicts import Conflicts, Conflict
 
+from proton.session.api import Fido2Assertion
+
 logger = logging.getLogger(__name__)
 
 DOT = "."  # pylint: disable=invalid-name
+TWO_FACTOR_AUTH_SECURITY_KEY_ENV_VARIABLE_NAME = "PROTON_VPN_U2F"
 
 
 class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-attributes
@@ -126,6 +130,20 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         :return: A Future object wrapping the result of the 2FA verification.
         """
         return self.executor.submit(self._api.submit_2fa_code, code)
+
+    def generate_2fa_fido2_assertion(self) -> Future:
+        """
+        Scans for security keys and generates a FIDO2 assertion for U2F authentication.
+        :return: A Future object wrapping the Fido2Assertion.
+        """
+        return self.executor.submit(self._api.generate_2fa_fido2_assertion)
+
+    def submit_2fa_fido2(self, fido2_assertion: Fido2Assertion) -> Future:
+        """
+        Submits a 2-factor authentication using U2F for verification.
+        :return: A Future object wrapping the result of the 2FA verification.
+        """
+        return self.executor.submit(self._api.submit_2fa_fido2, fido2_assertion)
 
     def logout(self) -> Future:
         """
@@ -576,3 +594,18 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             bool: `True` if available, `False` otherwise
         """
         return self._connector.is_split_tunneling_available
+
+    @property
+    def fido2_available(self) -> bool:
+        """
+        Returns if FIDO2 is available.
+        """
+        return self._api.is_fido2_lib_available
+
+    @property
+    def security_key_env_variable_set(self) -> bool:
+        """Returns if the environment variable is set for security key 2FA."""
+        env_variable_value = os.environ.get(
+            TWO_FACTOR_AUTH_SECURITY_KEY_ENV_VARIABLE_NAME, "").lower()
+
+        return env_variable_value in ["1", "true", "yes", "y"]

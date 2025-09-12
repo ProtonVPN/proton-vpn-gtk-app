@@ -1,3 +1,12 @@
+version: 4.11.0rc6
+time: 2025/09/11 15:36
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: add 2fa security device verification"
+---
 version: 4.11.0rc5
 time: 2025/09/04 15:08
 author: Pep Llaneras

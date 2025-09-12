@@ -30,8 +30,32 @@ class ProtonVPNLogo(Gtk.Image):
         pixbuf = icons.get(
             Path("proton-vpn-logo.svg"),
             width=300,
-            height=300,
             preserve_aspect_ratio=True
         )
         self.set_name("login-logo")
+        self.set_from_pixbuf(pixbuf)
+
+
+class TwoFactorAuthProtonVPNLogo(Gtk.Image):
+    """Proton VPN logo shown in the login widget."""
+    def __init__(self):
+        super().__init__()
+        pixbuf = icons.get(
+            Path("proton-vpn-logo.svg"),
+            width=200,
+            preserve_aspect_ratio=True
+        )
+        self.set_name("two-factor-auth-vpn-logo")
+        self.set_from_pixbuf(pixbuf)
+
+
+class SecurityKeyLogo(Gtk.Image):
+    """Proton VPN logo shown in the login widget."""
+    def __init__(self):
+        super().__init__()
+        pixbuf = icons.get(
+            Path("security-key.svg"),
+            width=300,
+            preserve_aspect_ratio=True
+        )
         self.set_from_pixbuf(pixbuf)

@@ -34,6 +34,12 @@ label.success {
 #login-logo {
     margin-top: 75px;
     margin-bottom: 40px;
+    margin-right: 10px;
+}
+
+#two-factor-auth-vpn-logo {
+    margin-top: 2em;
+    margin-bottom: 1em;
 }
 
 #bug-report-content,
@@ -144,4 +150,15 @@ label.signal-danger {
     padding: 12px 16px 12px 16px;
     border-radius: 5px;
     border: 1px solid rgba(155, 155, 155, 0.2);
+}
+
+#two-factor-auth-widget > label.two-factor-auth-stack-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+.default-loading-widget-label{
+    margin-left: 1.8em;
+	margin-right: 1.8em;
 }

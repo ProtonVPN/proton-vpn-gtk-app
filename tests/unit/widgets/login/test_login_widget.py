@@ -23,35 +23,6 @@ from proton.vpn.app.gtk.widgets.login.login_widget import LoginStack, KillSwitch
 from tests.unit.testing_utils import process_gtk_events
 
 
-def test_login_stack_signals_user_logged_in_when_user_is_authenticated_and_2fa_is_not_required():
-    login_stack = LoginStack(controller=Mock(), notifications=Mock(), overlay_widget=Mock())
-
-    user_logged_in_callback = Mock()
-    login_stack.connect("user-logged-in", user_logged_in_callback)
-
-    two_factor_auth_required = False
-    login_stack.login_form.emit("user-authenticated", two_factor_auth_required)
-
-    user_logged_in_callback.assert_called_once()
-
-
-def test_login_stack_asks_for_2fa_when_required():
-    login_stack = LoginStack(controller=Mock(), notifications=Mock(), overlay_widget=Mock())
-    two_factor_auth_required = True
-    login_stack.login_form.emit("user-authenticated", two_factor_auth_required)
-
-    process_gtk_events()
-
-    assert login_stack.active_form == login_stack.two_factor_auth_form
-
-
-def test_login_stack_switches_back_to_login_form_if_session_expires_during_2fa():
-    login_stack = LoginStack(controller=Mock(), notifications=Mock(), overlay_widget=Mock())
-
-    login_stack.display_form(login_stack.two_factor_auth_form)
-    login_stack.two_factor_auth_form.emit("session-expired")
-
-    assert login_stack.active_form == login_stack.login_form
 
 
 @patch("proton.vpn.app.gtk.widgets.login.login_widget.Gtk.Box.pack_start")

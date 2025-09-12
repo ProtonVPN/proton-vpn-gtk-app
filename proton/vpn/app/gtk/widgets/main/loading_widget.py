@@ -53,6 +53,11 @@ class DefaultLoadingWidget(BaseLoadingContainerWidget):
     def __init__(self, label: str):
         super().__init__()
         self._label = Gtk.Label.new(label)
+        self._label.set_line_wrap(True)
+        self._label.set_max_width_chars(1)
+        self._label.set_hexpand(True)
+        self._label.set_justify(Gtk.Justification.CENTER)
+        self._label.get_style_context().add_class("default-loading-widget-label")
         self._spinner = Spinner()
 
         self.pack_start(self._label, expand=False, fill=False, padding=0)

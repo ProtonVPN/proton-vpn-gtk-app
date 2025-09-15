@@ -1,4 +1,5 @@
 ## 4.11.0
+- Include mode now available for Split Tunneling. Choose to route only selected apps through the encrypted tunnel while keeping everything else on your regular connection.
 - Bug fixes and stability improvements.
 
 ## 4.10.0

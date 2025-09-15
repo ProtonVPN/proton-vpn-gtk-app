@@ -1,56 +1,16 @@
-version: 4.11.0rc6
-time: 2025/09/11 15:36
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- "feat: add 2fa security device verification"
----
-version: 4.11.0rc5
-time: 2025/09/04 15:08
+version: 4.11.0
+time: 2025/09/15 9:00
 author: Pep Llaneras
 email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
-- "fix: change ST toaster for include mode"
----
-version: 4.11.0rc4
-time: 2025/08/25 08:21
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: fix add window title word duplication"
----
-version: 4.11.0rc3
-time: 2025/08/20 09:44
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: ensure label mode is updated when switching modes"
----
-version: 4.11.0rc2
-time: 2025/08/11 12:39
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- "feat: add include mode"
----
-version: 4.11.0rc1
-time: 2025/08/06 14:12
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: hide proton vpn app from st"
+- "feat: add 2fa security device verification (Alexandru Cheltuitor, Luke Titley, Pep Llaneras)"
+- "fix: change ST toaster for include mode (Pep Llaneras)"
+- "fix: fix add window title word duplication (Alexandru Cheltuitor)"
+- "fix: ensure label mode is updated when switching modes (Alexandru Cheltuitor)"
+- "feat: add include mode (Alexandru Cheltuitor, Luke Titley, Pep Llaneras)"
+- "fix: hide proton vpn app from st (Alexandru Cheltuitor)"
 ---
 version: 4.10.0
 time: 2025/08/06 07:53

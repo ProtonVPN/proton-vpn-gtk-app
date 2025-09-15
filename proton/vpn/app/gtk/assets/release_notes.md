@@ -1,3 +1,6 @@
+## 4.11.0
+- Bug fixes and stability improvements.
+
 ## 4.10.0
 - Secure only what you need with Split Tunneling. Route selected apps through the encrypted tunnel while keeping others on your regular connection, giving you even more flexibility and control.
 

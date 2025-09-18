@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 import gi
 
 from proton.vpn.app.gtk.widgets.main.notifications import DialogButton
-from proton.vpn.connection.exceptions import AuthenticationError
+from proton.vpn.connection.exceptions import AuthenticationError, HardJailedTwoFAError
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
     ProtonAPIAuthenticationNeeded, ProtonAPIMissingScopeError
 from proton.vpn.session.exceptions import ServerNotFoundError
@@ -56,6 +56,12 @@ class ExceptionHandler:
         "Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP."
         "\n\nClick \"Cancel Connection\" to restore your Internet connection. "
         "If the issue persists please try to sign out and in."
+    )
+    VPN_HARD_JAILED_2FA_ERROR_TITLE = "2FA Required"
+    VPN_HARD_JAILED_2FA_ERROR_MESSAGE = (
+        "You are connected to the VPN, but all traffic is blocked.\nYou need to"
+        " go to the authentication page provided by security and authenticate"
+        " with your hardware key.\nAfter that, the traffic will be enabled."
     )
 
     def __init__(self, main_widget: "MainWidget" = None, controller: "Controller" = None):
@@ -128,6 +134,8 @@ class ExceptionHandler:
             self._on_server_not_found(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, AuthenticationError):
             self._on_vpn_authentication_error(exc_type, exc_value, exc_traceback)
+        elif isinstance(exc_value, HardJailedTwoFAError):
+            self._on_hard_jailed_2fa_error(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, OSError) and exc_value.errno == NO_SPACE_LEFT_ON_DEVICE_ERRNO:
             self._on_no_space_left_on_device(exc_type, exc_value, exc_traceback)
         elif issubclass(exc_type, AssertionError):
@@ -228,6 +236,19 @@ class ExceptionHandler:
             self.main_widget.notifications.show_error_dialog(
                 title=self.VPN_AUTHENTICATION_ERROR_TITLE,
                 message=self.VPN_AUTHENTICATION_ERROR_MESSAGE
+            )
+
+        logger.error(
+            exc_value,
+            category="APP", event="ERROR",
+            exc_info=(exc_type, exc_value, exc_traceback)
+        )
+
+    def _on_hard_jailed_2fa_error(self, exc_type, exc_value, exc_traceback):
+        if self.main_widget:
+            self.main_widget.notifications.show_error_dialog(
+                title=self.VPN_HARD_JAILED_2FA_ERROR_TITLE,
+                message=self.VPN_HARD_JAILED_2FA_ERROR_MESSAGE
             )
 
         logger.error(

@@ -8,3 +8,5 @@ venv
 *.code-workspace
 venv_testing
 .vscode
+dist/
+package.spec

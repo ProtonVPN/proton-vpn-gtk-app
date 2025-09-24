@@ -1,4 +1,5 @@
 %define unmangled_name proton-vpn-gtk-app
+%define pep_625_name proton_vpn_gtk_app
 %define version {version}
 %define upstream_version {upstream_version}
 %define logo_filename proton-vpn-logo.svg
@@ -15,11 +16,11 @@ Group: ProtonVPN
 License: GPLv3
 Vendor: Proton Technologies AG <opensource@proton.me>
 URL: https://github.com/ProtonVPN/%{{unmangled_name}}
-Source0: %{{unmangled_name}}-%{{upstream_version}}.tar.gz
+Source0: %{{pep_625_name}}-%{{upstream_version}}.tar.gz
 Source3: %{{desktop_entry_filename}}
 Source4: %{{logo_filename}}
 BuildArch: noarch
-BuildRoot: %{{_tmppath}}/%{{unmangled_name}}-%{{version}}-%{{release}}-buildroot
+BuildRoot: %{{_tmppath}}/%{{pep_625_name}}-%{{version}}-%{{release}}-buildroot
 
 BuildRequires: desktop-file-utils
 BuildRequires: python3-devel
@@ -48,23 +49,22 @@ Suggests: libappindicator-gtk3
 Package %{{unmangled_name}}.
 
 %prep
-%setup -n %{{unmangled_name}}-%{{upstream_version}}
+%setup -q -n %{{pep_625_name}}-%{{upstream_version}}
 
 %build
-%{{python3}} setup.py build
+%pyproject_wheel
 
 %install
+%pyproject_install
+%pyproject_save_files proton
 desktop-file-install --dir=%{{buildroot}}%{{_datadir}}/applications %{{SOURCE3}}
 desktop-file-validate %{{buildroot}}%{{_datadir}}/applications/%{{desktop_entry_filename}}
 mkdir -p %{{buildroot}}%{{_datadir}}/icons/hicolor/scalable/apps
 cp %{{SOURCE4}} %{{buildroot}}%{{_datadir}}/icons/hicolor/scalable/apps/%{{logo_filename}}
-%{{python3}} setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
 
-%files -f INSTALLED_FILES
-%{{python3_sitelib}}/proton/
-%{{python3_sitelib}}/proton_vpn_gtk_app-%{{upstream_version}}*.egg-info/
+%files -n %{{name}} -f %{{pyproject_files}}
+%{{_bindir}}/protonvpn-app
 %{{_datadir}}/applications/%{{desktop_entry_filename}}
 %{{_datadir}}/icons/hicolor/scalable/apps/%{{logo_filename}}
-%defattr(-,root,root)
 
 %changelog

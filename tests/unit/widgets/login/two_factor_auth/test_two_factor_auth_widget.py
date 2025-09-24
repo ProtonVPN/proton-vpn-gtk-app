@@ -48,7 +48,7 @@ def test_two_factor_auth_widget_displays_security_key_form_when_fido2_is_availab
         assert not two_factor_auth_widget.stack_switch.get_stack()
 
 
-def test_two_factor_auth_widget_signals_two_factor_auth_successful_when_received_two_factor_auth_successful_signal():
+def test_two_factor_auth_widget_forwards_two_factor_auth_successful_signal_when_received_from_two_factor_auth_stack():
     controller_mock = Mock()
     controller_mock.fido2_available = True
     controller_mock.security_key_env_variable_set = True
@@ -61,16 +61,3 @@ def test_two_factor_auth_widget_signals_two_factor_auth_successful_when_received
     process_gtk_events()
 
     two_factor_auth_successful_callback.assert_called_once()
-
-
-def test_two_factor_auth_widget_signals_session_expired_when_session_expires():
-    controller_mock = Mock()
-    session_expired_callback = Mock()
-
-    two_factor_auth_widget = TwoFactorAuthWidget(controller_mock, Mock(), Mock())
-    two_factor_auth_widget.connect("session-expired", session_expired_callback)
-    two_factor_auth_widget.two_factor_auth_stack.emit("session-expired")
-
-    process_gtk_events()
-
-    session_expired_callback.assert_called_once()

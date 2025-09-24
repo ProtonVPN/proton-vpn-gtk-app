@@ -79,27 +79,21 @@ class TwoFactorAuthWidget(Gtk.Box):
 
         self.two_factor_auth_stack.connect(
             "two-factor-auth-successful",
-            lambda _: self._signal_two_factor_auth_successful()
+            lambda _: self.emit("two-factor-auth-successful")
         )
         self.two_factor_auth_stack.connect(
-            "session-expired",
-            lambda _: self._signal_session_expired()
-        )
+                "two-factor-auth-cancelled",
+                lambda _: self.emit("two-factor-auth-cancelled")
+            )
 
     def reset(self):
         """Resets the widget to its initial state."""
         self.two_factor_auth_stack.reset()
-
-    def _signal_two_factor_auth_successful(self):
-        self.emit("two-factor-auth-successful")
-
-    def _signal_session_expired(self):
-        self.emit("session-expired")
 
     @GObject.Signal
     def two_factor_auth_successful(self):
         """Signal emitted after a successful 2FA."""
 
     @GObject.Signal
-    def session_expired(self):
-        """Signal emitted when the session expired and the user has to log in again."""
+    def two_factor_auth_cancelled(self):
+        """Signal emitted after 2FA was cancelled by the user."""

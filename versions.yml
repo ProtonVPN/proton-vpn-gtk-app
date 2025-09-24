@@ -1,3 +1,12 @@
+version: 4.12.0rc3
+time: 2025/09/24 18:00
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: Handle U2F PIN"
+---
 version: 4.12.0rc2
 time: 2025/09/22 10:00
 author: Alexandru Cheltuitor

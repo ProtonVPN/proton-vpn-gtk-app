@@ -20,175 +20,17 @@ from concurrent.futures import Future
 from unittest.mock import Mock
 
 import pytest
-from proton.vpn.session.dataclasses import LoginResult
 
+from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.two_factor_auth_stack import TwoFactorAuthStack
-from proton.vpn.app.gtk.widgets.login.two_factor_auth.authenticator_app_form import AuthenticatorAppForm
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.security_key_form import SecurityKeyForm
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from tests.unit.testing_utils import process_gtk_events
-from proton.vpn.session.exceptions import \
-    SecurityKeyError, SecurityKeyNotFoundError, InvalidSecurityKeyError, \
-    SecurityKeyTimeoutError, Fido2NotSupportedError
+
 
 
 SECURITY_KEY_FORM_AUTHENTICATION_VALUE = "SomeTestValue"
-
-
-@pytest.fixture
-def controller_mocking_expired_session_before_submitting_2fa():
-    controller_mock = Mock()
-
-    login_result_future = Future()
-    login_result_future.set_result(
-        # authenticated is False because the session expired
-        LoginResult(success=False, authenticated=False, twofa_required=True)
-    )
-    controller_mock.submit_2fa_code.return_value = login_result_future
-
-    return controller_mock
-
-
-class TestAuthenticatorAppForm:
-
-    @pytest.fixture
-    def controller_mocking_successful_2fa_with_authenticator_app(self):
-        controller_mock = Mock()
-
-        login_result_future = Future()
-        login_result_future.set_result(
-            LoginResult(success=True, authenticated=True, twofa_required=False)
-        )
-        controller_mock.submit_2fa_code.return_value = login_result_future
-
-        return controller_mock
-
-    def test_two_factor_auth_stack_signals_successful_2fa_with_authenticator_app(
-        self, controller_mocking_successful_2fa_with_authenticator_app
-    ):
-        code = "2fa-code"
-        authenticator_app_form = AuthenticatorAppForm()
-        two_factor_auth_form = TwoFactorAuthStack(
-            controller=controller_mocking_successful_2fa_with_authenticator_app,
-            notifications=Mock(),
-            overlay_widget=Mock(),
-            authenticator_app_form=authenticator_app_form
-        )
-        two_factor_auth_successful_callback = Mock()
-        two_factor_auth_form.connect(
-            "two-factor-auth-successful", two_factor_auth_successful_callback
-        )
-
-        authenticator_app_form.two_factor_auth_code = code
-        authenticator_app_form.authenticate_button_click()
-
-        process_gtk_events()
-
-        controller_mocking_successful_2fa_with_authenticator_app.submit_2fa_code.assert_called_once_with(code)
-        two_factor_auth_successful_callback.assert_called_once()
-
-    @pytest.fixture
-    def controller_mocking_wrong_2fa_authenticator_app_code(self):
-        controller_mock = Mock()
-
-        login_result_future = Future()
-        login_result_future.set_result(
-            LoginResult(success=False, authenticated=True, twofa_required=True)
-        )
-        controller_mock.submit_2fa_code.return_value = login_result_future
-
-        return controller_mock
-
-    def test_two_factor_auth_stack_shows_error_when_submitting_wrong_2fa_authenticator_app_code(
-        self, controller_mocking_wrong_2fa_authenticator_app_code
-    ):
-        notifications_mock = Mock()
-        authenticator_app_form = AuthenticatorAppForm()
-
-        two_factor_auth_form = TwoFactorAuthStack(
-            controller=controller_mocking_wrong_2fa_authenticator_app_code,
-            notifications=notifications_mock,
-            overlay_widget=Mock(),
-            authenticator_app_form=authenticator_app_form
-        )
-        authenticator_app_form.authenticate_button_click()
-
-        process_gtk_events()
-
-        notifications_mock.show_error_message.assert_called_once_with(two_factor_auth_form.INCORRECT_TWOFA_CODE_MESSAGE)
-
-    def test_two_factor_auth_stack_shows_error_when_session_expires_before_submitting_2fa_authenticator_app_code(
-        self, controller_mocking_expired_session_before_submitting_2fa
-    ):
-        notifications_mock = Mock()
-        authenticator_app_form = AuthenticatorAppForm()
-
-        two_factor_auth_form = TwoFactorAuthStack(
-            controller=controller_mocking_expired_session_before_submitting_2fa,
-            notifications=notifications_mock,
-            overlay_widget=Mock(),
-            authenticator_app_form=authenticator_app_form
-        )
-        authenticator_app_form.authenticate_button_click()
-
-        process_gtk_events()
-
-        notifications_mock.show_error_message.assert_called_once_with(two_factor_auth_form.SESSION_EXPIRED_MESSAGE)
-
-
-    def test_two_factor_auth_stack_display_loading_widget_when_submitting_successful_2fa_authenticator_app_code(
-        self, controller_mocking_successful_2fa_with_authenticator_app
-    ):
-        overlay_widget_mock = Mock()
-        authenticator_app_form = AuthenticatorAppForm()
-
-        two_factor_auth_form = TwoFactorAuthStack(
-            controller=controller_mocking_successful_2fa_with_authenticator_app,
-            notifications=Mock(),
-            overlay_widget=overlay_widget_mock,
-            authenticator_app_form=authenticator_app_form
-        )
-        two_factor_auth_successful_callback = Mock()
-        two_factor_auth_form.connect(
-            "two-factor-auth-successful", two_factor_auth_successful_callback
-        )
-        authenticator_app_form.two_factor_auth_code = "2fa-code"
-
-        authenticator_app_form.authenticate_button_click()
-
-        widget = overlay_widget_mock.show.call_args[0][0]
-        overlay_widget_mock.show.assert_called_once()
-        assert widget.get_label() == two_factor_auth_form.LOGGING_IN_MESSAGE
-
-        # When we show the loading widget, it hides the previous one automatically
-        overlay_widget_mock.reset_mock()
-
-        process_gtk_events()
-
-        overlay_widget_mock.hide.assert_called_once()
-
-    def test_two_factor_auth_stack_hide_loading_widget_when_when_submitting_wrong_2fa_authenticator_app_code(
-        self, controller_mocking_wrong_2fa_authenticator_app_code
-    ):
-        overlay_widget_mock = Mock()
-        authenticator_app_form = AuthenticatorAppForm()
-        two_factor_auth_form = TwoFactorAuthStack(
-            controller=controller_mocking_wrong_2fa_authenticator_app_code,
-            notifications=Mock(),
-            overlay_widget=overlay_widget_mock,
-            authenticator_app_form=authenticator_app_form
-        )
-        authenticator_app_form.authenticate_button_click()
-
-        widget = overlay_widget_mock.show.call_args[0][0]
-        overlay_widget_mock.show.assert_called_once()
-        assert widget.get_label() == two_factor_auth_form.LOGGING_IN_MESSAGE
-
-        # When we show the loading widget, it hides the previous one automatically
-        overlay_widget_mock.reset_mock()
-
-        process_gtk_events()
-
-        overlay_widget_mock.hide.assert_called_once()
 
 
 class TestSecurityKeyForm:
@@ -205,115 +47,61 @@ class TestSecurityKeyForm:
     def test_two_factor_auth_stack_security_key_form_visibility_when_fido2_and_security_key_env_variable_are_configured(
         self, fido2_available, security_key_env_variable_set
     ):
-        controller_mock = Mock()
+        controller_mock = Mock(spec=Controller)
         controller_mock.fido2_available = fido2_available
         controller_mock.security_key_env_variable_set = security_key_env_variable_set
 
-        security_key_form = SecurityKeyForm()
-        two_factor_auth_form = TwoFactorAuthStack(
+        security_key_form = SecurityKeyForm(controller_mock, notifications=Mock(), overlay_widget=Mock())
+        two_factor_auth_stack = TwoFactorAuthStack(
             controller=controller_mock,
-            notifications=Mock(),
-            overlay_widget=Mock(),
+            notifications=Mock(spec=Notifications),
+            overlay_widget=Mock(spec=OverlayWidget),
             security_key_form=security_key_form
         )
         if fido2_available and security_key_env_variable_set:
-            assert two_factor_auth_form.security_key_form
+            assert two_factor_auth_stack.security_key_form
         else:
-            assert not two_factor_auth_form.security_key_form
+            assert not two_factor_auth_stack.security_key_form
 
-    @pytest.fixture
-    def controller_mocking_successful_2fa_with_security_key(self):
-        controller_mock = Mock()
-        controller_mock.fido2_available = True
-        controller_mock.security_key_env_variable_set = True
 
-        login_result_future = Future()
-        login_result_future.set_result(
-            LoginResult(success=True, authenticated=True, twofa_required=False)
-        )
+def test_two_factor_auth_stack_forwards_auth_successful_signal_when_received_from_auth_app_form():
+    controller_mock = Mock(spec=Controller)
+    controller_mock.fido2_available = False
+    controller_mock.security_key_env_variable_set = False
 
-        fido2_assertion_future = Future()
-        fido2_assertion_future.set_result(SECURITY_KEY_FORM_AUTHENTICATION_VALUE)
-
-        controller_mock.generate_2fa_fido2_assertion.return_value = fido2_assertion_future
-        controller_mock.submit_2fa_fido2.return_value = login_result_future
-
-        return controller_mock
-
-    def test_two_factor_auth_stack_signals_successful_2fa_with_security_key(
-        self, controller_mocking_successful_2fa_with_security_key
-    ):
-        code = "2fa-code"
-        security_key_form = SecurityKeyForm()
-        two_factor_auth_form = TwoFactorAuthStack(
-            controller=controller_mocking_successful_2fa_with_security_key,
-            notifications=Mock(),
-            overlay_widget=Mock(),
-            security_key_form=security_key_form
-        )
-        two_factor_auth_successful_callback = Mock()
-        two_factor_auth_form.connect(
-            "two-factor-auth-successful", two_factor_auth_successful_callback
-        )
-
-        security_key_form.set_pin_code(code)
-        security_key_form.authenticate_button_click()
-
-        process_gtk_events()
-
-        controller_mocking_successful_2fa_with_security_key.submit_2fa_fido2.assert_called_once_with(SECURITY_KEY_FORM_AUTHENTICATION_VALUE)
-        two_factor_auth_successful_callback.assert_called_once()
-
-    @pytest.mark.parametrize(
-        "exception,error_message",
-        [
-            (Fido2NotSupportedError(), TwoFactorAuthStack.FIDO2_NOT_SUPPORTED_MESSAGE),
-            (SecurityKeyNotFoundError(), TwoFactorAuthStack.SECURITY_KEY_NOT_FOUND_MESSAGE),
-            (InvalidSecurityKeyError(), TwoFactorAuthStack.INVALID_SECURITY_KEY_MESSAGE),
-            (SecurityKeyTimeoutError(), TwoFactorAuthStack.GENERIC_ERROR_MESSAGE),
-            (SecurityKeyError(), TwoFactorAuthStack.GENERIC_ERROR_MESSAGE),
-        ]
+    two_factor_auth_stack = TwoFactorAuthStack(
+        controller=controller_mock,
+        notifications=Mock(spec=Notifications),
+        overlay_widget=Mock(spec=OverlayWidget),
     )
-    def test_two_factor_auth_stack_shows_error_when_submitting_2fa_security_key_and_exception_is_raised(
-        self, exception, error_message
-    ):
-        controller_mock = Mock()
-        controller_mock.fido2_available = True
-        controller_mock.security_key_env_variable_set = True
 
-        login_result_future = Future()
-        login_result_future.set_exception(exception)
-        controller_mock.generate_2fa_fido2_assertion.return_value = login_result_future
+    two_factor_auth_successful_callback = Mock()
+    two_factor_auth_stack.connect("two-factor-auth-successful", two_factor_auth_successful_callback)
 
-        notifications_mock = Mock()
-        security_key_form = SecurityKeyForm()
+    two_factor_auth_stack.authenticator_app_form.emit("two-factor-auth-successful")
 
-        two_factor_auth_form = TwoFactorAuthStack(
-            controller=controller_mock,
-            notifications=notifications_mock,
-            overlay_widget=Mock(),
-            security_key_form=security_key_form
-        )
-        security_key_form.authenticate_button_click()
+    process_gtk_events()
 
-        process_gtk_events()
+    two_factor_auth_successful_callback.assert_called_once_with(two_factor_auth_stack)
 
-        notifications_mock.show_error_message.assert_called_once_with(error_message)
 
-    def test_two_factor_auth_stack_shows_error_when_session_expires_before_submitting_2fa_security_key_form(
-        self, controller_mocking_expired_session_before_submitting_2fa
-    ):
-        notifications_mock = Mock()
-        security_key_form = SecurityKeyForm()
+def test_two_factor_auth_stack_forwards_auth_successful_signal_when_received_from_security_key_app_form():
+    controller_mock = Mock(spec=Controller)
+    controller_mock.fido2_available = True
+    controller_mock.security_key_env_variable_set = True
 
-        two_factor_auth_form = TwoFactorAuthStack(
-            controller=controller_mocking_expired_session_before_submitting_2fa,
-            notifications=notifications_mock,
-            overlay_widget=Mock(),
-            authenticator_app_form=security_key_form
-        )
-        security_key_form.authenticate_button_click()
+    two_factor_auth_stack = TwoFactorAuthStack(
+        controller=controller_mock,
+        notifications=Mock(spec=Notifications),
+        overlay_widget=Mock(spec=OverlayWidget),
+    )
 
-        process_gtk_events()
+    two_factor_auth_successful_callback = Mock()
+    two_factor_auth_stack.connect("two-factor-auth-successful", two_factor_auth_successful_callback)
 
-        notifications_mock.show_error_message.assert_called_once_with(two_factor_auth_form.SESSION_EXPIRED_MESSAGE)
+    two_factor_auth_stack.security_key_form.emit("two-factor-auth-successful")
+
+    process_gtk_events()
+
+    two_factor_auth_successful_callback.assert_called_once_with(two_factor_auth_stack)
+

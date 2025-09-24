@@ -22,13 +22,17 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from typing import Protocol
 
 from gi.repository import GObject
-from proton.vpn.app.gtk import Gtk
 
+from proton.vpn import logging
+
+from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.login.login_form import LoginForm
 from proton.vpn.app.gtk.widgets.login.two_factor_auth import TwoFactorAuthWidget
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.controller import Controller
+
+logger = logging.getLogger(__name__)
 
 
 class ResettableWidget(Protocol):  # pylint: disable=too-few-public-methods
@@ -51,6 +55,8 @@ class LoginStack(Gtk.Stack):
         notifications: Notifications, overlay_widget: OverlayWidget
     ):
         super().__init__()
+
+        self._notifications = notifications
 
         self.set_name("login-stack")
         self._controller = controller
@@ -77,8 +83,8 @@ class LoginStack(Gtk.Stack):
         )
 
         self.two_factor_auth_widget.connect(
-            "session-expired",
-            lambda _: self._on_session_expired_during_2fa()
+            "two-factor-auth-cancelled",
+            lambda _: self._on_two_factor_auth_cancelled()
         )
 
     def _on_user_authenticated(self, two_factor_auth_required: bool):
@@ -90,7 +96,7 @@ class LoginStack(Gtk.Stack):
     def _on_two_factor_auth_successful(self):
         self._signal_user_logged_in()
 
-    def _on_session_expired_during_2fa(self):
+    def _on_two_factor_auth_cancelled(self):
         self.display_form(self.login_form)
 
     @GObject.Signal

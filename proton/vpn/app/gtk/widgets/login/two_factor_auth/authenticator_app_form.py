@@ -18,12 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from gi.repository import GObject
+from concurrent.futures import Future
+from gi.repository import GLib, GObject
 
 from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.authenticate_button import AuthenticateButton
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +51,22 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
     TWOFA_REQUIRED_CHARACTERS = 6
     RECOVERY_REQUIRED_CHARACTERS = 8
 
-    def __init__(self, authenticate_button: AuthenticateButton = None):
+    INCORRECT_TWOFA_CODE_MESSAGE = "Incorrect 2FA code."
+    LOGGING_IN_MESSAGE = "Signing in..."
+
+    def __init__(
+            self,
+            controller: Controller,
+            notifications: Notifications,
+            overlay_widget: OverlayWidget,
+            authenticate_button: AuthenticateButton = None
+    ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
+
+        self._controller = controller
+        self._notifications = notifications
+        self._overlay_widget = overlay_widget
+
         self.set_name("two-factor-auth-form")
         self._display_2fa_mode = True
 
@@ -111,6 +129,13 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
             self._toggle_authentication_mode_button,
             expand=False, fill=False, padding=0
         )
+
+        # Button to cancel 2FA.
+        self._cancel_button = Gtk.Button(label="Cancel")
+        self._cancel_button.get_style_context().add_class("danger")
+        self._cancel_button.connect("clicked", self._on_cancel_button_clicked)
+        self._button_box.pack_start(self._cancel_button, expand=False,
+                                    fill=False, padding=0)
 
         # Pressing enter on the password entry triggers the clicked event
         # on the login button.
@@ -227,13 +252,46 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         """Sets the label text within `toggle_authentication_mode_button`"""
         self._toggle_authentication_mode_button.set_label(newvalue)
 
+    def _on_cancel_button_clicked(self, _):
+        self.emit("two-factor-auth-cancelled")
+        self.reset()
+
     def _on_authenticate_button_clicked(self, _):
         """Called when the authenticate button is clicked."""
-        self.emit("authenticate-button-clicked", self.two_factor_auth_code)
+        logger.info(
+            "Clicked on authenticate via authenticator app",
+            category="UI", subcategory="LOGIN-2FA", event="CLICK"
+        )
+        self._overlay_widget.show_message(self.LOGGING_IN_MESSAGE)
+
+        future = self._controller.submit_2fa_code(self.two_factor_auth_code)
+        future.add_done_callback(
+            lambda future: GLib.idle_add(self._on_2fa_code_submission_result, future)
+        )
+
+    def _on_2fa_code_submission_result(self, future: Future):
+        try:
+            result = future.result()
+        finally:
+            self.reset()
+            self._overlay_widget.hide()
+
+        if result.success:
+            self.emit("two-factor-auth-successful")
+        else:
+            self._notifications.show_error_message(self.INCORRECT_TWOFA_CODE_MESSAGE)
+            logger.info(
+                self.INCORRECT_TWOFA_CODE_MESSAGE, category="APP",
+                subcategory="LOGIN-2FA", event="RESULT"
+            )
 
     @GObject.Signal
-    def authenticate_button_clicked(self, totp_code: str):
-        """Signal emitted after the authenticate button is clicked."""
+    def two_factor_auth_successful(self):
+        """Signal emitted after a successful 2FA."""
+
+    @GObject.Signal
+    def two_factor_auth_cancelled(self):
+        """Signal emitted after 2FA was cancelled by the user."""
 
     @GObject.Signal
     def toggle_authentication_mode_button_clicked(self):

@@ -21,6 +21,7 @@ import os
 import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import Future
 from importlib import metadata
+from threading import Event
 from types import TracebackType
 from typing import Optional, Type, Callable, Union, Tuple
 
@@ -37,6 +38,7 @@ from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.core.settings import Settings
 from proton.vpn.session.servers import LogicalServer
 from proton.vpn.session.session import FeatureFlags
+from proton.vpn.session.u2f_interaction import UserInteraction
 
 from proton.vpn.connection.enum import KillSwitchSetting as\
     KillSwitchSettingEnum
@@ -131,12 +133,22 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """
         return self.executor.submit(self._api.submit_2fa_code, code)
 
-    def generate_2fa_fido2_assertion(self) -> Future:
+    def generate_2fa_fido2_assertion(
+            self,
+            user_interaction: UserInteraction,
+            cancel_assertion: Event) -> Future:
         """
         Scans for security keys and generates a FIDO2 assertion for U2F authentication.
+        :param user_interaction: object handling any required user interaction
+            while generating the assertion.
+        :param cancel_assertion: optional event that can be set to cancel the
+        fido 2 assertion process.
         :return: A Future object wrapping the Fido2Assertion.
         """
-        return self.executor.submit(self._api.generate_2fa_fido2_assertion)
+        return self.executor.submit(
+            self._api.generate_2fa_fido2_assertion,
+            user_interaction,
+            cancel_assertion)
 
     def submit_2fa_fido2(self, fido2_assertion: Fido2Assertion) -> Future:
         """

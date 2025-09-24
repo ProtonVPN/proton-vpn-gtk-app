@@ -19,22 +19,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from dataclasses import dataclass
-from gi.repository import GObject
+import threading
+from concurrent.futures import Future
+from typing import Optional
+
+from gi.repository import GLib, GObject
+
+from proton.vpn import logging
+from proton.vpn.session.exceptions import \
+    SecurityKeyError, SecurityKeyNotFoundError, InvalidSecurityKeyError, \
+    SecurityKeyPINNotSetError, SecurityKeyPINInvalidError, Fido2NotSupportedError
 
 from proton.vpn.app.gtk import Gtk
-
+from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.login.logo import SecurityKeyLogo
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import SettingDescription
+from proton.vpn.app.gtk.widgets.login.password_entry import PasswordEntry
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.authenticate_button import AuthenticateButton
+from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
+from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
+logger = logging.getLogger(__name__)
 
 LEARN_MORE_LINK = '<a href="https://protonvpn.com/support/#">Learn more</a>'
-
-
-@dataclass
-class SecurityKeyFormData:
-    """Data class for the security key form."""
 
 
 class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
@@ -47,15 +54,42 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
         + LEARN_MORE_LINK
     PIN_CODE_LABEL = "PIN code"
 
-    def __init__(self, authenticate_button: AuthenticateButton = None):
+    MULTIPLE_SECURITY_KEYS_FOUND = "Multiple security keys were found. Tap one to select it."
+    PHYSICAL_VERIFICATION_MESSAGE = "If your security key has a button or a gold disc, tap it now."
+    SECURITY_KEY_NOT_FOUND_MESSAGE = "Two-factor authentication failed: No security key detected"
+    INVALID_SECURITY_KEY_MESSAGE = "Two-factor authentication failed: The security key you used " \
+        "is not linked to your Proton Account."
+    FIDO2_NOT_SUPPORTED_MESSAGE = "Two-factor authentication failed. Security key 2FA is not " \
+        "enabled for your account."
+    SECURITY_KEY_PIN_NOT_SET_MESSAGE = "Two-factor authentication failed: " \
+        "Your security key has no PIN set"
+    SECURITY_KEY_PIN_INVALID_MESSAGE = "Two-factor authentication failed: Incorrect PIN"
+    GENERIC_ERROR_MESSAGE = "An unknown error occurred"
+    LOGGING_IN_MESSAGE = "Signing in..."
+
+    def __init__(
+            self,
+            controller: Controller,
+            notifications: Notifications,
+            overlay_widget: OverlayWidget,
+            authenticate_button: AuthenticateButton = None
+    ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=15)
 
         self.set_name("security-device-form")
+
+        self._controller = controller
+        self._notifications = notifications
+        self._overlay_widget = overlay_widget
 
         self._authenticate_button = authenticate_button or AuthenticateButton()
         self._authenticate_button.connect(
             "clicked", self._on_authenticate_button_clicked
         )
+
+        self._cancel_button = Gtk.Button(label="Cancel")
+        self._cancel_button.get_style_context().add_class("danger")
+        self._cancel_button.connect("clicked", self._on_cancel_button_clicked)
 
         self._instruction_label = SettingDescription(self.DESCRIPTION_LABEL)
         self._instruction_label.get_style_context().remove_class("dim-label")
@@ -65,12 +99,15 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
         self._pin_code_label = Gtk.Label(label=self.PIN_CODE_LABEL)
         self._pin_code_label.set_halign(Gtk.Align.START)
 
-        self._pin_code_entry = Gtk.Entry()
+        self._pin_code_entry = PasswordEntry()
         self._pin_code_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
         self._pin_code_entry.connect(
             "changed", self._on_pin_code_entry_changed
         )
-        self._pin_code_entry.connect("activate", lambda _: self._on_authenticate_button_clicked)
+        self._pin_code_entry.connect("activate", self._on_authenticate_button_clicked)
+
+        self._requesting_pin: Optional[threading.Event] = None
+        self._cancel_assertion: Optional[threading.Event] = None
 
         # Box is used to group the pin code label and the pin code entry.
         self._pin_code_box = Gtk.Box(
@@ -93,39 +130,113 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
         self._authenticate_box.pack_start(
             self._authenticate_button, expand=False, fill=False, padding=0
         )
-
+        self._authenticate_box.pack_start(
+            self._cancel_button, expand=False, fill=False, padding=0
+        )
         self.pack_start(self._instruction_label, expand=False, fill=False, padding=0)
         self.pack_start(SecurityKeyLogo(), expand=False, fill=False, padding=0)
-        self.pack_start(self._authenticate_box, expand=False, fill=False, padding=0)
+        self.pack_start(self._authenticate_box, expand=False, fill=False, padding=5)
+
+    @GObject.Signal
+    def two_factor_auth_cancelled(self):
+        """Signal emitted after the user cancelled 2FA"""
+
+    @GObject.Signal
+    def two_factor_auth_successful(self):
+        """Signal emitted after a successful 2FA."""
 
     def _on_authenticate_button_clicked(self, _):
         """Called when the authenticate button is clicked."""
-        self._authenticate_user_without_pin_code()
+        self._authenticate_button.set_sensitive(False)
+        if self._requesting_pin:
+            # Authenticate button clicked again after PIN request
+            self._requesting_pin.set()
+        else:
+            self._cancel_assertion = threading.Event()
+            logger.info(
+                "Clicked on authenticate via security key",
+                category="UI", subcategory="LOGIN-2FA", event="CLICK"
+            )
+            future = self._controller.generate_2fa_fido2_assertion(
+                user_interaction=self,
+                cancel_assertion=self._cancel_assertion
+            )
+            future.add_done_callback(
+                lambda future: GLib.idle_add(self._on_2fa_fido2_assertion,
+                                             future)
+            )
 
-    def _authenticate_user_without_pin_code(self):
-        self.emit("authenticate-button-clicked", SecurityKeyFormData())
+    def _on_cancel_button_clicked(self, _):
+        if self._cancel_assertion:
+            self._cancel_assertion.set()
+        self.emit("two-factor-auth-cancelled")
+        self.reset()
+
+    def _on_2fa_fido2_assertion(self, future: Future):
+        msg = None
+
+        try:
+            assertion = future.result()
+        except Fido2NotSupportedError:
+            msg = self.FIDO2_NOT_SUPPORTED_MESSAGE
+        except SecurityKeyNotFoundError:
+            msg = self.SECURITY_KEY_NOT_FOUND_MESSAGE
+        except InvalidSecurityKeyError:
+            msg = self.INVALID_SECURITY_KEY_MESSAGE
+        except SecurityKeyPINNotSetError:
+            msg = self.SECURITY_KEY_PIN_NOT_SET_MESSAGE
+        except SecurityKeyPINInvalidError:
+            msg = self.SECURITY_KEY_PIN_INVALID_MESSAGE
+        except (SecurityKeyError) as excp:
+            logger.exception(str(excp), category="APP", subcategory="LOGIN-2FA", event="ERROR")
+            msg = self.GENERIC_ERROR_MESSAGE
+
+        self.reset()
+
+        if msg:
+            self._notifications.show_error_message(msg)
+            self._overlay_widget.hide()
+            return
+
+        self._overlay_widget.show_message(self.LOGGING_IN_MESSAGE)
+
+        future = self._controller.submit_2fa_fido2(assertion)
+        future.add_done_callback(
+            lambda future: GLib.idle_add(self._on_2fa_fido2_submission_result, future)
+        )
+
+    def _on_2fa_fido2_submission_result(self, future: Future):
+        try:
+            result = future.result()
+        finally:
+            self._overlay_widget.hide()
+
+        if not result.twofa_required:
+            self.emit("two-factor-auth-successful")
+        else:
+            self._notifications.show_error_message(self.GENERIC_ERROR_MESSAGE)
 
     def _on_pin_code_box_revealer_notify_reveal_child(self, *_):
         """Called when the pin code box revealer is notified of a reveal child change."""
-        self._authenticate_button.enable = len(self._pin_code_entry.get_text().strip()) > 0
+        self._authenticate_button.enable = len(self._pin_code_entry.get_text()) > 0
 
     def _on_pin_code_entry_changed(self, _):
         """Toggles pin code entry state based on pin code length."""
-        self._authenticate_button.enable = len(self._pin_code_entry.get_text().strip()) > 0
+        self._authenticate_button.enable = len(self._pin_code_entry.get_text()) > 0
 
     def reset(self):
         """Resets the widget to its initial state."""
         self._pin_code_box_revealer.set_reveal_child(False)
         self._pin_code_entry.set_text("")
         self._authenticate_button.enable = True
-
-    @GObject.Signal
-    def authenticate_button_clicked(self, security_key_form_data: object):
-        """Signal emitted after the authenticate button is clicked."""
+        self._requesting_pin = None
+        self._authenticate_button.set_sensitive(True)
+        self._authenticate_button.grab_focus()
 
     def reveal_pin_code_entry(self):
         """Reveals the pin code entry."""
         self._pin_code_box_revealer.set_reveal_child(True)
+        self._pin_code_entry.grab_focus()
 
     @property
     def authenticate_button_enabled(self):
@@ -139,3 +250,31 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
     def authenticate_button_click(self):
         """Clicks the authenticate button."""
         self._authenticate_button.clicked()
+
+    def request_key_selection(self):
+        """Called when multiple keys are found and the user needs to select one
+        by touching it."""
+        GLib.idle_add(self._overlay_widget.show_message, self.MULTIPLE_SECURITY_KEYS_FOUND)
+
+    def prompt_up(self) -> None:
+        """Called when the FIDO2 client checks for user presence."""
+        GLib.idle_add(self._overlay_widget.show_message, self.PHYSICAL_VERIFICATION_MESSAGE)
+
+    def request_pin(self, *_args, **_kwargs) -> Optional[str]:
+        """
+        Called if the FIDO2 client requires a PIN.
+        :returns: the PIN the user typed or None/empty to cancel.
+        """
+        self._requesting_pin = threading.Event()
+        GLib.idle_add(self.reveal_pin_code_entry)
+        GLib.idle_add(self._overlay_widget.hide)
+        self._requesting_pin.wait()
+        self._requesting_pin = None
+        return self._pin_code_entry.get_text()
+
+    def request_uv(self, *_args, **_kwargs) -> bool:
+        """
+        Called when the FIDO2 client is about to request UV (user verification) from the user.
+        :returns: True if allowed, or False to cancel.
+        """
+        return True

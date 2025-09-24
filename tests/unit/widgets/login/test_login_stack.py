@@ -16,10 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-import pytest
-from unittest.mock import Mock, patch, PropertyMock
+from unittest.mock import Mock
 
-from proton.vpn.app.gtk.widgets.login.login_widget import LoginStack, KillSwitchSettingEnum
+from proton.vpn.app.gtk.widgets.login.login_widget import LoginStack
 from tests.unit.testing_utils import process_gtk_events
 
 
@@ -43,12 +42,3 @@ def test_login_stack_asks_for_2fa_when_required():
     process_gtk_events()
 
     assert login_stack.active_widget == login_stack.two_factor_auth_widget
-
-
-def test_login_stack_switches_back_to_login_form_if_session_expires_during_2fa():
-    login_stack = LoginStack(controller=Mock(), notifications=Mock(), overlay_widget=Mock())
-
-    login_stack.display_form(login_stack.two_factor_auth_widget)
-    login_stack.two_factor_auth_widget.emit("session-expired")
-
-    assert login_stack.active_widget == login_stack.login_form

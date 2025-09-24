@@ -123,15 +123,22 @@ class OverlayWidget(Gtk.Box):
 
     def show(self, widget: Gtk.Widget):  # pylint: disable=arguments-differ
         """Shows the loading screen to the user."""
+        self._remove_children_if_any()
         self._centered_container.pack_start(widget, expand=False, fill=False, padding=0)
         widget.show_all()
         super().show()
 
+    def show_message(self, message: str):
+        """Shows a message using DefaultLoadingWidget"""
+        self.show(DefaultLoadingWidget(message))
+
     def hide(self):  # pylint: disable=arguments-differ
         """Hides the loading widget from the user."""
+        self._remove_children_if_any()
+        super().hide()
+
+    def _remove_children_if_any(self):
         # https://lazka.github.io/pgi-docs/Gtk-3.0/classes/Container.html#Gtk.Container.remove
         children = self._centered_container.get_children()
         if children:
             self._centered_container.remove(children[0])
-
-        super().hide()

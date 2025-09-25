@@ -178,7 +178,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             category="app", subcategory="startup", event="startup_actions"
         )
         if self.user_logged_in:
-            connect_to = self._connect_at_app_startup_override or self.get_app_configuration().connect_at_app_startup
+            connect_to = self._connect_at_app_startup
             if connect_to:
                 self.autoconnect(connect_to)
 
@@ -187,7 +187,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             This method is intended to be called at app startup.
         """
         if connect_to is None:
-            connect_to = self.get_app_configuration().connect_at_app_startup
+            connect_to = self._connect_at_app_startup
 
         # Temporary hack for parsing. Should be improved
         if connect_to == "FASTEST":
@@ -564,6 +564,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     def set_connect_at_app_startup_override(self, override: Optional[str]):
         """Sets an override for the connect_at_app_startup configuration value."""
         self._connect_at_app_startup_override = override
+
+    @property
+    def _connect_at_app_startup(self) -> Optional[str]:
+        """Returns the current connect_at_app_startup value."""
+        return self._connect_at_app_startup_override or self.get_app_configuration().connect_at_app_startup
 
     def set_server_list_updated_callback(self, callback: Callable[[], None]):
         """Sets the callback that is called when the server list is updated."""

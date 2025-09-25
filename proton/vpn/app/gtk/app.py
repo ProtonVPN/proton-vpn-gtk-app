@@ -119,6 +119,13 @@ class App(Gtk.Application):
         if options.contains("start-minimized"):
             self._start_minimized_from_cli = True
 
+        if options.contains("connect"):
+            value = options.lookup_value("connect", GLib.VariantType("s"))
+            if value is None:
+                print("Error: Missing argument for --connect/-c")
+                return 1
+            self._controller.set_connect_at_app_startup_override(value.get_string().upper())
+
         return -1
 
     @property
@@ -224,7 +231,16 @@ class App(Gtk.Application):
             or self._controller.get_app_configuration().start_app_minimized
 
     def add_options(self):
-        """Adds the --start-minimized and --version command line options"""
+        """Adds the --connect, --start-minimized and --version command line options"""
+        self.add_main_option(
+            "connect",
+            ord('c'),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            "Automatically connect to the specified server (e.g. DE or DE#1)",
+            "SERVER_NAME"
+        )
+
         self.add_main_option(
             "start-minimized",
             0,

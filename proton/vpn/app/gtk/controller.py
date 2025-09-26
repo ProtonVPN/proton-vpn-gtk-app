@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-import os
 import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import Future
 from importlib import metadata
@@ -60,7 +59,6 @@ from proton.session.api import Fido2Assertion
 logger = logging.getLogger(__name__)
 
 DOT = "."  # pylint: disable=invalid-name
-TWO_FACTOR_AUTH_SECURITY_KEY_ENV_VARIABLE_NAME = "PROTON_VPN_U2F"
 
 
 class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-attributes
@@ -611,11 +609,3 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         Returns if FIDO2 is available.
         """
         return self._api.supports_fido2
-
-    @property
-    def security_key_env_variable_set(self) -> bool:
-        """Returns if the environment variable is set for security key 2FA."""
-        env_variable_value = os.environ.get(
-            TWO_FACTOR_AUTH_SECURITY_KEY_ENV_VARIABLE_NAME, "").lower()
-
-        return env_variable_value in ["1", "true", "yes", "y"]

@@ -36,20 +36,14 @@ SECURITY_KEY_FORM_AUTHENTICATION_VALUE = "SomeTestValue"
 class TestSecurityKeyForm:
 
     @pytest.mark.parametrize(
-        "fido2_available,security_key_env_variable_set",
-        [
-            (True, True),
-            (True, False),
-            (False, True),
-            (False, False),
-        ]
+        "fido2_available",
+        [True, False]
     )
-    def test_two_factor_auth_stack_reset_shows_security_key_form_by_default_when_fido2_and_security_key_env_variable_are_configured(
-        self, fido2_available, security_key_env_variable_set
+    def test_two_factor_auth_stack_reset_shows_security_key_form_by_default_when_fido2_is_available(
+        self, fido2_available
     ):
         controller_mock = Mock(spec=Controller)
         controller_mock.fido2_available = fido2_available
-        controller_mock.security_key_env_variable_set = security_key_env_variable_set
 
         security_key_form = SecurityKeyForm(controller_mock, notifications=Mock(), overlay_widget=Mock())
         two_factor_auth_stack = TwoFactorAuthStack(
@@ -61,7 +55,7 @@ class TestSecurityKeyForm:
 
         two_factor_auth_stack.reset()
 
-        if fido2_available and security_key_env_variable_set:
+        if fido2_available:
             assert two_factor_auth_stack.active_widget == two_factor_auth_stack.security_key_form
         else:
             assert two_factor_auth_stack.active_widget == two_factor_auth_stack.authenticator_app_form
@@ -70,7 +64,6 @@ class TestSecurityKeyForm:
 def test_two_factor_auth_stack_forwards_auth_successful_signal_when_received_from_auth_app_form():
     controller_mock = Mock(spec=Controller)
     controller_mock.fido2_available = False
-    controller_mock.security_key_env_variable_set = False
 
     two_factor_auth_stack = TwoFactorAuthStack(
         controller=controller_mock,
@@ -91,7 +84,6 @@ def test_two_factor_auth_stack_forwards_auth_successful_signal_when_received_fro
 def test_two_factor_auth_stack_forwards_auth_successful_signal_when_received_from_security_key_app_form():
     controller_mock = Mock(spec=Controller)
     controller_mock.fido2_available = True
-    controller_mock.security_key_env_variable_set = True
 
     two_factor_auth_stack = TwoFactorAuthStack(
         controller=controller_mock,

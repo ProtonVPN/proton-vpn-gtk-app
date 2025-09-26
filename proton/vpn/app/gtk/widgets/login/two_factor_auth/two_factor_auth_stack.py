@@ -97,17 +97,11 @@ class TwoFactorAuthStack(Gtk.Stack):
         self.set_visible_child(widget)
         widget.reset()
 
-    @property
-    def security_key_available(self) -> bool:
-        """Returns whether security key 2FA is available."""
-        return (self._controller.fido2_available and
-                self._controller.security_key_env_variable_set)
-
     def reset(self):
         """Resets the widget to its initial state."""
         self._notifications.hide_message()
 
-        if self.security_key_available:
+        if self._controller.fido2_available:
             self.display_widget(self.security_key_form)
             self.security_key_form.show()       # Enable Security Key
             self.authenticator_app_form.show()  # Always enable Authenticator app

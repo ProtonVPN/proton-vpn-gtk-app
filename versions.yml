@@ -1,3 +1,12 @@
+version: 4.12.1rc7
+time: 2025/10/30 15:44
+author: Alexandru Cheltuitor
+email: alexandru.cheltuitor@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: remove environment variable that limits security key authentication"
+---
 version: 4.12.1rc6
 time: 2025/10/27 15:37
 author: Luke Titley

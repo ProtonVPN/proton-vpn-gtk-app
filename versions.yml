@@ -1,3 +1,12 @@
+version: 4.12.1rc1
+time: 2025/10/14 07:09
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: Clear keyring on cancelled 2FA"
+---
 version: 4.12.0
 time: 2025/10/13 11:30
 author: Richard Paterson

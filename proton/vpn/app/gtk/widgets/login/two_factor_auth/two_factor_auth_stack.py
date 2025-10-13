@@ -20,6 +20,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from concurrent.futures import Future
 from typing import Union
 from gi.repository import GObject, Gtk
 
@@ -108,7 +109,15 @@ class TwoFactorAuthStack(Gtk.Stack):
         self.emit("two-factor-auth-successful")
 
     def _on_two_factor_auth_cancelled(self, _):
-        self.emit("two-factor-auth-cancelled")
+        future = self._controller.logout()
+        self._overlay_widget.show_message("Signing out...")
+
+        def on_logout(future: Future):
+            self._overlay_widget.hide()
+            future.result()
+            self.emit("two-factor-auth-cancelled")
+
+        future.add_done_callback(on_logout)
 
     @GObject.Signal
     def two_factor_auth_successful(self):

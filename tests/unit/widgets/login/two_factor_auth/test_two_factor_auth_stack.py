@@ -105,3 +105,30 @@ def test_two_factor_auth_stack_forwards_auth_successful_signal_when_received_fro
 
     two_factor_auth_successful_callback.assert_called_once_with(two_factor_auth_stack)
 
+
+def test_two_factor_auth_stack_logs_user_out_when_security_key_2fa_is_cancelled():
+    controller = Mock(spec=Controller)
+    two_factor_auth_stack = TwoFactorAuthStack(
+        controller=controller,
+        notifications=Mock(spec=Notifications),
+        overlay_widget=Mock(spec=OverlayWidget)
+    )
+    two_factor_auth_stack.security_key_form.emit("two-factor-auth-cancelled")
+
+    process_gtk_events()
+
+    controller.logout.assert_called_once()
+
+
+def test_two_factor_auth_stack_logs_user_out_when_authenticator_app_2fa_is_cancelled():
+    controller = Mock(spec=Controller)
+    two_factor_auth_stack = TwoFactorAuthStack(
+        controller=controller,
+        notifications=Mock(spec=Notifications),
+        overlay_widget=Mock(spec=OverlayWidget)
+    )
+    two_factor_auth_stack.authenticator_app_form.emit("two-factor-auth-cancelled")
+
+    process_gtk_events()
+
+    controller.logout.assert_called_once()

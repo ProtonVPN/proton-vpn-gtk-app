@@ -26,6 +26,8 @@ from gi.repository import GObject, Gtk
 
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.util import connect_once
+from proton.vpn.app.gtk.utils.glib import add_done_callback
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.authenticator_app_form \
@@ -109,15 +111,18 @@ class TwoFactorAuthStack(Gtk.Stack):
         self.emit("two-factor-auth-successful")
 
     def _on_two_factor_auth_cancelled(self, _):
-        future = self._controller.logout()
         self._overlay_widget.show_message("Signing out...")
+        future = self._controller.logout()
 
-        def on_logout(future: Future):
-            self._overlay_widget.hide()
-            future.result()
+        def on_overlay_hidden(_overlay_widget: OverlayWidget, logout_future: Future):
+            logout_future.result()
             self.emit("two-factor-auth-cancelled")
 
-        future.add_done_callback(on_logout)
+        def on_logout(logout_future: Future):
+            connect_once(self._overlay_widget, "hide", on_overlay_hidden, logout_future)
+            self._overlay_widget.hide()
+
+        add_done_callback(future, on_logout)
 
     @GObject.Signal
     def two_factor_auth_successful(self):

@@ -62,3 +62,18 @@ def run_periodically(function, *args, interval_ms: int, **kwargs) -> int:
 def bubble_up_errors(future: Future):
     """Makes sure that any error the future resolves to bubbles up to the GLib main loop."""
     future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
+
+def add_done_callback(future: Future, callback: Callable[[Future], None]):
+    """
+    Adds a callback to be executed once the future completes, but in a way that's GLib-compatible.
+
+    We currently use Futures to bridge between the asyncio event loop and the GLib event loop.
+    When using Future.add_done_callback(callback), the callback is run by the thread
+    running the asyncio loop. However, if the callback does GTK-related work, it needs to
+    run on the thread running the GLib loop.
+
+    This function takes care of wrapping the callback in a GLib.idle_add call to make sure the
+    callback runs on the GLib thread.
+    """
+    future.add_done_callback(lambda f: GLib.idle_add(callback, f))

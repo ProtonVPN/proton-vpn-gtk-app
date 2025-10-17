@@ -105,7 +105,10 @@ class TwoFactorAuthStack(Gtk.Stack):
     def reset(self):
         """Resets the widget to its initial state."""
         self._notifications.hide_message()
-        self.display_widget(self.authenticator_app_form)
+        if self.security_key_form is not None:
+            self.display_widget(self.security_key_form)
+        else:
+            self.display_widget(self.authenticator_app_form)
 
     def _on_two_factor_auth_successful(self, _):
         self.emit("two-factor-auth-successful")

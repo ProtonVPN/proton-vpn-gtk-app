@@ -44,7 +44,7 @@ class TestSecurityKeyForm:
             (False, False),
         ]
     )
-    def test_two_factor_auth_stack_security_key_form_visibility_when_fido2_and_security_key_env_variable_are_configured(
+    def test_two_factor_auth_stack_reset_shows_security_key_form_by_default_when_fido2_and_security_key_env_variable_are_configured(
         self, fido2_available, security_key_env_variable_set
     ):
         controller_mock = Mock(spec=Controller)
@@ -58,10 +58,13 @@ class TestSecurityKeyForm:
             overlay_widget=Mock(spec=OverlayWidget),
             security_key_form=security_key_form
         )
+
+        two_factor_auth_stack.reset()
+
         if fido2_available and security_key_env_variable_set:
-            assert two_factor_auth_stack.security_key_form
+            assert two_factor_auth_stack.active_widget == two_factor_auth_stack.security_key_form
         else:
-            assert not two_factor_auth_stack.security_key_form
+            assert two_factor_auth_stack.active_widget == two_factor_auth_stack.authenticator_app_form
 
 
 def test_two_factor_auth_stack_forwards_auth_successful_signal_when_received_from_auth_app_form():

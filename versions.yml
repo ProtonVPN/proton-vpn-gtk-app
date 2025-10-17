@@ -1,3 +1,12 @@
+version: 4.12.1rc4
+time: 2025/10/17 10:21
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "chore: Remove outdated tests"
+---
 version: 4.12.1rc3
 time: 2025/10/16 09:37
 author: Pep Llaneras

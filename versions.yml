@@ -1,3 +1,12 @@
+version: 4.12.1rc5
+time: 2025/10/20 13:59
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "chore: Switch to new versioning strategy"
+---
 version: 4.12.1rc4
 time: 2025/10/17 10:21
 author: Pep Llaneras

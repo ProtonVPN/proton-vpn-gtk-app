@@ -48,7 +48,7 @@ from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonit
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 from proton.vpn.app.gtk.settings_watchers import SettingsWatchers
-from proton.vpn.app.gtk.utils import semver, glib
+from proton.vpn.app.gtk.utils import glib
 from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
@@ -89,9 +89,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self.exception_handler = exception_handler
         self.exception_handler.controller = self
 
-        client_type_metadata = ClientTypeMetadata(
-            type="gui", version=semver.from_pep440(self.app_version)
-        )
+        client_type_metadata = ClientTypeMetadata(type="gui")
 
         self._api = api or ProtonVPNAPI(client_type_metadata)
         self._connector = vpn_connector

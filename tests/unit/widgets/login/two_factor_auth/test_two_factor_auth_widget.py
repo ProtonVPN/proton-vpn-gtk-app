@@ -42,10 +42,17 @@ def test_two_factor_auth_widget_displays_security_key_form_when_fido2_is_availab
 
     two_factor_auth_widget = TwoFactorAuthWidget(controller_mock, Mock(), Mock())
 
+    two_factor_auth_widget.reset()
+
+    visible_child =\
+        two_factor_auth_widget.two_factor_auth_stack.get_visible_child()
+
     if fido2_available and security_key_env_variable_set:
-        assert two_factor_auth_widget.stack_switch.get_stack()
+        assert visible_child is \
+            two_factor_auth_widget.two_factor_auth_stack.security_key_form
     else:
-        assert not two_factor_auth_widget.stack_switch.get_stack()
+        assert visible_child is \
+            two_factor_auth_widget.two_factor_auth_stack.authenticator_app_form
 
 
 def test_two_factor_auth_widget_forwards_two_factor_auth_successful_signal_when_received_from_two_factor_auth_stack():

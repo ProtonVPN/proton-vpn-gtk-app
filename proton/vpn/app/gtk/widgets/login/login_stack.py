@@ -112,9 +112,9 @@ class LoginStack(Gtk.Stack):
         form (user/password) or the 2FA form.
         :param widget: The widget to be displayed to the user.
         """
+        widget.reset()
         self.active_widget = widget
         self.set_visible_child(widget)
-        widget.reset()
 
     def reset(self):
         """Resets the widget to its initial state."""

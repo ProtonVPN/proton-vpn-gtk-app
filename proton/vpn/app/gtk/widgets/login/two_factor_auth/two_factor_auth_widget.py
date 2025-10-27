@@ -59,13 +59,7 @@ class TwoFactorAuthWidget(Gtk.Box):
         self.stack_switch.set_halign(Gtk.Align.FILL)
         self.stack_switch.set_valign(Gtk.Align.CENTER)
 
-        # Only show the security key form if environment variable is set and FIDO2 is available,
-        # otherwise it will be hidden by default (shows only authenticator app form).
-        # The environment variable should be removed once we fully deploy this feature,
-        # unless we implement a logic that hides it
-        # if a user doesn't have a security key configured.
-        if controller.fido2_available and controller.security_key_env_variable_set:
-            self.stack_switch.set_stack(self.two_factor_auth_stack)
+        self.stack_switch.set_stack(self.two_factor_auth_stack)
 
         # Ensure the children of the stack switcher fill the width of the stack switcher
         for child in self.stack_switch.get_children():

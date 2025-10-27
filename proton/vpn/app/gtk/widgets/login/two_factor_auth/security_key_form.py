@@ -211,7 +211,7 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
         finally:
             self._overlay_widget.hide()
 
-        if not result.twofa_required:
+        if result.success:
             self.emit("two-factor-auth-successful")
         else:
             self._notifications.show_error_message(self.GENERIC_ERROR_MESSAGE)

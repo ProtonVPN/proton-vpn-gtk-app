@@ -59,8 +59,22 @@ class TwoFactorAuthStack(Gtk.Stack):
         self._overlay_widget = overlay_widget
         self.active_widget = None
         self.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
-        self.security_key_form = None
 
+        # SecurityKeyForm
+        self.security_key_form = security_key_form or SecurityKeyForm(
+            controller, notifications, overlay_widget
+        )
+        self.security_key_form.connect(
+            "two-factor-auth-successful", self._on_two_factor_auth_successful
+        )
+        self.security_key_form.connect(
+            "two-factor-auth-cancelled", self._on_two_factor_auth_cancelled
+        )
+        self.add_titled(
+            self.security_key_form, "security_key_form", self.SECURITY_KEY_FORM_TITLE
+        )
+
+        # AuthenticatorAppForm
         self.authenticator_app_form = authenticator_app_form or AuthenticatorAppForm(
             controller, notifications, overlay_widget
         )
@@ -75,25 +89,6 @@ class TwoFactorAuthStack(Gtk.Stack):
             "two-factor-auth-cancelled", self._on_two_factor_auth_cancelled
         )
 
-        # Only show the security key form if environment variable is set and FIDO2 is available,
-        # otherwise it will be hidden by default (shows only authenticator app form).
-        # The environment variable should be removed once we fully deploy this feature,
-        # unless we implement a logic that hides it
-        # if a user doesn't have a security key configured.
-        if controller.fido2_available and controller.security_key_env_variable_set:
-            self.security_key_form = security_key_form or SecurityKeyForm(
-                controller, notifications, overlay_widget
-            )
-            self.security_key_form.connect(
-                "two-factor-auth-successful", self._on_two_factor_auth_successful
-            )
-            self.security_key_form.connect(
-                "two-factor-auth-cancelled", self._on_two_factor_auth_cancelled
-            )
-            self.add_titled(
-                self.security_key_form, "security_key_form", self.SECURITY_KEY_FORM_TITLE
-            )
-
     def display_widget(self, widget: Union[AuthenticatorAppForm, SecurityKeyForm]):
         """
         Displays the specified form to the user.
@@ -102,12 +97,23 @@ class TwoFactorAuthStack(Gtk.Stack):
         self.set_visible_child(widget)
         widget.reset()
 
+    @property
+    def security_key_available(self) -> bool:
+        """Returns whether security key 2FA is available."""
+        return (self._controller.fido2_available and
+                self._controller.security_key_env_variable_set)
+
     def reset(self):
         """Resets the widget to its initial state."""
         self._notifications.hide_message()
-        if self.security_key_form is not None:
+
+        if self.security_key_available:
             self.display_widget(self.security_key_form)
+            self.security_key_form.show()       # Enable Security Key
+            self.authenticator_app_form.show()  # Always enable Authenticator app
         else:
+            self.security_key_form.hide()       # Disable Security Key
+            self.authenticator_app_form.show()  # Always enable Authenticator app
             self.display_widget(self.authenticator_app_form)
 
     def _on_two_factor_auth_successful(self, _):

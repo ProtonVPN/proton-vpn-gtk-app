@@ -610,7 +610,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """
         Returns if FIDO2 is available.
         """
-        return self._api.is_fido2_lib_available
+        return self._api.supports_fido2
 
     @property
     def security_key_env_variable_set(self) -> bool:

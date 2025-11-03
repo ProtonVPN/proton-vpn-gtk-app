@@ -1,5 +1,9 @@
+## 4.13.0
+- Added FIDO2 security key support for improved security using two-factor authentication.
+
 ## 4.12.0
 - Fixed split tunneling bug where it would not work with kernel 6.16
+
 ## 4.11.0
 - Include mode now available for Split Tunneling. Choose to route only selected apps through the encrypted tunnel while keeping everything else on your regular connection.
 - Bug fixes and stability improvements.

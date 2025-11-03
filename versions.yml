@@ -1,65 +1,17 @@
-version: 4.12.1rc7
-time: 2025/10/30 15:44
-author: Alexandru Cheltuitor
-email: alexandru.cheltuitor@proton.ch
+version: 4.13.0
+time: 2025/11/03 08:00
+author: Josep Llaneras
+email: Josep Llaneras
 urgency: low
 stability: unstable
 description:
-- "fix: remove environment variable that limits security key authentication"
----
-version: 4.12.1rc6
-time: 2025/10/27 15:37
-author: Luke Titley
-email: luke.titley@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: Hide security key form when no keys are registered"
----
-version: 4.12.1rc5
-time: 2025/10/20 13:59
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "chore: Switch to new versioning strategy"
----
-version: 4.12.1rc4
-time: 2025/10/17 10:21
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "chore: Remove outdated tests"
----
-version: 4.12.1rc3
-time: 2025/10/16 09:37
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: Show security key as default 2FA option if available"
----
-version: 4.12.1rc2
-time: 2025/10/14 15:35
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: Fix login stack GTK warnings"
----
-version: 4.12.1rc1
-time: 2025/10/14 07:09
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: Clear keyring on cancelled 2FA"
+- "fix: remove environment variable that limits security key authentication (Alexandru Cheltuitor)"
+- "fix: Hide security key form when no keys are registered (Luke Titley)"
+- "chore: Switch to new versioning strategy (Pep Llaneras)"
+- "chore: Remove outdated tests (Pep Llaneras)"
+- "fix: Show security key as default 2FA option if available (Pep Llaneras)"
+- "fix: Fix login stack GTK warnings (Pep Llaneras)"
+- "fix: Clear keyring on cancelled 2FA (Pep Llaneras)"
 ---
 version: 4.12.0
 time: 2025/10/13 11:30

@@ -29,7 +29,6 @@ setup(
             "proton-core-internal",
             "proton-keyring-linux",
             "proton-vpn-network-manager",
-            "proton-vpn-daemon",
             "behave",
             "pyotp",
             "pytest",

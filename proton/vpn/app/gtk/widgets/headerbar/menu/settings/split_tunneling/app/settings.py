@@ -30,8 +30,8 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.app_
     import AppSelectionWindow
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data_structures \
     import AppData
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.util \
-    import _get_all_installed_apps
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.installed_apps \
+    import get_all_installed_apps
 
 
 LABEL_CONVERSION = {
@@ -65,7 +65,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         self._stored_apps = stored_apps if stored_apps is not None else \
             self._get_settings()
         self._installed_apps = installed_apps if installed_apps is not None else \
-            _get_all_installed_apps()
+            get_all_installed_apps()
         self._selected_app_list = selected_app_list if selected_app_list is not None else\
             SelectedAppList(self._get_selected_app_list())
 

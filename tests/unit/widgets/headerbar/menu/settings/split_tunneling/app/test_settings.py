@@ -14,7 +14,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data
 from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 
 
-from .mock_app_data import mock_app_native
+from .mock_app_data import mock_app_data
 
 
 @pytest.fixture
@@ -28,7 +28,7 @@ def mock_selected_app_list():
 
 
 def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_removed_signal(
-    mock_controller, mock_app_native
+    mock_controller, mock_app_data
 ):
     settings_path_name = "test.path"
     split_tunneling_mode = SplitTunnelingMode.EXCLUDE
@@ -37,11 +37,11 @@ def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_remov
         controller=mock_controller,
         setting_path_name_template=settings_path_name,
         mode=split_tunneling_mode,
-        installed_apps=[mock_app_native],
-        stored_apps=[mock_app_native.executable],
+        installed_apps=[mock_app_data],
+        stored_apps=[mock_app_data.executable],
     )
 
-    sp.emit_signal_app_removed(mock_app_native)
+    sp.emit_signal_app_removed(mock_app_data)
 
     process_gtk_events()
 
@@ -50,12 +50,11 @@ def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_remov
 
 
 def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_list_refreshed_signal(
-    mock_controller, mock_app_native
+    mock_controller, mock_app_data
 ):
     settings_path_name = "test.path"
-    split_tunneling_mode = SplitTunnelingMode.EXCLUDE
 
-    mock_app_data_list = [mock_app_native]
+    mock_app_data_list = [mock_app_data]
 
     sp = AppBasedSplitTunnelingSettings(
         controller=mock_controller,
@@ -67,7 +66,7 @@ def test_app_based_split_tunneling_saves_modified_list_after_receiving_app_list_
 
     sp.emit_signal_app_list_refreshed(mock_app_data_list)
 
-    mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [mock_app_native.executable])
+    mock_controller.save_setting_attr.assert_called_once_with(settings_path_name, [mock_app_data.executable])
     assert sp.get_app_count_label() == f"({sp.amount_of_selected_apps})"
 
 
@@ -77,18 +76,15 @@ def test_app_based_split_tunneling_settings_restores_app_list_when_st_mode_is_ch
     include_app = AppData(
         name="test-app",
         executable="test/path/include",
-        icon_name="test-icon",
-        native=True
+        icon_name="test-icon"
     )
     exclude_app = AppData(
         name="test-app",
         executable="test/path/exclude",
-        icon_name="test-icon",
-        native=True
+        icon_name="test-icon"
     )
 
     settings_path_name = "test.path"
-    split_tunneling_mode = SplitTunnelingMode.EXCLUDE
     mock_controller.get_setting_attr.side_effect = [["test/path/include"], ["test/path/exclude"]]
 
     mock_app_data_list = [include_app, exclude_app]

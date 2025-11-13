@@ -1,3 +1,12 @@
+version: 4.13.1rc1
+time: 2025/11/07 10:36
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: Handle desktop file parsing errors"
+---
 version: 4.13.0
 time: 2025/11/03 08:00
 author: Josep Llaneras

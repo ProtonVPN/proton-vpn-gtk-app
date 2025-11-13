@@ -7,10 +7,9 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data
 
 
 @pytest.fixture
-def mock_app_native() -> AppData:
+def mock_app_data() -> AppData:
     return AppData(
         name="test-app",
         executable="test/path",
-        icon_name="test-icon",
-        native=True
+        icon_name="test-icon"
     )

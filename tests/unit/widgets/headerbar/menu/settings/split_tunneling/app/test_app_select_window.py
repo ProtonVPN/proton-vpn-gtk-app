@@ -5,18 +5,18 @@ from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.app_select_window \
     import AppSelectionWindow
 
-from .mock_app_data import mock_app_native
+from .mock_app_data import mock_app_data
 
 
-def test_click_on_done_returns_selected_app_when_is_already_selected_and_app_exists_on_system(mock_app_native):
+def test_click_on_done_returns_selected_app_when_is_already_selected_and_app_exists_on_system(mock_app_data):
     app_selection_completed_callback = Mock()
 
     mock_controller = Mock(name="mock_controller")
     app_selection_window = AppSelectionWindow(
         title="Test",
         controller=mock_controller,
-        stored_apps=[mock_app_native.executable],
-        installed_apps=[mock_app_native]
+        stored_apps=[mock_app_data.executable],
+        installed_apps=[mock_app_data]
     )
     app_selection_window.realize()
     app_selection_window.connect("app_selection_completed", app_selection_completed_callback)
@@ -25,10 +25,10 @@ def test_click_on_done_returns_selected_app_when_is_already_selected_and_app_exi
     process_gtk_events()
 
     app_selection_completed_callback.assert_called_once()
-    assert app_selection_completed_callback.call_args_list[0][0][1] == [mock_app_native]
+    assert app_selection_completed_callback.call_args_list[0][0][1] == [mock_app_data]
 
 
-def test_click_on_done_returns_selected_app_when_is_not_already_selected_and_app_exists_on_system(mock_app_native):
+def test_click_on_done_returns_selected_app_when_is_not_already_selected_and_app_exists_on_system(mock_app_data):
     app_selection_completed_callback = Mock()
 
     mock_controller = Mock(name="mock_controller")
@@ -36,7 +36,7 @@ def test_click_on_done_returns_selected_app_when_is_not_already_selected_and_app
         title="Test",
         controller=mock_controller,
         stored_apps=[],
-        installed_apps=[mock_app_native]
+        installed_apps=[mock_app_data]
     )
     app_selection_window.realize()
     app_selection_window.connect("app_selection_completed", app_selection_completed_callback)
@@ -46,17 +46,17 @@ def test_click_on_done_returns_selected_app_when_is_not_already_selected_and_app
     process_gtk_events()
 
     app_selection_completed_callback.assert_called_once()
-    assert mock_app_native in app_selection_completed_callback.call_args_list[0][0][1]
+    assert mock_app_data in app_selection_completed_callback.call_args_list[0][0][1]
 
 
-def test_click_on_done_returns_no_app_when_is_already_selected_and_app_is_missing_from_system(mock_app_native):
+def test_click_on_done_returns_no_app_when_is_already_selected_and_app_is_missing_from_system(mock_app_data):
     app_selection_completed_callback = Mock()
 
     mock_controller = Mock(name="mock_controller")
     app_selection_window = AppSelectionWindow(
         title="Test",
         controller=mock_controller,
-        stored_apps=[mock_app_native.executable],
+        stored_apps=[mock_app_data.executable],
         installed_apps=[]
     )
     app_selection_window.realize()

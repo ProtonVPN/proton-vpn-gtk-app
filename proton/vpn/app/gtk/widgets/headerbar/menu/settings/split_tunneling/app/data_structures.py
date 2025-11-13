@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-from typing import Union
+from typing import Optional, Union
 
 from dataclasses import dataclass, asdict
 
@@ -37,7 +37,6 @@ class AppData:  # pylint: disable=missing-class-docstring
     name: str
     executable: str
     icon_name: str
-    native: bool
 
     def to_dict(self) -> dict[str, Union[str, bool]]:
         """Convert dataclass to dict
@@ -61,7 +60,6 @@ class AppData:  # pylint: disable=missing-class-docstring
             name=data["name"],
             executable=data["executable"],
             icon_name=data["icon_name"],
-            native=data["native"]
         )
 
 
@@ -69,37 +67,26 @@ def _get_missing_icon_pixbuff() -> GdkPixbuf.Pixbuf:
     return icons.get("no-app-icon.svg")
 
 
-def get_icon(img_path: Union[str, None], gtk: Gtk = Gtk) -> Gtk.Image:
+def get_icon(img_path: Optional[str], gtk: Gtk = Gtk) -> Gtk.Image:
     """Returns a Gtk.Image based either on the app path image or else
     uses a default one.
-
-    Args:
-        img_path (str)
-        gtk (Gtk, optional): Defaults to Gtk.
-
-    Returns:
-        Gtk.Image
     """
     # If it starts with / then we've received a path to an image
     pixbuff = None
 
-    if not img_path:
-        pixbuff = _get_missing_icon_pixbuff()
-    elif img_path.startswith("/"):
-        pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=img_path,
-            width=ICON_SIZE_IN_PX,
-            height=-1,
-            preserve_aspect_ratio=True
-        )
-    else:
-        theme = Gtk.IconTheme.get_default()
+    if img_path:
         try:
-            # This can still return None if the object is not found
-            pixbuff = theme.load_icon(img_path, ICON_SIZE_IN_PX, Gtk.IconLookupFlags.FORCE_SIZE)
-
-        # We don't want to crash if for some reason it's impossible to load the icon.
-        # Since it's not a full filepath we can not either check if it exists or not.
+            if img_path.startswith("/"):
+                pixbuff = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                    filename=img_path,
+                    width=ICON_SIZE_IN_PX,
+                    height=-1,
+                    preserve_aspect_ratio=True
+                )
+            else:
+                theme = Gtk.IconTheme.get_default()
+                # This can still return None if the object is not found
+                pixbuff = theme.load_icon(img_path, ICON_SIZE_IN_PX, Gtk.IconLookupFlags.FORCE_SIZE)
         except GLib.Error:
             pass
 

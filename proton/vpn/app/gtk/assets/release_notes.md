@@ -1,3 +1,6 @@
+## 4.13.1
+- Minor bug fixes.
+
 ## 4.13.0
 - Added FIDO2 security key support for improved security using two-factor authentication.
 

@@ -21,7 +21,7 @@ from typing import Optional, Union
 
 from dataclasses import dataclass, asdict
 
-from gi.repository import Gtk, GObject, GdkPixbuf, GLib
+from gi.repository import Gtk, GObject, GdkPixbuf, GLib, Gdk
 
 
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
@@ -71,9 +71,9 @@ def get_icon(img_path: Optional[str], gtk: Gtk = Gtk) -> Gtk.Image:
     """Returns a Gtk.Image based either on the app path image or else
     uses a default one.
     """
-    # If it starts with / then we've received a path to an image
     pixbuff = None
 
+    # If it starts with / then we've received a path to an image
     if img_path:
         try:
             if img_path.startswith("/"):
@@ -84,16 +84,26 @@ def get_icon(img_path: Optional[str], gtk: Gtk = Gtk) -> Gtk.Image:
                     preserve_aspect_ratio=True
                 )
             else:
-                theme = Gtk.IconTheme.get_default()
-                # This can still return None if the object is not found
-                pixbuff = theme.load_icon(img_path, ICON_SIZE_IN_PX, Gtk.IconLookupFlags.FORCE_SIZE)
+                display = Gdk.Display.get_default()
+                theme = Gtk.IconTheme.get_for_display(display)
+                icon_paintable = theme.lookup_icon(
+                    icon_name=img_path,
+                    fallbacks=None,
+                    size=ICON_SIZE_IN_PX,
+                    scale=1,
+                    direction=Gtk.TextDirection.NONE,
+                    flags=0
+                )
+                if icon_paintable:
+                    return gtk.Image.new_from_paintable(icon_paintable)
         except GLib.Error:
             pass
 
     if not pixbuff:
         pixbuff = _get_missing_icon_pixbuff()
 
-    return gtk.Image.new_from_pixbuf(pixbuff)
+    texture = Gdk.Texture.new_for_pixbuf(pixbuff)
+    return gtk.Image.new_from_paintable(texture)
 
 
 class AppRowWithCheckbox(Gtk.Grid):
@@ -195,7 +205,7 @@ class AppRowWithRemoveButton(Gtk.Grid):
         """
         icon = get_icon(self.app_data.icon_name, self.gtk)
         label = SettingName(self.app_data.name)
-        self._remove_button = Gtk.Button.new_from_icon_name("edit-delete-symbolic", 1)
+        self._remove_button = Gtk.Button.new_from_icon_name("edit-delete-symbolic")
         self._remove_button.connect("clicked", self._signal_remove_app)
 
         self.attach(icon, 0, 0, 1, 1)
@@ -217,4 +227,4 @@ class AppRowWithRemoveButton(Gtk.Grid):
     def _click_on_remove_button(self):
         """Mainly for testing purposes and not for public API.
         """
-        self._remove_button.clicked()
+        self._remove_button.emit("clicked")

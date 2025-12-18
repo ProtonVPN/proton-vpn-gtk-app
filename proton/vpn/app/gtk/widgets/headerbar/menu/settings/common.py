@@ -20,11 +20,14 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import List, Tuple, Callable, Any
-from gi.repository import Gtk, Gdk
-from proton.vpn.app.gtk.controller import Controller
+from gi.repository import Gtk, Gio
+
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog \
     import ConfirmationDialog, show_confirmation_dialog
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn import logging
 
+logger = logging.getLogger(__name__)
 
 RECONNECT_MESSAGE = "Please establish a new VPN connection for "\
         "changes to take effect."
@@ -36,8 +39,7 @@ class CategoryHeader(Gtk.Label):
     def __init__(self, label: str):
         super().__init__(label=label)
         self.set_halign(Gtk.Align.START)
-        style_context = self.get_style_context()
-        style_context.add_class("heading")
+        self.add_css_class("heading")
 
 
 class ReactiveSetting:  # pylint: disable=too-few-public-methods
@@ -49,21 +51,25 @@ class ReactiveSetting:  # pylint: disable=too-few-public-methods
 
 
 class ReactiveSettingContainer:  # pylint: disable=too-few-public-methods
-    """Base class for containers that hold reactive settings."""
-    def get_children(self):
-        """Returns the children of this container, normally implemented by
-        the Gtk.Container class, it must be implemented in order
-        for this class to work."""
-
-        raise NotImplementedError(
-            "This method should be implemented.")
-
+    """Base class for Gtk containers that hold reactive settings."""
     def on_settings_changed(self, settings):
         """Method that is called when settings are changed.
         This is used to update the widget when settings change."""
-        for child in self.get_children():
+        child = self.get_first_child()
+        while child:
             if isinstance(child, ReactiveSetting):
                 child.on_settings_changed(settings)
+            child = child.get_next_sibling()  # pylint: disable=no-member
+
+    def get_first_child(self):
+        """Returns the first child of the container.
+        It can be then used to iterate through the children of the container with
+        ```
+        child = self.get_first_child()
+        next_sibling = child.get_next_sibling()
+        ```
+        """
+        return NotImplementedError("This method should be implemented.")
 
 
 class BaseCategoryContainer(Gtk.Box):
@@ -75,11 +81,11 @@ class BaseCategoryContainer(Gtk.Box):
     def __init__(self, category_name: str):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
-        self.get_style_context().add_class("setting-category")
+        self.add_css_class("setting-category")
         self.set_halign(Gtk.Align.FILL)
         self.set_spacing(15)
 
-        self.pack_start(CategoryHeader(category_name), False, False, 0)
+        self.append(CategoryHeader(category_name))
 
 
 class UpgradePlusTag(Gtk.Button):
@@ -95,16 +101,12 @@ class UpgradePlusTag(Gtk.Button):
 
     def __init__(self):
         super().__init__(label=self.LABEL)
-        self.get_style_context().add_class("upgrade-tag")
-        self.get_style_context().add_class("heading")
+        self.add_css_class("upgrade-tag")
+        self.add_css_class("heading")
         self.connect("clicked", self._on_button_clicked)
 
     def _on_button_clicked(self, _):
-        Gtk.show_uri_on_window(
-            None,
-            self.URL,
-            Gdk.CURRENT_TIME
-        )
+        Gio.AppInfo.launch_default_for_uri(self.URL, None)
 
 
 class SettingName(Gtk.Label):
@@ -133,8 +135,8 @@ class SettingDescription(Gtk.Label):
     """Label used to desribe a setting."""
     def __init__(self, label: str):
         super().__init__(label=label)
-        self.get_style_context().add_class("dim-label")
-        self.set_line_wrap(True)
+        self.add_css_class("dim-label")
+        self.set_wrap(True)
         self.set_max_width_chars(1)
         self.set_property("xalign", 0)
         self.set_hexpand(True)
@@ -188,7 +190,7 @@ class CustomButton(Gtk.Grid):
             self.attach(self.description, 0, 1, 2, 1)
 
     def _apply_grid_styles(self):
-        self.get_style_context().add_class("setting-item")
+        self.add_css_class("setting-item")
         self.set_halign(Gtk.Align.FILL)
         self.set_row_spacing(10)
         self.set_column_spacing(100)
@@ -258,7 +260,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
             self.set_tooltip_text(tooltip_text)
 
     def _apply_grid_styles(self):
-        self.get_style_context().add_class("setting-item")
+        self.add_css_class("setting-item")
         self.set_halign(Gtk.Align.FILL)
         self.set_row_spacing(10)
         self.set_column_spacing(100)
@@ -267,7 +269,8 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         switch = Gtk.Switch()
         if self._enabled is None:
             self._enabled = self.get_setting()
-        switch.set_state(self._enabled)
+
+        switch.set_active(self._enabled)
 
         switch.connect("notify::active", self._on_switch_state)
 
@@ -293,7 +296,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
             self.active = False
 
     def _on_switch_state(self, switch, _gparam):
-        new_value = switch.get_state()
+        new_value = switch.get_active()
         if self._callback:
             self._callback(self, new_value, self)
         else:
@@ -309,7 +312,11 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
     def off(self):
         """Shortcut to toggle the widget to disabled."""
-        self.switch.set_state(False)
+        self.switch.set_active(False)
+
+    def set_state(self, state: bool):
+        """Sets the switch state."""
+        self.switch.set_state(state)
 
 
 class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instance-attributes
@@ -378,7 +385,7 @@ class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instan
                 dialog.destroy()
 
             show_confirmation_dialog(
-                self.get_toplevel(),
+                self.get_root(),
                 title="",
                 question=conflict.label,
                 clarification=conflict.description,
@@ -446,7 +453,7 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         self.set_tooltip_text(tooltip_text)
 
     def _apply_grid_styles(self):
-        self.get_style_context().add_class("setting-item")
+        self.add_css_class("setting-item")
         self.set_halign(Gtk.Align.FILL)
         self.set_row_spacing(10)
         self.set_column_spacing(100)
@@ -564,7 +571,7 @@ class ConflictableComboboxWidget(ComboboxWidget):
                 dialog.destroy()
 
             show_confirmation_dialog(
-                self.get_toplevel(),
+                self.get_root(),
                 title="",
                 question=conflict.label,
                 clarification=conflict.description,
@@ -628,7 +635,7 @@ class EntryWidget(Gtk.Grid):
         self.set_tooltip_text(tooltip_text)
 
     def _apply_grid_styles(self):
-        self.get_style_context().add_class("setting-item")
+        self.add_css_class("setting-item")
         self.set_halign(Gtk.Align.FILL)
         self.set_row_spacing(10)
         self.set_column_spacing(100)
@@ -641,11 +648,30 @@ class EntryWidget(Gtk.Grid):
 
         entry.set_text(str(value))
         if self._callback:
-            entry.connect("focus-out-event", self._callback, self)
+            focus_controller = Gtk.EventControllerFocus()
+            focus_controller.connect(
+                "leave",
+                lambda controller, *args: self._callback(entry, self, *args)
+            )
+            entry.add_controller(focus_controller)
         else:
-            entry.connect("focus-out-event", self._on_focus_out_event)
+            focus_controller = Gtk.EventControllerFocus()
+            focus_controller.connect(
+                "leave",
+                lambda controller, *args: self._on_focus_out_event(entry, *args)
+            )
+            entry.add_controller(focus_controller)
 
         return entry
+
+    def change_value(self, new_value: str):
+        """Change the value of the entry widget. Method added for testing purposes."""
+        self.entry.set_text(new_value)
+        if self._callback:
+            controllers = self.entry.observe_controllers()
+            for controller in controllers:
+                if isinstance(controller, Gtk.EventControllerFocus):
+                    controller.emit("leave")
 
     def _build_ui(self):
         """Builds the UI depending if an upgrade is required or not."""
@@ -663,7 +689,7 @@ class EntryWidget(Gtk.Grid):
         if self.description:
             self.attach(self.description, 0, 1, 2, 1)
 
-    def _on_focus_out_event(self, gtk_widget: Gtk.Entry, _: Gdk.EventFocus):
+    def _on_focus_out_event(self, gtk_widget: Gtk.Entry, *_):
         self.save_setting(gtk_widget.get_text())
 
     @property

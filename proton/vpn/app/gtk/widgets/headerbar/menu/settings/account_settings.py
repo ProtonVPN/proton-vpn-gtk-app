@@ -19,11 +19,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from gi.repository import Gtk, Gdk
+from gi.repository import Gio
+from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, CustomButton
 )
+
+logger = logging.getLogger(__name__)
 
 
 class AccountSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
@@ -38,17 +41,13 @@ class AccountSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
         under this category."""
-        self.pack_start(CustomButton(
+        self.append(CustomButton(
             title=self._controller.account_name,
             description=f"VPN plan: {self._controller.account_data.plan_title or 'Free'}",
             button_label="Manage Account",
             on_click_callback=self._on_click_manage_account_button,
             bold_title=True
-        ), False, False, 0)
+        ))
 
     def _on_click_manage_account_button(self, *_):
-        Gtk.show_uri_on_window(
-            None,
-            self.MANAGE_ACCOUNT_URL,
-            Gdk.CURRENT_TIME
-        )
+        Gio.AppInfo.launch_default_for_uri(self.MANAGE_ACCOUNT_URL, None)

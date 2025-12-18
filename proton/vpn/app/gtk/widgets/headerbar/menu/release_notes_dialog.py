@@ -45,7 +45,6 @@ class ReleaseNotesDialog(Gtk.Dialog):
         self._content_area = self.get_content_area()
 
         self.build()
-        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
     def build(self):
         """Build the release notes UI."""
@@ -53,13 +52,13 @@ class ReleaseNotesDialog(Gtk.Dialog):
         collection.create_list(self.RELEASE_NOTES)
 
         viewport = Gtk.Viewport()
-        viewport.add(collection)
+        viewport.set_child(collection)
 
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_propagate_natural_height(True)
-        scrolled_window.add(viewport)
+        scrolled_window.set_child(viewport)
 
-        self._content_area.pack_start(scrolled_window, False, False, 0)
+        self._content_area.append(scrolled_window)
 
 
 class ReleaseNotesCollection(Gtk.Box):
@@ -67,7 +66,7 @@ class ReleaseNotesCollection(Gtk.Box):
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.set_spacing(25)
-        self.get_style_context().add_class("release-notes-collection")
+        self.add_css_class("release-notes-collection")
         self._release_notes = []
 
     @property
@@ -141,7 +140,7 @@ class ReleaseNotesCollection(Gtk.Box):
 
     def _store_and_generate_new_log_entry(self, current_entry):
         self._release_notes.append(current_entry)
-        self.pack_start(current_entry, False, False, 0)
+        self.append(current_entry)
         return ReleaseNote()
 
 
@@ -156,7 +155,6 @@ class ReleaseNote(Gtk.Box):
 
         self._title = None
         self._bullet_points = []
-        self.show_all()
 
     @property
     def title(self) -> str:
@@ -173,18 +171,18 @@ class ReleaseNote(Gtk.Box):
         self._title = Gtk.Label(label=title)
         self._title.set_halign(Gtk.Align.START)
         self._title.set_use_markup(True)
-        self._title.get_style_context().add_class("heading")
+        self._title.add_css_class("heading")
 
-        self.pack_start(self._title, False, False, 0)
+        self.append(self._title)
 
     def add_bullet_point(self, bullet_point: str):
         """Adds the bullet point to the collection of the current `ReleaseNote` object."""
         bullet_point_label = Gtk.Label(label=bullet_point)
         bullet_point_label.set_halign(Gtk.Align.FILL)
-        bullet_point_label.set_line_wrap(True)
+        bullet_point_label.set_wrap(True)
         bullet_point_label.set_max_width_chars(1)
         bullet_point_label.set_property("xalign", 0)
 
         self._bullet_points.append(bullet_point_label)
 
-        self.pack_start(bullet_point_label, False, False, 0)
+        self.append(bullet_point_label)

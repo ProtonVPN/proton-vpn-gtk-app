@@ -79,17 +79,16 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.set_title("Report an Issue")
         self.set_default_size(BugReportDialog.WIDTH, BugReportDialog.HEIGHT)
 
-        cancel_button = self.add_button("_Cancel", Gtk.ResponseType.CANCEL)
-        submit_button = self.add_button("_Submit", Gtk.ResponseType.OK)
+        self.cancel_button = self.add_button("_Cancel", Gtk.ResponseType.CANCEL)
+        self.submit_button = self.add_button("_Submit", Gtk.ResponseType.OK)
 
-        cancel_button.get_style_context().add_class("danger")
-        submit_button.get_style_context().add_class("primary")
+        self.cancel_button.add_css_class("danger")
+        self.submit_button.add_css_class("primary")
 
         self.connect("response", self._on_response)
-        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
         self._generate_fields()
-        self.set_response_sensitive(Gtk.ResponseType.OK, False)
+        self.submit_button.set_sensitive(False)
 
     @property
     def status_label(self) -> str:
@@ -186,7 +185,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.email_entry.set_sensitive(False)
         self.description_textview.set_sensitive(False)
         self.send_logs_checkbox.set_sensitive(False)
-        self.set_response_sensitive(Gtk.ResponseType.OK, False)
+        self.submit_button.set_sensitive(False)
 
     def _enable_form(self):
         self.username_entry.set_sensitive(True)
@@ -194,12 +193,10 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.description_textview.set_sensitive(True)
         self.send_logs_checkbox.set_sensitive(True)
         if self._can_user_submit_form:
-            self.set_response_sensitive(Gtk.ResponseType.OK, True)
+            self.submit_button.set_sensitive(True)
 
     def _on_entry_changed(self, _: Gtk.Widget):
-        self.set_response_sensitive(
-            Gtk.ResponseType.OK, self._can_user_submit_form
-        )
+        self.submit_button.set_sensitive(self._can_user_submit_form)
 
     @property
     def _can_user_submit_form(self) -> bool:
@@ -221,40 +218,45 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
     def _generate_fields(self):  # pylint: disable=too-many-statements
         """Generates the necessary fields for the report."""
-        layout = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=3)
-        layout.set_border_width(0)
+        layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        layout.set_margin_top(0)
+        layout.set_margin_bottom(0)
+        layout.set_margin_start(0)
+        layout.set_margin_end(0)
+        layout.append(self.notification_bar)
 
-        layout.add(self.notification_bar)
-        content = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
         content.set_name("bug-report-content")
-        layout.add(content)
+        layout.append(content)
 
-        username_label = Gtk.Label.new("Username")
+        username_label = Gtk.Label(label="Username")
         username_label.set_halign(Gtk.Align.START)
-        self.username_entry = Gtk.Entry.new()
+
+        self.username_entry = Gtk.Entry()
         self.username_entry.set_property("margin-bottom", 10)
         self.username_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
         self.username_entry.set_name("username")
-        content.add(username_label)  # pylint: disable=no-member
-        content.add(self.username_entry)  # pylint: disable=no-member
+        content.append(username_label)
+        content.append(self.username_entry)
 
-        email_label = Gtk.Label.new("Email")
+        email_label = Gtk.Label(label="Email")
         email_label.set_halign(Gtk.Align.START)
-        self.email_entry = Gtk.Entry.new()
+
+        self.email_entry = Gtk.Entry()
         self.email_entry.set_property("margin-bottom", 10)
         self.email_entry.set_input_purpose(Gtk.InputPurpose.EMAIL)
         self.email_entry.set_name("email")
-        content.add(email_label)  # pylint: disable=no-member
-        content.add(self.email_entry)  # pylint: disable=no-member
+        content.append(email_label)
+        content.append(self.email_entry)
 
         min_characters = BugReportDialog.BUG_REPORT_DESCRIPTION_MIN_CHARACTERS
-        description_label = Gtk.Label.new(
-            f"Description (minimum {min_characters} characters)"
+        description_label = Gtk.Label(
+            label=f"Description (minimum {min_characters} characters)"
         )
 
         description_label.set_halign(Gtk.Align.START)
         # Has to have min 50 chars
-        self.description_buffer = Gtk.TextBuffer.new(None)
+        self.description_buffer = Gtk.TextBuffer()
         self.description_textview = Gtk.TextView.new_with_buffer(
             self.description_buffer
         )
@@ -265,19 +267,22 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         scrolled_window_textview = Gtk.ScrolledWindow()
         scrolled_window_textview.set_property("margin-bottom", 10)
         scrolled_window_textview.set_min_content_height(100)
-        scrolled_window_textview.add(self.description_textview)  # pylint: disable=no-member
-        content.add(description_label)  # pylint: disable=no-member
-        content.add(scrolled_window_textview)  # pylint: disable=no-member
+        scrolled_window_textview.set_child(self.description_textview)
+        content.append(description_label)
+        content.append(scrolled_window_textview)
 
         self.send_logs_checkbox = Gtk.CheckButton.new_with_label("Send error logs")
         self.send_logs_checkbox.set_active(True)
         self.send_logs_checkbox.set_name("send_logs")
-        content.add(self.send_logs_checkbox)  # pylint: disable=no-member
+        content.append(self.send_logs_checkbox)
 
-        # By default Gtk.Dialog has a vertical box child (Gtk.Box) `vbox`
-        self.vbox.add(layout)  # pylint: disable=no-member
-        self.vbox.set_border_width(0)  # pylint: disable=no-member
-        self.vbox.set_spacing(20)  # pylint: disable=no-member
+        content_area = self.get_content_area()
+        content_area.append(layout)
+        content_area.set_margin_top(0)
+        content_area.set_margin_bottom(0)
+        content_area.set_margin_start(0)
+        content_area.set_margin_end(0)
+        content_area.set_spacing(20)
 
         self.username_entry.connect(
             "changed", self._on_entry_changed
@@ -291,11 +296,11 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
     def get_submit_button(self):
         """Returns the Submit button."""
-        return self.get_widget_for_response(Gtk.ResponseType.OK)
+        return self.submit_button
 
     def click_on_submit_button(self):
         """Clicks the Submit button."""
-        self.get_widget_for_response(Gtk.ResponseType.OK).clicked()
+        self.submit_button.emit("clicked")
 
 
 class LogCollector:  # pylint: disable=too-few-public-methods

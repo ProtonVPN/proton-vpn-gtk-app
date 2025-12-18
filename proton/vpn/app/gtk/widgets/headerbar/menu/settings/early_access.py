@@ -129,8 +129,8 @@ class EarlyAccessDialog(Gtk.Dialog):
         # We have to add a headerbar because we want to hide the close button,
         # which we don't have control otherwise.
         headerbar = Gtk.HeaderBar()
-        headerbar.set_title(self.TITLE)
-        headerbar.set_show_close_button(False)
+        title_label = Gtk.Label(label=self.TITLE)
+        headerbar.set_title_widget(title_label)
         headerbar.set_decoration_layout("menu:")
         self.set_titlebar(headerbar)
 
@@ -142,19 +142,21 @@ class EarlyAccessDialog(Gtk.Dialog):
         self._label = Gtk.Label()
         self._label.set_width_chars(50)
         self._label.set_max_width_chars(50)
-        self._label.set_line_wrap(True)
-        self._label.set_line_wrap_mode(Pango.WrapMode.WORD)
+        self._label.set_wrap(True)
+        self._label.set_wrap_mode(Pango.WrapMode.WORD)
         self._label.set_property("xalign", 0)
+        self._confirmation_button.add_css_class("primary")
 
-        self._confirmation_button.get_style_context().add_class("primary")
-
-        content_area = self.get_content_area()
-        content_area.set_border_width(20)  # pylint: disable=no-member
+        # pylint: disable=duplicate-code
+        content_area: Gtk.Box = self.get_content_area()
+        content_area.set_vexpand(True)
+        content_area.set_margin_top(20)
+        content_area.set_margin_bottom(20)
+        content_area.set_margin_start(20)
+        content_area.set_margin_end(20)
         content_area.set_spacing(20)  # pylint: disable=no-member
-        content_area.pack_start(self._label, expand=False, fill=False, padding=0)
-        content_area.pack_start(self._spinner, expand=False, fill=False, padding=0)
-
-        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
+        content_area.append(self._label)
+        content_area.append(self._spinner)
 
     def display_loading_view(self, new_label_value: str):
         """Displays a loading view and blocking the close button."""
@@ -162,7 +164,7 @@ class EarlyAccessDialog(Gtk.Dialog):
         self._spinner.set_property("visible", True)
         self._label.set_label(new_label_value)
         self._active_view = self.LOADING_VIEW
-        self.show()
+        self.present()
 
     def display_status_view(self, new_label_value: str):
         """Displays a status view, allowing to close the button."""
@@ -170,7 +172,7 @@ class EarlyAccessDialog(Gtk.Dialog):
         self._spinner.set_property("visible", False)
         self._label.set_label(new_label_value)
         self._active_view = self.STATUS_VIEW
-        self.show()
+        self.present()
 
 
 class EarlyAccessWidget(ToggleWidget):
@@ -202,7 +204,7 @@ class EarlyAccessWidget(ToggleWidget):
         )
         self._controller = controller
         self._dialog = early_access_dialog or EarlyAccessDialog()
-        self._dialog.connect("response", lambda w, _: w.hide())  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
+        self._dialog.connect("response", lambda w, _: w.set_visible(False))  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
 
     @property
     def distro_manager(self) -> DistroManager:
@@ -233,7 +235,7 @@ class EarlyAccessWidget(ToggleWidget):
 
     def set_initial_state(self) -> None:
         """Sets the switch initial state."""
-        self.set_state(self.get_setting())
+        self.active = self.get_setting()
 
     def get_setting(self) -> bool:
         """Returns if early access is enabled, if the early access package

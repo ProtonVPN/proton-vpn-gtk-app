@@ -51,11 +51,12 @@ class MainWidget(Gtk.Overlay):
         overlay_widget: OverlayWidget, notifications: Notifications = None
     ):
         super().__init__()
+        self.set_name("main-widget")
         self.layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.layout.set_name("main-widget")
+        self.layout.set_name("main-widget-layout")
 
         self._overlay_widget = overlay_widget
-        self.add(self.layout)
+        self.set_child(self.layout)
         self.add_overlay(self._overlay_widget)
 
         self._active_widget = None
@@ -65,10 +66,7 @@ class MainWidget(Gtk.Overlay):
         self._notifications = notifications or Notifications(
             main_window, NotificationBar()
         )
-        self.layout.pack_start(
-            self.notifications.notification_bar,
-            expand=False, fill=False, padding=0
-        )
+        self.layout.append(self.notifications.notification_bar)
         self.login_widget = self._create_login_widget()
         self.vpn_widget = None
 
@@ -78,8 +76,8 @@ class MainWidget(Gtk.Overlay):
         def unregister_from_exception_handler(*_):
             self._controller.exception_handler.main_widget = None
 
-        self.connect("show", lambda *_: self.initialize_visible_widget())
         self.connect("realize", register_to_exception_handler)
+        self.connect("realize", lambda *_: self.initialize_visible_widget())
         self.connect("unrealize", unregister_from_exception_handler)
         self._main_window.header_bar.menu.connect(
             "user-logged-out", self._on_user_logged_out
@@ -102,7 +100,7 @@ class MainWidget(Gtk.Overlay):
         if self._active_widget:
             self.layout.remove(self._active_widget)
         self._active_widget = widget
-        self.layout.pack_start(self._active_widget, expand=True, fill=True, padding=0)
+        self.layout.append(self._active_widget)
 
     def initialize_visible_widget(self):
         """
@@ -196,4 +194,3 @@ class MainWidget(Gtk.Overlay):
         self._overlay_widget.hide()  # Required on session expired while loading VPN widget.
         self.active_widget = self.login_widget
         self.login_widget.reset()
-        self.login_widget.show_all()

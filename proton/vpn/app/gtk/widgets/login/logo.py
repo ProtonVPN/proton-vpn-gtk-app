@@ -18,44 +18,71 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from pathlib import Path
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from proton.vpn.app.gtk.assets import icons
 
 
-class ProtonVPNLogo(Gtk.Image):
+class ProtonVPNLogo(Gtk.Picture):
     """Proton VPN logo shown in the login widget."""
+    LOGO_WIDTH = 320
+
     def __init__(self):
         super().__init__()
-        pixbuf = icons.get(
-            Path("proton-vpn-logo.svg"),
-            width=300,
-            preserve_aspect_ratio=True
-        )
         self.set_name("login-logo")
-        self.set_from_pixbuf(pixbuf)
+        self.set_hexpand(False)
+        self.set_vexpand(False)
+        self.set_halign(Gtk.Align.CENTER)
+        self.set_valign(Gtk.Align.CENTER)
+        self.set_can_shrink(False)
 
-
-class TwoFactorAuthProtonVPNLogo(Gtk.Image):
-    """Proton VPN logo shown in the login widget."""
-    def __init__(self):
-        super().__init__()
         pixbuf = icons.get(
             Path("proton-vpn-logo.svg"),
-            width=200,
+            width=self.LOGO_WIDTH,
             preserve_aspect_ratio=True
         )
-        self.set_name("two-factor-auth-vpn-logo")
-        self.set_from_pixbuf(pixbuf)
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_paintable(texture)
 
 
-class SecurityKeyLogo(Gtk.Image):
+class TwoFactorAuthProtonVPNLogo(Gtk.Picture):
     """Proton VPN logo shown in the login widget."""
+    LOGO_WIDTH = 200
+
     def __init__(self):
         super().__init__()
+        self.set_name("two-factor-auth-vpn-logo")
+        self.set_hexpand(False)
+        self.set_vexpand(False)
+        self.set_halign(Gtk.Align.CENTER)
+        self.set_valign(Gtk.Align.START)
+        self.set_can_shrink(False)
+
+        pixbuf = icons.get(
+            Path("proton-vpn-logo.svg"),
+            width=self.LOGO_WIDTH,
+            preserve_aspect_ratio=True
+        )
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_paintable(texture)
+
+
+class SecurityKeyLogo(Gtk.Picture):
+    """Proton VPN logo shown in the login widget."""
+    LOGO_WIDTH = 400
+
+    def __init__(self):
+        super().__init__()
+        self.set_name("security-key-logo")
+        self.set_hexpand(False)
+        self.set_vexpand(False)
+        self.set_halign(Gtk.Align.CENTER)
+        self.set_valign(Gtk.Align.CENTER)
+
         pixbuf = icons.get(
             Path("security-key.svg"),
-            width=300,
+            width=self.LOGO_WIDTH,
             preserve_aspect_ratio=True
         )
-        self.set_from_pixbuf(pixbuf)
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_paintable(texture)

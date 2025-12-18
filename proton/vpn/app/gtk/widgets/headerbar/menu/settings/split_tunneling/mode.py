@@ -60,12 +60,12 @@ class ModeRadioButton(Gtk.Box):
 
         self.mode = mode_data.mode
 
-        self._radio_button = Gtk.RadioButton()
+        self._radio_button = Gtk.CheckButton()
 
         if not self._radio_buttons:
             self._radio_buttons.append(self._radio_button)
         else:
-            self._radio_button.join_group(self._radio_buttons[0])
+            self._radio_button.set_group(self._radio_buttons[0])
 
         self._radio_button.set_halign(Gtk.Align.START)
         self._radio_button.set_valign(Gtk.Align.START)
@@ -77,13 +77,13 @@ class ModeRadioButton(Gtk.Box):
 
         self._description_label = SettingDescription(mode_data.description)
 
-        text_box.pack_start(self._title_label, False, False, 0)
-        text_box.pack_start(self._description_label, False, False, 0)
+        text_box.append(self._title_label)
+        text_box.append(self._description_label)
 
-        self.pack_start(self._radio_button, False, False, 0)
-        self.pack_start(text_box, True, True, 0)
+        self.append(self._radio_button)
+        self.append(text_box)
 
-        self.get_style_context().add_class("setting-item")
+        self.add_css_class("setting-item")
         self.set_margin_top(8)
         self.set_margin_bottom(8)
 
@@ -132,8 +132,8 @@ class SplitTunnelingModeSetting(Gtk.Box):
         self._exclude_radio = ModeRadioButton(mode_data=EXCLUDE_MODE)
         self._include_radio = ModeRadioButton(mode_data=INCLUDE_MODE)
 
-        self.pack_start(self._exclude_radio, False, False, 0)
-        self.pack_start(self._include_radio, False, False, 0)
+        self.append(self._exclude_radio)
+        self.append(self._include_radio)
 
         self._update_selection()
 

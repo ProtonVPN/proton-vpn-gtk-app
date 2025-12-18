@@ -38,11 +38,11 @@ def test_quick_connect_widget_changes_button_according_to_connection_state_chang
 ):
     quick_connect_widget = QuickConnectWidget(controller=Mock())
     window = Gtk.Window()
-    window.add(quick_connect_widget)
+    window.set_child(quick_connect_widget)
     main_loop = GLib.MainLoop()
 
     def run():
-        window.show_all()
+        window.present()
 
         quick_connect_widget.connection_status_update(connection_state)
 
@@ -63,7 +63,7 @@ def test_quick_connect_widget_connects_to_fastest_server_when_connect_button_is_
     controller_mock = Mock()
     quick_connect_widget = QuickConnectWidget(controller=controller_mock)
 
-    quick_connect_widget.connect_button.clicked()
+    quick_connect_widget.connect_button.emit("clicked")
     process_gtk_events()
 
     controller_mock.connect_to_fastest_server.assert_called_once()
@@ -73,7 +73,7 @@ def test_quick_connect_widget_disconnects_from_current_server_when_disconnect_is
     controller_mock = Mock()
     quick_connect_widget = QuickConnectWidget(controller=controller_mock)
 
-    quick_connect_widget.disconnect_button.clicked()
+    quick_connect_widget.disconnect_button.emit("clicked")
     process_gtk_events()
 
     controller_mock.disconnect.assert_called_once()

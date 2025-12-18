@@ -44,20 +44,24 @@ label.success {
 
 #bug-report-content,
 #bug-report-dialog buttonbox,
-#early-access-dialog buttonbox {
+#early-access-dialog buttonbox,
+.dialog-action-area{
     margin: 20px;
+}
+.dialog-action-area > button {
+    margin-left: 5px;
 }
 
 #server-load.signal-danger {
-    color: @signal-danger
+    color: @signal-danger;
 }
 
 #server-load.signal-warning {
-    color: @signal-warning
+    color: @signal-warning;
 }
 
 #server-load.signal-success {
-    color: @signal-success
+    color: @signal-success;
 }
 
 .setting-category {
@@ -95,7 +99,7 @@ label.success {
 }
 
 label.signal-danger {
-    color: @signal-danger
+    color: @signal-danger;
 }
 
 #connection-status-label {
@@ -103,18 +107,18 @@ label.signal-danger {
 }
 
 #port-forwarding-widget {
-    background-image: None;
+    background-image: none;
     transition: background-color 0.2s;
     border-radius: 5px;
 }
 
 #port-forwarding-widget:hover {
-    background-image: None;
+    background-image: none;
     background-color: rgba(255, 255, 255, 0.08);
 }
 
 #port-forwarding-widget:active {
-    background-image: None;
+    background-image: none;
     background-color: rgba(255, 255, 255, 0.02);
 }
 
@@ -134,7 +138,7 @@ label.signal-danger {
 }
 
 #split-tunneling-app-selection-window #split-tunneling-app-done-button {
-    margin: 15px 30px 30px
+    margin: 15px 30px 30px;
 }
 
 #split-tunneling-app-based-settings {

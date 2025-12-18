@@ -31,8 +31,8 @@ from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
 from proton.vpn.session.exceptions import ServerNotFoundError
 from proton.vpn import logging
 
-gi.require_version("Gtk", "3.0")
-from gi.repository import GLib, Gtk  # noqa: E402,E501 # pylint: disable=wrong-import-position,wrong-import-order
+gi.require_version("Gtk", "4.0")
+from gi.repository import GLib, Gtk, Gio  # noqa: E402,E501 # pylint: disable=wrong-import-position,wrong-import-order
 
 NO_SPACE_LEFT_ON_DEVICE_ERRNO = 28
 
@@ -178,14 +178,12 @@ class ExceptionHandler:
     def _logout_and_show_missing_scope_dialog(self, error: ProtonAPIMissingScopeError):
         """This method is called by the exception handler when the user
         lacks VPN permissions."""
-        # future = self.controller.logout()
-        # future.add_done_callback(lambda future: GLib.idle_add(future.result))
         self.main_widget.logout()
 
         def on_dialog_closed(response_type: Gtk.ResponseType):
             if Gtk.ResponseType.OK == response_type:
-                Gtk.show_uri_on_window(
-                    None, "https://protonvpn.com/support/assign-vpn-connection", 0
+                Gio.AppInfo.launch_default_for_uri(
+                    "https://protonvpn.com/support/assign-vpn-connection", None
                 )
 
         error_details = error.json_data["Details"]

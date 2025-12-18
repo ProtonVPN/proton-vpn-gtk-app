@@ -33,22 +33,23 @@ class QuickConnectWidget(Gtk.Box):
     """Widget handling the "Quick Connect" functionality."""
     def __init__(self, controller: Controller):
         super().__init__(spacing=10)
+        self.set_name("quick-connect-widget")
         self._controller = controller
         self._connection_state: states.State = None
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.connect_button = Gtk.Button(label="Quick Connect")
-        self.connect_button.get_style_context().add_class("primary")
+        self.connect_button.add_css_class("primary")
         self.connect_button.connect(
             "clicked", self._on_connect_button_clicked)
-        self.connect_button.set_no_show_all(True)
-        self.pack_start(self.connect_button, expand=False, fill=False, padding=0)
+        self.connect_button.set_visible(False)
+        self.append(self.connect_button)
         self.disconnect_button = Gtk.Button(label="Disconnect")
-        self.disconnect_button.get_style_context().add_class("danger")
+        self.disconnect_button.add_css_class("danger")
         self.disconnect_button.connect(
             "clicked", self._on_disconnect_button_clicked)
-        self.disconnect_button.set_no_show_all(True)
-        self.pack_start(self.disconnect_button, expand=False, fill=False, padding=0)
+        self.disconnect_button.set_visible(False)
+        self.append(self.disconnect_button)
 
     @property
     def connection_state(self):
@@ -79,26 +80,26 @@ class QuickConnectWidget(Gtk.Box):
         self.connection_state = connection_state
 
     def _on_connection_state_disconnected(self):
-        self.disconnect_button.hide()
-        self.connect_button.show()
+        self.disconnect_button.set_visible(False)
+        self.connect_button.set_visible(True)
 
     def _on_connection_state_connecting(self):
-        self.connect_button.hide()
+        self.connect_button.set_visible(False)
         self.disconnect_button.set_label("Cancel Connection")
-        self.disconnect_button.show()
+        self.disconnect_button.set_visible(True)
 
     def _on_connection_state_connected(self):
-        self.connect_button.hide()
+        self.connect_button.set_visible(False)
         self.disconnect_button.set_label("Disconnect")
-        self.disconnect_button.show()
+        self.disconnect_button.set_visible(True)
 
     def _on_connection_state_disconnecting(self):
         pass
 
     def _on_connection_state_error(self):
-        self.connect_button.hide()
+        self.connect_button.set_visible(False)
         self.disconnect_button.set_label("Cancel Connection")
-        self.disconnect_button.show()
+        self.disconnect_button.set_visible(True)
 
     def _on_connect_button_clicked(self, _):
         logger.info("Connect to fastest server", category="ui.tray", event="connect")

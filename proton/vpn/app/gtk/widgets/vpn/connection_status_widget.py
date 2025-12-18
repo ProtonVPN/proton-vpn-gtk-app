@@ -49,25 +49,23 @@ class VPNConnectionStatusWidget(Gtk.Box):
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
+        self.set_name("vpn-connection-status-widget")
         self._overlay_widget = overlay_widget
         self._controller = controller
         self._notifications = notifications
 
-        self._port_forward_label = Gtk.Label(label="")
         self._connection_status_label = Gtk.Label(label="")
         self._connection_status_label.set_name("connection-status-label")
         self._loading_widget = self._build_loading_connection_widget()
 
-        self.pack_start(self._connection_status_label, expand=False,
-                        fill=False, padding=0)
+        self.append(self._connection_status_label)
 
         display_port_forwarding = controller.feature_flags\
             .get("DisplayPortForwarding")
         if display_port_forwarding:
             self._port_forward_revealer = port_forward_revealer \
                 or PortForwardRevealer(notifications)
-            self.pack_start(self._port_forward_revealer, expand=False,
-                            fill=False, padding=0)
+            self.append(self._port_forward_revealer)
         else:
             self._port_forward_revealer = None
 

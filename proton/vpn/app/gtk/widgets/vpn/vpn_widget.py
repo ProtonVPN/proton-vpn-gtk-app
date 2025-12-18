@@ -84,15 +84,13 @@ class VPNWidget(Gtk.Box):
         self.connection_status_widget = VPNConnectionStatusWidget(
             controller, overlay_widget, notifications
         )
-        self.pack_start(self.connection_status_widget, expand=False,
-                        fill=False, padding=0)
+        self.append(self.connection_status_widget)
 
         self.quick_connect_widget = QuickConnectWidget(self._controller)
-        self.pack_start(self.quick_connect_widget, expand=False, fill=False,
-                        padding=0)
+        self.append(self.quick_connect_widget)
 
         self.server_list_widget = ServerListWidget(self._controller)
-        self.pack_end(self.server_list_widget, expand=True, fill=True, padding=0)
+        self.append(self.server_list_widget)
         self.server_list_widget.connect("ui-updated",
                                         self._on_server_list_updated)
 
@@ -104,7 +102,7 @@ class VPNWidget(Gtk.Box):
         )
         self.search_results_widget = SearchResults(self._controller)
         revealer = Gtk.Revealer()
-        revealer.add(self.search_results_widget)
+        revealer.set_child(self.search_results_widget)
 
         self.search_widget.connect(
             "search-changed",
@@ -119,8 +117,8 @@ class VPNWidget(Gtk.Box):
             "result-chosen",
             lambda _, row: self.search_widget.reset()  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
         )
-        self.pack_start(self.search_widget, expand=False, fill=True, padding=0)
-        self.pack_start(revealer, expand=False, fill=False, padding=0)
+        self.insert_child_after(self.search_widget, self.quick_connect_widget)
+        self.insert_child_after(revealer, self.search_widget)
 
         self.connection_status_subscribers = []
         for widget in [
@@ -181,8 +179,6 @@ class VPNWidget(Gtk.Box):
         """Displays the widget once all necessary data from API has been acquired."""
         self._state.user_tier = user_tier
 
-        self.show_all()
-
         # The VPN widget subscribes to connection status updates, and then
         # passes on these connection status updates to child widgets
         self._controller.register_connection_status_subscriber(self)
@@ -214,7 +210,7 @@ class VPNWidget(Gtk.Box):
             self.connection_status_widget,
             self.quick_connect_widget, self.server_list_widget
         ]:
-            widget.hide()
+            widget.set_visible(False)
 
         # Reset widget state
         self._state = VPNWidgetState()

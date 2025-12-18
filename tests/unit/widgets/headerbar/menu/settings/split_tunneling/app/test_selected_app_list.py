@@ -14,7 +14,7 @@ def test_remove_app_is_removed_and_signal_is_emitted_when_app_is_removed_from_li
     sap = SelectedAppList(apps_to_add=[mock_app_data])
     sap.connect("app-removed", mock_app_removed_callback)
 
-    sap.main_container.get_children()[0]._click_on_remove_button()
+    sap.main_container.get_first_child()._click_on_remove_button()
 
     process_gtk_events()
 

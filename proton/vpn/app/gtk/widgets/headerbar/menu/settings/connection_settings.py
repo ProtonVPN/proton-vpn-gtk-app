@@ -89,8 +89,7 @@ class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # no
         def do_revert(combobox):
             combobox.combobox.set_active_id(WIREGUARD_PROTOCOL)
 
-        self.pack_start(
-            ProtocolComboboxWidget(
+        self.append(ProtocolComboboxWidget(
                 controller=self._controller,
                 title=self.PROTOCOL_LABEL,
                 description=self.PROTOCOL_DESCRIPTION,
@@ -99,36 +98,35 @@ class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # no
                 disable_on_active_connection=True,
                 do_set=do_set,
                 do_revert=do_revert
-            ),
-            False, False, 0)
+            ))
 
     def build_vpn_accelerator(self):
         """Builds and adds the `vpn_accelerator` setting to the widget."""
         def on_switch_state(_, new_value: bool, toggle_widget: ToggleWidget):
             toggle_widget.save_setting(new_value)
 
-        self.pack_start(ToggleWidget(
+        self.append(ToggleWidget(
             controller=self._controller,
             title=self.VPN_ACCELERATOR_LABEL,
             description=self.VPN_ACCELERATOR_DESCRIPTION,
             setting_name="settings.features.vpn_accelerator",
             requires_subscription_to_be_active=True,
             callback=on_switch_state
-        ), False, False, 0)
+        ))
 
     def build_moderate_nat(self):
         """Builds and adds the `moderate_nat` setting to the widget."""
         def on_switch_state(_, new_value: bool, toggle_widget: ToggleWidget):
             toggle_widget.save_setting(new_value)
 
-        self.pack_start(ToggleWidget(
+        self.append(ToggleWidget(
             controller=self._controller,
             title=self.MODERATE_NAT_LABEL,
             description=self.MODERATE_NAT_DESCRIPTION,
             setting_name="settings.features.moderate_nat",
             requires_subscription_to_be_active=True,
             callback=on_switch_state
-        ), False, False, 0)
+        ))
 
     def build_ipv6(self):
         """Builds and adds the `ipv6` setting to the widget."""
@@ -136,15 +134,15 @@ class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # no
             toggle_widget.save_setting(new_value)
             self._settings_window.notify_user_with_reconnect_message(force_notify=True)
 
-        self.pack_start(ToggleWidget(
+        self.append(ToggleWidget(
             controller=self._controller,
             title=self.IPV6_LABEL,
             description=self.IPV6_DESCRIPTION,
             setting_name="settings.ipv6",
             callback=on_switch_state
-        ), False, False, 0)
+        ))
 
     def build_custom_dns(self):
         """Builds and adds the `custom_dns` setting to the widget."""
         self.custom_dns = CustomDNSWidget.build(self._controller, self._settings_window)
-        self.pack_start(self.custom_dns, False, False, 0)
+        self.append(self.custom_dns)

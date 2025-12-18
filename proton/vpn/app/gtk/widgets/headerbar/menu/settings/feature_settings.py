@@ -62,6 +62,9 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
         self._controller = controller
         self._settings_window = settings_window
         self.netshield = None
+        self.killswitch = None
+        self.port_forwarding = None
+        self.split_tunneling = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
@@ -102,12 +105,12 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
             requires_subscription_to_be_active=True,
             callback=on_combobox_changed
         )
-        self.pack_start(self.netshield, False, False, 0)
+        self.append(self.netshield)
 
     def build_killswitch(self):
         """Builds and adds the `killswitch` setting to the widget."""
-        self.pack_start(
-            KillSwitchWidget.build(self._controller), False, False, 0)
+        self.killswitch = KillSwitchWidget.build(self._controller)
+        self.append(self.killswitch)
 
     def build_port_forwarding(self):
         """Builds and adds the `port_forwarding` setting to the widget."""
@@ -127,7 +130,7 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
             toggle_widget.save_setting(enabled)
             toggle_widget.description.set_label(description_value)
 
-        port_forwarding_widget = ToggleWidget(
+        self.port_forwarding = ToggleWidget(
             controller=self._controller,
             title=self.PORT_FORWARDING_LABEL,
             description=self.PORT_FORWARDING_DESCRIPTION,
@@ -135,16 +138,16 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
             requires_subscription_to_be_active=True,
             callback=on_switch_state
         )
-        is_pf_enabled = port_forwarding_widget.get_setting()
+        is_pf_enabled = self.port_forwarding.get_setting()
         display_port_forwarding = self._controller.feature_flags.get("DisplayPortForwarding")
         if is_pf_enabled:
-            port_forwarding_widget.description.set_label(
+            self.port_forwarding.description.set_label(
                 self.PORT_FORWARDING_DESCRIPTION_LEARN_MORE
                 if display_port_forwarding
                 else self.PORT_FORWARDING_SETUP_GUIDE
             )
 
-        self.pack_start(port_forwarding_widget, False, False, 0)
+        self.append(self.port_forwarding)
 
     @GObject.Signal(name="netshield-setting-changed", arg_types=(int,))
     def netshield_setting_changed(self, custom_dns_enabled: int):
@@ -183,7 +186,7 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
         dialog.connect("response", _on_dialog_button_click)
         dialog.set_modal(True)
         dialog.set_transient_for(self._settings_window)
-        dialog.show()
+        dialog.present()
 
     def _build_dialog_content(self):
         container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -194,24 +197,23 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
 
         clarification = Gtk.Label(label="This will disable Netshield.")
         clarification.set_halign(Gtk.Align.START)
-        clarification.get_style_context().add_class("dim-label")
+        clarification.add_css_class("dim-label")
 
         learn_more = Gtk.Label(
             label='<a href="https://protonvpn.com/support/custom-dns#netshield">Learn more</a>'
         )
         learn_more.set_halign(Gtk.Align.START)
-        learn_more.get_style_context().add_class("dim-label")
+        learn_more.add_css_class("dim-label")
         learn_more.set_use_markup(True)
 
-        container.pack_start(question, False, False, 0)
-        container.pack_start(clarification, False, False, 0)
-        container.pack_start(learn_more, False, False, 0)
+        container.append(question)
+        container.append(clarification)
+        container.append(learn_more)
 
         return container
 
     def build_split_tunneling(self):
         """Build split tunneling UI.
         """
-        self.pack_start(
-            SplitTunnelingToggle.build(self._controller), False, False, 0
-        )
+        self.split_tunneling = SplitTunnelingToggle.build(self._controller)
+        self.append(self.split_tunneling)

@@ -67,14 +67,18 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def __init__(self, controller: Controller):
         super().__init__()
+        self.set_name("server-list-widget")
         self.set_policy(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
             vscrollbar_policy=Gtk.PolicyType.AUTOMATIC
         )
         self._controller = controller
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._container.set_name("server-list-widget-container")
+        self._container.set_vexpand(True)
         self._container.set_margin_end(15)  # Leave space for the scroll bar.
-        self.add(self._container)
+        self._container.set_spacing(5)
+        self.set_child(self._container)
 
         self._state = ServerListWidgetState()
 
@@ -115,9 +119,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def _remove_country_rows(self):
         """Remove UI country rows."""
-        for row in self._container.get_children():
+        row = self._container.get_first_child()
+        while row:
+            next_row = row.get_next_sibling()  # Get next before removing
             self._container.remove(row)
-            row.destroy()
+            row = next_row
 
     def _on_server_list_update(self):
         """Whenever a new server list is received the UI should be updated."""
@@ -161,9 +167,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
             if country.country_name.lower() == name_to_search.lower():
                 if not country.showing_servers:
                     country.toggle_row()
-                country.set_can_focus(True)   # required to focus on the expanded country
                 country.grab_focus()
-                country.set_can_focus(False)  # required to navigate countries with keyboard
                 return
 
     def display(self, user_tier: int, server_list: int):
@@ -183,7 +187,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
             old_country_rows=self._state.country_rows
         )
         self._add_country_rows()
-        self._container.show_all()
         self.emit("ui-updated")
 
     def unload(self):
@@ -194,10 +197,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
     def _add_country_rows(self):
         """Adds country rows to the container."""
         for country_row in self._state.country_rows.values():
-            self._container.pack_start(
-                country_row,
-                expand=False, fill=False, padding=0
-            )
+            self._container.append(country_row)
 
     def _create_new_country_rows(self, old_country_rows) -> Dict[str, DeferredCountryRow]:
         """Returns new country rows."""

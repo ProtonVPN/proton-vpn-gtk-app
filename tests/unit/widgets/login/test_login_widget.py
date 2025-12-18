@@ -19,50 +19,44 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import pytest
 from unittest.mock import Mock, patch, PropertyMock
 
-from proton.vpn.app.gtk.widgets.login.login_widget import LoginStack, KillSwitchSettingEnum, LoginWidget
-from tests.unit.testing_utils import process_gtk_events
+from proton.vpn.app.gtk.widgets.login.login_widget import KillSwitchSettingEnum, LoginWidget
 
 
-
-
-@patch("proton.vpn.app.gtk.widgets.login.login_widget.Gtk.Box.pack_start")
-@patch("proton.vpn.app.gtk.widgets.login.login_widget.Gtk.Box.pack_end")
-@pytest.mark.parametrize("killswitch_setting", [KillSwitchSettingEnum.OFF, KillSwitchSettingEnum.ON, KillSwitchSettingEnum.PERMANENT])
-def test_login_widget_displays_disable_killswitch_revealer_if_permanent_kill_switch_is_enabled(pack_end_mock, pack_start_mock, killswitch_setting):
+@pytest.mark.parametrize("killswitch_setting",
+                         [KillSwitchSettingEnum.OFF,
+                          KillSwitchSettingEnum.ON,
+                          KillSwitchSettingEnum.PERMANENT])
+def test_login_widget_displays_disable_killswitch_revealer_if_permanent_kill_switch_is_enabled(killswitch_setting):
     controller_mock = Mock()
-    disable_killswitch_widget_mock = Mock()
-    login_stack_mock = Mock()
     controller_mock.get_settings.return_value.killswitch = killswitch_setting
     login_widget = LoginWidget(
-        controller=controller_mock, notifications=Mock(), overlay_widget=Mock(),
-        main_window=Mock(), login_stack=login_stack_mock, disable_killswitch_widget=disable_killswitch_widget_mock
+        controller=controller_mock,
+        notifications=Mock(),
+        overlay_widget=Mock(),
+        main_window=Mock()
     )
 
     login_widget.reset()
 
-    disable_killswitch_widget_mock.set_reveal_child.assert_called_once_with(
-        killswitch_setting == KillSwitchSettingEnum.PERMANENT
-    )
+    assert login_widget.disable_killswitch.get_reveal_child() \
+        == (killswitch_setting == KillSwitchSettingEnum.PERMANENT)
 
 
-@patch("proton.vpn.app.gtk.widgets.login.login_widget.Gtk.Box.pack_start")
-@patch("proton.vpn.app.gtk.widgets.login.login_widget.Gtk.Box.pack_end")
-def test_login_widget_enables_login_form_and_updates_settings_when_killswitch_is_disabled(pack_end_mock, pack_start_mock):
+def test_login_widget_enables_login_form_and_updates_settings_when_killswitch_is_disabled():
     controller_mock = Mock()
     killswitch_property_mock = PropertyMock()
     type(controller_mock.get_settings.return_value).killswitch = killswitch_property_mock
-    disable_killswitch_widget_mock = Mock()
-    login_stack_mock = Mock()
 
-    LoginWidget(
-        controller_mock, notifications=Mock(), overlay_widget=Mock(),
-        main_window=Mock(), login_stack=login_stack_mock, disable_killswitch_widget=disable_killswitch_widget_mock
+    login_widget = LoginWidget(
+        controller_mock,
+        notifications=Mock(),
+        overlay_widget=Mock(),
+        main_window=Mock()
     )
 
-    callback = disable_killswitch_widget_mock.connect.mock_calls[0].args[1]
-    callback(None)
+    login_widget.disable_killswitch.emit("disable-killswitch")
 
     killswitch_property_mock.assert_called_once_with(KillSwitchSettingEnum.OFF)
     controller_mock.save_settings.assert_called_once()
-    disable_killswitch_widget_mock.set_reveal_child.assert_called_once_with(False)
-    login_stack_mock.login_form.set_property.assert_called_once_with("sensitive", True)
+    assert not login_widget.disable_killswitch.get_reveal_child()
+    assert login_widget.login_stack.get_sensitive()

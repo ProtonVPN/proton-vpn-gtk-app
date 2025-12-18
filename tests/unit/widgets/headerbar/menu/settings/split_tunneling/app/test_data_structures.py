@@ -17,7 +17,7 @@ def test_build_with_remove_button_remove_signals_is_emitted_when_clicked_on_remo
     remove_app_callback = Mock()
     app_row = AppRowWithRemoveButton.build(mock_app_data)
     app_row.connect("remove-app", remove_app_callback)
-    app_row._remove_button.clicked()
+    app_row._remove_button.emit("clicked")
 
     process_gtk_events()
 

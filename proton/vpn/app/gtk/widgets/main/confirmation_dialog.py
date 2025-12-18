@@ -45,23 +45,25 @@ class ConfirmationDialog(Gtk.Dialog):
         yes_button = self.add_button("_Yes" if not yes_text else yes_text, Gtk.ResponseType.YES)
         no_button = self.add_button("_No" if not no_text else no_text, Gtk.ResponseType.NO)
 
-        no_button.get_style_context().add_class("primary")
-        yes_button.get_style_context().add_class("danger")
+        no_button.add_css_class("primary")
+        yes_button.add_css_class("danger")
 
         if isinstance(message, str):
             widget = Gtk.Label(label=message)
             widget.set_width_chars(50)
             widget.set_max_width_chars(50)
-            widget.set_line_wrap(True)
-            widget.set_line_wrap_mode(Pango.WrapMode.WORD)
+            widget.set_wrap(True)
+            widget.set_wrap_mode(Pango.WrapMode.WORD)
         else:
             widget = message
 
-        # By default Gtk.Dialog has a vertical box child (Gtk.Box) `vbox`
-        self.vbox.set_border_width(20)  # pylint: disable=no-member
-        self.vbox.set_spacing(20)  # pylint: disable=no-member
-        self.vbox.add(widget)  # pylint: disable=no-member
-        self.connect("realize", lambda _: self.show_all())  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
+        content_area: Gtk.Box = self.get_content_area()
+        content_area.set_margin_top(20)
+        content_area.set_margin_bottom(20)
+        content_area.set_margin_start(20)
+        content_area.set_margin_end(20)
+        content_area.set_spacing(20)
+        content_area.append(widget)
 
 
 def show_confirmation_dialog(  # pylint: disable=too-many-arguments
@@ -83,10 +85,10 @@ def show_confirmation_dialog(  # pylint: disable=too-many-arguments
 
     clarification_label = Gtk.Label(label=clarification)
     clarification_label.set_halign(Gtk.Align.START)
-    clarification_label.get_style_context().add_class("dim-label")
+    clarification_label.add_css_class("dim-label")
 
-    container.pack_start(question_label, False, False, 0)
-    container.pack_start(clarification_label, False, False, 0)
+    container.append(question_label)
+    container.append(clarification_label)
 
     dialog = ConfirmationDialog(
         message=container,
@@ -98,4 +100,4 @@ def show_confirmation_dialog(  # pylint: disable=too-many-arguments
     dialog.set_modal(True)
     dialog.set_transient_for(parent)
     dialog.connect("response", callback_result)
-    dialog.show()
+    dialog.present()

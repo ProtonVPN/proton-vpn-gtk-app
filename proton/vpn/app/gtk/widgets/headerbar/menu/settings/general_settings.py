@@ -20,7 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import TYPE_CHECKING, Optional, List
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
@@ -53,7 +53,7 @@ class TrayPinnedServersWidget(EntryWidget):
         self._controller = controller
         self._tray_indicator = tray_indicator
 
-    def _on_focus_outside_entry(self, entry: Gtk.Entry, _: Gdk.EventFocus, __: EntryWidget):
+    def _on_focus_outside_entry(self, entry: Gtk.Entry, *_):
         self.save_setting(entry.get_text())
         self._tray_indicator.reload_pinned_servers()
 
@@ -114,44 +114,44 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     def build_connect_at_app_startup(self):
         """Builds and adds the `connect_at_app_startup` setting to the widget."""
-        def on_focus_out_callback(entry: Gtk.Entry, _: Gdk.EventFocus, entry_widget: EntryWidget):
+        def on_focus_out_callback(entry: Gtk.Entry, entry_widget: EntryWidget, *_):
             new_value = entry.get_text().strip().upper()
             if new_value == "OFF":
                 new_value = None
 
             entry_widget.save_setting(new_value)
 
-        self.pack_start(EntryWidget(
+        self.append(EntryWidget(
             controller=self._controller,
             title=self.CONNECT_AT_APP_STARTUP_LABEL,
             description=self.CONNECT_AT_APP_STARTUP_DESCRIPTION,
             setting_name="app_configuration.connect_at_app_startup",
             callback=on_focus_out_callback
-        ), False, False, 0)
+        ))
 
     def build_start_app_minimized(self):
         """Builds and adds the `start_app_minimized` setting to the widget."""
-        self.pack_start(ToggleWidget(
+        self.append(ToggleWidget(
             controller=self._controller,
             title=self.START_APP_MINIMIZED_LABEL,
             description=self.START_APP_MINIMIZED_DESCRIPTION,
             setting_name="app_configuration.start_app_minimized"
-        ), False, False, 0)
+        ))
 
     def build_tray_pinned_servers(self):
         """Builds and adds the `tray_pinned_servers` setting to the widget."""
-        self.pack_start(TrayPinnedServersWidget(
+        self.append(TrayPinnedServersWidget(
             controller=self._controller, tray_indicator=self._tray_indicator
-        ), False, False, 0)
+        ))
 
     def build_anonymous_crash_reports(self):
         """Builds and adds the `anonymous_crash_reports` setting to the widget."""
-        self.pack_start(ToggleWidget(
+        self.append(ToggleWidget(
             controller=self._controller,
             title=self.ANONYMOUS_CRASH_REPORTS_LABEL,
             description=self.ANONYMOUS_CRASH_REPORTS_DESCRIPTION,
             setting_name="settings.anonymous_crash_reports"
-        ), False, False, 0)
+        ))
 
     def build_beta_upgrade(self):
         """Builds and adds the `Early Access` setting to the widget."""
@@ -160,4 +160,4 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         if not early_access.can_early_access_be_displayed():
             return
 
-        self.pack_start(early_access, False, False, 0)
+        self.append(early_access)

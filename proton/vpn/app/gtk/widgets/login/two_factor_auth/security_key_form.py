@@ -88,13 +88,12 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
         )
 
         self._cancel_button = Gtk.Button(label="Cancel")
-        self._cancel_button.get_style_context().add_class("danger")
+        self._cancel_button.add_css_class("danger")
         self._cancel_button.connect("clicked", self._on_cancel_button_clicked)
 
         self._instruction_label = SettingDescription(self.DESCRIPTION_LABEL)
-        self._instruction_label.get_style_context().remove_class("dim-label")
-        self._instruction_label.set_line_wrap(True)
-        self._instruction_label.set_property("track-visited-links", False)
+        self._instruction_label.remove_css_class("dim-label")
+        self._instruction_label.set_wrap(True)
 
         self._pin_code_label = Gtk.Label(label=self.PIN_CODE_LABEL)
         self._pin_code_label.set_halign(Gtk.Align.START)
@@ -113,29 +112,26 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
         self._pin_code_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=10
         )
-        self._pin_code_box.pack_start(self._pin_code_label, expand=False, fill=False, padding=0)
-        self._pin_code_box.pack_start(self._pin_code_entry, expand=False, fill=False, padding=0)
+        self._pin_code_box.append(self._pin_code_label)
+        self._pin_code_box.append(self._pin_code_entry)
 
         self._pin_code_box_revealer = Gtk.Revealer()
-        self._pin_code_box_revealer.add(self._pin_code_box)
+        self._pin_code_box_revealer.set_name("pin-code-box-revealer")
+        self._pin_code_box_revealer.set_child(self._pin_code_box)
         self._pin_code_box_revealer.connect(
             "notify::reveal-child", self._on_pin_code_box_revealer_notify_reveal_child
         )
 
         # Box is used to group the pin code box revealer and the authenticate button.
         self._authenticate_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self._authenticate_box.pack_start(
-            self._pin_code_box_revealer, expand=False, fill=False, padding=0
-        )
-        self._authenticate_box.pack_start(
-            self._authenticate_button, expand=False, fill=False, padding=0
-        )
-        self._authenticate_box.pack_start(
-            self._cancel_button, expand=False, fill=False, padding=0
-        )
-        self.pack_start(self._instruction_label, expand=False, fill=False, padding=0)
-        self.pack_start(SecurityKeyLogo(), expand=False, fill=False, padding=0)
-        self.pack_start(self._authenticate_box, expand=False, fill=False, padding=5)
+        self._authenticate_box.set_vexpand(True)
+        self._authenticate_box.set_valign(Gtk.Align.END)
+        self._authenticate_box.append(self._pin_code_box_revealer)
+        self._authenticate_box.append(self._authenticate_button)
+        self._authenticate_box.append(self._cancel_button)
+        self.append(self._instruction_label)
+        self.append(SecurityKeyLogo())
+        self.append(self._authenticate_box)
 
     @GObject.Signal
     def two_factor_auth_cancelled(self):
@@ -249,7 +245,7 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
 
     def authenticate_button_click(self):
         """Clicks the authenticate button."""
-        self._authenticate_button.clicked()
+        self._authenticate_button.emit("clicked")
 
     def request_key_selection(self):
         """Called when multiple keys are found and the user needs to select one

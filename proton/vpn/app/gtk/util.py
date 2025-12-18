@@ -21,6 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from typing import Callable
 from gi.repository import Gtk
 
+# See: https://docs.gtk.org/gtk4/migrating-3to4.html#set-a-proper-application-id  # pylint: disable=line-too-long # noqa: E501
 APPLICATION_ID = "proton.vpn.app.gtk"
 
 

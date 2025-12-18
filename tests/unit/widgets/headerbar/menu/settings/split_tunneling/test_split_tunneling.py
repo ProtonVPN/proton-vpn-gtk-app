@@ -54,7 +54,7 @@ def test_toggle_enabled_revealer_reveals_app_list(mock_controller):
     )
 
     st.build_revealer()
-    st.switch.set_state(True)
+    st.switch.set_active(True)
 
     process_gtk_events()
 
@@ -76,7 +76,7 @@ def test_toggle_disable_revealer_hides_app_list(mock_controller):
 
     mock_controller.reset_mock()
 
-    st.switch.set_state(False)
+    st.switch.set_active(False)
 
     process_gtk_events()
 

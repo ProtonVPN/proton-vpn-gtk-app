@@ -37,15 +37,15 @@ class SelectedAppList(Gtk.ScrolledWindow):
         super().__init__()
         self.set_name("selected-app-list")
 
-        self.main_container = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.main_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self._data_mapping: dict[AppData, AppRowWithRemoveButton] = {}
 
-        viewport = Gtk.Viewport.new(None, None)
-        viewport.get_style_context().add_class("viewport-frame")
-        viewport.add(self.main_container)
+        viewport = Gtk.Viewport()
+        viewport.add_css_class("viewport-frame")
+        viewport.set_child(self.main_container)
 
         self.set_propagate_natural_width(True)
-        self.add(viewport)
+        self.set_child(viewport)
 
         self.refresh(apps_to_add)
 
@@ -76,7 +76,7 @@ class SelectedAppList(Gtk.ScrolledWindow):
             # Only add if child does not exist already
             list_has_been_modified = True
             app_row = self._generate_app_row(app_data)
-            self.main_container.add(app_row)
+            self.main_container.append(app_row)
             self._data_mapping[app_data] = app_row
 
         # Resize view only if list has been modified
@@ -84,7 +84,6 @@ class SelectedAppList(Gtk.ScrolledWindow):
             return
 
         self._update_scrolled_window_size()
-        self.show_all()
         self.emit("app-list-refreshed", selected_apps)
 
     def _remove_app(self, app_row: AppRowWithRemoveButton):

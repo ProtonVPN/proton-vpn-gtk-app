@@ -36,7 +36,7 @@ class KillSwitchLabel(Gtk.Label):
 
     def __init__(self):
         super().__init__(label=KillSwitchLabel.LABEL_TEXT)
-        self.set_line_wrap(True)
+        self.set_wrap(True)
         # set_max_width_chars is required for set_line_wrap to have effect.
         self.set_max_width_chars(20)
         self.set_justify(Gtk.Justification.LEFT)
@@ -48,8 +48,8 @@ class DisableKillSwitchButton(Gtk.Button):
 
     def __init__(self):
         super().__init__(label=DisableKillSwitchButton.BUTTON_LABEL)
-        self.get_style_context().add_class("secondary")
-        self.get_style_context().add_class("spaced")
+        self.add_css_class("secondary")
+        self.add_css_class("spaced")
 
 
 class DisableKillSwitchWidget(Gtk.Revealer):
@@ -76,12 +76,10 @@ class DisableKillSwitchWidget(Gtk.Revealer):
 
         container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
-        container.pack_start(self.killswitch_label, expand=False, fill=False, padding=0)
-        container.pack_end(self.disable_killswitch_button, expand=False, fill=False, padding=0)
+        container.append(self.killswitch_label)
+        container.append(self.disable_killswitch_button)
 
-        self.add(container)
-        self.set_no_show_all(False)
-        self.show_all()
+        self.set_child(container)
 
         self.disable_killswitch_button.connect("clicked", self._on_button_click)
 
@@ -91,13 +89,15 @@ class DisableKillSwitchWidget(Gtk.Revealer):
             DisableKillSwitchWidget.DIALOG_TITLE
         )
         dialog.set_transient_for(self._main_window)
-        # run() blocks the main loop, and only exist once the `::response` signal
-        # is emitted.
-        response = Gtk.ResponseType(dialog.run())
-        dialog.destroy()
+        dialog.set_modal(True)
 
-        if response == Gtk.ResponseType.YES:
-            self.emit("disable-killswitch")
+        def on_dialog_response(dialog: ConfirmationDialog, response_id: int):
+            dialog.destroy()
+            if response_id == Gtk.ResponseType.YES:
+                self.emit("disable-killswitch")
+
+        dialog.connect("response", on_dialog_response)
+        dialog.present()
 
     @GObject.Signal
     def disable_killswitch(self):

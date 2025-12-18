@@ -18,7 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from pathlib import Path
 
-from proton.vpn.app.gtk import Gtk
+from gi.repository import Gdk, Gtk
 from proton.vpn.app.gtk.assets import icons
 
 
@@ -57,9 +57,10 @@ class PasswordEntry(Gtk.Entry):
         )
         # By default, the password is not shown. Therefore, the icon to
         # be able to show the password is shown.
-        self.set_icon_from_pixbuf(
+        show_texture = Gdk.Texture.new_for_pixbuf(self._show_pixbuff)
+        self.set_icon_from_gicon(
             Gtk.EntryIconPosition.SECONDARY,
-            self._show_pixbuff
+            show_texture
         )
         self.set_icon_activatable(
             Gtk.EntryIconPosition.SECONDARY,
@@ -69,16 +70,13 @@ class PasswordEntry(Gtk.Entry):
             "icon-press", self._on_change_password_visibility_icon_press
         )
 
-    def _on_change_password_visibility_icon_press(
-            self, gtk_entry_object,
-            gtk_icon_object, gtk_event  # pylint: disable=unused-argument
-    ):
+    def _on_change_password_visibility_icon_press(self, gtk_entry_object, _icon_position):
         """Changes password visibility, updating accordingly the icon."""
         is_text_visible = gtk_entry_object.get_visibility()
         gtk_entry_object.set_visibility(not is_text_visible)
-        self.set_icon_from_pixbuf(
+        pixbuf = self._show_pixbuff if is_text_visible else self._hide_pixbuff
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_icon_from_gicon(
             Gtk.EntryIconPosition.SECONDARY,
-            self._show_pixbuff
-            if is_text_visible
-            else self._hide_pixbuff
+            texture
         )

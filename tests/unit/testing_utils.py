@@ -67,8 +67,11 @@ def raise_main_loop_exceptions(func):
 @raise_main_loop_exceptions
 def process_gtk_events():
     """Processes all pending GTK events."""
-    while Gtk.events_pending():
-        Gtk.main_iteration_do(blocking=False)
+    context = GLib.MainContext.default()
+    # Process events as long as there are pending events
+    while context.pending():
+        # Run a non-blocking iteration (may_block=False)
+        context.iteration(False)
 
 
 @raise_main_loop_exceptions

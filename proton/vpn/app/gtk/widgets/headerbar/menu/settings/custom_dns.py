@@ -44,9 +44,11 @@ class CustomDNSRow(Gtk.Box):  # pylint: disable=too-few-public-methods
         self.gtk = gtk or Gtk
         self.custom_dns_entry = custom_dns_entry
         ip_label = self.gtk.Label(label=custom_dns_entry.convert_ip_to_short_format())
-        self.button = self.gtk.Button.new_from_icon_name("edit-delete-symbolic", 1)
-        self.pack_start(ip_label, False, False, 0)
-        self.pack_end(self.button, False, False, 0)
+        ip_label.set_hexpand(True)  # Make label expand to push button to the right
+        ip_label.set_halign(self.gtk.Align.START)  # Keep label left-aligned
+        self.button = self.gtk.Button.new_from_icon_name("edit-delete-symbolic")
+        self.append(ip_label)
+        self.append(self.button)
 
 
 class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
@@ -63,7 +65,7 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
         for custom_dns in ip_list:
             custom_dns_row = CustomDNSRow(custom_dns)
             custom_dns_row.button.connect("clicked", self._on_dns_delete_clicked)
-            self.pack_start(custom_dns_row, False, False, 0)
+            self.append(custom_dns_row)
 
     @GObject.Signal(name="dns-ip-removed", arg_types=(object,))
     def dns_ip_removed(self, custom_dns_entry: CustomDNSEntry):
@@ -73,8 +75,7 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
         """Add a new DNS entry to the list"""
         custom_dns_row = CustomDNSRow(new_dns)
         custom_dns_row.button.connect("clicked", self._on_dns_delete_clicked)
-        custom_dns_row.show_all()
-        self.pack_start(custom_dns_row, False, False, 0)
+        self.append(custom_dns_row)
 
     def _on_dns_delete_clicked(self, button: Gtk.Button):
         parent_widget = button.get_parent()
@@ -112,10 +113,10 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
 
         self._custom_dns_list.connect("dns-ip-removed", self._on_dns_delete_clicked)
 
-        self.pack_start(label, False, False, 0)
-        self.pack_start(entry_row, False, False, 0)
-        self.pack_start(error_message_revealer, False, False, 0)
-        self.pack_start(self._custom_dns_list, False, False, 0)
+        self.append(label)
+        self.append(entry_row)
+        self.append(error_message_revealer)
+        self.append(self._custom_dns_list)
 
     def _build_entry_row(self, error_message_revealer: Gtk.Revealer) -> Gtk.Grid:
         row = self.gtk.Grid(orientation=Gtk.Orientation.HORIZONTAL)
@@ -137,8 +138,8 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         revealer = self.gtk.Revealer()
         error_label = self.gtk.Label()
         error_label.set_halign(Gtk.Align.START)
-        error_label.get_style_context().add_class("signal-danger")
-        revealer.add(error_label)
+        error_label.add_css_class("signal-danger")
+        revealer.set_child(error_label)
         revealer.set_reveal_child(False)
 
         return revealer
@@ -171,7 +172,7 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
             ip_list.remove(existing_dns_ip_entry)
 
     def _notify_user_of_invalid_dns_entry(self, error_message_revealer: Gtk.Revealer):
-        error_message_revealer.get_children()[0].set_label(self.INVALID_IP_ERROR_MESSAGE)
+        error_message_revealer.get_child().set_label(self.INVALID_IP_ERROR_MESSAGE)
         error_message_revealer.set_reveal_child(True)
 
     @contextmanager
@@ -192,7 +193,7 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
 
     def add_button_click(self):
         """Simulate add button click"""
-        self._add_button.clicked()
+        self._add_button.emit("clicked")
 
 
 class CustomDNSWidget(ToggleWidget):
@@ -225,7 +226,6 @@ class CustomDNSWidget(ToggleWidget):
         """Shortcut method to initialize widget."""
         widget = CustomDNSWidget(controller, settings_window)
         widget.build_revealer()
-        widget.show_all()
         return widget
 
     def build_revealer(self):
@@ -233,7 +233,7 @@ class CustomDNSWidget(ToggleWidget):
         self.revealer = self.gtk.Revealer()
         self.attach(self.revealer, 0, 2, 2, 1)
         revealer_container = self._build_revealer_container()
-        self.revealer.add(revealer_container)
+        self.revealer.set_child(revealer_container)
         self.revealer.set_reveal_child(self.get_setting())
 
     def _build_revealer_container(self) -> Gtk.Box:
@@ -278,7 +278,7 @@ class CustomDNSWidget(ToggleWidget):
         dialog.connect("response", _on_dialog_button_click)
         dialog.set_modal(True)
         dialog.set_transient_for(self._settings_window)
-        dialog.show()
+        dialog.present()
 
     def _build_dialog_content(self):
         #  pylint: disable=duplicate-code
@@ -290,17 +290,17 @@ class CustomDNSWidget(ToggleWidget):
 
         clarification = self.gtk.Label(label="This will disable custom DNS.")
         clarification.set_halign(Gtk.Align.START)
-        clarification.get_style_context().add_class("dim-label")
+        clarification.add_css_class("dim-label")
 
         learn_more = self.gtk.Label(
             label='<a href="https://protonvpn.com/support/custom-dns#netshield">Learn more</a>'
         )
         learn_more.set_halign(Gtk.Align.START)
-        learn_more.get_style_context().add_class("dim-label")
+        learn_more.add_css_class("dim-label")
         learn_more.set_use_markup(True)
 
-        container.pack_start(question, False, False, 0)
-        container.pack_start(clarification, False, False, 0)
-        container.pack_start(learn_more, False, False, 0)
+        container.append(question)
+        container.append(clarification)
+        container.append(learn_more)
 
         return container

@@ -48,7 +48,7 @@ class TwoFactorAuthWidget(Gtk.Box):
 
         self._two_factor_auth_title = Gtk.Label(label=self.TWO_FACTOR_AUTH_LABEL)
         self._two_factor_auth_title.set_halign(Gtk.Align.CENTER)
-        self._two_factor_auth_title.get_style_context().add_class("two-factor-auth-stack-title")
+        self._two_factor_auth_title.add_css_class("two-factor-auth-stack-title")
 
         self.two_factor_auth_stack = two_factor_auth_stack \
             or TwoFactorAuthStack(controller, notifications, overlay_widget)
@@ -62,14 +62,16 @@ class TwoFactorAuthWidget(Gtk.Box):
         self.stack_switch.set_stack(self.two_factor_auth_stack)
 
         # Ensure the children of the stack switcher fill the width of the stack switcher
-        for child in self.stack_switch.get_children():
+        child = self.stack_switch.get_first_child()
+        while child:
             child.set_hexpand(True)
             child.set_halign(Gtk.Align.FILL)
+            child = child.get_next_sibling()
 
-        self.pack_start(TwoFactorAuthProtonVPNLogo(), expand=False, fill=True, padding=0)
-        self.pack_start(self._two_factor_auth_title, expand=False, fill=False, padding=0)
-        self.pack_start(self.stack_switch, expand=False, fill=True, padding=0)
-        self.pack_start(self.two_factor_auth_stack, expand=True, fill=True, padding=0)
+        self.append(TwoFactorAuthProtonVPNLogo())
+        self.append(self._two_factor_auth_title)
+        self.append(self.stack_switch)
+        self.append(self.two_factor_auth_stack)
 
         self.two_factor_auth_stack.connect(
             "two-factor-auth-successful",

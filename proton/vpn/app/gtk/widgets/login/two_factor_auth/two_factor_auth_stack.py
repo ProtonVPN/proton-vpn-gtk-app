@@ -70,16 +70,10 @@ class TwoFactorAuthStack(Gtk.Stack):
         self.security_key_form.connect(
             "two-factor-auth-cancelled", self._on_two_factor_auth_cancelled
         )
-        self.add_titled(
-            self.security_key_form, "security_key_form", self.SECURITY_KEY_FORM_TITLE
-        )
 
         # AuthenticatorAppForm
         self.authenticator_app_form = authenticator_app_form or AuthenticatorAppForm(
             controller, notifications, overlay_widget
-        )
-        self.add_titled(
-            self.authenticator_app_form, "authenticator_app_form", self.AUTHENTICATOR_APP_FORM_TITLE
         )
         self.authenticator_app_form.connect(
             "two-factor-auth-successful",
@@ -93,6 +87,10 @@ class TwoFactorAuthStack(Gtk.Stack):
         """
         Displays the specified form to the user.
         """
+        if widget is not self.get_child_by_name("authenticator_app_form") and \
+           widget is not self.get_child_by_name("security_key_form"):
+            raise ValueError("Invalid widget to display in TwoFactorAuthStack")
+
         self.active_widget = widget
         self.set_visible_child(widget)
         widget.reset()
@@ -101,13 +99,30 @@ class TwoFactorAuthStack(Gtk.Stack):
         """Resets the widget to its initial state."""
         self._notifications.hide_message()
 
+        # Remove all children first
+        if self.get_child_by_name("security_key_form"):
+            self.remove(self.security_key_form)
+        if self.get_child_by_name("authenticator_app_form"):
+            self.remove(self.authenticator_app_form)
+
         if self._controller.fido2_available:
+            self.add_titled(
+                self.security_key_form,
+                "security_key_form",
+                self.SECURITY_KEY_FORM_TITLE
+            )
+            self.add_titled(
+                self.authenticator_app_form,
+                "authenticator_app_form",
+                self.AUTHENTICATOR_APP_FORM_TITLE
+            )
             self.display_widget(self.security_key_form)
-            self.security_key_form.show()       # Enable Security Key
-            self.authenticator_app_form.show()  # Always enable Authenticator app
         else:
-            self.security_key_form.hide()       # Disable Security Key
-            self.authenticator_app_form.show()  # Always enable Authenticator app
+            self.add_titled(
+                self.authenticator_app_form,
+                "authenticator_app_form",
+                self.AUTHENTICATOR_APP_FORM_TITLE
+            )
             self.display_widget(self.authenticator_app_form)
 
     def _on_two_factor_auth_successful(self, _):

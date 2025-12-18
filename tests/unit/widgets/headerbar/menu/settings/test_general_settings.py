@@ -18,6 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import pytest
 from unittest.mock import Mock, PropertyMock, patch
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access import EarlyAccessWidget
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk import gi
 from gi.repository import Gdk  # pylint: disable=C0413 # noqa: E402
@@ -26,49 +27,39 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings import 
 
 class TestGeneralSettings:
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.pack_start")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.EntryWidget")
-    def test_build_connect_at_app_startup_saves_value_when_callback_is_called(self, entry_widget_mock, _):
+    def test_build_connect_at_app_startup_saves_value_when_callback_is_called(self):
         value_to_store = "new value"
-        gs = GeneralSettings(Mock())
+        controller = Mock()
+        gs = GeneralSettings(controller)
         gs.build_connect_at_app_startup()
 
-        gtk_entry_mock = Mock()
-        gtk_entry_mock.get_text.return_value = "new value"
+        entry_widget = gs.get_last_child()
+        entry_widget.change_value(value_to_store)
 
-        callback = entry_widget_mock.call_args[1]["callback"]
-        callback(gtk_entry_mock, None, entry_widget_mock)
+        controller.save_setting_attr.assert_called_once_with("app_configuration.connect_at_app_startup", value_to_store.upper())
 
-        entry_widget_mock.save_setting.assert_called_once_with(value_to_store.upper())
-
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.pack_start")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.EntryWidget")
-    def test_build_connect_at_app_startup_populates_disabled_with_off(self, entry_widget_mock, _):
-        gs = GeneralSettings(Mock())
+    def test_build_connect_at_app_startup_populates_disabled_with_off(self):
+        controller = Mock()
+        gs = GeneralSettings(controller)
         gs.build_connect_at_app_startup()
 
-        gtk_entry_mock = Mock()
-        gtk_entry_mock.get_text.return_value = "off"
+        entry_widget = gs.get_last_child()
+        entry_widget.change_value("off")
 
-        callback = entry_widget_mock.call_args[1]["callback"]
-        callback(gtk_entry_mock, None, entry_widget_mock)
+        controller.save_setting_attr.assert_called_once_with("app_configuration.connect_at_app_startup", None)
 
-        entry_widget_mock.save_setting.assert_called_once_with(None)
-
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.pack_start")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.EarlyAccessWidget")
-    def test_build_beta_upgrade_is_only_displayed_if_condition_allows_it(self, early_access_widget, pack_start):
-        early_access_widget_return_mock = Mock()
-        early_access_widget_return_mock.can_early_access_be_displayed.return_value = False
-        early_access_widget.return_value = early_access_widget_return_mock
+    def test_build_beta_upgrade_is_only_displayed_if_condition_allows_it(self, early_access_widget_class):
+        early_access_widget = Mock()
+        early_access_widget.can_early_access_be_displayed.return_value = False
+        early_access_widget_class.return_value = early_access_widget
 
         gs = GeneralSettings(Mock())
         gs.build_beta_upgrade()
 
-        # The call count here is 1 because:
-        # 1st time it's called inside class BaseCategoryContainer to add the category header, which is inherited by EarlyAccessWidget
-        # 2nd time it's called only if the can_early_access_be_displayed is true, otherwise it does not add the widget to be displayed
-        assert pack_start.call_count == 1
+        last_child = gs.get_last_child()
+        assert last_child is not early_access_widget
+
 
     @pytest.mark.parametrize("tray_indicator_mock", [None, Mock()])
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_start_app_minimized")

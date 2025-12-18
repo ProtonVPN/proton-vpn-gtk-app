@@ -42,11 +42,10 @@ class AppSelectionWindow(Gtk.Window):
         installed_apps: list[AppData],
         gtk: Gtk = Gtk
     ):  # pylint: disable=too-many-arguments
-        super().__init__(type=Gtk.WindowType.TOPLEVEL)
+        super().__init__()
         self.set_modal(True)
         self.set_title(title)
         self.set_default_size(600, 500)
-        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.set_name("split-tunneling-app-selection-window")
 
         self.gtk = gtk
@@ -56,8 +55,8 @@ class AppSelectionWindow(Gtk.Window):
 
         # Can't use self.container as that seems to be a non-writable property,
         # probably reserved by Gtk.
-        self.main_container = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.content_container = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        self.main_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.content_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
 
         self._create_elastic_window()
 
@@ -72,23 +71,22 @@ class AppSelectionWindow(Gtk.Window):
         settings will be centered.
         """
         viewport = Gtk.Viewport.new(None, None)
-        viewport.get_style_context().add_class("viewport-frame")
-        viewport.add(self.content_container)
+        viewport.add_css_class("viewport-frame")
+        viewport.set_child(self.content_container)
 
         scrolled_window = Gtk.ScrolledWindow.new()
         scrolled_window.set_propagate_natural_height(True)
         scrolled_window.set_min_content_height(200)
         scrolled_window.set_min_content_width(400)
-        scrolled_window.add(viewport)
+        scrolled_window.set_child(viewport)
 
-        self.main_container.pack_start(scrolled_window, False, False, 0)
+        self.main_container.append(scrolled_window)
 
-        self.add(self.main_container)
+        self.set_child(self.main_container)
 
     def _build_ui(self, _: Gtk.Window):
         for app_data in self._installed_apps:
-
-            self.content_container.add(
+            self.content_container.append(
                 AppRowWithCheckbox.build(
                     app_data=app_data,
                     checked=bool(app_data.executable in self._stored_apps)
@@ -97,14 +95,12 @@ class AppSelectionWindow(Gtk.Window):
 
         connect_button = Gtk.Button.new_with_label(label="Done")
         connect_button.set_name("split-tunneling-app-done-button")
-        connect_button.get_style_context().add_class("primary")
+        connect_button.add_css_class("primary")
         connect_button.set_halign(Gtk.Align.END)
         connect_button.connect(
             "clicked", self._on_done_button_clicked
         )
-        self.main_container.pack_end(connect_button, False, False, 0)
-
-        self.show_all()
+        self.main_container.append(connect_button)
 
     @GObject.Signal(name="app_selection_completed", arg_types=(object,))
     def app_selection_completed(self, selected_apps: list[AppData]):
@@ -122,11 +118,11 @@ class AppSelectionWindow(Gtk.Window):
 
     def _on_done_button_clicked(self, _: Gtk.Button):
         added_apps = []
-        for child in self.content_container.get_children():
-            if not child.checked:
-                continue
-
-            added_apps.append(child.app_data)
+        child = self.content_container.get_first_child()
+        while child:
+            if child.checked:
+                added_apps.append(child.app_data)
+            child = child.get_next_sibling()
 
         self._signal_updated_app_list(added_apps)
         self.close()
@@ -137,9 +133,11 @@ class AppSelectionWindow(Gtk.Window):
         Returns:
             AppRowWithCheckbox
         """
-        return self.content_container.get_children()[0]
+        return self.content_container.get_first_child()
 
     def _click_on_done_button(self):
         """Mainly for testing purposes and not for public API.
         """
-        self.main_container.get_children()[-1].clicked()
+        last_child = self.main_container.get_last_child()
+        if last_child:
+            last_child.emit("clicked")

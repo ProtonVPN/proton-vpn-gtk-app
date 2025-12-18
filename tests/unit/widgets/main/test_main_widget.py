@@ -20,7 +20,6 @@ from unittest.mock import Mock
 from proton.session.exceptions import ProtonAPIMissingScopeError
 
 import gi
-gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget

@@ -3,9 +3,8 @@ from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.account_settings import AccountSettings, CustomButton
 
 
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.account_settings.AccountSettings.pack_start")
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.account_settings.Gtk.show_uri_on_window")
-def test_account_settings_ensure_url_is_opened_when_clicking_on_button(show_uri_on_window_mock, pack_start_mock):
+@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.account_settings.Gio.AppInfo.launch_default_for_uri")
+def test_account_settings_ensure_url_is_opened_when_clicking_on_button(show_uri_on_window_mock):
     controller_mock = Mock()
 
     controller_mock.account_name = "test account name"
@@ -13,8 +12,8 @@ def test_account_settings_ensure_url_is_opened_when_clicking_on_button(show_uri_
 
     account_settings = AccountSettings(controller_mock)
     account_settings.build_ui()
-    custom_button = pack_start_mock.call_args[0][0]
-    custom_button.button.clicked()
+    custom_button = account_settings.get_last_child()
+    custom_button.button.emit("clicked")
 
     process_gtk_events()
 

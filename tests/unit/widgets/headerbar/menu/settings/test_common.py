@@ -30,13 +30,11 @@ USER_TIER_FREE = 0
 USER_TIER_PLUS = 1
 
 
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.Gdk")
-def test_upgrade_plus_tag_displays_url_in_window(gdk_mock):
-    gdk_mock.CURRENT_TIME = "mock-time"
-    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.Gtk.show_uri_on_window") as show_in_browser:
+def test_upgrade_plus_tag_displays_url_in_window():
+    with patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.Gio.AppInfo.launch_default_for_uri") as show_in_browser:
         plus_tag = UpgradePlusTag()
-        plus_tag.clicked()
-        show_in_browser.assert_called_once_with(None, plus_tag.URL, gdk_mock.CURRENT_TIME)
+        plus_tag.emit("clicked")
+        show_in_browser.assert_called_once_with(plus_tag.URL, None)
 
 
 @pytest.mark.parametrize(
@@ -296,7 +294,7 @@ class TestEntryWidget:
             setting_name=self.DEFAULT_SETTING_NAME,
         )
         ew.entry.set_text(new_value)
-        ew.entry.emit("focus-out-event", None)
+        ew.entry.observe_controllers()[0].emit("leave")
 
         save_setting_mock.assert_called_once_with(new_value)
 
@@ -315,4 +313,4 @@ class TestEntryWidget:
         )
 
         ew.entry.set_text(control_bool_val)
-        ew.entry.emit("focus-out-event", None)
+        ew.entry.observe_controllers()[0].emit("leave")

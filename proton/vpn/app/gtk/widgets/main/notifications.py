@@ -34,7 +34,7 @@ from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 class DialogButton:
     """A button for a dialog."""
     label: str
-    response_type: Gtk.MessageType
+    response_type: Gtk.ResponseType
 
 
 class Notifications:
@@ -75,11 +75,11 @@ class Notifications:
 
         self.error_dialog = Gtk.MessageDialog(
             transient_for=self._main_window,
-            flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
             message_type=message_type,
             buttons=Gtk.ButtonsType.NONE,
             text=title,
         )
+        self.error_dialog.set_destroy_with_parent(True)
 
         buttons = buttons or [DialogButton("OK", Gtk.ResponseType.OK)]
         for button in buttons:
@@ -90,15 +90,15 @@ class Notifications:
             secondary_text += f"\n\n<span size=\"smaller\" weight=\"light\">{hint}</span>"
 
         self.error_dialog.set_modal(True)
-        self.error_dialog.format_secondary_markup(secondary_text)
-        # .run() blocks code execution until a button on the dialog is clicked,
-        # so followed code will only be run after the .run() method has returned.
-        response_type = self.error_dialog.run()
-        self.error_dialog.destroy()
-        self.error_dialog = None
+        self.error_dialog.set_markup(secondary_text)
 
-        if on_dialog_closed:
-            run_once(on_dialog_closed, response_type)
+        def on_dialog_response(dialog, response_id):
+            dialog.destroy()
+            self.error_dialog = None
+            if on_dialog_closed:
+                run_once(on_dialog_closed, response_id)
+        self.error_dialog.connect("response", on_dialog_response)
+        self.error_dialog.present()
 
     def show_error_message(self, message: str):
         """Shows the error message in the notification bar."""

@@ -161,10 +161,8 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
     def _on_report_an_issue_clicked(self, *_):
         bug_dialog = BugReportDialog(self._controller, self._main_window)
         bug_dialog.set_transient_for(self._main_window)
-        # run() blocks the main loop, and only exist once the `::response` signal
-        # is emitted.
-        bug_dialog.run()
-        bug_dialog.destroy()
+        bug_dialog.set_modal(True)
+        bug_dialog.present()
 
     def _on_settings_clicked(self,  *_):
         self._settings_window = SettingsWindow(
@@ -186,17 +184,29 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
 
     def _on_about_clicked(self, *_):
         about_dialog = AboutDialog()
-        # run() blocks the main loop, and only exist once the `::response` signal
-        # is emitted.
-        about_dialog.run()
-        about_dialog.destroy()
+        about_dialog.set_transient_for(self._main_window)
+        about_dialog.set_modal(True)
+        about_dialog.present()
 
     def _on_logout_clicked(self, *_):
         logger.info("Logout button clicked", category="ui", subcategory="logout", event="click")
 
         self.logout_enabled = False
         kill_switch_state = self._controller.get_settings().killswitch
-        confirm_logout = True
+
+        def on_logout_confirmed(confirmed: bool):
+            if confirmed:
+                logger.info("Yes", category="ui", subcategory="dialog", event="logout")
+
+                self._overlay_widget.show(DefaultLoadingWidget(self.LOGOUT_LOADING_MESSAGE))
+
+                if kill_switch_state > KillSwitchSettingEnum.OFF:
+                    future = self._controller.disable_killswitch()
+                    future.add_done_callback(
+                        lambda f: GLib.idle_add(self._on_killswitch_disabled_logout, f)
+                    )
+                    return
+                self._request_logout()
 
         if not self._controller.connection_disconnected:
             dialog = ConfirmationDialog(
@@ -205,28 +215,17 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
                 else self.DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE,
                 self.DISCONNECT_TITLE
             )
-            confirm_logout = self._display_dialog(dialog)
+            self._display_dialog(dialog, on_logout_confirmed)
         elif kill_switch_state == KillSwitchSettingEnum.PERMANENT:
-            confirm_logout = self._display_dialog(
+            self._display_dialog(
                 ConfirmationDialog(
                     self.LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE,
                     self.KILLSWITCH_ENABLED_TITLE
-                )
+                ),
+                on_logout_confirmed
             )
-
-        if confirm_logout:
-            logger.info("Yes", category="ui", subcategory="dialog", event="logout")
-
-            self._overlay_widget.show(DefaultLoadingWidget(self.LOGOUT_LOADING_MESSAGE))
-
-            if kill_switch_state > KillSwitchSettingEnum.OFF:
-                future = self._controller.disable_killswitch()
-                future.add_done_callback(
-                    lambda f: GLib.idle_add(self._on_killswitch_disabled_logout, f)
-                )
-                return
-
-            self._request_logout()
+        else:
+            on_logout_confirmed(True)
 
     def _on_quit_clicked(self, *_):
         kill_switch_state = self._controller.get_settings().killswitch
@@ -234,19 +233,19 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         if self._controller.connection_disconnected:
             self._main_window.quit()
         else:
+            def on_quit_confirmed(confirmed: bool):
+                if confirmed:
+                    logger.info("Yes", category="ui", subcategory="dialog", event="quit")
+                    self._controller.register_connection_status_subscriber(self)
+                    future = self._controller.disconnect()
+                    future.add_done_callback(lambda f: GLib.idle_add(f.result))
             dialog = ConfirmationDialog(
                 self.DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE
                 if kill_switch_state == KillSwitchSettingEnum.PERMANENT
                 else self.DISCONNECT_ON_QUIT_MESSAGE,
                 self.DISCONNECT_TITLE
             )
-            confirm_quit = self._display_dialog(dialog)
-
-            if confirm_quit:
-                logger.info("Yes", category="ui", subcategory="dialog", event="quit")
-                self._controller.register_connection_status_subscriber(self)
-                future = self._controller.disconnect()
-                future.add_done_callback(lambda f: GLib.idle_add(f.result))
+            self._display_dialog(dialog, on_quit_confirmed)
 
     def _on_killswitch_disabled_logout(self, future: Future):
         future.result()
@@ -282,16 +281,20 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         finally:
             self._overlay_widget.hide()
 
-    def _display_dialog(self, dialog: ConfirmationDialog) -> bool:
+    def _display_dialog(self, dialog: ConfirmationDialog, callback):
         dialog.set_transient_for(self._main_window)
-        # run() blocks the main loop, and only exist once the `::response` signal
-        # is emitted.
-        response = Gtk.ResponseType(dialog.run())
-        dialog.destroy()
+        dialog.set_modal(True)
 
-        self.logout_enabled = response in (Gtk.ResponseType.NO, Gtk.ResponseType.DELETE_EVENT)
+        def on_dialog_response(dialog, response_id):
+            dialog.destroy()
+            self.logout_enabled = response_id in (
+                Gtk.ResponseType.NO, Gtk.ResponseType.DELETE_EVENT
+            )
+            result = response_id == Gtk.ResponseType.YES
+            callback(result)
 
-        return response == Gtk.ResponseType.YES
+        dialog.connect("response", on_dialog_response)
+        dialog.present()
 
     def bug_report_button_click(self):
         """Clicks the bug report menu entry."""

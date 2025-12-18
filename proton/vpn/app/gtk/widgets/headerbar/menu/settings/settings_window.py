@@ -52,13 +52,10 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         general_settings: GeneralSettings = None,
         account_settings: AccountSettings = None,
     ):
-        super().__init__(type=Gtk.WindowType.TOPLEVEL)
+        super().__init__()
         self.set_modal(True)
         self.set_title("Settings")
         self.set_default_size(600, 500)
-        # Set position is set to center on parent so that we prevent it from
-        # spawning somewhere else randomly.
-        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
         self._controller = controller
         self._notification_bar = notification_bar or NotificationBar()
@@ -106,8 +103,6 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
                     self._feature_settings.on_custom_dns_setting_changed
                 )
 
-        self.show_all()
-
     def notify_user_with_reconnect_message(
         self, force_notify: bool = False, only_notify_on_active_connection: bool = False
     ):
@@ -137,22 +132,22 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         self.main_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.content_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
-        self.content_container.pack_start(self._account_settings, False, False, 0)
-        self.content_container.pack_start(self._feature_settings, False, False, 0)
-        self.content_container.pack_start(self._connection_settings, False, False, 0)
-        self.content_container.pack_start(self._general_settings, False, False, 0)
+        self.content_container.append(self._account_settings)
+        self.content_container.append(self._feature_settings)
+        self.content_container.append(self._connection_settings)
+        self.content_container.append(self._general_settings)
 
         viewport = Gtk.Viewport()
-        viewport.get_style_context().add_class("viewport-frame")
-        viewport.add(self.content_container)
+        viewport.add_css_class("viewport-frame")
+        viewport.set_child(self.content_container)
 
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_propagate_natural_height(True)
         scrolled_window.set_min_content_height(300)
         scrolled_window.set_min_content_width(400)
-        scrolled_window.add(viewport)
+        scrolled_window.set_child(viewport)
 
-        self.main_container.pack_start(self._notification_bar, False, False, 0)
-        self.main_container.pack_start(scrolled_window, False, False, 0)
+        self.main_container.append(self._notification_bar)
+        self.main_container.append(scrolled_window)
 
-        self.add(self.main_container)
+        self.set_child(self.main_container)

@@ -46,13 +46,11 @@ class NotificationBar(Gtk.Revealer):
         super().__init__()
         self._clear_error_message_src_id = None
         self._notification_label = Gtk.Label()
-        self._notification_label.set_line_wrap(True)
-        self._notf_label_style_context = self._notification_label.\
-            get_style_context()
+        self._notification_label.set_wrap(True)
         # set_max_width_chars is required for set_line_wrap to have effect.
         self._notification_label.set_max_width_chars(1)
         self._notification_label.set_justify(Gtk.Justification.CENTER)
-        self.add(self._notification_label)
+        self.set_child(self._notification_label)
 
     @property
     def current_message(self):
@@ -93,9 +91,9 @@ class NotificationBar(Gtk.Revealer):
     def _clear_error_message(self):
         self.set_reveal_child(False)
         self._notification_label.set_label("")
-        self._notf_label_style_context.remove_class(NotificationType.SUCCESS.value)
-        self._notf_label_style_context.remove_class(NotificationType.INFO.value)
-        self._notf_label_style_context.remove_class(NotificationType.ERROR.value)
+        self._notification_label.remove_css_class(NotificationType.SUCCESS.value)
+        self._notification_label.remove_css_class(NotificationType.INFO.value)
+        self.remove_css_class(NotificationType.ERROR.value)
         if self._clear_error_message_src_id:
             self._clear_error_message_src_id = None
 
@@ -118,16 +116,16 @@ class NotificationBar(Gtk.Revealer):
         self._notification_label.set_label(message)
 
         if notification_type == NotificationType.ERROR:
-            self._notf_label_style_context.remove_class(NotificationType.SUCCESS.value)
-            self._notf_label_style_context.remove_class(NotificationType.INFO.value)
+            self._notification_label.remove_css_class(NotificationType.SUCCESS.value)
+            self._notification_label.remove_css_class(NotificationType.INFO.value)
         elif notification_type == NotificationType.SUCCESS:
-            self._notf_label_style_context.remove_class(NotificationType.INFO.value)
-            self._notf_label_style_context.remove_class(NotificationType.ERROR.value)
+            self._notification_label.remove_css_class(NotificationType.INFO.value)
+            self._notification_label.remove_css_class(NotificationType.ERROR.value)
         else:
-            self._notf_label_style_context.remove_class(NotificationType.ERROR.value)
-            self._notf_label_style_context.remove_class(NotificationType.SUCCESS.value)
+            self._notification_label.remove_css_class(NotificationType.ERROR.value)
+            self._notification_label.remove_css_class(NotificationType.SUCCESS.value)
 
-        self._notf_label_style_context.add_class(notification_type.value)
+        self._notification_label.add_css_class(notification_type.value)
         self.set_reveal_child(True)
 
         self._clear_error_message_src_id = GLib.timeout_add(

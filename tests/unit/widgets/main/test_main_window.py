@@ -47,7 +47,7 @@ def main_window():
 def dummy_app(main_window):
     def show_window(app):
         app.add_window(main_window)
-        main_window.show()
+        main_window.set_visible(True)
         process_gtk_events()
 
     app = Gtk.Application()
@@ -76,8 +76,7 @@ def test_close_button_hides_window_when_tray_indicator_is_used(dummy_app, main_w
     GLib.timeout_add(interval=50, function=dummy_app.quit)
     process_gtk_events()
 
-    with patch.object(main_window, "hide"):
-        dummy_app.run()
-        process_gtk_events()
+    dummy_app.run()
+    process_gtk_events()
 
-        main_window.hide.assert_called_once()
+    assert main_window.is_visible() is False

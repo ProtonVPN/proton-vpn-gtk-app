@@ -43,7 +43,9 @@ def get(
 
     filename = str(ICONS_PATH / relative_path)
     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-        filename=filename, width=width, height=height,
+        filename=filename,
+        width=width,
+        height=height,
         preserve_aspect_ratio=preserve_aspect_ratio
     )
     _cache[cache_key] = pixbuf

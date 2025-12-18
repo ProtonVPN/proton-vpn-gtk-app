@@ -21,8 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from pathlib import Path
 
-from proton.vpn.app.gtk import Gtk
-
+from gi.repository import Gdk, Gtk
 from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk import __version__
 
@@ -51,4 +50,6 @@ class AboutDialog(Gtk.AboutDialog):
         self._set_icon()
 
     def _set_icon(self):
-        self.set_logo(icons.get(Path("proton-vpn-sign.svg"), width=80, height=80))
+        pixbuf = icons.get(Path("proton-vpn-sign.svg"), width=80, height=80)
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_logo(texture)

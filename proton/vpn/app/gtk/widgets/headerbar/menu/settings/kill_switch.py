@@ -74,7 +74,7 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
         self.revealer = self.gtk.Revealer()
         self.attach(self.revealer, 0, 2, 2, 1)
         revealer_container = self._build_revealer_container()
-        self.revealer.add(revealer_container)
+        self.revealer.set_child(revealer_container)
         self.revealer.set_reveal_child(self.get_setting() > KillSwitchSettingEnum.OFF)
 
     @staticmethod
@@ -88,8 +88,8 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
         # Add both containers that contain all children that are to be displayed in the revealer
         revealer_container = self.gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         revealer_container.set_spacing(10)
-        revealer_container.pack_start(self._build_standard_killswitch(), False, False, 0)
-        revealer_container.pack_start(self._build_advanced_killswitch(), False, False, 0)
+        revealer_container.append(self._build_standard_killswitch())
+        revealer_container.append(self._build_advanced_killswitch())
 
         return revealer_container
 
@@ -97,7 +97,7 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
         main_standard_container = self.gtk.Grid()
         main_standard_container.set_column_spacing(10)
 
-        self.standard_radio_button = self.gtk.RadioButton()
+        self.standard_radio_button = Gtk.CheckButton()
         self.standard_radio_button.set_active(self.get_setting() == KillSwitchSettingEnum.ON)
 
         main_standard_container.attach(self.standard_radio_button, 0, 0, 1, 1)
@@ -117,7 +117,8 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
         main_advanced_container = self.gtk.Grid()
         main_advanced_container.set_column_spacing(10)
 
-        self.advanced_radio_button = self.gtk.RadioButton(group=self.standard_radio_button)
+        self.advanced_radio_button = Gtk.CheckButton()
+        self.advanced_radio_button.set_group(self.standard_radio_button)
         self.advanced_radio_button.set_active(self.get_setting() == KillSwitchSettingEnum.PERMANENT)
 
         main_advanced_container.attach(self.advanced_radio_button, 0, 0, 1, 1)
@@ -133,7 +134,7 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
 
         return main_advanced_container
 
-    def _on_radio_button_toggle(self, radio_button: Gtk.RadioButton, new_value: int):
+    def _on_radio_button_toggle(self, radio_button: Gtk.CheckButton, new_value: int):
         # If revealer is hidden then we don't want to resolve the trigger from
         # programmatically setting the standard radio button.
         if not self.revealer.get_reveal_child():

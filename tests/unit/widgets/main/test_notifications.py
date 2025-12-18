@@ -35,8 +35,12 @@ def test_show_error_dialog_shows_error_in_popup_window(gtk_mock):
     notifications.show_error_dialog(ERROR_MESSAGE, ERROR_TITLE)
     process_gtk_events()
 
-    dialog_mock.format_secondary_markup.assert_called_once()
-    dialog_mock.run.assert_called_once()
+    # simulate dialog user response
+    response_callback = dialog_mock.connect.call_args[0][1]
+    response_callback(dialog_mock, 0)
+
+    dialog_mock.set_markup.assert_called_once()
+    dialog_mock.present.assert_called_once()
     dialog_mock.destroy.assert_called_once()
 
 
@@ -53,6 +57,10 @@ def test_show_error_dialog_closes_previous_dialog_if_existing(gtk_mock):
     notifications.show_error_dialog(ERROR_MESSAGE, ERROR_TITLE)
 
     process_gtk_events()
+
+    # simulate user response for 2nd dialog
+    response_callback = second_dialog_mock.connect.call_args[0][1]
+    response_callback(second_dialog_mock, 0)
 
     first_dialog_mock.destroy.assert_called_once()
     second_dialog_mock.destroy.assert_called_once()

@@ -11,6 +11,7 @@ from .mock_app_data import mock_app_data
 def test_click_on_done_returns_selected_app_when_is_already_selected_and_app_exists_on_system(mock_app_data):
     app_selection_completed_callback = Mock()
 
+
     mock_controller = Mock(name="mock_controller")
     app_selection_window = AppSelectionWindow(
         title="Test",
@@ -18,7 +19,7 @@ def test_click_on_done_returns_selected_app_when_is_already_selected_and_app_exi
         stored_apps=[mock_app_data.executable],
         installed_apps=[mock_app_data]
     )
-    app_selection_window.realize()
+    app_selection_window.set_visible(True)
     app_selection_window.connect("app_selection_completed", app_selection_completed_callback)
     app_selection_window._click_on_done_button()
 
@@ -38,7 +39,7 @@ def test_click_on_done_returns_selected_app_when_is_not_already_selected_and_app
         stored_apps=[],
         installed_apps=[mock_app_data]
     )
-    app_selection_window.realize()
+    app_selection_window.set_visible(True)
     app_selection_window.connect("app_selection_completed", app_selection_completed_callback)
     app_selection_window._get_first_app_()._set_check(True)
     app_selection_window._click_on_done_button()
@@ -59,7 +60,7 @@ def test_click_on_done_returns_no_app_when_is_already_selected_and_app_is_missin
         stored_apps=[mock_app_data.executable],
         installed_apps=[]
     )
-    app_selection_window.realize()
+    app_selection_window.set_visible(True)
     app_selection_window.connect("app_selection_completed", app_selection_completed_callback)
     app_selection_window._click_on_done_button()
 

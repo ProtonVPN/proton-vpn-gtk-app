@@ -19,17 +19,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Optional
 
 from gi.repository import GObject, Gtk, Gdk, GLib
 
 from proton.vpn import logging
 
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.assets.style import STYLE_PATH
 from proton.vpn.app.gtk.util import APPLICATION_ID
+from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +56,7 @@ class App(Gtk.Application):
         logger.info(f"{self=}", category="APP", event="PROCESS_START")
         self._controller = controller
         self.window = None
-        self.tray_indicator = None
+        self._tray_indicator = None
         self._signal_connect_queue = []
         self._start_minimized_from_cli = False
         self.add_options()
@@ -72,9 +71,9 @@ class App(Gtk.Application):
         css_provider = Gtk.CssProvider()
         css_provider.load_from_path(str(STYLE_PATH / "main.css"))
 
-        screen = Gdk.Screen.get_default()
-        Gtk.StyleContext.add_provider_for_screen(
-            screen,
+        display = Gdk.Display.get_default()
+        Gtk.StyleContext.add_provider_for_display(
+            display,
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
@@ -91,13 +90,10 @@ class App(Gtk.Application):
             self.add_window(self.window)
             # The behaviour of the button to close the window is configured
             # depending on whether the tray indicator is shown or not.
-            self.tray_indicator = self._build_tray_indicator_if_possible(
-                self._controller, self.window
-            )
             self.window.configure_close_button_behaviour(
                 tray_indicator_enabled=(self.tray_indicator is not None)
             )
-            self.window.show_all()
+            self.window.set_visible(True)
 
         self.window.present()
         self.emit("app-ready")
@@ -131,19 +127,7 @@ class App(Gtk.Application):
     def app_ready(self):
         """Signal emitted when the app is ready for interaction."""
         if self._start_app_minimized and self.tray_indicator:
-            self.window.hide()
-
-    @staticmethod
-    def _build_tray_indicator_if_possible(
-        controller: Controller, main_window: MainWindow
-    ) -> Optional[TrayIndicator]:
-        """Returns a tray indicator instance if the required dependencies
-        are met, otherwise None is returned instead. """
-        try:
-            return TrayIndicator(controller, main_window)
-        except TrayIndicatorNotSupported as error:
-            logger.info(f"{error}")
-            return None
+            self.window.set_visible(False)
 
     @property
     def _start_app_minimized(self) -> bool:
@@ -155,7 +139,7 @@ class App(Gtk.Application):
         self.add_main_option(
             "start-minimized",
             0,
-            GLib.OptionFlags.NONE,
+            GLib.OptionFlags(0),
             GLib.OptionArg.NONE,
             "Start minimized in the system tray"
         )
@@ -163,7 +147,23 @@ class App(Gtk.Application):
         self.add_main_option(
             "version",
             ord('v'),
-            GLib.OptionFlags.NONE,
+            GLib.OptionFlags(0),
             GLib.OptionArg.NONE,
             "Display the application's version"
         )
+
+    @property
+    def tray_indicator(self):
+        """Gives access to the tray indicator if it's installed and enabled."""
+        if self._tray_indicator:
+            return self._tray_indicator
+
+        try:
+            tray_indicator = TrayIndicator(self._controller)
+            tray_indicator.setup(self.window)
+        except TrayIndicatorNotSupported as excp:
+            logger.warning(str(excp))
+        else:
+            self._tray_indicator = tray_indicator
+
+        return self._tray_indicator

@@ -63,9 +63,9 @@ class SplitTunnelingSettings(Gtk.Box):
         self._split_tunneling_ips = split_tunneling_ips\
             or IpBasedSplitTunnelingSettings(controller=self._controller, gtk=self.gtk)
 
-        self.add(self._split_tunneling_mode)
-        self.add(self._split_tunneling_apps)
-        self.add(self._split_tunneling_ips)
+        self.append(self._split_tunneling_mode)
+        self.append(self._split_tunneling_apps)
+        self.append(self._split_tunneling_ips)
 
         self._split_tunneling_mode.connect("mode-switched", self._on_mode_switched)
 
@@ -170,7 +170,6 @@ class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
         # and the container was not yet created
         if new_value and not self._settings_container:
             self._build_and_add_split_tunneling_settings()
-            self.show_all()
 
     def _do_revert(self, _toggle):
         self.switch.set_active(False)
@@ -179,7 +178,7 @@ class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
         self._settings_container = SplitTunnelingSettings(
                 controller=self._controller, gtk=self.gtk
             )
-        self.revealer.add(self._settings_container)
+        self.revealer.set_child(self._settings_container)
 
     def on_settings_changed(self, settings):
         if self.overridden_by_upgrade_tag:

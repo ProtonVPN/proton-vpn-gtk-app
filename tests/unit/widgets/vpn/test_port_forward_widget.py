@@ -20,7 +20,7 @@ import pytest
 from unittest.mock import Mock, patch, PropertyMock
 from proton.vpn.app.gtk.widgets.vpn.port_forward_widget import PortForwardRevealer, PortForwardWidget
 from proton.vpn.connection import states, events
-from gi.repository import Gtk  # pylint: disable=C0413 # noqa: E402
+from gi.repository import Gtk, GObject  # pylint: disable=C0413 # noqa: E402
 
 
 def _make_state(active_port):
@@ -35,19 +35,17 @@ def _make_state(active_port):
 class TestPortForwardRevealer:
 
     @pytest.mark.parametrize("new_reveal_value", [True, False])
-    @patch("proton.vpn.app.gtk.widgets.vpn.port_forward_widget.PortForwardRevealer.add")
-    @patch("proton.vpn.app.gtk.widgets.vpn.port_forward_widget.PortForwardRevealer.set_reveal_child")
-    def test_revealer_updates_child_reveal_state_when_passing_new_value(self, set_reveal_child_mock, _, new_reveal_value):
-        port_forward_widget_mock = Mock(name="PortForwardWidget")
-        PortForwardRevealer(
-            port_forward_widget=port_forward_widget_mock, notifications=Mock()
+    def test_revealer_updates_child_reveal_state_when_passing_new_value(self, new_reveal_value):
+        port_forward_widget = PortForwardWidget(Mock())
+        revealer = PortForwardRevealer(
+            port_forward_widget=port_forward_widget, notifications=Mock()
         )
-        on_update_port_forwarding_visibility_callback = port_forward_widget_mock.connect.call_args[0][1]
-        on_update_port_forwarding_visibility_callback(port_forward_widget_mock, new_reveal_value)
 
-        set_reveal_child_mock.assert_called_once_with(new_reveal_value)
+        port_forward_widget.emit("update-visibility", new_reveal_value)
+        assert revealer.get_reveal_child() == new_reveal_value
+        
 
-    @patch("proton.vpn.app.gtk.widgets.vpn.port_forward_widget.PortForwardRevealer.add")
+    @patch("proton.vpn.app.gtk.widgets.vpn.port_forward_widget.PortForwardRevealer.set_child")
     def test_revealer_proxies_state_when_receiving_new_state_to_child(self, _):
         connected_state = states.Connected()
         port_forward_widget_mock = Mock(name="PortForwardWidget")
@@ -94,7 +92,7 @@ class TestPortForwardWidget:
 
         # Patch get_toplevel to return a hidden window
         # so that the notification is shown.
-        pfwidget._port_forward_label.get_toplevel = Mock(
+        pfwidget._port_forward_label.get_root = Mock(
             return_value=Mock(is_active=Mock(return_value=False), spec=Gtk.Window)
         )
 
@@ -123,7 +121,7 @@ class TestPortForwardWidget:
 
         # Patch get_toplevel to return a hidden window
         # so that the notification is shown if it should be.
-        pfwidget._port_forward_label.get_toplevel = Mock(
+        pfwidget._port_forward_label.get_root = Mock(
             return_value=Mock(is_active=Mock(return_value=False), spec=Gtk.Window)
         )
 
@@ -148,15 +146,12 @@ class TestPortForwardWidget:
 
         notifications_mock.show_gnome_notification.assert_not_called()
 
-    @patch("proton.vpn.app.gtk.widgets.vpn.port_forward_widget.PortForwardWidget.connect")
-    def test_on_button_press_ensure_port_is_copied_to_clipboard(self, connect_mock):
+    def test_on_button_press_ensure_port_is_copied_to_clipboard(self):
         port = 443
-        number_of_bytes_in_the_string = len(str(port).encode("utf-8"))
         clipboard_mock = Mock()
         pfwidget = PortForwardWidget(notifications=Mock(), clipboard=clipboard_mock)
         pfwidget.set_port_forward_label(port)
 
-        on_button_press_callback = connect_mock.call_args_list[0][0][1]
-        on_button_press_callback(pfwidget, Mock(name="Gdk.EventButton"))
-
-        clipboard_mock.set_text.assert_called_once_with(str(port), number_of_bytes_in_the_string)
+        pfwidget.emit("clicked")
+        value: GObject.Value = clipboard_mock.set.call_args_list[0][0][0]
+        assert value.get_string() == str(port)

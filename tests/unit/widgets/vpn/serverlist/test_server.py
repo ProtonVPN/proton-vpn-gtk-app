@@ -206,7 +206,7 @@ def run_in_window(server_row: ServerRow, assertions: Callable):
     """Adds the server row to a Gtk.Window, launches it,
     calls the assertions and closes it."""
     window = Gtk.Window()
-    window.add(server_row)
+    window.set_child(server_row)
     main_loop = GLib.MainLoop()
 
     def on_show(_):
@@ -216,7 +216,6 @@ def run_in_window(server_row: ServerRow, assertions: Callable):
             main_loop.quit()
 
     window.connect("show", on_show)
-    GLib.idle_add(window.show_all)
+    GLib.idle_add(window.present)
 
     run_main_loop(main_loop)
-

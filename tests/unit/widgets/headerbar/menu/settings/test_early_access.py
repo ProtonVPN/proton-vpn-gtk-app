@@ -101,23 +101,21 @@ class TestEarlyAccessDialog:
     def test_init_dialog(self):
         EarlyAccessDialog()
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessDialog.show")
-    def test_display_loading_view_when_passing_new_label(self, mock_show):
+    def test_display_loading_view_when_passing_new_label(self):
         dialog = EarlyAccessDialog()
         assert dialog._active_view is None
 
         dialog.display_loading_view("test")
         assert dialog._active_view == dialog.LOADING_VIEW
-        mock_show.assert_called_once()
+        assert dialog.get_visible() is True
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessDialog.show")
-    def test_display_status_view_when_passing_new_label(self, mock_show):
+    def test_display_status_view_when_passing_new_label(self):
         dialog = EarlyAccessDialog()
         assert dialog._active_view is None
 
         dialog.display_status_view("test")
         assert dialog._active_view == dialog.STATUS_VIEW
-        mock_show.assert_called_once()
+        assert dialog.get_visible() is True
 
 
 class TestEarlyAccessWidget:
@@ -157,16 +155,15 @@ class TestEarlyAccessWidget:
 
             assert switch.can_early_access_be_displayed() == can_early_access_be_displayed
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.set_state")
     @pytest.mark.parametrize("early_access_enabled_value", [True, False])
-    def test_set_initial_state_based_on_if_early_access_is_enabled_or_not(self, set_state, early_access_enabled_value):
+    def test_set_initial_state_based_on_if_early_access_is_enabled_or_not(self, early_access_enabled_value):
         with patch(
             "proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.get_setting",
             return_value=early_access_enabled_value
         ):
             switch = EarlyAccessWidget(Mock(), Mock(), Mock())
             switch.set_initial_state()
-            set_state.assert_called_once_with(early_access_enabled_value)
+            assert switch.get_property("sensitive") == early_access_enabled_value
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.get_setting")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget._process")

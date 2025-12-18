@@ -19,11 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from pathlib import Path
+from gi.repository import Gtk
 
-from gi.repository import Gdk, Gtk
-
-from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar.headerbar import HeaderBar
@@ -52,6 +49,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.get_settings().props.gtk_application_prefer_dark_theme = True
         self._controller = controller
         self._close_window_handler_id = None
+        self._shortcut_controller = None
 
         self._configure_window()
 
@@ -67,6 +65,7 @@ class MainWindow(Gtk.ApplicationWindow):
             overlay_widget=self._overlay_widget
         )
         self.set_titlebar(self.header_bar)
+        self.set_title("Proton VPN")
 
         self.main_widget = main_widget or MainWidget(
             controller=controller,
@@ -74,7 +73,8 @@ class MainWindow(Gtk.ApplicationWindow):
             notifications=notifications,
             overlay_widget=self._overlay_widget
         )
-        self.add(self.main_widget)
+        self.set_child(self.main_widget)
+        self.main_widget.set_visible(True)
 
     @property
     def application(self) -> Gtk.Application:
@@ -89,46 +89,34 @@ class MainWindow(Gtk.ApplicationWindow):
 
         :param target_widget: The widget the keyboard shortcut will trigger the signal on.
         :param target_signal: The signal the keyboard shortcut will trigger on the target widget.
-        :param shortcut: The keyboard shortcut should be a string parsable with
-        Gtk.parse_accelerator:
-        https://lazka.github.io/pgi-docs/#Gtk-3.0/functions.html#Gtk.accelerator_parse
+        :param shortcut: The keyboard shortcut string (e.g. "<Ctrl>q")
         """
-        key, modifier = Gtk.accelerator_parse(shortcut)
-        target_widget.add_accelerator(
-            target_signal, self._accelerators_group,
-            key, modifier, Gtk.AccelFlags.VISIBLE
-        )
+        def callback(*_):
+            target_widget.emit(target_signal)
+            return True
+
+        shortcut_trigger = Gtk.ShortcutTrigger.parse_string(shortcut)
+        if shortcut_trigger is None:
+            raise ValueError(f"Invalid shortcut: {shortcut}")
+
+        shortcut_action = Gtk.CallbackAction.new(callback)
+        shortcut_obj = Gtk.Shortcut.new(shortcut_trigger, shortcut_action)
+
+        if self._shortcut_controller is None:
+            self._shortcut_controller = Gtk.ShortcutController()
+            self._shortcut_controller.set_scope(Gtk.ShortcutScope.LOCAL)
+            self.add_controller(self._shortcut_controller)
+
+        self._shortcut_controller.add_shortcut(shortcut_obj)
 
     def _configure_window(self):
         """
         Handle delete-event, set window resize restrictions...
         """
-
-        # The accelerator group is used to then add keyboard shortcuts.
         self.set_name("main-window")
-        self._accelerators_group = Gtk.AccelGroup()
-        self.add_accel_group(self._accelerators_group)
 
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_icon(
-            icons.get(Path("proton-vpn-sign.svg"), width=128, height=128)
-        )
-
-        # The window should be able to be resized on the vertical axis but not
-        # on the horizontal axis.
-        self.set_size_request(MainWindow.WIDTH, MainWindow.HEIGHT)
-        geometry = Gdk.Geometry()
-        geometry.min_width = 0
-        geometry.max_width = MainWindow.WIDTH
-        geometry.min_height = 0
-        geometry.max_height = 99999
-        self.set_geometry_hints(
-            self,
-            geometry,
-            (Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE)
-        )
-
-        self.set_border_width(0)
+        self.set_default_size(MainWindow.WIDTH, MainWindow.HEIGHT)
+        self.set_resizable(False)
 
     def configure_close_button_behaviour(self, tray_indicator_enabled: bool):
         """Configures the behaviour of the button to close the window
@@ -147,17 +135,17 @@ class MainWindow(Gtk.ApplicationWindow):
             quitting the app, the action is delegated to the Exit entry in
             the menu bar widget.
             """
-            self.hide()
+            self.set_visible(False)
 
-            # Returning True when handling the delete-event stops other handlers
+            # Returning True when handling the close-request stops other handlers
             # from being invoked for this event, therefore preventing the default
             # behaviour:
-            # https://docs.gtk.org/gtk3/signal.Widget.delete-event.html
+            # https://docs.gtk.org/gtk4/signal.Window.close-request.html
             return True
 
         # Handle the event emitted when the user tries to close the window.
         return self.connect(
-            "delete-event",
+            "close-request",
             on_close_button_clicked_then_hide_window
         )
 
@@ -179,14 +167,14 @@ class MainWindow(Gtk.ApplicationWindow):
             """
             self.header_bar.menu.quit_button_click()
 
-            # Returning True when handling the delete-event stops other handlers
+            # Returning True when handling the close-request stops other handlers
             # from being invoked for this event, therefore preventing the default
             # behaviour:
-            # https://docs.gtk.org/gtk3/signal.Widget.delete-event.html
+            # https://docs.gtk.org/gtk4/signal.Window.close-request.html
             return True
 
         # Handle the event emitted when the user tries to close the window.
         return self.connect(
-            "delete-event",
+            "close-request",
             on_close_button_clicked_then_click_quit_menu_entry
         )

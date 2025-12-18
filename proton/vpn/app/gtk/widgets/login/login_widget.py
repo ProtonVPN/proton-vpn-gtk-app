@@ -71,8 +71,8 @@ class LoginWidget(Gtk.Box):
         )
         self.disable_killswitch.connect("disable-killswitch", self._on_disable_killswitch)
 
-        self.pack_start(self.login_stack, expand=True, fill=True, padding=0)
-        self.pack_end(self.disable_killswitch, expand=False, fill=False, padding=0)
+        self.append(self.login_stack)
+        self.append(self.disable_killswitch)
 
     @GObject.Signal
     def user_logged_in(self):

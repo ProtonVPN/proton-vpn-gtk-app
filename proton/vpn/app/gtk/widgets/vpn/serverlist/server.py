@@ -22,9 +22,9 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 from typing import List, Optional
 
-from gi.repository import GLib, Pango, Atk
+from gi.repository import GLib, Pango
 
-from proton.vpn.app.gtk.utils import accessibility
+from proton.vpn.app.gtk.utils.accessibility import add_accessibility
 from proton.vpn.app.gtk.utils.search import normalize
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.session.servers import LogicalServer, ServerFeatureEnum
@@ -85,10 +85,7 @@ class ServerRow(Gtk.Box):
         self._server_label = Gtk.Label(label=self._server.name)
         # Some test server names are very long.
         self._server_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.pack_start(
-            self._server_label,
-            expand=False, fill=False, padding=10
-        )
+        self.append(self._server_label)
 
         self._show_under_maintenance_icon_or_server_details(self._server.enabled)
 
@@ -100,44 +97,31 @@ class ServerRow(Gtk.Box):
 
     def _show_under_maintenance_icon(self):
         if self._server_details:
-            self._server_details.hide()
+            self._server_details.set_visible(False)
 
         if not self._under_maintenance_icon:
             self._under_maintenance_icon = UnderMaintenanceIcon(self._server.name)
-            self.pack_end(
-                self._under_maintenance_icon,
-                expand=False, fill=False, padding=10
-            )
+            self.append(self._under_maintenance_icon)
 
-        self._under_maintenance_icon.show()
+        self._under_maintenance_icon.set_visible(True)
         self._server_label.set_property("sensitive", False)
 
     def _show_server_details(self):
         if self._under_maintenance_icon:
-            self._under_maintenance_icon.hide()
+            self._under_maintenance_icon.set_visible(False)
 
         if not self._server_details:
             self._server_details = self._build_server_details()
-            self.pack_end(self._server_details, expand=False, fill=False, padding=0)
+            self.append(self._server_details)
 
-        self._server_details.show()
+        self._server_details.set_visible(True)
         self._server_label.set_property("sensitive", True)
 
     def _build_server_details(self) -> Gtk.Box:
         server_details = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        if self.upgrade_required:
-            button = self._build_upgrade_link_button()
-            server_details.pack_end(button, expand=False, fill=False, padding=10)
-        else:
-            self._connect_button = self._build_connect_button()
-            button = self._connect_button
-            server_details.pack_end(self._connect_button, expand=False, fill=False, padding=10)
-
-        button_relationships = [(self._server_label, Atk.RelationType.LABELLED_BY)]
-
-        self._server_load = ServerLoad(self._server.load)
-        button_relationships.append((self._server_load, Atk.RelationType.DESCRIBED_BY))
-        server_details.pack_end(self._server_load, expand=False, fill=False, padding=10)
+        server_details.set_halign(Gtk.Align.END)
+        server_details.set_hexpand(True)
+        server_details.set_spacing(10)
 
         server_row_icons = []
 
@@ -156,18 +140,33 @@ class ServerRow(Gtk.Box):
             server_row_icons.extend(server_feature_icons)
 
         for icon in server_row_icons:
-            button_relationships.append((icon, Atk.RelationType.DESCRIBED_BY))
-            server_details.pack_end(icon, expand=False, fill=False, padding=0)
+            server_details.append(icon)
             self._icons_displayed.append(icon)
 
-        accessibility.add_widget_relationships(button, button_relationships)
+        self._server_load = ServerLoad(self._server.load)
+        server_details.append(self._server_load)
+
+        if self.upgrade_required:
+            button = self._build_upgrade_link_button()
+            server_details.append(button)
+        else:
+            self._connect_button = self._build_connect_button()
+            button = self._connect_button
+            server_details.append(self._connect_button)
+
+        add_accessibility(button, Gtk.AccessibleRelation.LABELLED_BY, self._server_label)
+        add_accessibility(
+            button,
+            Gtk.AccessibleRelation.DESCRIBED_BY,
+            server_row_icons + [self._server_load]
+        )
 
         return server_details
 
     def _build_connect_button(self):
         connect_button = Gtk.Button(label="Connect")
         connect_button.connect("clicked", self._on_connect_button_clicked)
-        connect_button.get_style_context().add_class("secondary")
+        connect_button.add_css_class("secondary")
         return connect_button
 
     def _build_upgrade_link_button(self):
@@ -255,7 +254,7 @@ class ServerRow(Gtk.Box):
     def click_connect_button(self):
         """Clicks the connect button.
         This method was made available for tests."""
-        self._connect_button.clicked()
+        self._connect_button.emit("clicked")
 
     @property
     def is_connect_button_visible(self) -> bool:
@@ -279,10 +278,12 @@ class ServerRow(Gtk.Box):
         if not self._server_details.is_visible():
             return False
 
-        filtered_icons = [
-            child for child in self._server_details.get_children()
-            if isinstance(child, icon_class)
-        ]
+        filtered_icons = []
+        child = self._server_details.get_first_child()
+        while child:
+            if isinstance(child, icon_class):
+                filtered_icons.append(child)
+            child = child.get_next_sibling()
 
         return bool(filtered_icons)
 
@@ -307,15 +308,13 @@ class ServerLoad(Gtk.Label):
         self.set_label(f"{load}%")
         help_text = f"Server load is at {load}%"
         self.set_tooltip_text(help_text)
-        self.get_accessible().set_name(help_text)
-        style_context = self.get_style_context()
 
         for cls in "signal-danger", "signal-warning", "signal-success":
-            style_context.remove_class(cls)
+            self.remove_css_class(cls)
 
         if load > 90:
-            style_context.add_class("signal-danger")
+            self.add_css_class("signal-danger")
         elif load > 75:
-            style_context.add_class("signal-warning")
+            self.add_css_class("signal-warning")
         else:
-            style_context.add_class("signal-success")
+            self.add_css_class("signal-success")

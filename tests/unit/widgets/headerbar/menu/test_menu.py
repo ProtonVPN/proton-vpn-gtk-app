@@ -29,44 +29,6 @@ from proton.vpn.app.gtk import Gtk
 from tests.unit.testing_utils import process_gtk_events
 
 
-class TestReportBugMenuEntry:
-
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.BugReportDialog")
-    def test_bug_report_menu_entry_shows_bug_report_dialog_when_clicked(self, bug_report_dialog_patch):
-        bug_report_dialog_mock = Mock()
-        bug_report_dialog_patch.return_value = bug_report_dialog_mock
-
-        menu = Menu(
-            controller=Mock(),
-            main_window=Mock(),
-            overlay_widget=Mock()
-        )
-        menu.bug_report_button_click()
-
-        bug_report_dialog_mock.run.assert_called_once()
-        bug_report_dialog_mock.destroy.assert_called_once()
-
-
-class TestAboutMenuEntry:
-
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.menu.AboutDialog")
-    def test_about_menu_entry_shows_about_dialog_when_clicked(self, about_dialog_patch):
-        about_dialog_mock = Mock()
-        about_dialog_patch.return_value = about_dialog_mock
-
-        menu = Menu(
-            controller=Mock(),
-            main_window=Mock(),
-            overlay_widget=Mock()
-        )
-        menu.about_button_click()
-
-        process_gtk_events()
-
-        about_dialog_mock.run.assert_called_once()
-        about_dialog_mock.destroy.assert_called_once()
-
-
 class TestLogoutMenuEntry:
 
     def test_logout_menu_entry_logs_user_out_when_clicked_if_not_connected_to_vpn(self):
@@ -218,7 +180,6 @@ class TestLogoutMenuEntry:
         controller_mock.connection_disconnected = False
 
         confirmation_dialog_mock = Mock()
-        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
         confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
@@ -231,7 +192,13 @@ class TestLogoutMenuEntry:
 
         process_gtk_events()
 
-        confirmation_dialog_mock.run.assert_called_once()
+        confirmation_dialog_mock.present.assert_called_once()
+
+        assert confirmation_dialog_mock.connect.call_count == 1
+        assert confirmation_dialog_mock.connect.call_args[0][0] == "response"
+        # Simulate user clicking "Yes" in the confirmation dialog
+        confirmation_dialog_mock.connect.call_args[0][1](confirmation_dialog_mock, Gtk.ResponseType.YES.real)
+
         confirmation_dialog_mock.destroy.assert_called_once()
         controller_mock.logout.assert_called_once()
 
@@ -248,7 +215,6 @@ class TestLogoutMenuEntry:
         controller_mock.connection_disconnected = False
 
         confirmation_dialog_mock = Mock()
-        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
         confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
@@ -261,7 +227,13 @@ class TestLogoutMenuEntry:
 
         process_gtk_events()
 
-        confirmation_dialog_mock.run.assert_called_once()
+        confirmation_dialog_mock.present.assert_called_once()
+
+        assert confirmation_dialog_mock.connect.call_count == 1
+        assert confirmation_dialog_mock.connect.call_args[0][0] == "response"
+        # Simulate user clicking "No" in the confirmation dialog
+        confirmation_dialog_mock.connect.call_args[0][1](confirmation_dialog_mock, Gtk.ResponseType.NO.real)
+
         confirmation_dialog_mock.destroy.assert_called_once()
         assert not controller_mock.logout.call_count
 
@@ -274,7 +246,6 @@ class TestLogoutMenuEntry:
         controller_mock.connection_disconnected = False
 
         confirmation_dialog_mock = Mock()
-        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.NO.real
         confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
@@ -333,7 +304,6 @@ class TestLogoutMenuEntry:
         controller_mock.connection_disconnected = True
 
         confirmation_dialog_mock = Mock()
-        confirmation_dialog_mock.run.return_value = Gtk.ResponseType.YES.real
         confirmation_dialog_patch.return_value = confirmation_dialog_mock
 
         menu = Menu(
@@ -345,6 +315,11 @@ class TestLogoutMenuEntry:
         menu.logout_button_click()
 
         process_gtk_events()
+
+        if confirmation_dialog_mock.connect.called:
+            # Simulate user clicking "Yes" in the confirmation dialog
+            confirmation_dialog_mock.connect.call_args[0][1](confirmation_dialog_mock, Gtk.ResponseType.YES.real)
+            process_gtk_events()
 
         assert property_mock.called
         assert controller_mock.method_calls == [

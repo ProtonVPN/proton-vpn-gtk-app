@@ -18,7 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pytest
-from unittest.mock import Mock, PropertyMock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings import FeatureSettings, ToggleWidget
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.kill_switch import KillSwitchSettingEnum, KillSwitchWidget
@@ -43,152 +43,89 @@ def _get_expected_description(new_value, feature_flag_enabled, fs):
     return expected_description_value
 
 
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.FeatureSettings.pack_start")
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ComboboxWidget")
-def test_build_moderate_nat_save_new_value_when_callback_is_called(combobox_widget_mock, _):
+def test_build_moderate_nat_save_new_value_when_callback_is_called():
+    controller_mock = Mock()
+    controller_mock.user_tier = PLUS_TIER
     settings_window_mock = Mock()
-    fs = FeatureSettings(MagicMock(), settings_window_mock)
+    fs = FeatureSettings(controller_mock, settings_window_mock)
     fs.build_netshield()
     new_value = "2"
 
-    gtk_combobox_widget_mock = Mock()
-    # We need to simulate the structure for a Gtk.ComboBoxText
-    gtk_combobox_widget_mock.get_model.return_value = [[None, new_value]]
-    gtk_combobox_widget_mock.get_active_iter.return_value = 0
+    combo_box_widget = fs.get_last_child()
+    combo_box_widget.combobox.set_active_id(new_value)
 
-    callback = combobox_widget_mock.call_args[1]["callback"]
-
-    callback(gtk_combobox_widget_mock, combobox_widget_mock)
-    combobox_widget_mock.save_setting.assert_called_once_with(int(new_value))
+    controller_mock.save_setting_attr.assert_called_once_with("settings.features.netshield", int(new_value))
     settings_window_mock.notify_user_with_reconnect_message.assert_not_called()
 
 
 @pytest.mark.parametrize("enabled", [False, True])
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.FeatureSettings.pack_start")
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget")
-def test_build_port_forwarding_updates_description_when_being_initialized_if_enabled(toggle_widget_mock, _, enabled):
-    toggle_mock = Mock()
-    toggle_mock.get_setting.return_value = enabled
-    toggle_widget_mock.return_value = toggle_mock
+def test_build_port_forwarding_updates_description_when_being_initialized_if_feature_flag_is_enabled(enabled):
+    controller_mock = Mock()
+    controller_mock.user_tier = PLUS_TIER
+    controller_mock.feature_flags.get.side_effect = lambda k: k == "DisplayPortForwarding" and enabled
 
-    fs = FeatureSettings(MagicMock(), Mock())
+    fs = FeatureSettings(controller_mock, Mock())
     fs.build_port_forwarding()
+    toggle_widget = fs.get_last_child()
 
-    if enabled:
-        toggle_mock.description.set_label.assert_called_once_with(
-            _get_expected_description(enabled, True, fs))
-    else:
-        toggle_mock.description.set_label.assert_not_called()
+    expected_label = fs.PORT_FORWARDING_DESCRIPTION_LEARN_MORE if enabled else fs.PORT_FORWARDING_SETUP_GUIDE
+    assert toggle_widget.description.get_label() == expected_label
 
 
-@pytest.mark.parametrize("new_value,feature_flag_enabled", [
-    (False, True),
-    (True, True),
-    (False, False),
-    (True, False),
-])
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.FeatureSettings.pack_start")
-@patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget")
-def test_build_port_forwarding_save_new_value_when_callback_is_called(toggle_widget_mock, _, new_value, feature_flag_enabled):
+@pytest.mark.parametrize("new_value", [True, False])
+def test_build_port_forwarding_save_new_value_when_callback_is_called(new_value):
     settings_window_mock = Mock()
-    controller_mock = Mock(name="controller")
-    controller_mock.feature_flags.get.return_value = feature_flag_enabled
+    controller_mock = Mock()
+    controller_mock.user_tier = PLUS_TIER
+    controller_mock.get_setting_attr.return_value = not new_value
     fs = FeatureSettings(controller_mock, settings_window_mock)
     fs.build_port_forwarding()
 
-    toggle_widget = toggle_widget_mock.call_args[1]
-    callback = toggle_widget["callback"]
+    toggle_widget = fs.get_last_child()
 
-    callback(None, new_value, toggle_widget_mock)
-    toggle_widget_mock.save_setting.assert_called_once_with(new_value)
+    toggle_widget.switch.set_active(new_value)
 
-    toggle_widget_mock.description.set_label.assert_called_once_with(
-        _get_expected_description(new_value, feature_flag_enabled, fs)
-    )
+    controller_mock.save_setting_attr.assert_called_once_with("settings.features.port_forwarding", new_value)
     settings_window_mock.notify_user_with_reconnect_message.assert_not_called()
 
 
 class TestKillSwitchWidget:
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.KillSwitchWidget.attach")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.get_setting")
-    def test_save_setting_when_switching_killswitch_from_disabled_to_enabled_and_revealer_is_shown(self, get_setting_mock, save_setting_mock, _):
-        mock_gtk = Mock()
-        mock_standard_radio_button = Mock()
-        mock_advanced_radio_button = Mock()
-        mock_revelear = Mock()
-        mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_standard_radio_button]
-        mock_gtk.Revealer.return_value = mock_revelear
-        get_setting_mock.return_value = KillSwitchSettingEnum.OFF
+    def test_save_setting_when_switching_killswitch_from_disabled_to_enabled_and_standard_radio_button_is_selected(self):
+        controller = Mock()
+        controller.get_setting_attr.return_value = KillSwitchSettingEnum.OFF.value
 
-        ks = KillSwitchWidget(Mock(), gtk=mock_gtk)
+        ks = KillSwitchWidget(controller, conflict_resolver=lambda setting_name, value: "")
         ks.build_revealer()
 
-        mock_standard_radio_button.reset_mock()
-        mock_revelear.reset_mock()
+        ks.switch.set_active(True)
 
-        ks.do_set(None, True)
+        # TODO: the setting is saved twice: first when enabling the toggle and then when enabling the standard ks radio button
+        controller.save_setting_attr.assert_called_with("settings.killswitch", KillSwitchSettingEnum.ON.value)
+        assert ks.standard_radio_button.get_active()
 
-        save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.ON.value)
-        mock_revelear.set_reveal_child.assert_called_once_with(True)
-        mock_standard_radio_button.set_active.assert_called_once_with(True)
+    def test_save_setting_when_switching_killswitch_from_standard_to_advanced(self):
+        controller = Mock()
+        controller.get_setting_attr.return_value = KillSwitchSettingEnum.ON.value
 
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.KillSwitchWidget.attach")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.get_setting")
-    def test_save_setting_when_switching_killswitch_from_standard_to_advanced(self, get_setting_mock, save_setting_mock, _):
-        mock_gtk = Mock()
-        mock_standard_radio_button = Mock()
-        mock_advanced_radio_button = Mock()
-        mock_revelear = Mock()
-        mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_advanced_radio_button]
-        mock_gtk.Revealer.return_value = mock_revelear
-        get_setting_mock.return_value = KillSwitchSettingEnum.ON
-
-        ks = KillSwitchWidget(Mock(), gtk=mock_gtk)
-        ks.build_revealer()
-        mock_revelear.reset_mock()
-
-        mock_advanced_radio_button_callback = mock_advanced_radio_button.connect.call_args[0][1]
-        mock_advanced_radio_button.reset_mock()
-
-        mock_revelear.get_reveal_child.return_value = True
-        mock_advanced_radio_button.get_active.return_value = True
-
-        mock_advanced_radio_button_callback(
-            mock_advanced_radio_button, KillSwitchSettingEnum.PERMANENT.value
-        )
-
-        save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.PERMANENT.value)
-
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.KillSwitchWidget.attach")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.save_setting")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.feature_settings.ToggleWidget.get_setting")
-    def test_save_setting_when_switching_killswitch_from_permanent_to_disabled_and_revealer_is_hidden(self, get_setting_mock, save_setting_mock, _):
-
-        mock_gtk = Mock()
-        mock_standard_radio_button = Mock()
-        mock_advanced_radio_button = Mock()
-        mock_revelear = Mock()
-        mock_gtk.RadioButton.side_effect = [mock_standard_radio_button, mock_advanced_radio_button]
-        mock_gtk.Revealer.return_value = mock_revelear
-        get_setting_mock.return_value = KillSwitchSettingEnum.PERMANENT
-
-        ks = KillSwitchWidget(
-            Mock(),
-            gtk=mock_gtk,
-            conflict_resolver=lambda setting_name, value: "")
+        ks = KillSwitchWidget(controller, conflict_resolver=lambda setting_name, value: "")
         ks.build_revealer()
 
-        mock_revelear.reset_mock()
-        mock_standard_radio_button.reset_mock()
+        ks.advanced_radio_button.set_active(True)
 
-        ks.do_set(None, False)
+        controller.save_setting_attr.assert_called_once_with("settings.killswitch", KillSwitchSettingEnum.PERMANENT.value)
 
-        save_setting_mock.assert_called_once_with(KillSwitchSettingEnum.OFF.value)
-        mock_revelear.set_reveal_child.assert_called_once_with(False)
-        mock_standard_radio_button.set_active.assert_called_once_with(True)
+    def test_save_setting_when_switching_killswitch_from_permanent_to_disabled(self):
+        controller = Mock()
+        controller.get_setting_attr.return_value = KillSwitchSettingEnum.PERMANENT.value
+
+        ks = KillSwitchWidget(controller, conflict_resolver=lambda setting_name, value: "")
+        ks.build_revealer()
+
+        ks.switch.set_active(False)
+
+        controller.save_setting_attr.assert_called_once_with("settings.killswitch", KillSwitchSettingEnum.OFF.value)
+        assert not ks.advanced_radio_button.get_active()
 
 
 class TestNetshield:

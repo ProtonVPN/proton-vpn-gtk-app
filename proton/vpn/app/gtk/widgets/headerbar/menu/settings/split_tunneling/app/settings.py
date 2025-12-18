@@ -77,12 +77,12 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
 
         mode_and_app_count_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         mode_and_app_count_box.set_halign(Gtk.Align.START)
-        mode_and_app_count_box.add(self._mode_label)
-        mode_and_app_count_box.add(self._app_count_label)
+        mode_and_app_count_box.append(self._mode_label)
+        mode_and_app_count_box.append(self._app_count_label)
 
-        self.add(mode_and_app_count_box)
-        self.add(self._selected_app_list)
-        self.add(self._add_button)
+        self.append(mode_and_app_count_box)
+        self.append(self._selected_app_list)
+        self.append(self._add_button)
 
         self._update_mode_label()
         self._update_app_count_label()
@@ -94,7 +94,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
     def _create_add_button(self) -> Gtk.Button:
         button = self.gtk.Button.new_with_label("Add")
         button.set_name("split-tunneling-app-add-button")
-        button.get_style_context().add_class("secondary")
+        button.add_css_class("secondary")
         button.connect("clicked", self._on_clicked_add)
         button.set_hexpand(True)
         button.set_halign(Gtk.Align.START)

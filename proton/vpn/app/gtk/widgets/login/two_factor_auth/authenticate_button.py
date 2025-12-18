@@ -31,7 +31,7 @@ class AuthenticateButton(Gtk.Button):
 
     def __init__(self, label: str = AUTHENTICATE_BUTTON_LABEL):
         super().__init__(label=label)
-        self.get_style_context().add_class("primary")
+        self.add_css_class("primary")
         self.set_halign(Gtk.Align.FILL)
         self.set_hexpand(True)
 

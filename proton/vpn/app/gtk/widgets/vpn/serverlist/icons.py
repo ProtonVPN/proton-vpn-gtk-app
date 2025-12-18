@@ -18,7 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from pathlib import Path
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from proton.vpn.app.gtk.assets import icons
 
@@ -28,50 +28,61 @@ class UnderMaintenanceIcon(Gtk.Image):
     def __init__(self, widget_under_maintenance: str):
         super().__init__()
         pixbuf = icons.get(Path("maintenance-icon.svg"))
-        self.set_from_pixbuf(pixbuf)
-        self.set_tooltip_text(
-            f"{widget_under_maintenance} is under maintenance"
-        )
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_from_paintable(texture)
+        help_text = f"{widget_under_maintenance} is under maintenance"
+        self.set_tooltip_text(help_text)
+        self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
+        self.set_halign(Gtk.Align.END)
+        self.set_hexpand(True)
 
 
 class SmartRoutingIcon(Gtk.Image):
     """Icon displayed when smart routing is used."""
     def __init__(self):
         super().__init__()
-        self.set_from_pixbuf(icons.get(Path("servers/smart-routing.svg")))
+        pixbuf = icons.get(Path("servers/smart-routing.svg"))
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_from_paintable(texture)
         help_text = "Smart routing is used"
         self.set_tooltip_text(help_text)
-        self.get_accessible().set_name(help_text)
+        self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
 
 class StreamingIcon(Gtk.Image):
     """Icon displayed when a server supports streaming."""
     def __init__(self):
         super().__init__()
-        self.set_from_pixbuf(icons.get(Path("servers/streaming.svg")))
+        pixbuf = icons.get(Path("servers/streaming.svg"))
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_from_paintable(texture)
         help_text = "Streaming supported"
         self.set_tooltip_text(help_text)
-        self.get_accessible().set_name(help_text)
+        self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
 
 class P2PIcon(Gtk.Image):
     """Icon displayed when a server supports P2P."""
     def __init__(self):
         super().__init__()
-        self.set_from_pixbuf(icons.get(Path("servers/p2p.svg")))
+        pixbuf = icons.get(Path("servers/p2p.svg"))
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_from_paintable(texture)
         help_text = "P2P/BitTorrent supported"
         self.set_tooltip_text(help_text)
-        self.get_accessible().set_name(help_text)
+        self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
 
 class TORIcon(Gtk.Image):
     """Icon displayed when a server supports TOR."""
     def __init__(self):
         super().__init__()
-        self.set_from_pixbuf(icons.get(Path("servers/tor.svg")))
+        pixbuf = icons.get(Path("servers/tor.svg"))
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_from_paintable(texture)
         help_text = "TOR supported"
         self.set_tooltip_text(help_text)
-        self.get_accessible().set_name(help_text)
+        self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
 
 class SecureCoreIcon(Gtk.Image):
@@ -83,8 +94,10 @@ class SecureCoreIcon(Gtk.Image):
     """
     def __init__(self, entry_country_name: str, exit_country_name: str):
         super().__init__()
-        self.set_from_pixbuf(icons.get(Path("servers/secure-core.svg")))
+        pixbuf = icons.get(Path("servers/secure-core.svg"))
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.set_from_paintable(texture)
         help_text = "Secure core server that "\
             f"connects to {exit_country_name} through {entry_country_name}."
         self.set_tooltip_text(help_text)
-        self.get_accessible().set_name(help_text)
+        self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])

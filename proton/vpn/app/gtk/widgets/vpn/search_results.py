@@ -145,7 +145,7 @@ class SearchResults(Gtk.ScrolledWindow):
         )
         self.set_vexpand(False)
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.add(self._container)
+        self.set_child(self._container)
         self.set_property("height-request", 200)
 
         self._revealer = None
@@ -184,9 +184,7 @@ class SearchResults(Gtk.ScrolledWindow):
             "row-activated", self._on_row_activated
         )
 
-        self._container.pack_start(
-            self._filtered_country_list, expand=True, fill=True, padding=0
-        )
+        self._container.append(self._filtered_country_list)
 
     def _search_input_exists(
         self, search_text: str, server, entry_country_name: bool = False, server_name: bool = False

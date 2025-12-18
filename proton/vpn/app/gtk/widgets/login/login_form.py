@@ -56,31 +56,34 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
         self.set_name("login-form")
+        self.set_vexpand(True)
+        self.set_halign(Gtk.Align.FILL)
+        self.set_valign(Gtk.Align.FILL)
         self._controller = controller
         self._notifications = notifications
         self._overlay_widget = overlay_widget
 
-        self.pack_start(ProtonVPNLogo(), expand=False, fill=True, padding=0)
+        self.append(ProtonVPNLogo())
 
         self._username_entry = Gtk.Entry()
         self._username_entry.set_placeholder_text("Username")
         self._username_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
-        self.pack_start(self._username_entry, expand=False, fill=False, padding=0)
+        self.append(self._username_entry)
 
         self._password_entry = PasswordEntry()
         self._password_entry.set_placeholder_text("Password")
-        self.pack_start(self._password_entry, expand=False, fill=False, padding=0)
+        self.append(self._password_entry)
 
         self._login_button = Gtk.Button(label="Sign in")
         self._login_button.connect("clicked", self._on_login_button_clicked)
-        self._login_button.get_style_context().add_class("primary")
-        self._login_button.get_style_context().add_class("spaced")
+        self._login_button.add_css_class("primary")
+        self._login_button.add_css_class("spaced")
         self._login_button.set_halign(Gtk.Align.CENTER)
         # By default, the button should never be clickable, as username and
         # password fields are empty and users need to actively provide an input
         # to unlock the login button.
         self._login_button.set_property("sensitive", False)
-        self.pack_start(self._login_button, expand=False, fill=False, padding=0)
+        self.append(self._login_button)
 
         # Listen to key entries so that the login button can be "unlocked"
         # once username and password are provided.
@@ -95,13 +98,13 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self._username_entry.connect("activate", self._on_press_enter)
         self._password_entry.connect("activate", self._on_press_enter)
 
-        self.pack_end(LoginLinks(), expand=False, fill=False, padding=0)
+        self.append(LoginLinks())
 
     def _on_press_enter(self, _):
         if not self._login_button.get_property("sensitive"):
             return
 
-        self._login_button.clicked()
+        self._login_button.emit("clicked")
 
     def _on_login_button_clicked(self, _):
         logger.info("Clicked on login", category="UI", subcategory="LOGIN", event="CLICK")
@@ -197,7 +200,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
     def submit_login(self):
         """Submits the login form.
         This property was made available mainly for testing purposes."""
-        self._login_button.clicked()
+        self._login_button.emit("clicked")
 
     def username_enter(self):
         """Submits the login form from the username entry.
@@ -214,17 +217,19 @@ class LoginLinks(Gtk.Box):
     """Links shown in the login widget."""
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.set_vexpand(True)
+        self.set_valign(Gtk.Align.END)
         create_account_link = Gtk.LinkButton(
             label="Create Account",
             uri="https://account.protonvpn.com/signup?ref=linux"
         )
-        self.pack_start(
-            create_account_link, expand=False, fill=False, padding=0
-        )
+        create_account_link.set_halign(Gtk.Align.START)
+        create_account_link.set_hexpand(True)
+        self.append(create_account_link)
         help_link = Gtk.LinkButton(
             label="Need Help?",
             uri="https://protonvpn.com/support"
         )
-        self.pack_end(
-            help_link, expand=False, fill=False, padding=0
-        )
+        help_link.set_halign(Gtk.Align.END)
+        help_link.set_hexpand(True)
+        self.append(help_link)

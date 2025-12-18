@@ -71,10 +71,7 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._display_2fa_mode = True
 
         self._entry_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self.pack_start(
-            self._entry_box,
-            expand=False, fill=False, padding=0
-        )
+        self.append(self._entry_box)
 
         # pylint: disable=R0801
         self._code_entry = Gtk.Entry()
@@ -85,57 +82,43 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
 
         self._entry_limit_clarification_label = Gtk.Label()
         self._entry_limit_clarification_label.set_halign(Gtk.Align.START)
-        self._entry_limit_clarification_label.get_style_context().add_class("dim-label")
-        self._entry_limit_clarification_label.set_line_wrap(True)
+        self._entry_limit_clarification_label.add_css_class("dim-label")
+        self._entry_limit_clarification_label.set_wrap(True)
 
         self._help_label = Gtk.Label()
         self._help_label.set_halign(Gtk.Align.START)
         # Pack the help label and the code entry in the entry box
-        self._entry_box.pack_start(
-            self._help_label, expand=False, fill=False, padding=0
-        )
-        self._entry_box.pack_start(
-            self._code_entry, expand=False, fill=False, padding=0
-        )
-        self._entry_box.pack_start(
-            self._entry_limit_clarification_label, expand=False, fill=False, padding=0
-        )
+        self._entry_box.append(self._help_label)
+        self._entry_box.append(self._code_entry)
+        self._entry_box.append(self._entry_limit_clarification_label)
 
         # Box is used to group the authenticate button and the toggle authentication mode button.
         self._button_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
-        self.pack_start(
-            self._button_box,
-            expand=False, fill=False, padding=5
-        )
+        self._button_box.set_margin_top(5)
+        self._button_box.set_margin_bottom(5)
+        self.append(self._button_box)
 
         self._authenticate_button = authenticate_button or AuthenticateButton()
         self._authenticate_button.connect(
             "clicked", self._on_authenticate_button_clicked
         )
-        self._button_box.pack_start(
-            self._authenticate_button,
-            expand=False, fill=False, padding=0
-        )
+        self._button_box.append(self._authenticate_button)
 
         # Button used to toggle between 2FA and recovery mode.
         self._toggle_authentication_mode_button = Gtk.Button(label="")
-        self._toggle_authentication_mode_button.get_style_context().add_class("secondary")
+        self._toggle_authentication_mode_button.add_css_class("secondary")
         self._toggle_authentication_mode_button.set_halign(Gtk.Align.FILL)
         self._toggle_authentication_mode_button.set_hexpand(True)
         self._toggle_authentication_mode_button.connect(
             "clicked", self._on_toggle_authentication_mode_clicked
         )
-        self._button_box.pack_start(
-            self._toggle_authentication_mode_button,
-            expand=False, fill=False, padding=0
-        )
+        self._button_box.append(self._toggle_authentication_mode_button)
 
         # Button to cancel 2FA.
         self._cancel_button = Gtk.Button(label="Cancel")
-        self._cancel_button.get_style_context().add_class("danger")
+        self._cancel_button.add_css_class("danger")
         self._cancel_button.connect("clicked", self._on_cancel_button_clicked)
-        self._button_box.pack_start(self._cancel_button, expand=False,
-                                    fill=False, padding=0)
+        self._button_box.append(self._cancel_button)
 
         # Pressing enter on the password entry triggers the clicked event
         # on the login button.
@@ -301,11 +284,11 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         """Emulates the click of a button.
         This method was made public for testing purposes.
         """
-        self._toggle_authentication_mode_button.clicked()
+        self._toggle_authentication_mode_button.emit("clicked")
 
     def authenticate_button_click(self):
         """Submits the 2FA form."""
-        self._authenticate_button.clicked()
+        self._authenticate_button.emit("clicked")
 
     @property
     def authenticate_button_enabled(self):

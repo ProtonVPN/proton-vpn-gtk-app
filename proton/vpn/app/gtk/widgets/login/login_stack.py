@@ -75,7 +75,7 @@ class LoginStack(Gtk.Stack):
             lambda _, two_factor_auth_required:
                 self._on_user_authenticated(two_factor_auth_required)
         )
-        self.display_form(self.two_factor_auth_widget)
+        self.display_form(self.login_form)
 
         self.two_factor_auth_widget.connect(
             "two-factor-auth-successful",

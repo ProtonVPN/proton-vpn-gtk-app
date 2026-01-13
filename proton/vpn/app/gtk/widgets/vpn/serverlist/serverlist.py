@@ -122,6 +122,8 @@ class ServerListWidget(Gtk.ScrolledWindow):
         row = self._container.get_first_child()
         while row:
             next_row = row.get_next_sibling()  # Get next before removing
+            # Clean up signal connections and references before removing
+            row.cleanup()
             self._container.remove(row)
             row = next_row
 
@@ -172,20 +174,26 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def display(self, user_tier: int, server_list: int):
         """Update UI with the new server list."""
+        # Create new state (old state cleanup is handled in _build_country_rows)
         self._state = ServerListWidgetState(
             server_list=server_list,
             user_tier=user_tier
         )
 
         self._build_country_rows()
+
         self._controller.set_server_list_updated_callback(self._on_server_list_update)
         self._controller.set_server_loads_updated_callback(self._on_server_loads_update)
 
     def _build_country_rows(self):
-        self._remove_country_rows()
+        # Create new country rows
         self._state.country_rows = self._create_new_country_rows(
             old_country_rows=self._state.country_rows
         )
+        # Remove old rows from UI and clean them up only after new rows are added
+        # to state since the old rows are still needed for the new rows to be created.
+        self._remove_country_rows()
+
         self._add_country_rows()
         self.emit("ui-updated")
 

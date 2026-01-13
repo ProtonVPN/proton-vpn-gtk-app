@@ -124,8 +124,12 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
         self._country_name_label = None
         self._under_maintenance_icon = None
-        self._connect_button = None
         self._country_details = None
+
+        self._connect_button = None
+        self._connect_button_handler_id = None
+        self._toggle_button = None
+        self._toggle_button_handler_id = None
 
         self._collapsed_img = Gtk.Image.new_from_icon_name("pan-down-symbolic")
         self._expanded_img = Gtk.Image.new_from_icon_name("pan-up-symbolic")
@@ -147,7 +151,9 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
         self._toggle_button = Gtk.Button()
         self._toggle_button.add_css_class("secondary")
-        self._toggle_button.connect("clicked", self._on_toggle_button_clicked)
+        self._toggle_button_handler_id = self._toggle_button.connect(
+            "clicked", self._on_toggle_button_clicked
+        )
         self._country_name_label.set_halign(Gtk.Align.END)
         self.append(self._toggle_button)
 
@@ -233,7 +239,9 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
     def _build_connect_button(self) -> Gtk.Button:
         connect_button = Gtk.Button()
-        connect_button.connect("clicked", self._on_connect_button_clicked)
+        self._connect_button_handler_id = connect_button.connect(
+            "clicked", self._on_connect_button_clicked
+        )
         connect_button.add_css_class("secondary")
         return connect_button
 
@@ -352,6 +360,18 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         elif self._toggle_button:
             self._toggle_button.grab_focus()
 
+    def cleanup(self):
+        """Clean up signal connections to allow garbage collection."""
+        if self._toggle_button_handler_id:
+            self._toggle_button.disconnect(self._toggle_button_handler_id)
+            self._toggle_button_handler_id = None
+            self._toggle_button = None
+
+        if self._connect_button_handler_id:
+            self._connect_button.disconnect(self._connect_button_handler_id)
+            self._connect_button_handler_id = None
+            self._connect_button = None
+
 
 class DeferredCountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Row containing all servers, servers are loaded lazily"""
@@ -435,7 +455,7 @@ class DeferredCountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             controller=controller,
             show_country_servers=show_country_servers
         )
-        self._country_header.connect(
+        self._toggle_signal_handler_id = self._country_header.connect(
             "toggle-country-servers", self._on_toggle_country_servers
         )
 
@@ -576,3 +596,31 @@ class DeferredCountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             self._country_header.update_under_maintenance_status(
                 self._under_maintenance
             )
+
+    def cleanup(self):
+        """Clean up signal connections and references to allow garbage collection."""
+        # Disconnect country header signal
+        self._country_header.disconnect(self._toggle_signal_handler_id)
+
+        # Clean up country header's signal connections
+        self._country_header.cleanup()
+        self._country_header = None
+
+        # Clean up all server rows and their signal connections
+        for server_row in self._indexed_server_rows.values():
+            server_row.cleanup()
+        self._indexed_server_rows.clear()
+        self._indexed_server_rows = {}
+
+        # Clear the deferred server creation function and its captured variables
+        self._add_servers_to_country = None
+
+        # Clear other references
+        # Remove child to break widget tree references
+        child = self._server_rows_revealer.get_child()
+        if child:
+            self._server_rows_revealer.set_child(None)
+        self._server_rows_revealer = None
+
+        # Clear controller reference
+        self._controller = None

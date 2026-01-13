@@ -53,6 +53,7 @@ class ServerRow(Gtk.Box):
         self._under_maintenance_icon: Optional[UnderMaintenanceIcon] = None
         self._server_load: Optional[ServerLoad] = None
         self._connect_button: Optional[Gtk.Button] = None
+        self._connect_button_handler_id: Optional[int] = None
 
         self._build_row()
 
@@ -165,7 +166,9 @@ class ServerRow(Gtk.Box):
 
     def _build_connect_button(self):
         connect_button = Gtk.Button(label="Connect")
-        connect_button.connect("clicked", self._on_connect_button_clicked)
+        self._connect_button_handler_id = connect_button.connect(
+            "clicked", self._on_connect_button_clicked
+        )
         connect_button.add_css_class("secondary")
         return connect_button
 
@@ -293,6 +296,19 @@ class ServerRow(Gtk.Box):
         self._show_under_maintenance_icon_or_server_details(self._server.enabled)
         if self._server.enabled:
             self._server_load.set_load(self._server.load)
+
+    def cleanup(self):
+        """Clean up signal connections and references to allow garbage collection."""
+        if self._connect_button_handler_id:
+            self._connect_button.disconnect(self._connect_button_handler_id)
+            self._connect_button_handler_id = None
+            self._connect_button = None
+
+        # Clear references
+        self._controller = None
+        self._server = None
+        if self._icons_displayed:
+            self._icons_displayed.clear()
 
 
 class ServerLoad(Gtk.Label):

@@ -1,3 +1,6 @@
+## 4.14.0
+- Updated to GTK4. No visible changes, but this modernizes the app's foundation and enables future UI improvements.
+
 ## 4.13.1
 - Minor bug fixes.
 

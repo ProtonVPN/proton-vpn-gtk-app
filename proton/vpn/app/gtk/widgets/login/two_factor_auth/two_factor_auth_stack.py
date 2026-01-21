@@ -129,6 +129,10 @@ class TwoFactorAuthStack(Gtk.Stack):
         self.emit("two-factor-auth-successful")
 
     def _on_two_factor_auth_cancelled(self, _):
+        logger.info(
+            "2FA cancelled by user, signing out...",
+            category="UI", subcategory="LOGIN-2FA", event="CLICK"
+        )
         self._overlay_widget.show_message("Signing out...")
         future = self._controller.logout()
 

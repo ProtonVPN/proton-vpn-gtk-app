@@ -263,7 +263,7 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
             self.emit("two-factor-auth-successful")
         else:
             self._notifications.show_error_message(self.INCORRECT_TWOFA_CODE_MESSAGE)
-            logger.info(
+            logger.warning(
                 self.INCORRECT_TWOFA_CODE_MESSAGE, category="APP",
                 subcategory="LOGIN-2FA", event="RESULT"
             )

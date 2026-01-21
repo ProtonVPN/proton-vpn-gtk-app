@@ -121,7 +121,10 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
             result = future.result()
         except ValueError as error:
             self._notifications.show_error_message(self.INVALID_USERNAME_MESSAGE)
-            logger.debug(error, category="APP", subcategory="LOGIN", event="RESULT")
+            logger.warning(
+                error, category="APP", subcategory="LOGIN", event="RESULT",
+                exc_info=True
+            )
             self.emit("login-error")
             return
         finally:
@@ -131,7 +134,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
             self._signal_user_authenticated(result.twofa_required)
         else:
             self._notifications.show_error_message(self.INCORRECT_CREDENTIALS_MESSAGE)
-            logger.debug(
+            logger.warning(
                 self.INCORRECT_CREDENTIALS_MESSAGE, category="APP",
                 subcategory="LOGIN", event="RESULT"
             )

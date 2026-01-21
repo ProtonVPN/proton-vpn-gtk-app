@@ -191,6 +191,7 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
 
         if msg:
             self._notifications.show_error_message(msg)
+            logger.warning(msg, category="APP", subcategory="LOGIN-2FA", event="ERROR")
             self._overlay_widget.hide()
             return
 

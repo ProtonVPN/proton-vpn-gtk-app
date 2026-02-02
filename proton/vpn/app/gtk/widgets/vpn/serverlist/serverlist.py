@@ -260,4 +260,4 @@ def free_countries_first_sorting_key(country: Country):
     :param country: country row to generate the comparison key for.
     :return: The comparison key.
     """
-    return f"{0 if country.is_free else 1}__{country.name}"  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
+    return (0 if country.free else 1, country.name)  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses

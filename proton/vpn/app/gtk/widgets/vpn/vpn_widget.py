@@ -33,7 +33,7 @@ from proton.vpn.connection.states import State
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
-from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
+from proton.vpn.app.gtk.widgets.vpn.serverlist import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.search_results import SearchResults
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget

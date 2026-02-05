@@ -19,10 +19,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-import os
-if os.environ.get("PROTON_VPN_CITY_VIEW"):
-    from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.serverlist import ServerListWidget
-else:
-    from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist import ServerListWidget
-
-__all__ = ["ServerListWidget"]

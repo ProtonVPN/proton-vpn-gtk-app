@@ -26,7 +26,7 @@ from itertools import chain
 from typing import List, Optional, Tuple
 
 from proton.vpn import logging
-from proton.vpn.session.servers import Country, TierEnum
+from proton.vpn.session.servers import Country, City, TierEnum
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.city import CityRow
@@ -114,6 +114,21 @@ class CountryRow(Gtk.Box):
     def grab_focus(self):  # pylint: disable=arguments-differ
         """See Gtk.Widget.grab_focus()"""
         self._header.grab_focus()
+
+    def focus_on_city(self, city_name: str):
+        """Focuses on the city in the country."""
+        if not self.expanded:
+            self.click_toggle_button()
+
+        for city_row in self.city_rows:
+            if city_row.label.lower() == city_name.lower():
+                city_row.grab_focus()
+                return
+
+    @property
+    def cities(self) -> List[City]:
+        """Returns the list of cities in the country."""
+        return self._country.cities
 
     @property
     def city_rows(self) -> List[CityRow]:

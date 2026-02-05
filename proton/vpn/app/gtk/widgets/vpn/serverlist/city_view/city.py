@@ -95,6 +95,10 @@ class CityRow(Gtk.Box):
             server_row = server_row.get_next_sibling()
         return server_rows
 
+    def grab_focus(self):  # pylint: disable=arguments-differ
+        """See Gtk.Widget.grab_focus()"""
+        self._header.grab_focus()
+
     def click_toggle_button(self):
         """Simulates a click on the toggle button to expand/collapse the row."""
         self._header.click_toggle_button()

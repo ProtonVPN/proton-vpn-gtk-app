@@ -33,7 +33,6 @@ from proton.vpn.connection.states import State
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
-from proton.vpn.app.gtk.widgets.vpn.serverlist import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.search_results import SearchResults
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
@@ -89,6 +88,14 @@ class VPNWidget(Gtk.Box):
         self.quick_connect_widget = QuickConnectWidget(self._controller)
         self.append(self.quick_connect_widget)
 
+        city_view_enabled = self._controller.feature_flags.get("CityView")
+        if city_view_enabled:
+            from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.serverlist \
+                import ServerListWidget  # pylint: disable=import-outside-toplevel
+        else:
+            from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist \
+                import ServerListWidget  # pylint: disable=import-outside-toplevel
+
         self.server_list_widget = ServerListWidget(self._controller)
         self.append(self.server_list_widget)
         self.server_list_widget.connect("ui-updated",
@@ -100,7 +107,7 @@ class VPNWidget(Gtk.Box):
             target_signal="request_focus",
             shortcut="<Control>f"
         )
-        self.search_results_widget = SearchResults(self._controller)
+        self.search_results_widget = SearchResults(self._controller, city_view_enabled)
         revealer = Gtk.Revealer()
         revealer.set_child(self.search_results_widget)
 

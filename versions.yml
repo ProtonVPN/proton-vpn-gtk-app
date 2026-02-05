@@ -1,3 +1,12 @@
+version: 4.14.2rc2
+time: 2026/02/03 17:45
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: add search by city"
+---
 version: 4.14.2rc1
 time: 2026/02/02 14:43
 author: Pep Llaneras

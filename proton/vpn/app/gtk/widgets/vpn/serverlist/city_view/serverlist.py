@@ -51,7 +51,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._container.set_name("server-list-widget-container")
         self._container.set_vexpand(True)
-        self._container.set_margin_end(15)  # Leave space for the scroll bar.
+        self._container.set_margin_end(10)  # Leave space for the scroll bar.
         self._container.set_spacing(5)
         self.set_child(self._container)
 
@@ -86,10 +86,14 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
             # Country
             if country.country_name.lower() == name_to_search.lower():
-                if not country.expanded:
-                    country.expanded = True
                 country.grab_focus()
                 return
+
+            # City
+            for city in country.cities:
+                if city.name.lower() == name_to_search.lower():
+                    country.focus_on_city(city.name)
+                    return
 
     @GObject.Signal(name="ui-updated")
     def ui_updated(self):

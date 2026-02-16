@@ -31,18 +31,6 @@ PLUS_TIER = 1
 KILLSWITCH_STANDARD = 1
 KILLSWITCH_ADVANCED = 2
 
-
-def _get_expected_description(new_value, feature_flag_enabled, fs):
-    expected_description_value = fs.PORT_FORWARDING_DESCRIPTION
-    if new_value:
-        expected_description_value = fs.PORT_FORWARDING_SETUP_GUIDE
-        if feature_flag_enabled:
-            expected_description_value =\
-                fs.PORT_FORWARDING_DESCRIPTION_LEARN_MORE
-
-    return expected_description_value
-
-
 def test_build_moderate_nat_save_new_value_when_callback_is_called():
     controller_mock = Mock()
     controller_mock.user_tier = PLUS_TIER
@@ -56,20 +44,6 @@ def test_build_moderate_nat_save_new_value_when_callback_is_called():
 
     controller_mock.save_setting_attr.assert_called_once_with("settings.features.netshield", int(new_value))
     settings_window_mock.notify_user_with_reconnect_message.assert_not_called()
-
-
-@pytest.mark.parametrize("enabled", [False, True])
-def test_build_port_forwarding_updates_description_when_being_initialized_if_feature_flag_is_enabled(enabled):
-    controller_mock = Mock()
-    controller_mock.user_tier = PLUS_TIER
-    controller_mock.feature_flags.get.side_effect = lambda k: k == "DisplayPortForwarding" and enabled
-
-    fs = FeatureSettings(controller_mock, Mock())
-    fs.build_port_forwarding()
-    toggle_widget = fs.get_last_child()
-
-    expected_label = fs.PORT_FORWARDING_DESCRIPTION_LEARN_MORE if enabled else fs.PORT_FORWARDING_SETUP_GUIDE
-    assert toggle_widget.description.get_label() == expected_label
 
 
 @pytest.mark.parametrize("new_value", [True, False])

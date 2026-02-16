@@ -73,8 +73,7 @@ class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # no
         self.build_vpn_accelerator()
         self.build_moderate_nat()
         self.build_ipv6()
-        if self._controller.feature_flags.get("CustomDNS"):
-            self.build_custom_dns()
+        self.build_custom_dns()
 
     def build_protocol(self):
         """Builds and adds the `protocol` setting to the widget."""

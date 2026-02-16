@@ -45,15 +45,9 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
     NETSHIELD_DESCRIPTION = "Protect yourself from ads, malware, and trackers "\
         "on websites and apps."
     PORT_FORWARDING_LABEL = "Port forwarding"
-    PORT_FORWARDING_DESCRIPTION = "Bypass firewalls to connect to P2P servers "\
-        "and devices on your local network."
     PORT_FORWARDING_DESCRIPTION_LEARN_MORE = "Bypass firewalls to connect to P2P servers "\
         "and devices on your local network. "\
         "<a href=\"https://protonvpn.com/support/port-forwarding/#linux\">Learn more</a>"
-    PORT_FORWARDING_SETUP_GUIDE = "Follow our "\
-        "<a href=\"https://protonvpn.com/support/port-forwarding-manual-setup/"\
-        "#how-to-use-port-forwarding\">guide</a>"\
-        " to set it up."
     SWITCH_KILLSWITCH_IF_CONNECTION_ACTIVE_DESCRIPTION = "Kill switch selection "\
         "is disabled while VPN is active. Disconnect to make changes."
 
@@ -72,10 +66,7 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
         self.build_netshield()
         self.build_killswitch()
         self.build_port_forwarding()
-        if (
-            self._controller.split_tunneling_available
-            and self._controller.feature_flags.get("DisplaySplitTunneling")
-        ):
+        if self._controller.split_tunneling_available:
             self.build_split_tunneling()
 
     def build_netshield(self):
@@ -115,37 +106,13 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
     def build_port_forwarding(self):
         """Builds and adds the `port_forwarding` setting to the widget."""
 
-        def on_switch_state(_, enabled: bool, toggle_widget: ToggleWidget):
-
-            # When we start displaying port forwarding, we no longer want to be showing the
-            # setup guide.
-            display_port_forwarding = self._controller.feature_flags.get("DisplayPortForwarding")
-
-            description_value = self.PORT_FORWARDING_DESCRIPTION
-            if enabled:
-                description_value = self.PORT_FORWARDING_SETUP_GUIDE
-                if display_port_forwarding:
-                    description_value = self.PORT_FORWARDING_DESCRIPTION_LEARN_MORE
-
-            toggle_widget.save_setting(enabled)
-            toggle_widget.description.set_label(description_value)
-
         self.port_forwarding = ToggleWidget(
             controller=self._controller,
             title=self.PORT_FORWARDING_LABEL,
-            description=self.PORT_FORWARDING_DESCRIPTION,
+            description=self.PORT_FORWARDING_DESCRIPTION_LEARN_MORE,
             setting_name="settings.features.port_forwarding",
-            requires_subscription_to_be_active=True,
-            callback=on_switch_state
+            requires_subscription_to_be_active=True
         )
-        is_pf_enabled = self.port_forwarding.get_setting()
-        display_port_forwarding = self._controller.feature_flags.get("DisplayPortForwarding")
-        if is_pf_enabled:
-            self.port_forwarding.description.set_label(
-                self.PORT_FORWARDING_DESCRIPTION_LEARN_MORE
-                if display_port_forwarding
-                else self.PORT_FORWARDING_SETUP_GUIDE
-            )
 
         self.append(self.port_forwarding)
 

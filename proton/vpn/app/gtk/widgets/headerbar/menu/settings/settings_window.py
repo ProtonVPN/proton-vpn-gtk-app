@@ -91,17 +91,16 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         self._feature_settings.build_ui()
         self._general_settings.build_ui()
 
-        if self._controller.feature_flags.get("CustomDNS"):
-            self._feature_settings \
-                .connect(
-                    "netshield-setting-changed",
-                    self._connection_settings.custom_dns.on_netshield_setting_changed
-                )
-            self._connection_settings.custom_dns \
-                .connect(
-                    "custom-dns-setting-changed",
-                    self._feature_settings.on_custom_dns_setting_changed
-                )
+        self._feature_settings \
+            .connect(
+                "netshield-setting-changed",
+                self._connection_settings.custom_dns.on_netshield_setting_changed
+            )
+        self._connection_settings.custom_dns \
+            .connect(
+                "custom-dns-setting-changed",
+                self._feature_settings.on_custom_dns_setting_changed
+            )
 
     def notify_user_with_reconnect_message(
         self, force_notify: bool = False, only_notify_on_active_connection: bool = False

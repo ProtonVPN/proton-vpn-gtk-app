@@ -33,7 +33,7 @@ from proton.vpn.session.servers import (
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.utils.accessibility import add_accessibility
+from proton.vpn.app.gtk.utils.accessibility import add_accessibility, remove_accessibility
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
     SmartRoutingIcon, P2PIcon, TORIcon, UnderMaintenanceIcon
 
@@ -44,9 +44,10 @@ logger = logging.getLogger(__name__)
 
 class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Row header in the server list."""
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-statements
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+        self.add_css_class("server-location-header")
         self._controller = None
         self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
 
@@ -56,13 +57,14 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._toggable = None
         self._user_tier = None
         self._connected_server_id = None
-        self._show_country_servers = None
+        self._expanded = None
         self._upgrade_required = None
         self._connection_state = None
         self._under_maintenance = None
 
         # UI widgets
         self._icon = None
+        self._feature_icons = []
         self.set_spacing(10)
         self._label = Gtk.Label()
         self._label.set_halign(Gtk.Align.START)
@@ -72,6 +74,11 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._details.set_halign(Gtk.Align.END)
         self._details.set_hexpand(True)
         self._details.set_spacing(10)
+
+        # Add hidden label to widget tree for accessibility
+        self._connect_button_label = Gtk.Label()  # Hidden label for accessibility
+        self._connect_button_label.set_visible(False)
+        self._details.append(self._connect_button_label)
 
         self._feature_icons_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._details.append(self._feature_icons_box)
@@ -85,7 +92,6 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._details.append(self.upgrade_required_link_button)
         self.connect_button = self._build_connect_button()
         self.connect_button.set_visible(False)
-        add_accessibility(self.connect_button, Gtk.AccessibleRelation.LABELLED_BY, self._label)
         self._details.append(self.connect_button)
 
         self._details.set_visible(False)
@@ -132,6 +138,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._label.set_text(server_group.name)
 
         feature_icons = self._build_feature_icons()
+        self._feature_icons = feature_icons
         for feature_icon in feature_icons:
             self._feature_icons_box.prepend(feature_icon)
 
@@ -140,6 +147,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.connection_state = ConnectionStateEnum.DISCONNECTED
         self.connect_button.set_sensitive(True)
         self.connect_button.set_label("Connect")
+        self._update_connect_button_accessibility()
         signal_id = self.connect_button.connect("clicked", self._on_connect_button_clicked)
         self._connected_signals.append((signal_id, self.connect_button))
 
@@ -181,6 +189,25 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
             self.connect_button.set_visible(True)
         self._details.set_visible(True)
         self._label.set_property("sensitive", True)
+
+    def _update_connect_button_accessibility(self):
+        """Updates the connect button tooltip and accessible label for screen readers."""
+        accessible_text = f"Connect to {self._server_group.name}"
+        self.connect_button.set_tooltip_text(accessible_text)
+        # Use hidden label with LABELLED_BY so Orca reads the accessible text
+        self._connect_button_label.set_text(accessible_text)
+        add_accessibility(
+            self.connect_button,
+            Gtk.AccessibleRelation.LABELLED_BY,
+            self._connect_button_label
+        )
+        # Link feature icons to connect button for accessibility
+        if self._feature_icons:
+            add_accessibility(
+                self.connect_button,
+                Gtk.AccessibleRelation.DESCRIBED_BY,
+                self._feature_icons
+            )
 
     @property
     def under_maintenance(self) -> bool:
@@ -246,19 +273,21 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
     @property
     def expanded(self):
         """Returns whether the row is expanded showing children rows if any."""
-        return self._show_country_servers
+        return self._expanded
 
     @expanded.setter
-    def expanded(self, show_country_servers: bool):
+    def expanded(self, value: bool):
         """Sets whether children rows should be shown or not."""
-        self._show_country_servers = show_country_servers
+        self._expanded = value
         self.toggle_button.set_child(
             self._expanded_img if self.expanded else self._collapsed_img
         )
-        self.toggle_button.set_tooltip_text(
-            f"Hide all servers from {self.label}" if self.expanded else
-            f"Show all servers from {self.label}"
+        tooltip_text = (
+            f'{"Hide" if self.expanded else "Show"} all '
+            f'{"cities" if isinstance(self._server_group, Country) else "servers"} '
+            f'from {self.label}'
         )
+        self.toggle_button.set_tooltip_text(tooltip_text)
 
     @property
     def available(self) -> bool:
@@ -310,16 +339,21 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         for signal_id, widget in self._connected_signals:
             widget.disconnect(signal_id)
         self._connected_signals.clear()
-
+        self._remove_accessibility_relations()
         self._remove_icons()
+
+    def _remove_accessibility_relations(self):
+        """Clears all accessibility relations from the connect button."""
+        remove_accessibility(self.connect_button, Gtk.AccessibleRelation.DESCRIBED_BY)
+        remove_accessibility(self.connect_button, Gtk.AccessibleRelation.LABELLED_BY)
 
     def _remove_icons(self):
         """Removes all child widgets from parent widget, or from self if None."""
         if self._icon:
             self.remove(self._icon)
             self._icon = None
-        child = self._feature_icons_box.get_first_child()
-        while child:
-            next_child = child.get_next_sibling()
-            self._feature_icons_box.remove(child)
-            child = next_child
+
+        for icon in self._feature_icons:
+            self._feature_icons_box.remove(icon)
+
+        self._feature_icons = []

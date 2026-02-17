@@ -1,3 +1,12 @@
+version: 4.14.3rc1
+time: 2026/02/17 12:00
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: accessibility improvements"
+---
 version: 4.14.2
 time: 2026/02/17 10:48
 author: Elena Švilpė
@@ -1281,4 +1290,3 @@ urgency: medium
 stability: unstable
 description:
 - First release
-

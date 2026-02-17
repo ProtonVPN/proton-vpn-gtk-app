@@ -1,3 +1,6 @@
+## 4.14.2
+- Minor improvements.
+
 ## 4.14.1
 - Minor bug fixes.
 

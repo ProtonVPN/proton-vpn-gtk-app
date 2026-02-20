@@ -170,7 +170,7 @@ def _on_activate(app):
     win.get_settings().props.gtk_application_prefer_dark_theme = True
     win.set_child(server_list_widget)
     _load_cached_server_list(server_list_widget)
-    GLib.timeout_add_seconds(10, _load_cached_server_list, server_list_widget)
+    GLib.timeout_add_seconds(5, _load_cached_server_list, server_list_widget)
     win.present()
 
 

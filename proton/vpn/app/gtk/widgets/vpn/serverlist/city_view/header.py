@@ -38,6 +38,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
     SmartRoutingIcon, P2PIcon, TORIcon, UnderMaintenanceIcon
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerLoad
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.connect_button import ConnectButton
 
 logger = logging.getLogger(__name__)
 
@@ -45,11 +46,15 @@ logger = logging.getLogger(__name__)
 class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Row header in the server list."""
     # pylint: disable=too-many-arguments,too-many-statements
+
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.add_css_class("server-location-header")
         self._controller = None
         self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
+        self._is_hovered = False
+        self._motion_controller = None
+        self._focus_controller = None
 
         # Properties
         self._server_group = None
@@ -79,8 +84,13 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._connect_button_label = Gtk.Label()  # Hidden label for accessibility
         self._connect_button_label.set_visible(False)
         self._details.append(self._connect_button_label)
+        self.connect_button = self._build_connect_button()
+        self.connect_button.set_visible(False)
+        self._details.append(self.connect_button)
 
         self._feature_icons_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self._feature_icons_box.set_spacing(10)
+        self._feature_icons_box.set_halign(Gtk.Align.END)  # Right-align icons within the box
         self._details.append(self._feature_icons_box)
 
         self._server_load = ServerLoad(0)
@@ -90,9 +100,6 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.upgrade_required_link_button = self._build_upgrade_required_link_button()
         self.upgrade_required_link_button.set_visible(False)
         self._details.append(self.upgrade_required_link_button)
-        self.connect_button = self._build_connect_button()
-        self.connect_button.set_visible(False)
-        self._details.append(self.connect_button)
 
         self._details.set_visible(False)
         self.append(self._details)
@@ -106,8 +113,9 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._expanded_img = Gtk.Image.new_from_icon_name("pan-up-symbolic")
         self.toggle_button = Gtk.Button()
         self.toggle_button.add_css_class("secondary")
+        self.toggle_button.add_css_class("subtle-toggle")
         self.toggle_button.set_visible(False)
-        self.append(self.toggle_button)
+        self._details.append(self.toggle_button)
 
     def display(
         self, controller: Controller, server_group: Union[Country, City, LogicalServer],
@@ -145,11 +153,8 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._show_under_maintenance_icon_or_country_details()
 
         self.connection_state = ConnectionStateEnum.DISCONNECTED
-        self.connect_button.set_sensitive(True)
-        self.connect_button.set_label("Connect")
-        self._update_connect_button_accessibility()
-        signal_id = self.connect_button.connect("clicked", self._on_connect_button_clicked)
-        self._connected_signals.append((signal_id, self.connect_button))
+        self._configure_connect_button()
+        self._setup_visibility_handlers()
 
         if self._toggable:
             self.toggle_button.set_visible(True)
@@ -190,8 +195,8 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._details.set_visible(True)
         self._label.set_property("sensitive", True)
 
-    def _update_connect_button_accessibility(self):
-        """Updates the connect button tooltip and accessible label for screen readers."""
+    def _configure_connect_button(self):
+        """Configures the connect button: accessibility, signals, and event handlers."""
         accessible_text = f"Connect to {self._server_group.name}"
         self.connect_button.set_tooltip_text(accessible_text)
         # Use hidden label with LABELLED_BY so Orca reads the accessible text
@@ -209,6 +214,9 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
                 self._feature_icons
             )
 
+        signal_id = self.connect_button.connect("clicked", self._on_connect_button_clicked)
+        self._connected_signals.append((signal_id, self.connect_button))
+
     @property
     def under_maintenance(self) -> bool:
         """Indicates whether all the servers for this country are under maintenance or not."""
@@ -225,8 +233,8 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         upgrade_button.set_uri("https://account.protonvpn.com/")
         return upgrade_button
 
-    def _build_connect_button(self) -> Gtk.Button:
-        connect_button = Gtk.Button()
+    def _build_connect_button(self) -> ConnectButton:
+        connect_button = ConnectButton(label="Connect")
         connect_button.add_css_class("secondary")
         return connect_button
 
@@ -317,6 +325,16 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         future = self._controller.connect_to_server(fastest_server.name)
         future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
 
+    def _on_enter(self):
+        """Shows the connect button and hides feature icons when hovering in the header."""
+        self._feature_icons_box.set_visible(False)
+        GLib.idle_add(self.connect_button.set_transparent, False)
+
+    def _on_leave(self):
+        """Hides the connect button and shows feature icons when hovering out of the header."""
+        self.connect_button.set_transparent(True)
+        self._feature_icons_box.set_visible(True)
+
     def click_toggle_button(self):
         """Clicks the button to toggle the country servers.
         This method was made available for tests."""
@@ -334,11 +352,52 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         elif self.toggle_button:
             self.toggle_button.grab_focus()
 
+    def _setup_visibility_handlers(self):
+        """Sets up hover and focus handlers to show/hide connect button."""
+        self._motion_controller = Gtk.EventControllerMotion()
+
+        def on_enter(_controller, _x, _y):
+            self._is_hovered = True
+            self._on_enter()
+
+        def on_leave(_controller):
+            self._is_hovered = False
+            if not self.connect_button.has_focus():
+                self._on_leave()
+
+        self._motion_controller.connect("enter", on_enter)
+        self._motion_controller.connect("leave", on_leave)
+        self.add_controller(self._motion_controller)
+
+        self._focus_controller = Gtk.EventControllerFocus()
+
+        def on_focus_in(_controller):
+            self._on_enter()
+
+        def on_focus_out(_controller):
+            if not self._is_hovered:
+                self._on_leave()
+
+        self._focus_controller.connect("enter", on_focus_in)
+        self._focus_controller.connect("leave", on_focus_out)
+        self.connect_button.add_controller(self._focus_controller)
+
+    def _remove_visibility_handlers(self):
+        """Removes hover and focus handlers."""
+        if self._motion_controller:
+            self.remove_controller(self._motion_controller)
+            self._motion_controller = None
+
+        if self._focus_controller:
+            self.connect_button.remove_controller(self._focus_controller)
+            self._focus_controller = None
+
     def reset(self):
         """Resets the state of this header."""
         for signal_id, widget in self._connected_signals:
             widget.disconnect(signal_id)
         self._connected_signals.clear()
+        self._remove_visibility_handlers()
         self._remove_accessibility_relations()
         self._remove_icons()
 

@@ -1,3 +1,12 @@
+version: 4.14.3rc2
+time: 2026/02/17 15:58
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: show connect button on hover only"
+---
 version: 4.14.3rc1
 time: 2026/02/17 12:00
 author: Pep Llaneras

@@ -1,3 +1,12 @@
+version: 4.14.3rc3
+time: 2026/02/23 09:25
+author: Elena Švilpė
+email: elena.svilpe@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: change DE detection to use XDG_CURRENT_DESKTOP"
+---
 version: 4.14.3rc2
 time: 2026/02/17 15:58
 author: Pep Llaneras

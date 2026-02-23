@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import Optional
+from os import environ
 from gi.repository import GLib, Gio
 
 from proton.vpn import logging
@@ -36,9 +37,6 @@ logger = logging.getLogger(__name__)
 UBUNTU_INDICATOR_EXTENSION = "ubuntu-appindicators@ubuntu.com"
 DEFAULT_INDICATOR_EXTENSION = "appindicatorsupport@rgcjonas.gmail.com"
 
-GNOME_SCHEMA = "org.gnome.shell"
-KEY_DISABLE_USER_EXT = "disable-user-extensions"
-
 # See: /usr/share/dbus-1/interfaces/org.gnome.Shell.Extensions.xml
 # Active: extension is currently running
 ACTIVE_STATE = 1.0
@@ -47,6 +45,57 @@ ACTIVE_STATE = 1.0
 class TrayIndicatorNotSupported(Exception):
     """Exception raised when the app indicator cannot be instantiated due to
     missing runtime libraries."""
+
+
+class GnomeTrayDetection:
+    """Handles detection of gnome environment and required tray dependencies """
+    def is_gnome_shell_running(self) -> bool:
+        """Checks if gnome shell is running.
+        Flatpaks can't list gnome shell extensions by default,
+        and opening a sandbox hole would allow installing extensions,
+        so assume the tray works as any errors are not fatal.
+        """
+        if "FLATPAK_ID" in environ:
+            logger.warning("Detected Flatpak environment.")
+            return False
+        current_desktop_environment = environ.get("XDG_CURRENT_DESKTOP", "").lower()
+        return "gnome" in current_desktop_environment
+
+    def _gnome_shell_list_extensions(self, timeout_ms: int = 300) -> Optional[dict[str, dict]]:
+        try:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            proxy = Gio.DBusProxy.new_sync(
+                bus,
+                Gio.DBusProxyFlags.NONE,
+                None,
+                "org.gnome.Shell.Extensions",
+                "/org/gnome/Shell/Extensions",
+                "org.gnome.Shell.Extensions",
+                None,
+            )
+            value = proxy.call_sync(
+                "ListExtensions",
+                None,
+                Gio.DBusCallFlags.NONE,
+                timeout_ms,
+                None
+            )
+            data = value.unpack()
+            return data[0] if isinstance(data, tuple) else data
+        except GLib.Error:
+            logger.exception("Unable to list Gnome extensions")
+            return None
+
+    def is_extension_active(self) -> bool:
+        """Checks if either of the app indicator extensions is available and enabled."""
+        gnome_extensions = self._gnome_shell_list_extensions()
+        if gnome_extensions is None:
+            return False
+        for extension_name in [UBUNTU_INDICATOR_EXTENSION, DEFAULT_INDICATOR_EXTENSION]:
+            extension = gnome_extensions.get(extension_name)
+            if extension and extension.get("state") == ACTIVE_STATE:
+                return True
+        return False
 
 
 # pylint: disable=too-few-public-methods too-many-instance-attributes
@@ -86,7 +135,8 @@ class TrayIndicator:
         self,
         controller: Controller,
         tray_icon=None,
-        app_indicator_available=False
+        app_indicator_available=False,
+        gnome_tray_detection=GnomeTrayDetection()
     ):
         self._tray = tray_icon
         self._main_window = None
@@ -98,6 +148,7 @@ class TrayIndicator:
 
         self._app_indicator_available = app_indicator_available
         self._controller = controller
+        self._gnome_tray_detection = gnome_tray_detection
 
     def setup(self, main_window: MainWindow):
         """Configure tray if not created yet and register all necessary callbacks.
@@ -117,93 +168,13 @@ class TrayIndicator:
     def _can_tray_be_used(self):
         # If gnome shell is not running then it's another DE and
         # we assume tray works by default.
-        if not self._is_gnome_shell_running():
-            self._app_indicator_available = True
-            logger.warning("Tray icon enabled on an unsupported Desktop Environment")
+        if self._gnome_tray_detection.is_gnome_shell_running():
+            self._app_indicator_available |= self._gnome_tray_detection.is_extension_active()
         else:
-            gnome_extensions = self._gnome_shell_list_extensions()
-            ubuntu_extension = gnome_extensions.get(UBUNTU_INDICATOR_EXTENSION)
-            default_extension = gnome_extensions.get(DEFAULT_INDICATOR_EXTENSION)
-
-            # Since the extension is part of the system we don't care about the
-            # user_extension_disabled value.
-            enable_for_ubuntu = ubuntu_extension \
-                and ubuntu_extension.get("state") == ACTIVE_STATE
-
-            # For the rest we take user_extension_disabled into consideration
-            # since it's not installed by default on the system and is dependent
-            # on user intention.
-            enable_for_default = default_extension \
-                and not self._disabled_user_extension() \
-                and default_extension.get("state") == ACTIVE_STATE
-
-            if enable_for_ubuntu or enable_for_default:
-                self._app_indicator_available = True
+            self._app_indicator_available = True
+            logger.warning("Tray icon enabled on an unsupported desktop environment")
 
         return self._app_indicator_available
-
-    def _is_gnome_shell_running(self, timeout_ms: int = 300) -> bool:
-        try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-
-            dbus = Gio.DBusProxy.new_sync(
-                bus,
-                Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
-                None,
-                "org.freedesktop.DBus",
-                "/org/freedesktop/DBus",
-                "org.freedesktop.DBus",
-                None,
-            )
-
-            (has_owner,) = dbus.call_sync(
-                "NameHasOwner",
-                GLib.Variant("(s)", ("org.gnome.Shell",)),
-                Gio.DBusCallFlags.NONE,
-                timeout_ms,
-                None,
-            ).unpack()
-            return bool(has_owner)
-        except GLib.Error:
-            logger.exception("Unable to find Gnome Shell")
-            return False
-
-    def _gnome_shell_list_extensions(self, timeout_ms: int = 300) -> Optional[dict[str, dict]]:
-        try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            proxy = Gio.DBusProxy.new_sync(
-                bus,
-                Gio.DBusProxyFlags.NONE,
-                None,
-                "org.gnome.Shell.Extensions",
-                "/org/gnome/Shell/Extensions",
-                "org.gnome.Shell.Extensions",
-                None,
-            )
-            value = proxy.call_sync(
-                "ListExtensions",
-                None,
-                Gio.DBusCallFlags.NONE,
-                timeout_ms,
-                None
-            )
-            data = value.unpack()
-            return data[0] if isinstance(data, tuple) else data
-        except GLib.Error:
-            logger.exception("Unable to list Gnome extensions")
-            return None
-
-    def _disabled_user_extension(self) -> Optional[bool]:
-        source = Gio.SettingsSchemaSource.get_default()
-        if not source:
-            return None
-
-        schema = source.lookup(GNOME_SCHEMA, True)
-        if not schema or not schema.has_key(KEY_DISABLE_USER_EXT):
-            return None
-
-        settings = Gio.Settings.new_full(schema, None, None)
-        return settings.get_boolean(KEY_DISABLE_USER_EXT)
 
     def _set_main_window(self, main_window: MainWindow):
         """Sets the main window for the tray indicator."""

@@ -20,7 +20,7 @@ from unittest.mock import patch, Mock, PropertyMock
 
 import pytest
 
-from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator
+from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator,TrayIndicatorNotSupported
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.connection import states
 
@@ -31,6 +31,10 @@ def controller_mock():
     controller.get_app_configuration.return_value.tray_pinned_servers = None
     return controller
 
+@pytest.fixture
+def gnome_tray_detection_mock():
+    gnome_tray_detection_mock = Mock()
+    return gnome_tray_detection_mock
 
 def test_toggle_app_visibility_menu_entry_activate_shows_app_window_when_it_was_hidden(controller_mock):
     main_window = Mock()
@@ -379,3 +383,35 @@ def test_disconnect_entry_disconnects_from_vpn_when_user_is_connected(controller
 
     tray_indicator.activate_disconnect_entry()
     controller_mock.disconnect.assert_called_once()
+  
+def test_tray_available_on_non_gnome_environment(controller_mock,gnome_tray_detection_mock):
+    indicator_mock = Mock()
+    main_window = Mock()
+    main_window.get_visible.return_value = True
+    gnome_tray_detection_mock.is_gnome_shell_running.return_value = False
+
+    tray_indicator = TrayIndicator(controller=controller_mock, tray_icon=indicator_mock,gnome_tray_detection=gnome_tray_detection_mock)
+    
+    assert tray_indicator._can_tray_be_used
+
+def test_tray_available_on_gnome_environment_when_extension_is_active(controller_mock,gnome_tray_detection_mock):
+    indicator_mock = Mock()
+    main_window = Mock()
+    main_window.get_visible.return_value = True
+    gnome_tray_detection_mock.is_gnome_shell_running.return_value = True
+    gnome_tray_detection_mock.is_extension_active.return_value = True
+
+    tray_indicator = TrayIndicator(controller=controller_mock, tray_icon=indicator_mock,gnome_tray_detection=gnome_tray_detection_mock)
+
+    assert tray_indicator._can_tray_be_used
+
+def test_tray_not_available_on_gnome_environment_when_extension_is_not_available(controller_mock,gnome_tray_detection_mock):
+    main_window = Mock()
+    gnome_tray_detection_mock.is_gnome_shell_running.return_value = True
+    gnome_tray_detection_mock.is_extension_active.return_value = False
+    main_window.get_visible.return_value = True
+
+    tray_indicator = TrayIndicator(controller=controller_mock,gnome_tray_detection=gnome_tray_detection_mock)
+
+    with pytest.raises(TrayIndicatorNotSupported):
+        tray_indicator.setup(main_window)

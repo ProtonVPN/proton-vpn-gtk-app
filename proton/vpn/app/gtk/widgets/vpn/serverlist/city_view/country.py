@@ -31,6 +31,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.city import CityRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.header import ServerLocationHeader
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import sync_rows_with_model_items
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
 
 logger = logging.getLogger(__name__)
@@ -54,12 +55,26 @@ class CountryRow(Gtk.Box):
         self._user_tier = None
         self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
 
+        self.connect("unrealize", self._on_unrealize)
+
+    # pylint: disable=too-many-arguments
     def display(
         self, controller: Controller, country: Country, user_tier: int,
-        connected_server_id: str = None
+        connected_server_id: str = None, expanded: bool = False,
+        expanded_cities: set[str] = None
     ):
-        """Displays the country row according to the specified parameters."""
-        self.reset()
+        """Displays the country row according to the specified parameters.
+
+        Args:
+            controller: The controller instance
+            country: The country to display
+            user_tier: The user's tier level
+            connected_server_id: Optional connected server ID
+            expanded: Whether the country should be expanded (defaults to False)
+            expanded_cities: Optional set of cities (in lowercase) that should be expanded
+        """
+        expanded_cities = expanded_cities or set()
+        self.reset(keep_city_rows=expanded)
         self._controller = controller
         self._country = country
         self._user_tier = user_tier
@@ -74,22 +89,42 @@ class CountryRow(Gtk.Box):
             CountryFlagIcon(country.code), connected_server_id
         )
 
-    def _on_toggle_children(self, header: ServerLocationHeader):
-        self._remove_city_rows()
+        # Restore expanded state if it was expanded
+        if expanded:
+            self._header.expanded = True
+            self._on_toggle_children(self._header, expanded_cities)
+
+    def _on_toggle_children(self, header: ServerLocationHeader, expanded_cities: set[str] = None):
+        """Handles the toggle-children signal from the header.
+
+        Args:
+            header: The header that emitted the signal
+            expanded_cities: Optional set of lowercase city names that should be expanded
+        """
+        expanded_cities = expanded_cities or set()
+
         if header.expanded:
-            self._add_city_rows()
+            # Pass expanded_cities to preserve city expanded states during refresh
+            self._add_city_rows(expanded_cities)
         self._children_revealer.set_reveal_child(
             header.expanded
         )
+        if not header.expanded:
+            # Remove city rows after collapsing the row for better UX
+            self._remove_city_rows()
 
-    def reset(self):
+    def _on_unrealize(self, _widget):
+        """Called when widget is unrealized - performs cleanup."""
+        self.reset()
+
+    def reset(self, keep_city_rows: bool = False):
         """Resets the country row to its initial state."""
         for signal_id, widget in self._connected_signals:
             widget.disconnect(signal_id)
         self._connected_signals.clear()
-
         self._header.reset()
-        self._remove_city_rows()
+        if not keep_city_rows:
+            self._remove_city_rows()
 
     @property
     def country_name(self):
@@ -149,13 +184,30 @@ class CountryRow(Gtk.Box):
             self._children_container.remove(city_row)
             city_row.reset()
 
-    def _add_city_rows(self):
+    def _add_city_rows(self, expanded_cities: set[str] = None):
+        """Adds city rows to the country row.
+
+        Args:
+            expanded_cities: Optional set of lowercase city names that should be expanded
+        """
+        expanded_cities = expanded_cities or set()
+
         cities = self._country.cities
         if self._user_tier == TierEnum.FREE and self._country.free:
             # If the current user has a free account, display first the free cities
-            cities = chain(self._country.free_cities, self._country.paid_cities)
+            cities = list(chain(self._country.free_cities, self._country.paid_cities))
 
-        for city in cities:
-            city_row = CityRow()
-            city_row.display(self._controller, city, self._user_tier)
-            self._children_container.append(city_row)
+        def display_city_row(city_row, city):
+            city_expanded = city.name.lower() in expanded_cities
+            city_row.display(
+                self._controller, city, self._user_tier,
+                expanded=city_expanded
+            )
+
+        sync_rows_with_model_items(
+            cities,
+            self.city_rows,
+            self._children_container,
+            CityRow,
+            display_city_row
+        )

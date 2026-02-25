@@ -30,6 +30,7 @@ from gi.repository import GLib, GObject
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.country import DeferredCountryRow
+from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.session.servers import Country, LogicalServer, ServerList
 from proton.vpn import logging
 
@@ -65,8 +66,9 @@ class ServerListWidget(Gtk.ScrolledWindow):
     # Number of seconds to wait before checking if the servers cache expired.
     RELOAD_INTERVAL_IN_SECONDS = 60
 
-    def __init__(self, controller: Controller):
+    def __init__(self, controller: Controller, search_entry: SearchEntry | None = None):
         super().__init__()
+        self._search_entry = search_entry
         self.set_name("server-list-widget")
         self.set_policy(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
@@ -163,6 +165,8 @@ class ServerListWidget(Gtk.ScrolledWindow):
             if "#" in name_to_search:
                 future = self._controller.connect_to_server(name_to_search)
                 future.add_done_callback(lambda f: GLib.idle_add(f.result))
+                if self._search_entry:
+                    self._search_entry.grab_focus()
                 return
 
             # Country

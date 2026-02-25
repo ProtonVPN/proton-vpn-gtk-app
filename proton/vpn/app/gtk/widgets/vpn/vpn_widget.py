@@ -96,12 +96,11 @@ class VPNWidget(Gtk.Box):
             from proton.vpn.app.gtk.widgets.vpn.serverlist.serverlist \
                 import ServerListWidget  # pylint: disable=import-outside-toplevel
 
-        self.server_list_widget = ServerListWidget(self._controller)
+        self.search_widget = SearchEntry()
+        self.server_list_widget = ServerListWidget(self._controller, self.search_widget)
         self.append(self.server_list_widget)
         self.server_list_widget.connect("ui-updated",
                                         self._on_server_list_updated)
-
-        self.search_widget = SearchEntry()
         main_window.add_keyboard_shortcut(
             target_widget=self.search_widget,
             target_signal="request_focus",

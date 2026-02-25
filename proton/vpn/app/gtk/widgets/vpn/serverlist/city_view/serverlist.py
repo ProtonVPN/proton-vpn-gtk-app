@@ -20,7 +20,6 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-import itertools
 import time
 from typing import List
 import logging
@@ -35,6 +34,9 @@ from proton.vpn.session.servers import ServerList, TierEnum
 from proton.vpn.session.servers.server_list_fetcher import ServerListFetcher
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.country import CountryRow
+from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
+
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import sync_rows_with_model_items
 
 logger = proton_logging.getLogger(__name__)
 
@@ -42,10 +44,11 @@ logger = proton_logging.getLogger(__name__)
 class ServerListWidget(Gtk.ScrolledWindow):
     """Server list widget displaying countries, cities and their servers."""
 
-    def __init__(self, controller: Controller):
+    def __init__(self, controller: Controller, search_entry: SearchEntry | None = None):
         super().__init__()
         self._controller = controller
         self._user_tier = None
+        self._search_entry = search_entry
 
         # pylint: disable=duplicate-code
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -76,14 +79,14 @@ class ServerListWidget(Gtk.ScrolledWindow):
         """Searches for an entry by name and either connects to it directly,
            or focuses on it."""
         # pylint: disable=duplicate-code
+        # Server
+        if "#" in name_to_search:
+            future = self._controller.connect_to_server(name_to_search)
+            future.add_done_callback(lambda f: GLib.idle_add(f.result))
+            if self._search_entry:
+                self._search_entry.grab_focus()
+            return
         for country in self.country_rows:
-
-            # Server
-            if "#" in name_to_search:
-                future = self._controller.connect_to_server(name_to_search)
-                future.add_done_callback(lambda f: GLib.idle_add(f.result))
-                return
-
             # Country
             if country.country_name.lower() == name_to_search.lower():
                 country.grab_focus()
@@ -125,17 +128,31 @@ class ServerListWidget(Gtk.ScrolledWindow):
             # free servers first.
             countries.sort(key=lambda country: (0 if country.free else 1, country.name))
 
-        for country, row in itertools.zip_longest(countries, self.country_rows):
-            if row is None:
-                # More countries than rows
-                row = CountryRow()
-                self._container.append(row)
+        # Collect expanded states before refresh (keyed by country code and city name)
+        expanded_countries = {row.country_code.lower(): row.expanded for row in self.country_rows}
+        expanded_cities_per_country = {
+            row.country_code.lower(): set(
+                city_row.label.lower() for city_row in row.city_rows
+                if city_row.expanded
+            )
+            for row in self.country_rows
+        }
 
-            if country is None:
-                # More rows than countries
-                self._container.remove(row)
-            else:
-                row.display(self._controller, country, self._user_tier)
+        def display_country_row(row, country):
+            expanded = expanded_countries.get(country.code.lower(), False)
+            expanded_cities = expanded_cities_per_country.get(country.code.lower())
+            row.display(
+                self._controller, country, self._user_tier,
+                expanded=expanded, expanded_cities=expanded_cities
+            )
+
+        sync_rows_with_model_items(
+            countries,
+            self.country_rows,
+            self._container,
+            CountryRow,
+            display_country_row
+        )
 
     def _on_server_list_update(self):
         """Whenever a new server list is received the UI should be updated."""

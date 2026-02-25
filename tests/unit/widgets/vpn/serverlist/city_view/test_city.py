@@ -78,3 +78,16 @@ def test_city_row_shows_user_tier_cities_first_when_toggled(
     assert len(city_row.server_rows) == 2
     assert city_row.server_rows[0].label == expected_servers[0]
     assert city_row.server_rows[1].label == expected_servers[1]
+
+
+def test_display_shows_the_row_in_expanded_state_when_specified(free_and_plus_servers):
+    city = City(name="Tokyo", servers=free_and_plus_servers)
+    city_row = CityRow()
+    mock_controller = Mock(spec=Controller)
+
+    # Display the city row in expanded state
+    city_row.display(mock_controller, city, TierEnum.PLUS, expanded=True)
+    process_gtk_events()
+
+    assert city_row.expanded, "City should remain expanded after refresh"
+    assert len(city_row.server_rows) == 2, "Servers should still be visible"

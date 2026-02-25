@@ -30,6 +30,7 @@ from proton.vpn.session.servers import City, TierEnum
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.header import ServerLocationHeader
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import sync_rows_with_model_items
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CityIcon
 
 
@@ -54,31 +55,52 @@ class CityRow(Gtk.Box):
         self._user_tier = None
         self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
 
+        self.connect("unrealize", self._on_unrealize)
+
+    # pylint: disable=too-many-arguments
     def display(
         self, controller: Controller, city: City, user_tier: int,
-        connected_server_id: str = None
+        connected_server_id: str = None, expanded: bool = False
     ):
-        """Displays the city row according to the specified parameters."""
-        self.reset()
+        """Displays the city row according to the specified parameters.
+
+        Args:
+            controller: The controller instance
+            city: The city to display
+            user_tier: The user's tier level
+            connected_server_id: Optional connected server ID
+            expanded: Whether the city should be expanded (defaults to False)
+        """
+        self.reset(keep_server_rows=expanded)
         self._controller = controller
         self._city = city
         self._user_tier = user_tier
-        self._header.connect(
+        signal_id = self._header.connect(
             "toggle-children", self._on_toggle_children
         )
+        self._connected_signals.append((signal_id, self._header))
+
         self._header.display(
             controller, city, user_tier,
             CityIcon(), connected_server_id
         )
 
-    def reset(self):
+        # Restore expanded state if it was expanded
+        if expanded:
+            self.click_toggle_button()
+
+    def _on_unrealize(self, _widget):
+        """Called when widget is unrealized - performs cleanup."""
+        self.reset()
+
+    def reset(self, keep_server_rows: bool = False):
         """Resets the city row to its initial state."""
         for signal_id, widget in self._connected_signals:
             widget.disconnect(signal_id)
         self._connected_signals.clear()
-
         self._header.reset()
-        self._remove_server_rows()
+        if not keep_server_rows:
+            self._remove_server_rows()
 
     @property
     def label(self) -> str:
@@ -95,6 +117,11 @@ class CityRow(Gtk.Box):
             server_row = server_row.get_next_sibling()
         return server_rows
 
+    @property
+    def expanded(self) -> bool:
+        """Returns whether the city row is currently expanded or not."""
+        return self._header.expanded
+
     def grab_focus(self):  # pylint: disable=arguments-differ
         """See Gtk.Widget.grab_focus()"""
         self._header.grab_focus()
@@ -104,12 +131,13 @@ class CityRow(Gtk.Box):
         self._header.click_toggle_button()
 
     def _on_toggle_children(self, header: ServerLocationHeader):
-        self._remove_server_rows()
         if header.expanded:
             self._add_server_rows()
         self._children_revealer.set_reveal_child(
             header.expanded
         )
+        if not header.expanded:
+            self._remove_server_rows()
 
     def _remove_server_rows(self):
         for server_row in self.server_rows:
@@ -122,7 +150,15 @@ class CityRow(Gtk.Box):
             # If the current user has a free account, display first the free servers
             servers = chain(self._city.free_servers, self._city.paid_servers)
 
-        for server in servers:
-            server_row = ServerLocationHeader()
+        servers_list = list(servers)
+
+        def display_server_row(server_row, server):
             server_row.display(self._controller, server, self._user_tier)
-            self._children_container.append(server_row)
+
+        sync_rows_with_model_items(
+            servers_list,
+            self.server_rows,
+            self._children_container,
+            ServerLocationHeader,
+            display_server_row
+        )

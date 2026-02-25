@@ -1,3 +1,12 @@
+version: 4.14.3rc4
+time: 2026/02/24 16:18
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: preserve expanded rows on server list refresh"
+---
 version: 4.14.3rc3
 time: 2026/02/23 09:25
 author: Elena Švilpė

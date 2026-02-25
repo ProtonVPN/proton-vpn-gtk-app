@@ -117,6 +117,8 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.toggle_button.set_visible(False)
         self._details.append(self.toggle_button)
 
+        self.connect("unrealize", self._on_unrealize)
+
     def display(
         self, controller: Controller, server_group: Union[Country, City, LogicalServer],
         user_tier: int, icon: Gtk.Image = None, connected_server_id: str = None
@@ -391,6 +393,10 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         if self._focus_controller:
             self.connect_button.remove_controller(self._focus_controller)
             self._focus_controller = None
+
+    def _on_unrealize(self, _widget):
+        """Called when widget is unrealized - performs cleanup."""
+        self.reset()
 
     def reset(self):
         """Resets the state of this header."""

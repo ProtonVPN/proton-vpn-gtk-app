@@ -78,3 +78,22 @@ def test_country_row_shows_user_tier_cities_first_when_toggled(
     assert len(country_row.city_rows) == 2
     assert country_row.city_rows[0].label == expected_cities[0]
     assert country_row.city_rows[1].label == expected_cities[1]
+
+
+def test_display_shows_the_row_in_expanded_state_when_specified(free_and_plus_servers):
+    country = Country(code="jp", servers=free_and_plus_servers)
+    country_row = CountryRow()
+    mock_controller = Mock(spec=Controller)
+
+    # Collect expanded cities before refresh (set of lowercase city names)
+    expanded_cities = {"tokyo", "osaka"}
+
+    # Display the country row in expanded state, with expanded cities
+    country_row.display(
+        mock_controller, country, TierEnum.PLUS,
+        expanded=True, expanded_cities=expanded_cities
+    )
+    process_gtk_events()
+
+    assert country_row.expanded, "Country should remain expanded after refresh"
+    assert all(city_row.expanded for city_row in country_row.city_rows), "All cities should be expanded"

@@ -38,7 +38,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
     SmartRoutingIcon, P2PIcon, TORIcon, UnderMaintenanceIcon
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerLoad
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.connect_button import ConnectButton
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.hover_box import HoverBox
 
 logger = logging.getLogger(__name__)
 
@@ -52,9 +52,6 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.add_css_class("server-location-header")
         self._controller = None
         self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
-        self._is_hovered = False
-        self._motion_controller = None
-        self._focus_controller = None
 
         # Properties
         self._server_group = None
@@ -84,9 +81,15 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._connect_button_label = Gtk.Label()  # Hidden label for accessibility
         self._connect_button_label.set_visible(False)
         self._details.append(self._connect_button_label)
+
         self.connect_button = self._build_connect_button()
-        self.connect_button.set_visible(False)
-        self._details.append(self.connect_button)
+        self.upgrade_required_link_button = self._build_upgrade_required_link_button()
+        self._hover_box = HoverBox(
+            on_show=lambda: self._feature_icons_box.set_visible(False),
+            on_hide=lambda: self._feature_icons_box.set_visible(True),
+            parent_for_hover=self,
+        )
+        self._details.append(self._hover_box)
 
         self._feature_icons_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._feature_icons_box.set_spacing(10)
@@ -96,10 +99,6 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._server_load = ServerLoad(0)
         self._server_load.set_visible(False)
         self._details.append(self._server_load)
-
-        self.upgrade_required_link_button = self._build_upgrade_required_link_button()
-        self.upgrade_required_link_button.set_visible(False)
-        self._details.append(self.upgrade_required_link_button)
 
         self._details.set_visible(False)
         self.append(self._details)
@@ -156,7 +155,6 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
 
         self.connection_state = ConnectionStateEnum.DISCONNECTED
         self._configure_connect_button()
-        self._setup_visibility_handlers()
 
         if self._toggable:
             self.toggle_button.set_visible(True)
@@ -189,13 +187,20 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
     def _show_country_details(self):
         self.under_maintenance_icon.set_visible(False)
         if self._upgrade_required:
-            self.upgrade_required_link_button.set_visible(True)
+            self._hover_box.set_child(self.upgrade_required_link_button)
             self.connect_button.set_visible(False)
+            self.upgrade_required_link_button.set_visible(True)
         else:
-            self.upgrade_required_link_button.set_visible(False)
+            self._hover_box.set_child(self.connect_button)
             self.connect_button.set_visible(True)
+            self.upgrade_required_link_button.set_visible(False)
         self._details.set_visible(True)
-        self._label.set_property("sensitive", True)
+        sensitive = not self._upgrade_required
+        self._label.set_sensitive(sensitive)
+        if self._icon:
+            self._icon.set_sensitive(sensitive)
+        for feature_icon in self._feature_icons:
+            feature_icon.set_sensitive(sensitive)
 
     def _configure_connect_button(self):
         """Configures the connect button: accessibility, signals, and event handlers."""
@@ -235,9 +240,10 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         upgrade_button.set_uri("https://account.protonvpn.com/")
         return upgrade_button
 
-    def _build_connect_button(self) -> ConnectButton:
-        connect_button = ConnectButton(label="Connect")
+    def _build_connect_button(self) -> Gtk.Button:
+        connect_button = Gtk.Button(label="Connect")
         connect_button.add_css_class("secondary")
+        connect_button.add_css_class("connect-button")
         return connect_button
 
     def _build_feature_icons(self) -> List[Gtk.Image]:
@@ -327,16 +333,6 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         future = self._controller.connect_to_server(fastest_server.name)
         future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
 
-    def _on_enter(self):
-        """Shows the connect button and hides feature icons when hovering in the header."""
-        self._feature_icons_box.set_visible(False)
-        GLib.idle_add(self.connect_button.set_transparent, False)
-
-    def _on_leave(self):
-        """Hides the connect button and shows feature icons when hovering out of the header."""
-        self.connect_button.set_transparent(True)
-        self._feature_icons_box.set_visible(True)
-
     def click_toggle_button(self):
         """Clicks the button to toggle the country servers.
         This method was made available for tests."""
@@ -348,51 +344,13 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.connect_button.emit("clicked")
 
     def grab_focus(self):  # pylint: disable=arguments-differ
-        """Focuses on the connect button if available, otherwise on the toggle button."""
-        if self.connect_button.get_visible() and not self.under_maintenance:
-            self.connect_button.grab_focus()
+        """Focuses on the hover box child if available, otherwise the toggle."""
+        hover_box_child = self._hover_box.get_child()
+        if not self.under_maintenance and hover_box_child:
+            # Focus on the connect button or the upgrade link
+            hover_box_child.grab_focus()
         elif self.toggle_button:
             self.toggle_button.grab_focus()
-
-    def _setup_visibility_handlers(self):
-        """Sets up hover and focus handlers to show/hide connect button."""
-        self._motion_controller = Gtk.EventControllerMotion()
-
-        def on_enter(_controller, _x, _y):
-            self._is_hovered = True
-            self._on_enter()
-
-        def on_leave(_controller):
-            self._is_hovered = False
-            if not self.connect_button.has_focus():
-                self._on_leave()
-
-        self._motion_controller.connect("enter", on_enter)
-        self._motion_controller.connect("leave", on_leave)
-        self.add_controller(self._motion_controller)
-
-        self._focus_controller = Gtk.EventControllerFocus()
-
-        def on_focus_in(_controller):
-            self._on_enter()
-
-        def on_focus_out(_controller):
-            if not self._is_hovered:
-                self._on_leave()
-
-        self._focus_controller.connect("enter", on_focus_in)
-        self._focus_controller.connect("leave", on_focus_out)
-        self.connect_button.add_controller(self._focus_controller)
-
-    def _remove_visibility_handlers(self):
-        """Removes hover and focus handlers."""
-        if self._motion_controller:
-            self.remove_controller(self._motion_controller)
-            self._motion_controller = None
-
-        if self._focus_controller:
-            self.connect_button.remove_controller(self._focus_controller)
-            self._focus_controller = None
 
     def _on_unrealize(self, _widget):
         """Called when widget is unrealized - performs cleanup."""
@@ -403,7 +361,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         for signal_id, widget in self._connected_signals:
             widget.disconnect(signal_id)
         self._connected_signals.clear()
-        self._remove_visibility_handlers()
+        self._hover_box.remove_child()
         self._remove_accessibility_relations()
         self._remove_icons()
 

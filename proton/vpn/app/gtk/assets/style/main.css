@@ -167,10 +167,6 @@ label.signal-danger {
 	margin-right: 1.8em;
 }
 
-.connect-button {
-    opacity: 1;
-}
-
-.connect-button.transparent {
+.transparent {
     opacity: 0;
 }

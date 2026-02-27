@@ -1,3 +1,12 @@
+version: 4.14.3rc5
+time: 2026/02/26 16:02
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: show upgrade link on hover"
+---
 version: 4.14.3rc4
 time: 2026/02/24 16:18
 author: Pep Llaneras

@@ -86,12 +86,12 @@ def test_display_shows_the_row_in_expanded_state_when_specified(free_and_plus_se
     mock_controller = Mock(spec=Controller)
 
     # Collect expanded cities before refresh (set of lowercase city names)
-    expanded_cities = {"tokyo", "osaka"}
+    expanded_groups = {"tokyo", "osaka"}
 
     # Display the country row in expanded state, with expanded cities
     country_row.display(
         mock_controller, country, TierEnum.PLUS,
-        expanded=True, expanded_cities=expanded_cities
+        expanded=True, expanded_groups=expanded_groups
     )
     process_gtk_events()
 

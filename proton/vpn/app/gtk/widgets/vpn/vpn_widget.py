@@ -88,7 +88,7 @@ class VPNWidget(Gtk.Box):
         self.quick_connect_widget = QuickConnectWidget(self._controller)
         self.append(self.quick_connect_widget)
 
-        city_view_enabled = self._controller.feature_flags.get("CityView")
+        city_view_enabled = self._controller.feature_flags.get("DisplayCityView")
         if city_view_enabled:
             from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.serverlist \
                 import ServerListWidget  # pylint: disable=import-outside-toplevel

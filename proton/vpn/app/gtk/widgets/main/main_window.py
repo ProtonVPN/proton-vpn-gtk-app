@@ -32,8 +32,8 @@ from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 class MainWindow(Gtk.ApplicationWindow):
     """Main window."""
 
-    WIDTH = 400
-    HEIGHT = 600
+    WIDTH = 450
+    HEIGHT = 650
 
     # pylint: disable=too-many-arguments
     def __init__(

@@ -63,3 +63,13 @@ def sync_rows_with_model_items(
         else:
             # Update existing row with model item
             display_func(row, model_item)
+
+
+def get_children(widget: Gtk.Widget) -> List[Gtk.Widget]:
+    """Returns the children of a widget."""
+    children = []
+    child = widget.get_first_child()
+    while child:
+        children.append(child)
+        child = child.get_next_sibling()
+    return children

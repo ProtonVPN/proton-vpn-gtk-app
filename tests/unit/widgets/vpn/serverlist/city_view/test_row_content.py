@@ -4,13 +4,13 @@ import pytest
 
 from proton.vpn.session.servers import City, Country, LogicalServer, ServerFeatureEnum, TierEnum
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.header import ServerLocationHeader
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import P2PIcon, SmartRoutingIcon, TORIcon
 
 
 def test_header_displays_country_name_when_server_group_is_a_country():
     """Test that the header displays the country name when displaying a country."""
-    header = ServerLocationHeader()
+    header = RowContent()
     header.display(
         controller=Mock(spec=Controller),
         server_group=Country(code="US", servers=[]),
@@ -22,7 +22,7 @@ def test_header_displays_country_name_when_server_group_is_a_country():
 
 def test_header_displays_city_name_when_server_group_is_a_city():
     """Test that the header displays the city name when displaying a city."""
-    header = ServerLocationHeader()
+    header = RowContent()
     header.display(
         controller=Mock(spec=Controller),
         server_group=City(name="Tokyo", servers=[]),
@@ -34,7 +34,7 @@ def test_header_displays_city_name_when_server_group_is_a_city():
 
 def test_header_displays_server_name_when_server_group_is_a_single_server():
     """Test that the header displays the server name when displaying a server."""
-    header = ServerLocationHeader()
+    header = RowContent()
     server = LogicalServer({
         "ID": 1,
         "Name": "US#1",
@@ -60,7 +60,7 @@ def test_header_displays_server_name_when_server_group_is_a_single_server():
 ])
 def test_header_displays_toggle_button_when_server_group_is_toggleable(server_group):
     """Test that the toggle button is visible when displaying a country or city."""
-    header = ServerLocationHeader()
+    header = RowContent()
     header.display(
         controller=Mock(spec=Controller),
         server_group=server_group,
@@ -72,7 +72,7 @@ def test_header_displays_toggle_button_when_server_group_is_toggleable(server_gr
 
 def test_header_does_not_display_toggle_button_when_server_group_is_a_single_server():
     """Test that the toggle button is not visible when displaying a server."""
-    header = ServerLocationHeader()
+    header = RowContent()
     server = LogicalServer({
         "ID": 1,
         "Name": "US#1",
@@ -94,7 +94,7 @@ def test_header_does_not_display_toggle_button_when_server_group_is_a_single_ser
 
 def test_header_displays_upgrade_required_link_button_to_free_users_on_non_free_server_groups():
     """Test that the upgrade required link button is visible for free users when country is not free."""
-    header = ServerLocationHeader()
+    header = RowContent()
     # Create a country with only PLUS tier servers (not free)
     plus_server = LogicalServer({
         "ID": 1,
@@ -118,7 +118,7 @@ def test_header_displays_upgrade_required_link_button_to_free_users_on_non_free_
 
 
 def test_header_displays_connect_button_to_paid_users_on_paid_server_groups():
-    header = ServerLocationHeader()
+    header = RowContent()
     plus_server = LogicalServer({
         "ID": 1,
         "Name": "US#1",
@@ -141,7 +141,7 @@ def test_header_displays_connect_button_to_paid_users_on_paid_server_groups():
 
 def test_header_displays_server_load_when_server_group_is_a_single_server():
     """Test that the server load is visible and displays the correct load value when displaying a server."""
-    header = ServerLocationHeader()
+    header = RowContent()
     server = LogicalServer({
         "ID": 1,
         "Name": "US#1",
@@ -183,7 +183,7 @@ def test_header_displays_server_features_for_all_server_groups(server_group_fact
     })
 
     server_group = server_group_factory(server_with_features)
-    header = ServerLocationHeader()
+    header = RowContent()
     header.display(
         controller=Mock(spec=Controller),
         server_group=server_group,

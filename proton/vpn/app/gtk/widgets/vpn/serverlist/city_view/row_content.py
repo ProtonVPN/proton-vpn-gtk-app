@@ -1,5 +1,5 @@
 """
-This module defines the row headers displayed in the server list widget.
+This module defines the row content displayed in the server list widget.
 
 
 Copyright (c) 2026 Proton AG
@@ -21,21 +21,22 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from __future__ import annotations
-
 from typing import List, Optional, Set, Tuple, Union
 from gi.repository import GLib, GObject
 
 from proton.vpn import logging
 from proton.vpn.connection.enum import ConnectionStateEnum
 from proton.vpn.session.servers import (
-    City, Country, LogicalServer, ServerFeatureEnum, ServerList, TierEnum
+    City, Country, LogicalServer, ServerFeatureEnum, ServerList, TierEnum,
+    SecureCoreGroup
 )
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.utils.accessibility import add_accessibility, remove_accessibility
-from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import \
-    SmartRoutingIcon, P2PIcon, TORIcon, UnderMaintenanceIcon
+from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
+    P2PIcon, SecureCoreIcon, SmartRoutingIcon, TORIcon, UnderMaintenanceIcon
+)
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerLoad
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.hover_box import HoverBox
@@ -43,13 +44,13 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.hover_box import HoverB
 logger = logging.getLogger(__name__)
 
 
-class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
-    """Row header in the server list."""
+class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
+    """Row content in the server list."""
     # pylint: disable=too-many-arguments,too-many-statements
 
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
-        self.add_css_class("server-location-header")
+        self.add_css_class("row-content")
         self._controller = None
         self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
 
@@ -104,6 +105,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.append(self._details)
 
         self.under_maintenance_icon = UnderMaintenanceIcon()
+        self.under_maintenance_icon.add_css_class("under-maintenance-icon")
         self.under_maintenance_icon.set_halign(Gtk.Align.END)
         self.under_maintenance_icon.set_visible(False)
         self.append(self.under_maintenance_icon)
@@ -119,17 +121,22 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.connect("unrealize", self._on_unrealize)
 
     def display(
-        self, controller: Controller, server_group: Union[Country, City, LogicalServer],
-        user_tier: int, icon: Gtk.Image = None, connected_server_id: str = None
+        self,
+        controller: Controller,
+        server_group: Union[Country, City, LogicalServer, SecureCoreGroup],
+        user_tier: int,
+        icon: Gtk.Image = None,
+        connected_server_id: str = None,
+        label: str = None
     ):
-        """Displays the header according to the specified parameters."""
+        """Displays the row content according to the specified parameters."""
         self.reset()
         self._controller = controller
         self._server_group = server_group
         self._icon = icon
         if self._icon:
             self.prepend(self._icon)
-        self._toggable = isinstance(server_group, (Country, City))
+        self._toggable = isinstance(server_group, (Country, City, SecureCoreGroup))
         if isinstance(server_group, LogicalServer):
             self._server_load.set_visible(True)
             self._server_load.set_load(server_group.load)
@@ -144,7 +151,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
 
         self._upgrade_required = is_free_user and not server_group.free
         self._connected_server_id = connected_server_id
-        self._label.set_text(server_group.name)
+        self._label.set_text(label or server_group.name)
 
         feature_icons = self._build_feature_icons()
         self._feature_icons = feature_icons
@@ -248,6 +255,14 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
 
     def _build_feature_icons(self) -> List[Gtk.Image]:
         feature_icons = []
+        if ServerFeatureEnum.SECURE_CORE in self._server_group.features:
+            if isinstance(self._server_group, LogicalServer):
+                feature_icons.append(SecureCoreIcon(
+                    self._server_group.entry_country_name,
+                    self._server_group.exit_country_name
+                ))
+            else:
+                feature_icons.append(SecureCoreIcon())
         if self._server_group.smart_routing:
             feature_icons.append(SmartRoutingIcon())
         if ServerFeatureEnum.P2P in self._server_group.features:
@@ -259,7 +274,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
     @property
     def server_features(self) -> Set[ServerFeatureEnum]:
         """Returns the set of features supported by the servers in this country."""
-        return self._server_group.server_features
+        return self._server_group.features
 
     def get_feature_icons(self) -> List[Gtk.Image]:
         """Returns the list of feature icons currently displayed."""
@@ -283,7 +298,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
 
     @property
     def label(self):
-        """Returns the name of the country this header is for."""
+        """Returns the name of the country this row content is for."""
         return self._label.get_text()
 
     @property
@@ -308,7 +323,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
     @property
     def available(self) -> bool:
         """Returns True if the country is available, meaning the user can
-        connect to one of its servers. Otherwise, it returns False."""
+        connect to one of its servers. Otherwise, returns False."""
         return not self.upgrade_required and not self.under_maintenance
 
     @property
@@ -357,7 +372,7 @@ class ServerLocationHeader(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.reset()
 
     def reset(self):
-        """Resets the state of this header."""
+        """Resets the state of this row content."""
         for signal_id, widget in self._connected_signals:
             widget.disconnect(signal_id)
         self._connected_signals.clear()

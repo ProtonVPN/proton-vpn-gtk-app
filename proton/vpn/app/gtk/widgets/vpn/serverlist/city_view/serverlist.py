@@ -128,22 +128,25 @@ class ServerListWidget(Gtk.ScrolledWindow):
             # free servers first.
             countries.sort(key=lambda country: (0 if country.free else 1, country.name))
 
-        # Collect expanded states before refresh (keyed by country code and city name)
+        # Collect expanded states before refresh (keyed by country code and child group name)
         expanded_countries = {row.country_code.lower(): row.expanded for row in self.country_rows}
-        expanded_cities_per_country = {
-            row.country_code.lower(): set(
-                city_row.label.lower() for city_row in row.city_rows
+        expanded_groups_per_country = {
+            country_row.country_code.lower(): set(
+                city_row.label.lower() for city_row in (
+                    country_row.city_rows
+                    + ([country_row.secure_core_row] if country_row.secure_core_row else [])
+                )
                 if city_row.expanded
             )
-            for row in self.country_rows
+            for country_row in self.country_rows
         }
 
         def display_country_row(row, country):
             expanded = expanded_countries.get(country.code.lower(), False)
-            expanded_cities = expanded_cities_per_country.get(country.code.lower())
+            expanded_groups = expanded_groups_per_country.get(country.code.lower())
             row.display(
                 self._controller, country, self._user_tier,
-                expanded=expanded, expanded_cities=expanded_cities
+                expanded=expanded, expanded_groups=expanded_groups
             )
 
         sync_rows_with_model_items(

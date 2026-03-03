@@ -94,19 +94,27 @@ class TORIcon(Gtk.Image):
 
 
 class SecureCoreIcon(Gtk.Image):
-    """Icon displayed when a server supports Secure core.
+    """Icon displayed when a server or group supports Secure core.
 
-    Since Secure core servers have a different exit country from the entry
-    country, for accessibility purposes both entry and exit countries must be
-    passed.
+    For a single server, pass entry and exit country names for the tooltip.
+    For a group (e.g. country row), omit both for a generic tooltip.
     """
-    def __init__(self, entry_country_name: str, exit_country_name: str):
+    def __init__(
+        self,
+        entry_country_name: Optional[str] = None,
+        exit_country_name: Optional[str] = None
+    ):
         super().__init__()
         pixbuf = icons.get(Path("servers/secure-core.svg"))
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
-        help_text = "Secure core server that "\
-            f"connects to {exit_country_name} through {entry_country_name}."
+        if entry_country_name and exit_country_name:
+            help_text = (
+                "Secure core server that "
+                f"connects to {exit_country_name} through {entry_country_name}."
+            )
+        else:
+            help_text = "Secure Core supported"
         self.set_tooltip_text(help_text)
         self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 

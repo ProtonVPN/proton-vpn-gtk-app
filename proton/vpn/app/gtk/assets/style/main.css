@@ -170,3 +170,13 @@ label.signal-danger {
 .transparent {
     opacity: 0;
 }
+
+/* Show under maintenance icon vertically aligned with toggle button icons */
+.row-content .under-maintenance-icon {
+    margin: 10px;
+}
+
+/* Keep row height consistent whether showing connect button or upgrade link */
+.row-content {
+    min-height: 32px;
+}

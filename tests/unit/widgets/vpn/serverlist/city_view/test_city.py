@@ -27,7 +27,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.city import CityRow
 from tests.unit.testing_utils import process_gtk_events
 
 @pytest.fixture
-def free_and_plus_servers():
+def plus_and_free_servers():
     api_response = {
         "LogicalServers": [
             {
@@ -61,14 +61,14 @@ def free_and_plus_servers():
     (TierEnum.FREE, ["JP-FREE#10", "JP#9"]),
     (TierEnum.PLUS, ["JP#9", "JP-FREE#10"])
     ])
-def test_city_row_shows_user_tier_cities_first_when_toggled(
-        user_tier, expected_servers, free_and_plus_servers
+def test_city_row_displays_free_servers_first_to_free_users(
+        user_tier, expected_servers, plus_and_free_servers
 ):
     """
     Free users should have free servers listed first.
     Plus users should have plus servers listed first.
     """
-    city = City(name="Tokyo", servers=free_and_plus_servers)
+    city = City(name="Tokyo", servers=plus_and_free_servers)
     city_row = CityRow()
 
     city_row.display(Mock(spec=Controller), city, user_tier)
@@ -80,8 +80,54 @@ def test_city_row_shows_user_tier_cities_first_when_toggled(
     assert city_row.server_rows[1].label == expected_servers[1]
 
 
-def test_display_shows_the_row_in_expanded_state_when_specified(free_and_plus_servers):
+@pytest.fixture
+def free_and_plus_servers():
+    """Same servers as plus_and_free_servers but with free server first in the list."""
+    api_response = {
+        "LogicalServers": [
+            {
+                "ID": 2,
+                "Name": "JP-FREE#10",
+                "Status": 1,
+                "Load": 50,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "JP",
+                "City": "Tokyo",
+                "Tier": TierEnum.FREE,
+
+            },
+            {
+                "ID": 1,
+                "Name": "JP#9",
+                "Status": 1,
+                "Load": 50,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "JP",
+                "City": "Tokyo",
+                "Tier": TierEnum.PLUS,
+
+            },
+        ]
+    }
+    return [LogicalServer(server) for server in api_response["LogicalServers"]]
+
+
+def test_city_row_displays_paid_servers_first_to_paid_users(free_and_plus_servers):
+    """Paid users (e.g. Plus tier) should have paid servers listed first."""
     city = City(name="Tokyo", servers=free_and_plus_servers)
+    city_row = CityRow()
+
+    city_row.display(Mock(spec=Controller), city, TierEnum.PLUS)
+    city_row.click_toggle_button()
+
+    process_gtk_events()
+    assert len(city_row.server_rows) == 2
+    assert city_row.server_rows[0].label == "JP#9"
+    assert city_row.server_rows[1].label == "JP-FREE#10"
+
+
+def test_display_shows_the_row_in_expanded_state_when_specified(plus_and_free_servers):
+    city = City(name="Tokyo", servers=plus_and_free_servers)
     city_row = CityRow()
     mock_controller = Mock(spec=Controller)
 

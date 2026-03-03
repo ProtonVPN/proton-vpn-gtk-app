@@ -194,8 +194,6 @@ class CountryRow(Gtk.Box):
         if self._user_tier == TierEnum.FREE and self._country.free:
             # If the current user has a free account, display first the free cities
             cities = list(chain(self._country.free_cities, self._country.paid_cities))
-        else:
-            cities = list(chain(self._country.paid_cities, self._country.free_cities))
 
         def display_city_row(city_row, city):
             city_expanded = city.name.lower() in expanded_cities

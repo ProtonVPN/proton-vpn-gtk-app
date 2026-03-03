@@ -110,6 +110,8 @@ class CityRow(Gtk.Box):
         servers = self._city.servers
         if self._user_tier == TierEnum.FREE and self._city.free:
             servers = chain(self._city.free_servers, self._city.paid_servers)
+        else:
+            servers = chain(self._city.paid_servers, self._city.free_servers)
 
         def display_server_row(server_row, server):
             server_row.display(self._controller, server, self._user_tier)

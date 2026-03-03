@@ -1,3 +1,12 @@
+version: 4.14.3rc8
+time: 2026/03/03 14:57
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: show paid servers first to paid users"
+---
 version: 4.14.3rc7
 time: 2026/03/03 15:56
 author: Elena Švilpė

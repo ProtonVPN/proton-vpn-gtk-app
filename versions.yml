@@ -1,3 +1,12 @@
+version: 4.14.3rc7
+time: 2026/03/03 15:56
+author: Elena Švilpė
+email: elena.svilpe@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: make menu button visible on KDE (thanks to https://github.com/ptr1337)"
+---
 version: 4.14.3rc6
 time: 2026/03/03 12:52
 author: Pep Llaneras

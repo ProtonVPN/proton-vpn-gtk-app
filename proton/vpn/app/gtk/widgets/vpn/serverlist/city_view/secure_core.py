@@ -66,10 +66,19 @@ class SecureCoreRow(Gtk.Box):
         self._user_tier = user_tier
         self._expandable_row.reset(keep_children=False)
         self._expandable_row.connect_toggle()
+        exit_country_name = secure_core_group.servers[0].exit_country_name
+        connect_button_tooltip = f"Connect to {exit_country_name} via Secure Core"
+        toggle_button_tooltips = (
+            f"Show all Secure Core servers\nto connect to {exit_country_name}",
+            f"Hide all Secure Core servers\nto connect to {exit_country_name}"
+        )
         self._expandable_row.row_content.display(
             controller, secure_core_group, user_tier,
-            SecureCoreIcon(), connected_server_id, label=self.LABEL,
-            show_feature_icons=False
+            SecureCoreIcon(), connected_server_id,
+            label=self.LABEL,
+            show_feature_icons=False,
+            connect_button_tooltip=connect_button_tooltip,
+            toggle_button_tooltips=toggle_button_tooltips
         )
         if expanded:
             self._expandable_row.row_content.click_toggle_button()
@@ -101,6 +110,9 @@ class SecureCoreRow(Gtk.Box):
     def _add_server_rows(self) -> None:
         def display_server_row(server_row: RowContent, server: LogicalServer) -> None:
             label = f"Via {server.entry_country_name}"
+            connect_button_tooltip = (
+                f"Connect to {server.exit_country_name}\nvia {server.entry_country_name}"
+            )
             server_row.display(
                 self._controller,
                 server,
@@ -110,7 +122,8 @@ class SecureCoreRow(Gtk.Box):
                     entry_country_code=server.entry_country,
                 ),
                 label=label,
-                show_feature_icons=False
+                show_feature_icons=False,
+                connect_button_tooltip=connect_button_tooltip
             )
 
         sync_rows_with_model_items(

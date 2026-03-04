@@ -68,6 +68,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         # UI widgets
         self._icon = None
         self._feature_icons = []
+        self._toggle_button_tooltips = None
         self.set_spacing(10)
         self._label = Gtk.Label()
         self._label.set_halign(Gtk.Align.START)
@@ -128,13 +129,16 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         icon: Gtk.Image = None,
         connected_server_id: str = None,
         label: str = None,
-        show_feature_icons: bool = True
+        show_feature_icons: bool = True,
+        connect_button_tooltip: Optional[str] = None,
+        toggle_button_tooltips: Optional[Tuple[str, str]] = None
     ):
         """Displays the row content according to the specified parameters."""
         self.reset()
         self._controller = controller
         self._server_group = server_group
         self._icon = icon
+        self._toggle_button_tooltips = toggle_button_tooltips
         if self._icon:
             self.prepend(self._icon)
         self._toggable = isinstance(server_group, (Country, City, SecureCoreGroup))
@@ -165,7 +169,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._show_under_maintenance_icon_or_country_details()
 
         self.connection_state = ConnectionStateEnum.DISCONNECTED
-        self._configure_connect_button()
+        self._configure_connect_button(connect_button_tooltip)
 
         if self._toggable:
             self.toggle_button.set_visible(True)
@@ -213,12 +217,12 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         for feature_icon in self._feature_icons:
             feature_icon.set_sensitive(sensitive)
 
-    def _configure_connect_button(self):
+    def _configure_connect_button(self, tooltip: Optional[str] = None):
         """Configures the connect button: accessibility, signals, and event handlers."""
-        accessible_text = f"Connect to {self._server_group.name}"
-        self.connect_button.set_tooltip_text(accessible_text)
+        tooltip = tooltip or f"Connect to {self._server_group.name}"
+        self.connect_button.set_tooltip_text(tooltip)
         # Use hidden label with LABELLED_BY so Orca reads the accessible text
-        self._connect_button_label.set_text(accessible_text)
+        self._connect_button_label.set_text(tooltip)
         add_accessibility(
             self.connect_button,
             Gtk.AccessibleRelation.LABELLED_BY,
@@ -317,11 +321,12 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.toggle_button.set_child(
             self._expanded_img if self.expanded else self._collapsed_img
         )
-        tooltip_text = (
-            f'{"Hide" if self.expanded else "Show"} all '
-            f'{"cities" if isinstance(self._server_group, Country) else "servers"} '
-            f'from {self.label}'
+        row_type = "cities" if isinstance(self._server_group, Country) else "servers"
+        tooltips = self._toggle_button_tooltips or (
+            f"Show all {row_type} from {self.label}",
+            f"Hide all {row_type} from {self.label}"
         )
+        tooltip_text = tooltips[1] if self.expanded else tooltips[0]
         self.toggle_button.set_tooltip_text(tooltip_text)
 
     @property

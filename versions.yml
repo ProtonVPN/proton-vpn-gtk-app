@@ -5,7 +5,8 @@ email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
-- "feat: Add double flag icon to secure core rows"
+- "feat: add double flag icon to secure core rows"
+- "fix: customize button tooltips for secure core"
 ---
 version: 4.14.3rc8
 time: 2026/03/03 14:57

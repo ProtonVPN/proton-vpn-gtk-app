@@ -23,6 +23,7 @@ from __future__ import annotations
 from typing import Callable, List, Tuple
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.util import connect_once
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import get_children
@@ -79,14 +80,22 @@ class ExpandableRow(Gtk.Box):
     def _set_revealed(self, expanded: bool) -> None:
         if expanded:
             self._on_expand()
+        else:
+            self._schedule_collapse_on_reveal_complete()
         self._revealer.set_reveal_child(expanded)
-        if not expanded:
-            self._on_collapse()
 
     def set_expanded(self, expanded: bool) -> None:
         """Programmatically set expanded state and run expand/collapse logic."""
         self._row_content.expanded = expanded
         self._set_revealed(expanded)
+
+    def _schedule_collapse_on_reveal_complete(self) -> None:
+        """Waits for the revealer to finish collapsing, then calls _on_collapse."""
+
+        def on_collapse_complete(*_args) -> None:
+            self._on_collapse()
+
+        connect_once(self._revealer, "notify::child-revealed", on_collapse_complete)
 
     def _on_unrealize(self, _widget: Gtk.Widget) -> None:
         self.reset()

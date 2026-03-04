@@ -7,6 +7,7 @@ stability: unstable
 description:
 - "feat: add double flag icon to secure core rows"
 - "fix: customize button tooltips for secure core"
+- "fix: smoothen row collapse"
 ---
 version: 4.14.3rc8
 time: 2026/03/03 14:57

@@ -127,7 +127,8 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         user_tier: int,
         icon: Gtk.Image = None,
         connected_server_id: str = None,
-        label: str = None
+        label: str = None,
+        show_feature_icons: bool = True
     ):
         """Displays the row content according to the specified parameters."""
         self.reset()
@@ -153,10 +154,13 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._connected_server_id = connected_server_id
         self._label.set_text(label or server_group.name)
 
-        feature_icons = self._build_feature_icons()
-        self._feature_icons = feature_icons
-        for feature_icon in feature_icons:
-            self._feature_icons_box.prepend(feature_icon)
+        if show_feature_icons:
+            feature_icons = self._build_feature_icons()
+            self._feature_icons = feature_icons
+            for feature_icon in feature_icons:
+                self._feature_icons_box.prepend(feature_icon)
+        else:
+            self._feature_icons = []
 
         self._show_under_maintenance_icon_or_country_details()
 

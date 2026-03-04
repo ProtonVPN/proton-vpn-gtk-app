@@ -20,7 +20,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GdkPixbuf
 
 from proton.vpn.app.gtk.assets import icons
 
@@ -117,6 +117,78 @@ class SecureCoreIcon(Gtk.Image):
             help_text = "Secure Core supported"
         self.set_tooltip_text(help_text)
         self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
+
+
+class DoubleFlagIcon(Gtk.Image):
+    """Two superposed flags composited into one image.
+
+    Exit country (front) is slightly larger and placed at top-right.
+    Entry country (back) is slightly smaller and placed at bottom-left.
+
+    Canvas dimensions are derived from both flags:
+      canvas_w = max(back_w, offset_x + front_w)
+      canvas_h = max(front_h, offset_y + back_h)
+
+    For front to visually dominate the height, keep offset_y + back_h <= front_h.
+    """
+    _FRONT_WIDTH = 24
+    _FRONT_HEIGHT = 16
+    _BACK_WIDTH = 18
+    _BACK_HEIGHT = 12
+    # How far right the front flag starts / how far down the back flag starts.
+    _OFFSET_X = 12
+    _OFFSET_Y = 10
+
+    def __init__(self, exit_country_code: str, entry_country_code: str):
+        super().__init__()
+
+        back_pixbuf = self._load_flag_pixbuf(
+            entry_country_code, self._BACK_WIDTH, self._BACK_HEIGHT
+        )
+        front_pixbuf = self._load_flag_pixbuf(
+            exit_country_code, self._FRONT_WIDTH, self._FRONT_HEIGHT
+        )
+
+        canvas_w = self._FRONT_WIDTH + self._OFFSET_X
+        canvas_h = self._BACK_HEIGHT + self._OFFSET_Y
+        composite = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, canvas_w, canvas_h)
+        composite.fill(0x00000000)
+
+        # Back flag (entry country) at bottom-left.
+        back_pixbuf.composite(
+            composite,
+            dest_x=0, dest_y=self._OFFSET_Y,
+            dest_width=self._BACK_WIDTH, dest_height=self._BACK_HEIGHT,
+            offset_x=0.0, offset_y=self._OFFSET_Y,
+            scale_x=1.0, scale_y=1.0,
+            interp_type=GdkPixbuf.InterpType.BILINEAR,
+            overall_alpha=255,
+        )
+        # Front flag (exit country) at top-right, drawn on top.
+        front_pixbuf.composite(
+            composite,
+            dest_x=self._OFFSET_X, dest_y=0,
+            dest_width=self._FRONT_WIDTH, dest_height=self._FRONT_HEIGHT,
+            offset_x=self._OFFSET_X, offset_y=0.0,
+            scale_x=1.0, scale_y=1.0,
+            interp_type=GdkPixbuf.InterpType.BILINEAR,
+            overall_alpha=255,
+        )
+
+        self.set_from_paintable(Gdk.Texture.new_for_pixbuf(composite))
+
+    @staticmethod
+    def _load_flag_pixbuf(country_code: str, width: int, height: int) -> GdkPixbuf.Pixbuf:
+        try:
+            return icons.get(
+                Path("flags") / f"{country_code.lower()}.svg",
+                width=width, height=height, preserve_aspect_ratio=False,
+            )
+        except ValueError:
+            return icons.get(
+                Path("flags") / "placeholder.svg",
+                width=width, height=height, preserve_aspect_ratio=False,
+            )
 
 
 class CityIcon(Gtk.Image):

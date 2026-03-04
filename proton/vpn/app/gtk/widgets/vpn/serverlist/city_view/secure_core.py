@@ -30,7 +30,10 @@ from proton.vpn.session.servers import LogicalServer
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import sync_rows_with_model_items
-from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import SecureCoreIcon, CountryFlagIcon
+from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
+    DoubleFlagIcon,
+    SecureCoreIcon,
+)
 
 
 class SecureCoreRow(Gtk.Box):
@@ -65,7 +68,8 @@ class SecureCoreRow(Gtk.Box):
         self._expandable_row.connect_toggle()
         self._expandable_row.row_content.display(
             controller, secure_core_group, user_tier,
-            SecureCoreIcon(), connected_server_id, label=self.LABEL
+            SecureCoreIcon(), connected_server_id, label=self.LABEL,
+            show_feature_icons=False
         )
         if expanded:
             self._expandable_row.row_content.click_toggle_button()
@@ -101,8 +105,12 @@ class SecureCoreRow(Gtk.Box):
                 self._controller,
                 server,
                 self._user_tier,
-                icon=CountryFlagIcon(server.exit_country),
-                label=label
+                icon=DoubleFlagIcon(
+                    exit_country_code=server.exit_country,
+                    entry_country_code=server.entry_country,
+                ),
+                label=label,
+                show_feature_icons=False
             )
 
         sync_rows_with_model_items(

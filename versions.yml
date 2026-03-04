@@ -1,3 +1,12 @@
+version: 4.14.3rc9
+time: 2026/03/04 15:58
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: Add double flag icon to secure core rows"
+---
 version: 4.14.3rc8
 time: 2026/03/03 14:57
 author: Pep Llaneras

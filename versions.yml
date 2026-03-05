@@ -1,5 +1,5 @@
-version: 4.14.3rc9
-time: 2026/03/04 15:58
+version: 4.15.0
+time: 2026/03/05 09:00
 author: Pep Llaneras
 email: josep.llaneras@proton.ch
 urgency: low
@@ -8,77 +8,13 @@ description:
 - "feat: add double flag icon to secure core rows"
 - "fix: customize button tooltips for secure core"
 - "fix: smoothen row collapse"
----
-version: 4.14.3rc8
-time: 2026/03/03 14:57
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
 - "fix: show paid servers first to paid users"
----
-version: 4.14.3rc7
-time: 2026/03/03 15:56
-author: Elena Švilpė
-email: elena.svilpe@proton.ch
-urgency: low
-stability: unstable
-description:
 - "fix: make menu button visible on KDE (thanks to https://github.com/ptr1337)"
----
-version: 4.14.3rc6
-time: 2026/03/03 12:52
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
 - "feat: show secure core servers group`"
----
-version: 4.14.3rc5
-time: 2026/02/26 16:02
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
 - "fix: show upgrade link on hover"
----
-version: 4.14.3rc4
-time: 2026/02/24 16:18
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
 - "fix: preserve expanded rows on server list refresh"
----
-version: 4.14.3rc3
-time: 2026/02/23 09:25
-author: Elena Švilpė
-email: elena.svilpe@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: change DE detection to use XDG_CURRENT_DESKTOP"
----
-version: 4.14.3rc2
-time: 2026/02/17 15:58
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
+- "fix: change DE detection to use XDG_CURRENT_DESKTOP (thanks to https://github.com/SRugina and https://github.com/proletarius101)"
 - "feat: show connect button on hover only"
----
-version: 4.14.3rc1
-time: 2026/02/17 12:00
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
 - "fix: accessibility improvements"
 ---
 version: 4.14.2

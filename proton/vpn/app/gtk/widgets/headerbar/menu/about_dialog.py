@@ -2,7 +2,7 @@
 Module for the about dialog.
 
 
-Copyright (c) 2023 Proton AG
+Copyright (c) 2026 Proton AG
 
 This file is part of Proton VPN.
 
@@ -31,7 +31,7 @@ class AboutDialog(Gtk.AboutDialog):
     TITLE = "About"
     PROGRAM_NAME = "Proton VPN Linux Client"
     VERSION = __version__
-    COPYRIGHT = "Proton AG 2023"
+    COPYRIGHT = "Proton AG 2026"
     LICENSE = Gtk.License.GPL_3_0
     WEBSITE = "https://protonvpn.com"
     WEBSITE_LABEL = "Proton VPN"

@@ -33,7 +33,7 @@ class MainWindow(Gtk.ApplicationWindow):
     """Main window."""
 
     WIDTH = 450
-    HEIGHT = 650
+    HEIGHT = 700
 
     # pylint: disable=too-many-arguments
     def __init__(

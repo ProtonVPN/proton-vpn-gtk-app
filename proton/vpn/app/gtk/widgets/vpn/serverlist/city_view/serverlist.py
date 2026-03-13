@@ -34,9 +34,15 @@ from proton.vpn.session.servers import ServerList, TierEnum
 from proton.vpn.session.servers.server_list_fetcher import ServerListFetcher
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.country import CountryRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.server_list_header_row import (
+    ServerListHeaderRow,
+)
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import sync_rows_with_model_items
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
+    get_children,
+    sync_rows_with_model_items,
+)
 
 logger = proton_logging.getLogger(__name__)
 
@@ -57,6 +63,15 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._container.set_margin_end(10)  # Leave space for the scroll bar.
         self._container.set_spacing(5)
         self.set_child(self._container)
+
+        self._header_row = ServerListHeaderRow()
+        self._container.prepend(self._header_row)
+
+        self._country_rows_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._country_rows_container.set_name("country-rows-container")
+        self._country_rows_container.set_vexpand(True)
+        self._country_rows_container.set_spacing(5)
+        self._container.append(self._country_rows_container)
 
     def display(self, user_tier: int, server_list: ServerList):
         """Builds and displays the server list."""
@@ -109,17 +124,12 @@ class ServerListWidget(Gtk.ScrolledWindow):
     @property
     def country_rows(self) -> List[CountryRow]:
         """Returns the list of country rows currently displayed."""
-        country_rows = []
-        country_row = self._container.get_first_child()
-        while country_row:
-            country_rows.append(country_row)
-            country_row = country_row.get_next_sibling()
-        return country_rows
+        return get_children(self._country_rows_container)
 
     def _remove_country_rows(self):
         for row in self.country_rows:
             row.reset()
-            self._container.remove(row)
+            self._country_rows_container.remove(row)
 
     def _display_country_rows(self, server_list: ServerList):
         countries = server_list.group_by_country(cities=True)
@@ -152,10 +162,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
         sync_rows_with_model_items(
             countries,
             self.country_rows,
-            self._container,
+            self._country_rows_container,
             CountryRow,
             display_country_row
         )
+        self._header_row.set_count(len(countries))
 
     def _on_server_list_update(self):
         """Whenever a new server list is received the UI should be updated."""

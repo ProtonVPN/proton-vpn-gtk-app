@@ -180,3 +180,34 @@ label.signal-danger {
 .row-content {
     min-height: 32px;
 }
+
+#feature-legend-popover {
+    padding: 0;
+}
+
+#feature-legend-popover .feature-legend-header {
+    margin: 6px 10px;
+    border-spacing: 6px;
+}
+
+#feature-legend-popover .feature-legend-content {
+    margin: 0 10px 10px 10px;
+    padding-top: 2px;
+    border-spacing: 10px;
+}
+
+#feature-legend-popover .feature-legend-row {
+    border-spacing: 6px;
+}
+
+#feature-legend-popover .feature-legend-icon {
+    margin-top: 3px;
+}
+
+#feature-legend-popover .feature-legend-learn-more {
+    padding: 0;
+}
+
+#server-list-header-row {
+    border-spacing: 10px;
+}

@@ -56,6 +56,11 @@ class VPNConnectionStatusWidget(Gtk.Box):
 
         self._connection_status_label = Gtk.Label(label="")
         self._connection_status_label.set_name("connection-status-label")
+        self._connection_status_label.set_wrap(True)
+        # Setting max_width_chars to a small value prevents the label from
+        # requesting extra horizontal space, forcing it to wrap within its
+        # allocated width instead.
+        self._connection_status_label.set_max_width_chars(1)
         self._loading_widget = self._build_loading_connection_widget()
 
         self.append(self._connection_status_label)

@@ -167,9 +167,6 @@ label.signal-danger {
 	margin-right: 1.8em;
 }
 
-.transparent {
-    opacity: 0;
-}
 
 /* Show under maintenance icon vertically aligned with toggle button icons */
 .row-content .under-maintenance-icon {

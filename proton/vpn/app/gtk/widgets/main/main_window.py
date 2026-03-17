@@ -114,9 +114,8 @@ class MainWindow(Gtk.ApplicationWindow):
         Handle delete-event, set window resize restrictions...
         """
         self.set_name("main-window")
-
-        self.set_default_size(MainWindow.WIDTH, MainWindow.HEIGHT)
         self.set_resizable(False)
+        self.set_size_request(MainWindow.WIDTH, MainWindow.HEIGHT)
 
     def configure_close_button_behaviour(self, tray_indicator_enabled: bool):
         """Configures the behaviour of the button to close the window

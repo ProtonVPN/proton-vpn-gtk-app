@@ -39,7 +39,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
 )
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerLoad
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.hover_box import HoverBox
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.hover_stack import HoverStack
 
 logger = logging.getLogger(__name__)
 
@@ -86,17 +86,12 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
         self.connect_button = self._build_connect_button()
         self.upgrade_required_link_button = self._build_upgrade_required_link_button()
-        self._hover_box = HoverBox(
-            on_show=lambda: self._feature_icons_box.set_visible(False),
-            on_hide=lambda: self._feature_icons_box.set_visible(True),
-            parent_for_hover=self,
-        )
-        self._details.append(self._hover_box)
 
         self._feature_icons_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._feature_icons_box.set_spacing(10)
-        self._feature_icons_box.set_halign(Gtk.Align.END)  # Right-align icons within the box
-        self._details.append(self._feature_icons_box)
+        self._feature_icons_box.set_halign(Gtk.Align.END)
+        self._hover_stack = HoverStack(parent_for_hover=self)
+        self._details.append(self._hover_stack)
 
         self._server_load = ServerLoad(0)
         self._server_load.set_visible(False)
@@ -165,6 +160,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
                 self._feature_icons_box.prepend(feature_icon)
         else:
             self._feature_icons = []
+        self._hover_stack.set_leave_child(self._feature_icons_box)
 
         self._show_under_maintenance_icon_or_country_details()
 
@@ -202,11 +198,11 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     def _show_country_details(self):
         self.under_maintenance_icon.set_visible(False)
         if self._upgrade_required:
-            self._hover_box.set_child(self.upgrade_required_link_button)
+            self._hover_stack.set_hover_child(self.upgrade_required_link_button)
             self.connect_button.set_visible(False)
             self.upgrade_required_link_button.set_visible(True)
         else:
-            self._hover_box.set_child(self.connect_button)
+            self._hover_stack.set_hover_child(self.connect_button)
             self.connect_button.set_visible(True)
             self.upgrade_required_link_button.set_visible(False)
         self._details.set_visible(True)
@@ -368,11 +364,11 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.connect_button.emit("clicked")
 
     def grab_focus(self):  # pylint: disable=arguments-differ
-        """Focuses on the hover box child if available, otherwise the toggle."""
-        hover_box_child = self._hover_box.get_child()
-        if not self.under_maintenance and hover_box_child:
-            # Focus on the connect button or the upgrade link
-            hover_box_child.grab_focus()
+        """Focuses on the connect button if available, otherwise the toggle."""
+        connect_child = self._hover_stack.get_hover_child()
+        if not self.under_maintenance and connect_child:
+            self._hover_stack.show_hover_child()
+            connect_child.grab_focus()
         elif self.toggle_button:
             self.toggle_button.grab_focus()
 
@@ -385,7 +381,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         for signal_id, widget in self._connected_signals:
             widget.disconnect(signal_id)
         self._connected_signals.clear()
-        self._hover_box.remove_child()
+        self._hover_stack.reset()
         self._remove_accessibility_relations()
         self._remove_icons()
 

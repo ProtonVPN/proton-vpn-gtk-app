@@ -74,6 +74,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
             hscrollbar_policy=Gtk.PolicyType.NEVER,
             vscrollbar_policy=Gtk.PolicyType.AUTOMATIC
         )
+        self.set_propagate_natural_width(True)
         self._controller = controller
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._container.set_name("server-list-widget-container")

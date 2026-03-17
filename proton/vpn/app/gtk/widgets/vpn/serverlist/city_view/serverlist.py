@@ -56,6 +56,12 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._user_tier = None
         self._search_entry = search_entry
 
+        self.set_policy(
+            hscrollbar_policy=Gtk.PolicyType.NEVER,
+            vscrollbar_policy=Gtk.PolicyType.AUTOMATIC
+        )
+        self.set_propagate_natural_width(True)
+
         # pylint: disable=duplicate-code
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._container.set_name("server-list-widget-container")

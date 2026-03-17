@@ -108,7 +108,12 @@ class TrayIndicator:
 
         if self._tray is None:
             self._tray = TrayIcon()
-            self._tray.setup()
+            try:
+                self._tray.setup()
+            except Exception as e:
+                raise TrayIndicatorNotSupported(
+                    f"Failed to set up system tray: {e}"
+                ) from e
 
         self.status_update(self._controller.current_connection_status)
         self._controller.register_connection_status_subscriber(self)

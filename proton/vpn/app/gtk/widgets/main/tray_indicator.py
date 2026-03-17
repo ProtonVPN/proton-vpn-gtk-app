@@ -27,7 +27,7 @@ from proton.vpn.connection import states
 from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
-from proton.vpn.app.gtk.widgets.main.tray_icon import TrayIcon
+from proton.vpn.app.gtk.widgets.main.tray_icon import TrayIcon, SNW_BUS_NAME
 
 logger = logging.getLogger(__name__)
 
@@ -127,23 +127,32 @@ class TrayIndicator:
             logger.warning("Tray icon enabled on an unsupported Desktop Environment")
         else:
             gnome_extensions = self._gnome_shell_list_extensions()
-            ubuntu_extension = gnome_extensions.get(UBUNTU_INDICATOR_EXTENSION)
-            default_extension = gnome_extensions.get(DEFAULT_INDICATOR_EXTENSION)
+            if gnome_extensions is None:
+                # Cannot query GNOME extensions (e.g. AppArmor blocks the
+                # org.gnome.Shell.Extensions D-Bus call in strict snap
+                # confinement). Fall back to checking whether the
+                # StatusNotifierWatcher is already running — if so, something
+                # (the shell extension host, a standalone watcher, …) has
+                # already advertised SNI support on the session bus.
+                self._app_indicator_available = self._is_status_notifier_watcher_available()
+            else:
+                ubuntu_extension = gnome_extensions.get(UBUNTU_INDICATOR_EXTENSION)
+                default_extension = gnome_extensions.get(DEFAULT_INDICATOR_EXTENSION)
 
-            # Since the extension is part of the system we don't care about the
-            # user_extension_disabled value.
-            enable_for_ubuntu = ubuntu_extension \
-                and ubuntu_extension.get("state") == ACTIVE_STATE
+                # Since the extension is part of the system we don't care about the
+                # user_extension_disabled value.
+                enable_for_ubuntu = ubuntu_extension \
+                    and ubuntu_extension.get("state") == ACTIVE_STATE
 
-            # For the rest we take user_extension_disabled into consideration
-            # since it's not installed by default on the system and is dependent
-            # on user intention.
-            enable_for_default = default_extension \
-                and not self._disabled_user_extension() \
-                and default_extension.get("state") == ACTIVE_STATE
+                # For the rest we take user_extension_disabled into consideration
+                # since it's not installed by default on the system and is dependent
+                # on user intention.
+                enable_for_default = default_extension \
+                    and not self._disabled_user_extension() \
+                    and default_extension.get("state") == ACTIVE_STATE
 
-            if enable_for_ubuntu or enable_for_default:
-                self._app_indicator_available = True
+                if enable_for_ubuntu or enable_for_default:
+                    self._app_indicator_available = True
 
         return self._app_indicator_available
 
@@ -197,6 +206,38 @@ class TrayIndicator:
         except GLib.Error:
             logger.exception("Unable to list Gnome extensions")
             return None
+
+    def _is_status_notifier_watcher_available(self, timeout_ms: int = 300) -> bool:
+        """Return True if the StatusNotifierWatcher D-Bus service is running.
+
+        The SNI watcher (org.kde.StatusNotifierWatcher) is registered on the
+        session bus by whichever component provides system-tray support: the
+        ubuntu-appindicators / appindicatorsupport GNOME extension host, KDE's
+        plasma-workspace, XFCE's statusnotifier plugin, etc.  Its presence is
+        therefore a direct, DE-agnostic signal that AppIndicators will work.
+        """
+        try:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            dbus = Gio.DBusProxy.new_sync(
+                bus,
+                Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
+                None,
+                "org.freedesktop.DBus",
+                "/org/freedesktop/DBus",
+                "org.freedesktop.DBus",
+                None,
+            )
+            (has_owner,) = dbus.call_sync(
+                "NameHasOwner",
+                GLib.Variant("(s)", (SNW_BUS_NAME,)),
+                Gio.DBusCallFlags.NONE,
+                timeout_ms,
+                None,
+            ).unpack()
+            return bool(has_owner)
+        except GLib.Error:
+            logger.exception("Unable to check for StatusNotifierWatcher")
+            return False
 
     def _disabled_user_extension(self) -> Optional[bool]:
         source = Gio.SettingsSchemaSource.get_default()

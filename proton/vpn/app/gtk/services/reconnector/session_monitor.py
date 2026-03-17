@@ -58,7 +58,12 @@ class SessionMonitor:
             self._bus = SystemBus()
 
         if not self._session_object_path:
-            self._setup()
+            try:
+                self._setup()
+            except Exception:
+                # logind is inaccessible (e.g. AppArmor in strict snap confinement).
+                # Session-unlock reconnection won't work, but everything else is fine.
+                return
 
         self._signal_receiver = self._bus.add_signal_receiver(
             handler_function=self.session_unlocked_callback,
@@ -78,7 +83,12 @@ class SessionMonitor:
     def is_session_unlocked(self):
         """Returns True if the user session is unlocked or False otherwise."""
         if not self._session_object_path:
-            self._setup()
+            try:
+                self._setup()
+            except Exception:
+                # logind is inaccessible; assume session is unlocked so reconnection
+                # can proceed when network comes up.
+                return True
 
         active_session = self._bus.get_object(BUS_NAME, self._session_object_path)
         active_session_properties = dbus.Interface(active_session, PROPERTIES_INTERFACE)

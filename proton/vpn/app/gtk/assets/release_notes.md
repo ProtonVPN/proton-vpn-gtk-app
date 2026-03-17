@@ -1,4 +1,8 @@
-## What's new (4.15.0)
+## What's new (4.15.1)
+
+- Minor improvements.
+
+## 4.15.0
 
 - Choose your preferred city when connecting. Expand any country to see all available locations and select the one you want.
 

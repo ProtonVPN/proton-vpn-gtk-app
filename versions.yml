@@ -1,19 +1,11 @@
-version: 4.15.1rc2
-time: 2026/03/16 13:01
+version: 4.15.1
+time: 2026/03/17 15:00
 author: Pep Llaneras
 email: josep.llaneras@proton.ch
 urgency: low
 stability: unstable
 description:
 - "fix: grow app width with content"
----
-version: 4.15.1rc1
-time: 2026/03/12 12:10
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
 - "feat: add feature icons tooltip"
 ---
 version: 4.15.0

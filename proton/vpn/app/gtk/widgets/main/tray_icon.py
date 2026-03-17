@@ -46,6 +46,7 @@ Usage:
 from typing import Callable
 from enum import Enum
 from dataclasses import dataclass
+import os
 import dbus
 import dbus.service
 import dbus.mainloop.glib
@@ -239,7 +240,7 @@ class _StatusNotifierItem(dbus.service.Object):
         self.bus = bus
 
         # Generate unique bus name
-        self.bus_name_str = f"org.kde.StatusNotifierItem-{tray_icon.app_id}-{id(self)}"
+        self.bus_name_str = f"org.kde.StatusNotifierItem-{tray_icon.app_id}-{os.getpid()}"
         self.bus_name = dbus.service.BusName(self.bus_name_str, bus)
 
         super().__init__(self.bus_name, object_path)

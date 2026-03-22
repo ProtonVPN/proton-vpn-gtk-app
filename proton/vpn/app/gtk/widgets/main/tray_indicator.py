@@ -28,7 +28,7 @@ from proton.vpn.connection import states
 from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
-from proton.vpn.app.gtk.widgets.main.tray_icon import TrayIcon
+from proton.vpn.app.gtk.widgets.main.tray_icon import TrayIcon, SNW_BUS_NAME
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +159,12 @@ class TrayIndicator:
 
         if self._tray is None:
             self._tray = TrayIcon()
-            self._tray.setup()
+            try:
+                self._tray.setup()
+            except Exception as exc:
+                raise TrayIndicatorNotSupported(
+                    f"Failed to set up system tray: {exc}"
+                ) from exc
 
         self.status_update(self._controller.current_connection_status)
         self._controller.register_connection_status_subscriber(self)
@@ -169,12 +174,67 @@ class TrayIndicator:
         # If gnome shell is not running then it's another DE and
         # we assume tray works by default.
         if self._gnome_tray_detection.is_gnome_shell_running():
-            self._app_indicator_available |= self._gnome_tray_detection.is_extension_active()
+            gnome_extensions = self._gnome_tray_detection._gnome_shell_list_extensions()
+            if gnome_extensions is None:
+                self._app_indicator_available = self._is_status_notifier_watcher_available()
+            else:
+                ubuntu_extension = gnome_extensions.get(UBUNTU_INDICATOR_EXTENSION)
+                default_extension = gnome_extensions.get(DEFAULT_INDICATOR_EXTENSION)
+
+                enable_for_ubuntu = (
+                    ubuntu_extension and ubuntu_extension.get("state") == ACTIVE_STATE
+                )
+                enable_for_default = (
+                    default_extension
+                    and not self._disabled_user_extension()
+                    and default_extension.get("state") == ACTIVE_STATE
+                )
+
+                if enable_for_ubuntu or enable_for_default:
+                    self._app_indicator_available = True
         else:
             self._app_indicator_available = True
             logger.warning("Tray icon enabled on an unsupported desktop environment")
 
         return self._app_indicator_available
+
+    def _is_status_notifier_watcher_available(self, timeout_ms: int = 300) -> bool:
+        """Return True if the StatusNotifierWatcher D-Bus service is running."""
+        try:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            dbus_proxy = Gio.DBusProxy.new_sync(
+                bus,
+                Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
+                None,
+                "org.freedesktop.DBus",
+                "/org/freedesktop/DBus",
+                "org.freedesktop.DBus",
+                None,
+            )
+            (has_owner,) = dbus_proxy.call_sync(
+                "NameHasOwner",
+                GLib.Variant("(s)", (SNW_BUS_NAME,)),
+                Gio.DBusCallFlags.NONE,
+                timeout_ms,
+                None,
+            ).unpack()
+            return bool(has_owner)
+        except GLib.Error:
+            logger.exception("Unable to check for StatusNotifierWatcher")
+            return False
+
+    def _disabled_user_extension(self) -> Optional[bool]:
+        source = Gio.SettingsSchemaSource.get_default()
+        if not source:
+            return None
+
+        schema = source.lookup("org.gnome.shell", True)
+        if not schema:
+            return None
+
+        settings = Gio.Settings.new_full(schema, None, None)
+        disabled_extensions = settings.get_strv("disabled-extensions")
+        return DEFAULT_INDICATOR_EXTENSION in disabled_extensions
 
     def _set_main_window(self, main_window: MainWindow):
         """Sets the main window for the tray indicator."""

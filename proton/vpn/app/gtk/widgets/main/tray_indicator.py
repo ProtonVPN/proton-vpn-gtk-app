@@ -146,6 +146,11 @@ class TrayIndicator:
         """Sets the main window for the tray indicator."""
         self._main_window = main_window
         self._build_menu()
+        self._main_window.connect("show", self._on_main_window_visibility_changed)
+        self._main_window.connect("hide", self._on_main_window_visibility_changed)
+        self._main_window.connect(
+            "notify::visible", self._on_main_window_visibility_changed
+        )
 
         self._main_window.main_widget.login_widget.connect(
             "user-logged-in", self._on_user_logged_in
@@ -175,17 +180,33 @@ class TrayIndicator:
         self._tray.menu_items.clear()
 
         self._setup_connection_handler_entries()
-        self._tray.add_menu_separator()
+        self._append_separator_if_needed()
 
         if self._controller.user_logged_in:
             self.display_pinned_servers = True
             self._setup_pinned_server_entries()
 
+        self._append_separator_if_needed()
         self._setup_main_window_visibility_toggle_entry()
-        self._tray.add_menu_separator()
+        self._append_separator_if_needed()
         self._setup_quit_entry()
 
         self._tray.update_menu()
+
+    def _append_separator_if_needed(self):
+        if not self._tray.menu_items:
+            return
+
+        if self._tray.menu_items[-1].type == MenuType.SEPARATOR:
+            return
+
+        if not any(
+            item.type == MenuType.ITEM and item.visible
+            for item in self._tray.menu_items
+        ):
+            return
+
+        self._tray.add_menu_separator()
 
     def _setup_pinned_server_entries(self):
         tray_pinned_servers = self._controller.get_app_configuration().tray_pinned_servers
@@ -198,17 +219,19 @@ class TrayIndicator:
                 label=f"{servername}",
                 callback=lambda server=servername: self._on_connect_to_pinned_entry_clicked(server))
 
-        self._tray.add_menu_separator()
-
     def _setup_connection_handler_entries(self):
-        self._tray.add_menu_item("Quick Connect",
-                                 self._on_connect_entry_clicked,
-                                 self.enable_connect_entry,
-                                 self.display_connect_entry)
-        self._tray.add_menu_item("Disconnect",
-                                 self._on_disconnect_entry_clicked,
-                                 self.enable_disconnect_entry,
-                                 self.display_disconnect_entry)
+        if self.display_connect_entry:
+            self._tray.add_menu_item(
+                "Quick Connect",
+                self._on_connect_entry_clicked,
+                self.enable_connect_entry,
+            )
+        if self.display_disconnect_entry:
+            self._tray.add_menu_item(
+                "Disconnect",
+                self._on_disconnect_entry_clicked,
+                self.enable_disconnect_entry,
+            )
 
     def _setup_main_window_visibility_toggle_entry(self):
         toggle_label = "Show" if not self._main_window.get_visible() else "Hide"
@@ -232,6 +255,9 @@ class TrayIndicator:
         else:
             self._main_window.set_visible(True)
             self._main_window.present()
+        self._update()
+
+    def _on_main_window_visibility_changed(self, *_):
         self._update()
 
     def _on_exit_app_menu_entry_clicked(self, *_):

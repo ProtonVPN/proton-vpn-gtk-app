@@ -19,6 +19,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import logging
+from os import environ
+
 from gi.repository import Gtk
 
 from proton.vpn.app.gtk.controller import Controller
@@ -27,6 +30,8 @@ from proton.vpn.app.gtk.widgets.headerbar.headerbar import HeaderBar
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
+from proton.vpn.app.gtk.widgets.main.pull_notifications.nps_survey_modal import \
+    NPSSurvey
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -74,6 +79,9 @@ class MainWindow(Gtk.ApplicationWindow):
             overlay_widget=self._overlay_widget
         )
         self.set_child(self.main_widget)
+
+        self.connect("show", self._display_pending_widget)
+
         self.main_widget.set_visible(True)
 
     @property
@@ -177,3 +185,16 @@ class MainWindow(Gtk.ApplicationWindow):
             "close-request",
             on_close_button_clicked_then_click_quit_menu_entry
         )
+
+    def _display_pending_widget(self, _):
+        if "PROTON_VPN_FEATURE_FLAG_NPS" not in environ:
+            return
+
+        if self.is_visible():
+            pending_attention_window = NPSSurvey(
+                self._controller,
+                submit_handler=lambda score, text: logging.info("NPS: %i %s", score, text),
+                dismiss_handler=lambda: logging.info("NPS dismissed")
+            )
+            pending_attention_window.set_transient_for(self)
+            pending_attention_window.show()

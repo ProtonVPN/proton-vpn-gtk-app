@@ -1,3 +1,12 @@
+version: 4.15.2rc1
+time: 2026/03/23 10:44
+author: Richard Paterson
+email: richard.paterson@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: NPS survey popover"
+---
 version: 4.15.1
 time: 2026/03/17 15:00
 author: Pep Llaneras

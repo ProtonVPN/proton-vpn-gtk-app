@@ -22,14 +22,19 @@ from __future__ import annotations
 
 from typing import List, Optional
 
+from gi.repository import GLib
+
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.session.dataclasses.servers import SecureCoreGroup
-from proton.vpn.session.servers import LogicalServer
+from proton.vpn.session.servers import LogicalServer, TierEnum
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import sync_rows_with_model_items
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
+    make_connect_callback, sync_rows_with_model_items
+)
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     DoubleFlagIcon,
     SecureCoreIcon,
@@ -57,7 +62,6 @@ class SecureCoreRow(Gtk.Box):
         controller: Controller,
         secure_core_group: SecureCoreGroup,
         user_tier: int,
-        connected_server_id: Optional[str] = None,
         expanded: bool = False,
     ) -> None:
         """Displays the secure core row according to the specified parameters."""
@@ -72,14 +76,22 @@ class SecureCoreRow(Gtk.Box):
             f"Show all Secure Core servers\nto connect to {exit_country_name}",
             f"Hide all Secure Core servers\nto connect to {exit_country_name}"
         )
-        self._expandable_row.row_content.display(
-            controller, secure_core_group, user_tier,
-            SecureCoreIcon(), connected_server_id,
-            label=self.LABEL,
-            show_feature_icons=False,
+        upgrade_required = user_tier == TierEnum.FREE and not secure_core_group.free
+
+        row_data = RowViewModel(
+            name=self.LABEL,
+            on_connect=make_connect_callback(controller, secure_core_group.servers, user_tier),
+            free=secure_core_group.free,
+            under_maintenance=secure_core_group.under_maintenance and not upgrade_required,
+            features=set(),
+            smart_routing=False,
+            toggable=True,
+            upgrade_required=upgrade_required,
+            icon=SecureCoreIcon(),
             connect_button_tooltip=connect_button_tooltip,
-            toggle_button_tooltips=toggle_button_tooltips
+            toggle_button_tooltips=toggle_button_tooltips,
         )
+        self._expandable_row.row_content.display(row_data)
         if expanded:
             self._expandable_row.row_content.click_toggle_button()
 
@@ -108,23 +120,36 @@ class SecureCoreRow(Gtk.Box):
             server_row.reset()
 
     def _add_server_rows(self) -> None:
+        # Capture controller directly to avoid closing over `self` in on_connect
+        controller = self._controller
+
+        # pylint: disable=duplicate-code
         def display_server_row(server_row: RowContent, server: LogicalServer) -> None:
-            label = f"Via {server.entry_country_name}"
-            connect_button_tooltip = (
-                f"Connect to {server.exit_country_name}\nvia {server.entry_country_name}"
-            )
-            server_row.display(
-                self._controller,
-                server,
-                self._user_tier,
+            upgrade_required = self._user_tier == TierEnum.FREE and not server.free
+
+            def on_connect():
+                future = controller.connect_to_server(server.name)
+                future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
+            row_data = RowViewModel(
+                name=f"Via {server.entry_country_name}",
+                on_connect=on_connect,
+                free=server.free,
+                under_maintenance=server.under_maintenance and not upgrade_required,
+                features=set(),
+                smart_routing=False,
+                toggable=False,
+                upgrade_required=upgrade_required,
+                load=server.load,
                 icon=DoubleFlagIcon(
                     exit_country_code=server.exit_country,
                     entry_country_code=server.entry_country,
                 ),
-                label=label,
-                show_feature_icons=False,
-                connect_button_tooltip=connect_button_tooltip
+                connect_button_tooltip=(
+                    f"Connect to {server.exit_country_name}\nvia {server.entry_country_name}"
+                ),
             )
+            server_row.display(row_data)
 
         sync_rows_with_model_items(
             list(self._secure_core_group.servers),

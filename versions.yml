@@ -1,3 +1,12 @@
+version: 4.15.2rc2
+time: 2026/03/24 12:00
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: Group the USA by states instead of cities"
+---
 version: 4.15.2rc1
 time: 2026/03/23 10:44
 author: Richard Paterson
@@ -29,7 +38,7 @@ description:
 - "fix: smoothen row collapse"
 - "fix: show paid servers first to paid users"
 - "fix: make menu button visible on KDE (thanks to https://github.com/ptr1337)"
-- "feat: show secure core servers group`"
+- "feat: show secure core servers group"
 - "fix: show upgrade link on hover"
 - "fix: preserve expanded rows on server list refresh"
 - "fix: change DE detection to use XDG_CURRENT_DESKTOP (thanks to https://github.com/SRugina and https://github.com/proletarius101)"

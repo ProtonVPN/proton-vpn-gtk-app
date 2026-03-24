@@ -25,14 +25,15 @@ from __future__ import annotations
 from itertools import chain
 from typing import List, Optional
 
-from proton.vpn.session.servers import Country, City, TierEnum
+from proton.vpn.session.servers import Country, Location, TierEnum
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.city import CityRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.location_row import LocationRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils \
-    import get_children, sync_rows_with_model_items
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.secure_core import SecureCoreRow
+    import get_children, make_connect_callback, sync_rows_with_model_items
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.secure_core_row import SecureCoreRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
 
 
@@ -51,9 +52,9 @@ class CountryRow(Gtk.Box):
             on_collapse=self._on_collapse,
         )
         self.append(self._expandable_row)
-        self._city_row_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self._city_row_container.set_spacing(5)
-        self._expandable_row.container.append(self._city_row_container)
+        self._location_row_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._location_row_container.set_spacing(5)
+        self._expandable_row.container.append(self._location_row_container)
         self._secure_core_row_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._secure_core_row_container.set_spacing(5)
         self._expandable_row.container.append(self._secure_core_row_container)
@@ -61,8 +62,7 @@ class CountryRow(Gtk.Box):
     # pylint: disable=too-many-arguments
     def display(
         self, controller: Controller, country: Country, user_tier: int,
-        connected_server_id: str = None, expanded: bool = False,
-        expanded_groups: set[str] = None
+        expanded: bool = False, expanded_groups: set[str] = None
     ):
         """Displays the country row according to the specified parameters.
 
@@ -70,36 +70,50 @@ class CountryRow(Gtk.Box):
             controller: The controller instance
             country: The country to display
             user_tier: The user's tier level
-            connected_server_id: Optional connected server ID
             expanded: Whether the country should be expanded (defaults to False)
             expanded_groups: Optional set of child group labels (lowercase)
                 that should be expanded
         """
         expanded_groups = expanded_groups or set()
-        self.reset(keep_city_rows=expanded)
+        self.reset(keep_location_rows=expanded)
         self._controller = controller
         self._country = country
         self._user_tier = user_tier
         self._expanded_groups = expanded_groups
         self._expandable_row.connect_toggle()
-        self._expandable_row.row_content.display(
-            controller, country, user_tier,
-            CountryFlagIcon(country.code), connected_server_id
+        upgrade_required = user_tier == TierEnum.FREE and not country.free
+
+        row_data = RowViewModel(
+            name=country.name,
+            on_connect=make_connect_callback(controller, country.servers, user_tier),
+            free=country.free,
+            under_maintenance=country.under_maintenance and not upgrade_required,
+            features=country.features,
+            smart_routing=country.smart_routing,
+            toggable=True,
+            upgrade_required=upgrade_required,
+            icon=CountryFlagIcon(country.code),
+            connect_button_tooltip=f"Connect to {country.name}",
+            toggle_button_tooltips=(
+                f"Show all locations from {country.name}",
+                f"Hide all locations from {country.name}",
+            ),
         )
+        self._expandable_row.row_content.display(row_data)
         if expanded:
             self._expandable_row.set_expanded(True)
 
     def _on_expand(self) -> None:
-        self._add_city_rows(self._expanded_groups)
+        self._add_location_rows(self._expanded_groups)
         self._add_secure_core_row(expanded=SecureCoreRow.LABEL.lower() in self._expanded_groups)
 
     def _on_collapse(self) -> None:
-        self._remove_city_rows()
+        self._remove_location_rows()
         self._remove_secure_core_row()
 
-    def reset(self, keep_city_rows: bool = False):
+    def reset(self, keep_location_rows: bool = False):
         """Resets the country row to its initial state."""
-        self._expandable_row.reset(keep_children=keep_city_rows)
+        self._expandable_row.reset(keep_children=keep_location_rows)
 
     @property
     def country_name(self):
@@ -118,32 +132,32 @@ class CountryRow(Gtk.Box):
 
     @expanded.setter
     def expanded(self, value: bool):
-        """Expands or collapses the country row (to show/hide its cities)."""
+        """Expands or collapses the country row (to show/hide its locations)."""
         self._expandable_row.row_content.expanded = value
 
     def grab_focus(self):  # pylint: disable=arguments-differ
         """See Gtk.Widget.grab_focus()"""
         self._expandable_row.row_content.grab_focus()
 
-    def focus_on_city(self, city_name: str):
-        """Focuses on the city in the country."""
+    def focus_on_location(self, location_name: str):
+        """Focuses on the location in the country."""
         if not self.expanded:
             self.click_toggle_button()
 
-        for city_row in self.city_rows:
-            if city_row.label.lower() == city_name.lower():
-                city_row.grab_focus()
+        for location_row in self.location_rows:
+            if location_row.label.lower() == location_name.lower():
+                location_row.grab_focus()
                 return
 
     @property
-    def cities(self) -> List[City]:
-        """Returns the list of cities in the country."""
-        return self._country.cities
+    def locations(self) -> List[Location]:
+        """Returns the list of locations in the country."""
+        return self._country.locations
 
     @property
-    def city_rows(self) -> List[CityRow]:
-        """Returns the list of city rows currently displayed."""
-        return get_children(self._city_row_container)
+    def location_rows(self) -> List[LocationRow]:
+        """Returns the list of location rows currently displayed."""
+        return get_children(self._location_row_container)
 
     @property
     def secure_core_row(self) -> Optional[SecureCoreRow]:
@@ -154,10 +168,10 @@ class CountryRow(Gtk.Box):
         """Simulates a click on the toggle button to expand/collapse the row."""
         self._expandable_row.row_content.click_toggle_button()
 
-    def _remove_city_rows(self):
-        for city_row in self.city_rows:
-            self._city_row_container.remove(city_row)
-            city_row.reset()
+    def _remove_location_rows(self):
+        for location_row in self.location_rows:
+            self._location_row_container.remove(location_row)
+            location_row.reset()
 
     def _remove_secure_core_row(self):
         """Removes the secure core row from its container."""
@@ -182,30 +196,29 @@ class CountryRow(Gtk.Box):
             display_secure_core_row
         )
 
-    def _add_city_rows(self, expanded_cities: set[str] = None):
-        """Adds city rows to the country row.
+    def _add_location_rows(self, expanded_locations: set[str] = None):
+        """Adds location rows to the country row.
 
         Args:
-            expanded_cities: Optional set of lowercase city names that should be expanded
+            expanded_locations: Optional set of lowercase location names that should be expanded
         """
-        expanded_cities = expanded_cities or set()
+        expanded_locations = expanded_locations or set()
 
-        cities = self._country.cities
+        locations = self._country.locations
         if self._user_tier == TierEnum.FREE and self._country.free:
-            # If the current user has a free account, display first the free cities
-            cities = list(chain(self._country.free_cities, self._country.paid_cities))
+            # If the current user has a free account, display first the free locations
+            locations = list(chain(self._country.free_locations, self._country.paid_locations))
 
-        def display_city_row(city_row, city):
-            city_expanded = city.name.lower() in expanded_cities
-            city_row.display(
-                self._controller, city, self._user_tier,
-                expanded=city_expanded
+        def display_location_row(location_row, location):
+            location_expanded = location.name.lower() in expanded_locations
+            location_row.display(
+                self._controller, location, self._user_tier, expanded=location_expanded
             )
 
         sync_rows_with_model_items(
-            cities,
-            self.city_rows,
-            self._city_row_container,
-            CityRow,
-            display_city_row
+            locations,
+            self.location_rows,
+            self._location_row_container,
+            LocationRow,
+            display_location_row
         )

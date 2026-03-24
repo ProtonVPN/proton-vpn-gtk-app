@@ -21,17 +21,34 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 import itertools
-from typing import List, Callable
+from typing import Any, Callable, List, Type
+
+from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.session.servers import ServerList
+
+
+def make_connect_callback(
+    controller: Controller, servers: list, user_tier: int
+) -> Callable[[], None]:
+    """Returns a callback that connects to the fastest available server in the given list."""
+    def on_connect():
+        fastest = ServerList.get_fastest_server(
+            ServerList.get_available_servers(servers=servers, user_tier=user_tier)
+        )
+        future = controller.connect_to_server(fastest.name)
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+    return on_connect
 
 
 def sync_rows_with_model_items(
-    model_items: List,
-    existing_rows: List,
+    model_items: List[Any],
+    existing_rows: List[Gtk.Widget],
     container: Gtk.Widget,
-    row_factory: Callable,
-    display_func: Callable
+    row_factory: Type[Gtk.Widget],
+    display_func: Callable[[Gtk.Widget, Any], None]
 ):
     """Synchronizes a list of row widgets with model items using zip_longest.
 

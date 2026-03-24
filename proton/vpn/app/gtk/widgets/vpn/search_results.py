@@ -46,17 +46,17 @@ LOAD_COLOR = "Grey"  # We want to show the load % in grey.
 
 class FilteredList(Gtk.TreeView):
     """
-    Displays a list of countries, cities and servers in a tree view.
+    Displays a list of countries, locations and servers in a tree view.
     """
     def __init__(
         self,
         countries: Callable[[Optional[str]], List[(str, int)]],
-        cities: Callable[[Optional[str]], List[(str, int)]],
+        locations: Callable[[Optional[str]], List[(str, int)]],
         servers: Callable[[Optional[str]], List[(str, int)]]
     ):
         super().__init__()
         self._countries = countries
-        self._cities = cities
+        self._locations = locations
         self._servers = servers
         self._model = Gtk.TreeStore(str, str, str, bool)
         self.set_model(Gtk.TreeModelSort(model=self._model))
@@ -108,7 +108,7 @@ class FilteredList(Gtk.TreeView):
 
         sections = (
             ("Countries", self._countries),
-            ("Cities", self._cities),
+            ("Locations", self._locations),
             ("Servers", self._servers)
         )
 
@@ -140,7 +140,7 @@ class SearchResults(Gtk.ScrolledWindow):
     """Display a filtered view of countries and servers.
        Inside a scroll-able widget.
     """
-    def __init__(self, controller, city_view_enabled: bool):
+    def __init__(self, controller, search_cities: bool):
         super().__init__()
         self.set_policy(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
@@ -166,8 +166,10 @@ class SearchResults(Gtk.ScrolledWindow):
 
             return result
 
-        if city_view_enabled:
-            def cities(search_text: str = None) -> Generator[Tuple[Optional[str], Optional[int]]]:
+        if search_cities:
+            def locations(
+                search_text: str = None
+            ) -> Generator[Tuple[Optional[str], Optional[int]]]:
                 result = set({})
                 server_list = controller.server_list
 
@@ -175,15 +177,14 @@ class SearchResults(Gtk.ScrolledWindow):
                     yield (None, None)
 
                 for server in controller.server_list:
-                    if self._search_input_exists(search_text, server, city_name=True):
-                        city_name = server.city
-                        if city_name:
-                            result.add(city_name)
+                    if self._search_input_exists(search_text, server, location_name=True):
+                        if server.location:
+                            result.add(server.location)
 
-                for city_name in sorted(result):
-                    yield (city_name, None)
+                for location in sorted(result):
+                    yield (location, None)
         else:
-            def cities(search_text: str = None) -> None:  # pylint: disable=unused-argument
+            def locations(search_text: str = None) -> None:  # pylint: disable=unused-argument
                 return set({})
 
         def servers(search_text: str = None) -> Generator[Tuple[Optional[str], Optional[int]]]:
@@ -202,7 +203,7 @@ class SearchResults(Gtk.ScrolledWindow):
                 if self._search_input_exists(search_text, server, server_name=True):
                     yield (server.name, server.load)
 
-        self._filtered_country_list = FilteredList(countries, cities, servers)
+        self._filtered_country_list = FilteredList(countries, locations, servers)
         self._filtered_country_list.connect(
             "row-activated", self._on_row_activated
         )
@@ -211,13 +212,13 @@ class SearchResults(Gtk.ScrolledWindow):
 
     def _search_input_exists(  # pylint: disable=too-many-arguments
         self, search_text: str, server, entry_country_name: bool = False,
-        city_name: bool = False, server_name: bool = False
+        location_name: bool = False, server_name: bool = False
     ) -> bool:
         if entry_country_name:
             return search_text and (search_text in server.entry_country_name.lower())
 
-        if city_name:
-            return search_text and server.city and (search_text in server.city.lower())
+        if location_name:
+            return search_text and (search_text in server.location.lower())
 
         if server_name:
             return search_text and (search_text in server.name.lower())

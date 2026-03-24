@@ -21,18 +21,16 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from __future__ import annotations
-from typing import List, Optional, Set, Tuple, Union
-from gi.repository import GLib, GObject
+from typing import List, Optional, Set, Tuple
+from gi.repository import GObject
 
 from proton.vpn import logging
 from proton.vpn.connection.enum import ConnectionStateEnum
-from proton.vpn.session.servers import (
-    City, Country, LogicalServer, ServerFeatureEnum, ServerList, TierEnum,
-    SecureCoreGroup
-)
+from proton.vpn.session.servers import ServerFeatureEnum
+
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.utils.accessibility import add_accessibility, remove_accessibility
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     P2PIcon, SecureCoreIcon, SmartRoutingIcon, TORIcon, UnderMaintenanceIcon
@@ -51,24 +49,15 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.add_css_class("row-content")
-        self._controller = None
         self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
 
         # Properties
-        self._server_group = None
-        self._servers = None
-        self._toggable = None
-        self._user_tier = None
-        self._connected_server_id = None
+        self._row_data = None
         self._expanded = None
-        self._upgrade_required = None
         self._connection_state = None
-        self._under_maintenance = None
 
         # UI widgets
-        self._icon = None
         self._feature_icons = []
-        self._toggle_button_tooltips = None
         self.set_spacing(10)
         self._label = Gtk.Label()
         self._label.set_halign(Gtk.Align.START)
@@ -116,77 +105,41 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
         self.connect("unrealize", self._on_unrealize)
 
-    def display(
-        self,
-        controller: Controller,
-        server_group: Union[Country, City, LogicalServer, SecureCoreGroup],
-        user_tier: int,
-        icon: Gtk.Image = None,
-        connected_server_id: str = None,
-        label: str = None,
-        show_feature_icons: bool = True,
-        connect_button_tooltip: Optional[str] = None,
-        toggle_button_tooltips: Optional[Tuple[str, str]] = None
-    ):
+    def display(self, row_data: RowViewModel):
         """Displays the row content according to the specified parameters."""
         self.reset()
-        self._controller = controller
-        self._server_group = server_group
-        self._icon = icon
-        self._toggle_button_tooltips = toggle_button_tooltips
-        if self._icon:
-            self.prepend(self._icon)
-        self._toggable = isinstance(server_group, (Country, City, SecureCoreGroup))
-        if isinstance(server_group, LogicalServer):
+        self._row_data = row_data
+        if row_data.icon:
+            self.prepend(row_data.icon)
+        if row_data.load is not None:
             self._server_load.set_visible(True)
-            self._server_load.set_load(server_group.load)
-            self._servers = [server_group]
+            self._server_load.set_load(row_data.load)
         else:
             self._server_load.set_visible(False)
-            self._servers = server_group.servers
 
-        self._user_tier = user_tier
-        self._connected_server_id = connected_server_id
-        is_free_user = user_tier == TierEnum.FREE
+        self._label.set_text(row_data.name)
 
-        self._upgrade_required = is_free_user and not server_group.free
-        self._connected_server_id = connected_server_id
-        self._label.set_text(label or server_group.name)
-
-        if show_feature_icons:
-            feature_icons = self._build_feature_icons()
-            self._feature_icons = feature_icons
-            for feature_icon in feature_icons:
-                self._feature_icons_box.prepend(feature_icon)
-        else:
-            self._feature_icons = []
+        feature_icons = self._build_feature_icons(row_data)
+        self._feature_icons = feature_icons
+        for feature_icon in feature_icons:
+            self._feature_icons_box.prepend(feature_icon)
         self._hover_stack.set_leave_child(self._feature_icons_box)
 
-        self._show_under_maintenance_icon_or_country_details()
+        if self._row_data.under_maintenance:
+            self._show_under_maintenance_icon()
+        else:
+            self._show_country_details()
 
         self.connection_state = ConnectionStateEnum.DISCONNECTED
-        self._configure_connect_button(connect_button_tooltip)
+        self._configure_connect_button(row_data.connect_button_tooltip)
 
-        if self._toggable:
+        if row_data.toggable:
             self.toggle_button.set_visible(True)
             signal_id = self.toggle_button.connect("clicked", self._on_toggle_button_clicked)
             self._connected_signals.append((signal_id, self.toggle_button))
             self.expanded = False
         else:
             self.toggle_button.set_visible(False)
-
-    def update_under_maintenance_status(self, under_maintenance: bool):
-        """Shows or hides the under maintenance status for the country."""
-        self._under_maintenance = under_maintenance
-        self._show_under_maintenance_icon_or_country_details()
-
-    def _show_under_maintenance_icon_or_country_details(self):
-        if self.under_maintenance and not self.upgrade_required:
-            # E.g. don't show that a paid country is under maintenance to free users
-            # since they cannot connect to it anyway.
-            self._show_under_maintenance_icon()
-        else:
-            self._show_country_details()
 
     def _show_under_maintenance_icon(self):
         self._details.set_visible(False)
@@ -197,7 +150,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
     def _show_country_details(self):
         self.under_maintenance_icon.set_visible(False)
-        if self._upgrade_required:
+        if self._row_data.upgrade_required:
             self._hover_stack.set_hover_child(self.upgrade_required_link_button)
             self.connect_button.set_visible(False)
             self.upgrade_required_link_button.set_visible(True)
@@ -206,16 +159,15 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             self.connect_button.set_visible(True)
             self.upgrade_required_link_button.set_visible(False)
         self._details.set_visible(True)
-        sensitive = not self._upgrade_required
+        sensitive = not self._row_data.upgrade_required
         self._label.set_sensitive(sensitive)
-        if self._icon:
-            self._icon.set_sensitive(sensitive)
+        if self._row_data.icon:
+            self._row_data.icon.set_sensitive(sensitive)
         for feature_icon in self._feature_icons:
             feature_icon.set_sensitive(sensitive)
 
-    def _configure_connect_button(self, tooltip: Optional[str] = None):
+    def _configure_connect_button(self, tooltip: str):
         """Configures the connect button: accessibility, signals, and event handlers."""
-        tooltip = tooltip or f"Connect to {self._server_group.name}"
         self.connect_button.set_tooltip_text(tooltip)
         # Use hidden label with LABELLED_BY so Orca reads the accessible text
         self._connect_button_label.set_text(tooltip)
@@ -235,17 +187,6 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         signal_id = self.connect_button.connect("clicked", self._on_connect_button_clicked)
         self._connected_signals.append((signal_id, self.connect_button))
 
-    @property
-    def under_maintenance(self) -> bool:
-        """Indicates whether all the servers for this country are under maintenance or not."""
-        return self._server_group.under_maintenance
-
-    @property
-    def upgrade_required(self):
-        """Indicates whether the user needs to upgrade to have access to this country or not."""
-        # pylint: disable=duplicate-code
-        return self._upgrade_required
-
     def _build_upgrade_required_link_button(self) -> Gtk.LinkButton:
         upgrade_button = Gtk.LinkButton.new_with_label("Upgrade")
         upgrade_button.set_uri("https://account.protonvpn.com/")
@@ -257,28 +198,26 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         connect_button.add_css_class("connect-button")
         return connect_button
 
-    def _build_feature_icons(self) -> List[Gtk.Image]:
+    def _build_feature_icons(self, row_data: RowViewModel) -> List[Gtk.Image]:
         feature_icons = []
-        if ServerFeatureEnum.SECURE_CORE in self._server_group.features:
-            if isinstance(self._server_group, LogicalServer):
-                feature_icons.append(SecureCoreIcon(
-                    self._server_group.entry_country_name,
-                    self._server_group.exit_country_name
-                ))
+        if ServerFeatureEnum.SECURE_CORE in row_data.features:
+            if row_data.secure_core_countries:
+                entry, exit_ = row_data.secure_core_countries
+                feature_icons.append(SecureCoreIcon(entry, exit_))
             else:
                 feature_icons.append(SecureCoreIcon())
-        if self._server_group.smart_routing:
+        if row_data.smart_routing:
             feature_icons.append(SmartRoutingIcon())
-        if ServerFeatureEnum.P2P in self._server_group.features:
+        if ServerFeatureEnum.P2P in row_data.features:
             feature_icons.append(P2PIcon())
-        if ServerFeatureEnum.TOR in self._server_group.features:
+        if ServerFeatureEnum.TOR in row_data.features:
             feature_icons.append(TORIcon())
         return feature_icons
 
     @property
     def server_features(self) -> Set[ServerFeatureEnum]:
         """Returns the set of features supported by the servers in this country."""
-        return self._server_group.features
+        return self._row_data.features
 
     def get_feature_icons(self) -> List[Gtk.Image]:
         """Returns the list of feature icons currently displayed."""
@@ -317,19 +256,11 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.toggle_button.set_child(
             self._expanded_img if self.expanded else self._collapsed_img
         )
-        row_type = "cities" if isinstance(self._server_group, Country) else "servers"
-        tooltips = self._toggle_button_tooltips or (
-            f"Show all {row_type} from {self.label}",
-            f"Hide all {row_type} from {self.label}"
+        tooltip_text = (
+            self._row_data.toggle_button_tooltips[1]
+            if self.expanded else self._row_data.toggle_button_tooltips[0]
         )
-        tooltip_text = tooltips[1] if self.expanded else tooltips[0]
         self.toggle_button.set_tooltip_text(tooltip_text)
-
-    @property
-    def available(self) -> bool:
-        """Returns True if the country is available, meaning the user can
-        connect to one of its servers. Otherwise, returns False."""
-        return not self.upgrade_required and not self.under_maintenance
 
     @property
     def connection_state(self):
@@ -347,11 +278,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.emit("toggle-children")
 
     def _on_connect_button_clicked(self, _connect_button: Gtk.Button):
-        fastest_server = ServerList.get_fastest_server(
-            ServerList.get_available_servers(servers=self._servers, user_tier=self._user_tier)
-        )
-        future = self._controller.connect_to_server(fastest_server.name)
-        future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
+        self._row_data.on_connect()
 
     def click_toggle_button(self):
         """Clicks the button to toggle the country servers.
@@ -366,7 +293,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     def grab_focus(self):  # pylint: disable=arguments-differ
         """Focuses on the connect button if available, otherwise the toggle."""
         connect_child = self._hover_stack.get_hover_child()
-        if not self.under_maintenance and connect_child:
+        if not self._row_data.under_maintenance and connect_child:
             self._hover_stack.show_hover_child()
             connect_child.grab_focus()
         elif self.toggle_button:
@@ -384,6 +311,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._hover_stack.reset()
         self._remove_accessibility_relations()
         self._remove_icons()
+        self._row_data = None
 
     def _remove_accessibility_relations(self):
         """Clears all accessibility relations from the connect button."""
@@ -392,9 +320,8 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
     def _remove_icons(self):
         """Removes all child widgets from parent widget, or from self if None."""
-        if self._icon:
-            self.remove(self._icon)
-            self._icon = None
+        if self._row_data and self._row_data.icon and self._row_data.icon.get_parent() == self:
+            self.remove(self._row_data.icon)
 
         for icon in self._feature_icons:
             self._feature_icons_box.remove(icon)

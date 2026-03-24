@@ -23,7 +23,7 @@ import pytest
 from proton.vpn.session.servers import Country, LogicalServer, TierEnum
 
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.country import CountryRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.country_row import CountryRow
 from tests.unit.testing_utils import process_gtk_events
 
 @pytest.fixture
@@ -52,6 +52,17 @@ def free_and_plus_servers():
                 "Tier": TierEnum.FREE,
 
             },
+            {
+                "ID": 3,
+                "Name": "JP-FREE#11",
+                "Status": 1,
+                "Load": 51,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "JP",
+                "City": "Tokyo",
+                "Tier": TierEnum.PLUS,
+
+            },
         ]
     }
     return [LogicalServer(server) for server in api_response["LogicalServers"]]
@@ -61,27 +72,27 @@ def free_and_plus_servers():
     (TierEnum.FREE, ["Tokyo", "Osaka"]),
     (TierEnum.PLUS, ["Osaka", "Tokyo"])
     ])
-def test_country_row_shows_user_tier_cities_first_when_toggled(
+def test_country_row_shows_free_locations_first_when_toggled(
         user_tier, expected_cities, free_and_plus_servers
 ):
     """
-    Free users should have free cities listed first.
-    Plus users should have plus cities listed first.
+    Free users should have free locations listed first.
+    Plus users should have locations listed in alphabetical order.
     """
-    country = Country(code="jp", servers=free_and_plus_servers)
+    country = Country(code="jp", servers=free_and_plus_servers, group_by_location=True)
     country_row = CountryRow()
 
     country_row.display(Mock(spec=Controller), country, user_tier)
     country_row.click_toggle_button()
 
     process_gtk_events()
-    assert len(country_row.city_rows) == 2
-    assert country_row.city_rows[0].label == expected_cities[0]
-    assert country_row.city_rows[1].label == expected_cities[1]
+    assert len(country_row.location_rows) == 2
+    assert country_row.location_rows[0].label == expected_cities[0]
+    assert country_row.location_rows[1].label == expected_cities[1]
 
 
 def test_display_shows_the_row_in_expanded_state_when_specified(free_and_plus_servers):
-    country = Country(code="jp", servers=free_and_plus_servers)
+    country = Country(code="jp", servers=free_and_plus_servers, group_by_location=True)
     country_row = CountryRow()
     mock_controller = Mock(spec=Controller)
 
@@ -96,4 +107,4 @@ def test_display_shows_the_row_in_expanded_state_when_specified(free_and_plus_se
     process_gtk_events()
 
     assert country_row.expanded, "Country should remain expanded after refresh"
-    assert all(city_row.expanded for city_row in country_row.city_rows), "All cities should be expanded"
+    assert all(city_row.expanded for city_row in country_row.location_rows), "All cities should be expanded"

@@ -23,7 +23,6 @@ from __future__ import annotations
 from typing import Callable, List, Tuple
 
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.util import connect_once
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import get_children
@@ -93,9 +92,12 @@ class ExpandableRow(Gtk.Box):
         """Waits for the revealer to finish collapsing, then calls _on_collapse."""
 
         def on_collapse_complete(*_args) -> None:
+            self._revealer.disconnect(signal_id)
+            self._connected_signals.remove((signal_id, self._revealer))
             self._on_collapse()
 
-        connect_once(self._revealer, "notify::child-revealed", on_collapse_complete)
+        signal_id = self._revealer.connect("notify::child-revealed", on_collapse_complete)
+        self._connected_signals.append((signal_id, self._revealer))
 
     def _on_unrealize(self, _widget: Gtk.Widget) -> None:
         self.reset()

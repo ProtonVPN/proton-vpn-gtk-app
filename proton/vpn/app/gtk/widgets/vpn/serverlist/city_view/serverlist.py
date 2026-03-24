@@ -33,7 +33,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.session.servers import ServerList, TierEnum
 from proton.vpn.session.servers.server_list_fetcher import ServerListFetcher
 
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.country import CountryRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.country_row import CountryRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.server_list_header_row import (
     ServerListHeaderRow,
 )
@@ -48,7 +48,7 @@ logger = proton_logging.getLogger(__name__)
 
 
 class ServerListWidget(Gtk.ScrolledWindow):
-    """Server list widget displaying countries, cities and their servers."""
+    """Server list widget displaying countries, locations and their servers."""
 
     def __init__(self, controller: Controller, search_entry: SearchEntry | None = None):
         super().__init__()
@@ -113,10 +113,10 @@ class ServerListWidget(Gtk.ScrolledWindow):
                 country.grab_focus()
                 return
 
-            # City
-            for city in country.cities:
-                if city.name.lower() == name_to_search.lower():
-                    country.focus_on_city(city.name)
+            # Location
+            for location in country.locations:
+                if location.name.lower() == name_to_search.lower():
+                    country.focus_on_location(location.name)
                     return
 
     @GObject.Signal(name="ui-updated")
@@ -138,8 +138,12 @@ class ServerListWidget(Gtk.ScrolledWindow):
             self._country_rows_container.remove(row)
 
     def _display_country_rows(self, server_list: ServerList):
-        countries = server_list.group_by_country(cities=True)
-        if self._user_tier == TierEnum.FREE:
+        free_user = self._user_tier == TierEnum.FREE
+        countries = server_list.group_by_country(
+            group_by_location=True,
+            include_free_servers=free_user
+        )
+        if free_user:
             # If the current user has a free account, sort the countries having
             # free servers first.
             countries.sort(key=lambda country: (0 if country.free else 1, country.name))
@@ -148,11 +152,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
         expanded_countries = {row.country_code.lower(): row.expanded for row in self.country_rows}
         expanded_groups_per_country = {
             country_row.country_code.lower(): set(
-                city_row.label.lower() for city_row in (
-                    country_row.city_rows
+                location_row.label.lower() for location_row in (
+                    country_row.location_rows
                     + ([country_row.secure_core_row] if country_row.secure_core_row else [])
                 )
-                if city_row.expanded
+                if location_row.expanded
             )
             for country_row in self.country_rows
         }

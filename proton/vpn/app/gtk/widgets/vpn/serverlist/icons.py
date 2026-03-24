@@ -27,6 +27,7 @@ from proton.vpn.app.gtk.assets import icons
 
 class UnderMaintenanceIcon(Gtk.Image):
     """Icon displayed when a server/country is under maintenance."""
+
     def __init__(self, widget_under_maintenance: Optional[str] = None):
         super().__init__()
         pixbuf = icons.get(Path("maintenance-icon.svg"))
@@ -47,6 +48,7 @@ class UnderMaintenanceIcon(Gtk.Image):
 
 class SmartRoutingIcon(Gtk.Image):
     """Icon displayed when smart routing is used."""
+
     def __init__(self):
         super().__init__()
         pixbuf = icons.get(Path("servers/smart-routing.svg"))
@@ -59,6 +61,7 @@ class SmartRoutingIcon(Gtk.Image):
 
 class StreamingIcon(Gtk.Image):
     """Icon displayed when a server supports streaming."""
+
     def __init__(self):
         super().__init__()
         pixbuf = icons.get(Path("servers/streaming.svg"))
@@ -71,6 +74,7 @@ class StreamingIcon(Gtk.Image):
 
 class P2PIcon(Gtk.Image):
     """Icon displayed when a server supports P2P."""
+
     def __init__(self):
         super().__init__()
         pixbuf = icons.get(Path("servers/p2p.svg"))
@@ -83,6 +87,7 @@ class P2PIcon(Gtk.Image):
 
 class TORIcon(Gtk.Image):
     """Icon displayed when a server supports TOR."""
+
     def __init__(self):
         super().__init__()
         pixbuf = icons.get(Path("servers/tor.svg"))
@@ -99,6 +104,7 @@ class SecureCoreIcon(Gtk.Image):
     For a single server, pass entry and exit country names for the tooltip.
     For a group (e.g. country row), omit both for a generic tooltip.
     """
+
     def __init__(
         self,
         entry_country_name: Optional[str] = None,
@@ -191,11 +197,12 @@ class DoubleFlagIcon(Gtk.Image):
             )
 
 
-class CityIcon(Gtk.Image):
-    """Icon displayed on each city row."""
+class LocationIcon(Gtk.Image):
+    """Icon displayed on each location row."""
+
     def __init__(self):
         super().__init__()
-        pixbuf = icons.get(Path("city.svg"))
+        pixbuf = icons.get(Path("location.svg"))
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
 

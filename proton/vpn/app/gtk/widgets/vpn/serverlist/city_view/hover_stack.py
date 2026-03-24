@@ -119,13 +119,18 @@ class HoverStack(Gtk.Stack):
         self._is_hovered = False
 
         self._motion_controller = Gtk.EventControllerMotion()
-        self._motion_controller.connect("enter", lambda *_: self._on_hover_enter())
-        self._motion_controller.connect("leave", lambda *_: self._on_hover_leave())
+        signal_id = self._motion_controller.connect("enter", lambda *_: self._on_hover_enter())
+        self._connected_signals.append((signal_id, self._motion_controller))
+        signal_id = self._motion_controller.connect("leave", lambda *_: self._on_hover_leave())
+        self._connected_signals.append((signal_id, self._motion_controller))
         self._hover_parent.add_controller(self._motion_controller)
 
         child = self.get_hover_child()
         self._child_focus_controller = Gtk.EventControllerFocus()
-        self._child_focus_controller.connect("leave", lambda _: self._on_child_focus_leave())
+        signal_id = self._child_focus_controller.connect(
+            "leave", lambda _: self._on_child_focus_leave()
+        )
+        self._connected_signals.append((signal_id, self._child_focus_controller))
         child.add_controller(self._child_focus_controller)
 
         if GObject.signal_lookup("clicked", type(child).__gtype__) != 0:

@@ -21,6 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import logging
 from os import environ
+from typing import Optional
 
 from gi.repository import Gtk
 
@@ -44,17 +45,17 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(
             self, application: Gtk.Application,
             controller: Controller,
-            notifications: Notifications = None,
-            header_bar: HeaderBar = None,
-            main_widget: MainWidget = None,
-            overlay_widget: OverlayWidget = None
+            notifications: Optional[Notifications] = None,
+            header_bar: Optional[HeaderBar] = None,
+            main_widget: Optional[MainWidget] = None,
+            overlay_widget: Optional[OverlayWidget] = None
     ):
         super().__init__(application=application)
         self._application = application
         self.get_settings().props.gtk_application_prefer_dark_theme = True
         self._controller = controller
-        self._close_window_handler_id = None
-        self._shortcut_controller = None
+        self._close_window_handler_id: Optional[int] = None
+        self._shortcut_controller: Optional[Gtk.ShortcutController] = None
 
         self._configure_window()
 

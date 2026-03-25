@@ -21,7 +21,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from concurrent.futures import Future
-from typing import Union
+from typing import Union, Optional
 from gi.repository import GObject, Gtk
 
 from proton.vpn import logging
@@ -48,8 +48,8 @@ class TwoFactorAuthStack(Gtk.Stack):
         controller: Controller,
         notifications: Notifications,
         overlay_widget: OverlayWidget,
-        authenticator_app_form: AuthenticatorAppForm = None,
-        security_key_form: SecurityKeyForm = None
+        authenticator_app_form: Optional[AuthenticatorAppForm] = None,
+        security_key_form: Optional[SecurityKeyForm] = None
     ):
         super().__init__()
 
@@ -57,7 +57,7 @@ class TwoFactorAuthStack(Gtk.Stack):
         self._controller = controller
         self._notifications = notifications
         self._overlay_widget = overlay_widget
-        self.active_widget = None
+        self.active_widget: Optional[Union[AuthenticatorAppForm, SecurityKeyForm]] = None
         self.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
 
         # SecurityKeyForm

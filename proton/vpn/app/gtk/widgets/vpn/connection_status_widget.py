@@ -19,6 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from typing import Optional, cast
 from gi.repository import GLib
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.connection import events, states
@@ -45,7 +46,7 @@ class VPNConnectionStatusWidget(Gtk.Box):
         self, controller: Controller,
         overlay_widget: OverlayWidget,
         notifications: Notifications,
-        port_forward_revealer: PortForwardRevealer = None
+        port_forward_revealer: Optional[PortForwardRevealer] = None
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
@@ -65,14 +66,13 @@ class VPNConnectionStatusWidget(Gtk.Box):
 
         self.append(self._connection_status_label)
 
+        self._port_forward_revealer: Optional[PortForwardRevealer] = None
         display_port_forwarding = controller.feature_flags\
             .get("DisplayPortForwarding")
         if display_port_forwarding:
             self._port_forward_revealer = port_forward_revealer \
                 or PortForwardRevealer(notifications)
             self.append(self._port_forward_revealer)
-        else:
-            self._port_forward_revealer = None
 
     def _build_loading_connection_widget(self) -> LoadingConnectionWidget:
         cancel_button = Gtk.Button.new_with_label("Cancel Connection")
@@ -147,4 +147,4 @@ class VPNConnectionStatusWidget(Gtk.Box):
     @property
     def _split_tunneling_enabled(self) -> bool:
         """Check if split tunneling is enabled."""
-        return self._controller.get_setting_attr(SPLIT_TUNNELING_TOGGLE_SETTING_NAME)
+        return cast(bool, self._controller.get_setting_attr(SPLIT_TUNNELING_TOGGLE_SETTING_NAME))

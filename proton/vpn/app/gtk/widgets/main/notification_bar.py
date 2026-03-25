@@ -22,6 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 from enum import Enum
+from typing import Optional
 
 from gi.repository import GLib
 
@@ -57,7 +58,7 @@ class NotificationBar(Gtk.Revealer):
         """Returns the notification message being shown."""
         return self._notification_label.get_label()
 
-    def show_info_message(self, message: str, hide_after_ms: int = None):
+    def show_info_message(self, message: str, hide_after_ms: Optional[int] = None):
         """
         Shows the specified info message to the user for a limited amount of time.
         :param message: message to be shown.
@@ -66,7 +67,7 @@ class NotificationBar(Gtk.Revealer):
         """
         self._show_notification(message, NotificationType.INFO, hide_after_ms)
 
-    def show_error_message(self, message: str, hide_after_ms: int = None):
+    def show_error_message(self, message: str, hide_after_ms: Optional[int] = None):
         """
         Shows the specified error message to the user for a limited amount of time.
         :param message: error message to be shown.
@@ -75,7 +76,7 @@ class NotificationBar(Gtk.Revealer):
         """
         self._show_notification(message, NotificationType.ERROR, hide_after_ms)
 
-    def show_success_message(self, message: str, hide_after_ms: int = None):
+    def show_success_message(self, message: str, hide_after_ms: Optional[int] = None):
         """
         Shows the specified success message to the user for a limited amount of time.
         :param message: success message to be shown.
@@ -103,7 +104,7 @@ class NotificationBar(Gtk.Revealer):
 
     def _show_notification(
         self, message: str, notification_type: NotificationType,
-        hide_after_ms: int = None
+        hide_after_ms: Optional[int] = None
     ):
         hide_after_ms = hide_after_ms or NotificationBar.HIDE_NOTIFICATION_AFTER_MS
 

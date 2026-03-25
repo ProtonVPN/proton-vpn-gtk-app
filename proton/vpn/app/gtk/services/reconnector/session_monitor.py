@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Callable
+from typing import Callable, Optional
 import dbus
 from dbus import SystemBus
 from dbus.mainloop.glib import DBusGMainLoop
@@ -43,11 +43,11 @@ class SessionMonitor:
         session_unlocked_callback: callable that will be called when the user
         session is unlocked.
     """
-    def __init__(self, bus: SystemBus = None, session_object_path: str = None):
+    def __init__(self, bus: SystemBus = None, session_object_path: Optional[str] = None):
         self._bus = bus
         self._session_object_path = session_object_path
-        self._signal_receiver = None
-        self.session_unlocked_callback: Callable = None
+        self._signal_receiver: Optional[object] = None
+        self.session_unlocked_callback: Optional[Callable] = None
 
     def enable(self):
         """Enables user session monitoring."""
@@ -107,7 +107,7 @@ class SessionMonitor:
 
         _session_id, self._session_object_path = active_sessions
 
-    def set_signal_receiver(self, new_object: object):
+    def set_signal_receiver(self, new_object: Optional[object]):
         """Sets signal receiver.
         This is mainly used for testing purposes.
         """

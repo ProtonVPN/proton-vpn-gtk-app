@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
+from types import ModuleType
+from typing import Optional, cast
 
 from gi.repository import Gtk
 
@@ -51,10 +53,10 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         mode: SplitTunnelingMode,
         setting_path_name_template: str =
         "settings.features.split_tunneling.[mode].app_paths",
-        stored_apps: list[str] = None,
-        selected_app_list: SelectedAppList = None,
-        installed_apps: list[AppData] = None,
-        gtk: Gtk = Gtk,
+        stored_apps: Optional[list[str]] = None,
+        selected_app_list: Optional[SelectedAppList] = None,
+        installed_apps: Optional[list[AppData]] = None,
+        gtk: ModuleType = Gtk,
     ):  # pylint: disable=too-many-arguments
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=20)
         self.set_name("split-tunneling-app-based-settings")
@@ -172,7 +174,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         ]
 
     def _get_settings(self) -> list[str]:
-        return self._controller.get_setting_attr(self._setting_path_name)
+        return cast(list[str], self._controller.get_setting_attr(self._setting_path_name))
 
     def _save_settings(self):
         self._controller.save_setting_attr(self._setting_path_name, self._stored_apps)

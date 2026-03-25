@@ -43,7 +43,7 @@ Usage:
     # Setup (call before app.run())
     tray.setup()
 """
-from typing import Callable
+from typing import Callable, Optional
 from enum import Enum
 from dataclasses import dataclass
 import dbus
@@ -97,8 +97,8 @@ class MenuObject:
     """Object that represents an entry in tray menu."""
     id: int  # pylint: disable=invalid-name
     type: MenuType
-    label: str = None
-    callback: Callable = None
+    label: Optional[str] = None
+    callback: Optional[Callable] = None
     enabled: bool = True
     visible: bool = True
 
@@ -139,7 +139,7 @@ class _DBusMenuService(dbus.service.Object):
         return structure
 
     def _build_layout(
-        self, parent_id, properties, menu: list[dict[int, dbus.Dictionary]] = None
+        self, parent_id, properties, menu: Optional[list[dict[int, dbus.Dictionary]]] = None
     ):
         """Build layout for GetLayout."""
 

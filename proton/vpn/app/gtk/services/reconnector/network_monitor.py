@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import ThreadPoolExecutor, Future
-from typing import Callable
+from typing import Callable, Optional
 
 from gi.repository import GLib
 
@@ -68,7 +68,7 @@ class NetworkMonitor:
         self._polling_interval_ms = polling_interval_ms
         self._is_network_up = None
         self._polling_handler_id = None
-        self.network_up_callback: Callable = None
+        self.network_up_callback: Optional[Callable] = None
 
     def enable(self):
         """
@@ -108,7 +108,7 @@ class NetworkMonitor:
         Returns True if the device is connected to the network or False otherwise.
         Note: the value returned is based on the last check_network_state_async call.
         """
-        return self._is_network_up
+        return bool(self._is_network_up)
 
     @property
     def is_enabled(self) -> bool:

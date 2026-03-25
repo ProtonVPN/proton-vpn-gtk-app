@@ -20,7 +20,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Union, Callable
+from typing import Union, Callable, Optional
 from gi.repository import Pango
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
@@ -36,7 +36,7 @@ class ConfirmationDialog(Gtk.Dialog):
     def __init__(
         self, message: Union[Gtk.Widget, str],
         title: str,
-        yes_text: str = None, no_text: str = None
+        yes_text: Optional[str] = None, no_text: Optional[str] = None
     ):
         super().__init__()
         self.set_title(title)
@@ -48,6 +48,7 @@ class ConfirmationDialog(Gtk.Dialog):
         no_button.add_css_class("primary")
         yes_button.add_css_class("danger")
 
+        widget: Gtk.Widget
         if isinstance(message, str):
             widget = Gtk.Label(label=message)
             widget.set_width_chars(50)

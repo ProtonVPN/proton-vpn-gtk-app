@@ -23,7 +23,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 from itertools import chain
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from proton.vpn.session.servers import Country, Location, TierEnum
 from proton.vpn.app.gtk import Gtk
@@ -62,7 +62,7 @@ class CountryRow(Gtk.Box):
     # pylint: disable=too-many-arguments
     def display(
         self, controller: Controller, country: Country, user_tier: int,
-        expanded: bool = False, expanded_groups: set[str] = None
+        expanded: bool = False, expanded_groups: Optional[set[str]] = None
     ):
         """Displays the country row according to the specified parameters.
 
@@ -157,7 +157,7 @@ class CountryRow(Gtk.Box):
     @property
     def location_rows(self) -> List[LocationRow]:
         """Returns the list of location rows currently displayed."""
-        return get_children(self._location_row_container)
+        return cast(List[LocationRow], get_children(self._location_row_container))
 
     @property
     def secure_core_row(self) -> Optional[SecureCoreRow]:
@@ -196,7 +196,7 @@ class CountryRow(Gtk.Box):
             display_secure_core_row
         )
 
-    def _add_location_rows(self, expanded_locations: set[str] = None):
+    def _add_location_rows(self, expanded_locations: Optional[set[str]] = None):
         """Adds location rows to the country row.
 
         Args:

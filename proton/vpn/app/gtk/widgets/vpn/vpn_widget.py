@@ -22,7 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from concurrent.futures import Future
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 import time
 
 from gi.repository import GObject, GLib
@@ -60,8 +60,8 @@ class VPNWidgetState:
         load_start_time: timestamp set when the widget starts loading.
     """
     is_widget_ready: bool = False
-    user_tier: int = None
-    load_start_time: int = None
+    user_tier: Optional[int] = None
+    load_start_time: Optional[float] = None
 
 
 # pylint: disable=too-many-instance-attributes

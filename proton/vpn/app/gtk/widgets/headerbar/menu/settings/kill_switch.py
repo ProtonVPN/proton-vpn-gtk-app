@@ -16,7 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Callable, Any
+from types import ModuleType
+from typing import Callable, Optional
 
 from gi.repository import Gtk
 
@@ -47,8 +48,8 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
         "Advanced kill switch will remain active even when you restart your device."
     SETTING_NAME = "settings.killswitch"
 
-    def __init__(self, controller: Controller, gtk: Gtk = None,
-                 conflict_resolver: Callable[[str, Any], str] = None):
+    def __init__(self, controller: Controller, gtk: Optional[ModuleType] = None,
+                 conflict_resolver: Optional[Callable] = None):
         super().__init__(
             controller=controller,
             title=self.KILLSWITCH_LABEL,
@@ -65,9 +66,9 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
         self._standard_radio_button_connect_id = None
         self._advanced_radio_button_connect_id = None
 
-        self.standard_radio_button = None
-        self.advanced_radio_button = None
-        self.revealer = None
+        self.standard_radio_button: Optional[Gtk.CheckButton] = None
+        self.advanced_radio_button: Optional[Gtk.CheckButton] = None
+        self.revealer: Optional[Gtk.Revealer] = None
 
     def build_revealer(self):
         """Builds the revealer"""

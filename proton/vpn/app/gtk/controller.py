@@ -76,10 +76,10 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self,
         executor: AsyncExecutor,
         exception_handler: ExceptionHandler,
-        api: ProtonVPNAPI = None,
-        vpn_connector: VPNConnector = None,
-        vpn_reconnector: VPNReconnector = None,
-        app_config: AppConfig = None,
+        api: Optional[ProtonVPNAPI] = None,
+        vpn_connector: Optional[VPNConnector] = None,
+        vpn_reconnector: Optional[VPNReconnector] = None,
+        app_config: Optional[AppConfig] = None,
         cache_handler: CacheHandler = None
     ):  # pylint: disable=too-many-arguments
         self.executor = executor
@@ -232,7 +232,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         server = self._api.server_list.get_fastest()
         return self._connect_to_vpn(server)
 
-    def connect_to_server(self, server_name: str = None) -> Future:
+    def connect_to_server(self, server_name: Optional[str] = None) -> Future:
         """
         Establishes a VPN connection.
         :param server_name: The name of the server to connect to.
@@ -496,7 +496,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         save_settings(Conflicts.resolve(setting_type, setting_attrs, new_value,
                                         settings))
 
-    def get_available_protocols(self) -> Optional[str]:
+    def get_available_protocols(self) -> list:
         """Returns an alphabetically sorted list of available protocol to use."""
         available_protocols = self._connector.get_available_protocols_for_backend(
             self.DEFAULT_BACKEND

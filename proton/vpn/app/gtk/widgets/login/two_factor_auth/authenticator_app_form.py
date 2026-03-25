@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from concurrent.futures import Future
+from typing import Optional
 from gi.repository import GLib, GObject
 
 from proton.vpn import logging
@@ -59,7 +60,7 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
             controller: Controller,
             notifications: Notifications,
             overlay_widget: OverlayWidget,
-            authenticate_button: AuthenticateButton = None
+            authenticate_button: Optional[AuthenticateButton] = None
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=30)
 

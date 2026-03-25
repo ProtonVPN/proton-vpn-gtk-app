@@ -20,7 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-from typing import Callable, List, Optional, Set, Tuple, Generator
+from typing import Callable, Iterable, Optional, Set, Tuple
 
 from gi.repository import GObject
 
@@ -50,9 +50,9 @@ class FilteredList(Gtk.TreeView):
     """
     def __init__(
         self,
-        countries: Callable[[Optional[str]], List[(str, int)]],
-        locations: Callable[[Optional[str]], List[(str, int)]],
-        servers: Callable[[Optional[str]], List[(str, int)]]
+        countries: Callable[[Optional[str]], Iterable[Tuple[Optional[str], Optional[int]]]],
+        locations: Callable[[Optional[str]], Iterable[Tuple[Optional[str], Optional[int]]]],
+        servers: Callable[[Optional[str]], Iterable[Tuple[Optional[str], Optional[int]]]]
     ):
         super().__init__()
         self._countries = countries
@@ -102,7 +102,7 @@ class FilteredList(Gtk.TreeView):
 
         self.set_headers_visible(False)
 
-    def update(self, search_text: str = None):
+    def update(self, search_text: Optional[str] = None):
         """Rebuild the view using the search_text as a filter"""
         self._model.clear()
 
@@ -151,10 +151,10 @@ class SearchResults(Gtk.ScrolledWindow):
         self.set_child(self._container)
         self.set_property("height-request", 200)
 
-        self._revealer = None
+        self._revealer: Optional[Gtk.Revealer] = None
 
-        def countries(search_text: str = None) -> Set(Optional[Tuple[str, None]]):
-            result = set({})
+        def countries(search_text: Optional[str] = None) -> Set[Tuple[Optional[str], None]]:
+            result: Set[Tuple[Optional[str], None]] = set()
             server_list = controller.server_list
 
             if not server_list:
@@ -168,13 +168,14 @@ class SearchResults(Gtk.ScrolledWindow):
 
         if search_cities:
             def locations(
-                search_text: str = None
-            ) -> Generator[Tuple[Optional[str], Optional[int]]]:
+                search_text: Optional[str] = None
+            ) -> Iterable[Tuple[Optional[str], Optional[int]]]:
                 result = set({})
                 server_list = controller.server_list
 
                 if not server_list:
                     yield (None, None)
+                    return
 
                 for server in controller.server_list:
                     if self._search_input_exists(search_text, server, location_name=True):
@@ -184,10 +185,14 @@ class SearchResults(Gtk.ScrolledWindow):
                 for location in sorted(result):
                     yield (location, None)
         else:
-            def locations(search_text: str = None) -> None:  # pylint: disable=unused-argument
-                return set({})
+            def locations(  # pylint: disable=unused-argument
+                search_text: Optional[str] = None
+            ) -> Iterable[Tuple[Optional[str], Optional[int]]]:
+                return set()
 
-        def servers(search_text: str = None) -> Generator[Tuple[Optional[str], Optional[int]]]:
+        def servers(
+            search_text: Optional[str] = None
+        ) -> Iterable[Tuple[Optional[str], Optional[int]]]:
             def user_tier_allows_access_to_server(server_tier: int, user_tier: int) -> bool:
                 return server_tier <= user_tier
 
@@ -195,6 +200,7 @@ class SearchResults(Gtk.ScrolledWindow):
             server_list = controller.server_list
             if not server_list:
                 yield (None, None)
+                return
 
             for server in controller.server_list:
                 if not user_tier_allows_access_to_server(server.tier, user_tier):
@@ -211,19 +217,19 @@ class SearchResults(Gtk.ScrolledWindow):
         self._container.append(self._filtered_country_list)
 
     def _search_input_exists(  # pylint: disable=too-many-arguments
-        self, search_text: str, server, entry_country_name: bool = False,
+        self, search_text: Optional[str], server, entry_country_name: bool = False,
         location_name: bool = False, server_name: bool = False
     ) -> bool:
         if entry_country_name:
-            return search_text and (search_text in server.entry_country_name.lower())
+            return bool(search_text and (search_text in server.entry_country_name.lower()))
 
         if location_name:
-            return search_text and (search_text in server.location.lower())
+            return bool(search_text and (search_text in server.location.lower()))
 
         if server_name:
-            return search_text and (search_text in server.name.lower())
+            return bool(search_text and (search_text in server.name.lower()))
 
-        return None
+        return False
 
     @GObject.Signal(name="result-chosen", arg_types=(str,))
     def result_chosen(self, _row: str):

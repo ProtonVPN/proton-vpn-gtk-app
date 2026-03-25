@@ -19,6 +19,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 
+from types import ModuleType
+from typing import cast
 from gi.repository import Gtk, GObject
 
 
@@ -40,7 +42,7 @@ class AppSelectionWindow(Gtk.Window):
         controller: Controller,
         stored_apps: list[str],
         installed_apps: list[AppData],
-        gtk: Gtk = Gtk
+        gtk: ModuleType = Gtk
     ):  # pylint: disable=too-many-arguments
         super().__init__()
         self.set_modal(True)
@@ -133,7 +135,7 @@ class AppSelectionWindow(Gtk.Window):
         Returns:
             AppRowWithCheckbox
         """
-        return self.content_container.get_first_child()
+        return cast(AppRowWithCheckbox, self.content_container.get_first_child())
 
     def _click_on_done_button(self):
         """Mainly for testing purposes and not for public API.

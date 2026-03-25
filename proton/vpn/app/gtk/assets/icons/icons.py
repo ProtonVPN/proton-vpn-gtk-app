@@ -5,13 +5,13 @@ We should consider to switch to Gtk.IconTheme:
 https://docs.gtk.org/gtk3/class.IconTheme.html
 """
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional, Tuple
 
 from gi.repository import GdkPixbuf
 
 ICONS_PATH = Path(__file__).parent
 
-_cache = {}
+_cache: Dict[Tuple[Path, int, int, bool], GdkPixbuf.Pixbuf] = {}
 
 
 def get(
@@ -48,6 +48,8 @@ def get(
         height=height,
         preserve_aspect_ratio=preserve_aspect_ratio
     )
+    if pixbuf is None:
+        raise ValueError(f"Failed to load icon: {filename}")
     _cache[cache_key] = pixbuf
 
     return pixbuf

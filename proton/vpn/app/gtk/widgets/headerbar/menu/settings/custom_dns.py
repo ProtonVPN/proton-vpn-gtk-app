@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import List, TYPE_CHECKING
+from types import ModuleType
+from typing import List, TYPE_CHECKING, Optional, cast
 from contextlib import contextmanager
 
 from gi.repository import Gtk, GObject
@@ -39,7 +40,7 @@ if TYPE_CHECKING:
 class CustomDNSRow(Gtk.Box):  # pylint: disable=too-few-public-methods
     """A simple row that contains the label of the DNS server and a button to
     make it easily removable."""
-    def __init__(self, custom_dns_entry: CustomDNSEntry, gtk: Gtk = None):
+    def __init__(self, custom_dns_entry: CustomDNSEntry, gtk: Optional[ModuleType] = None):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.gtk = gtk or Gtk
         self.custom_dns_entry = custom_dns_entry
@@ -78,7 +79,7 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
         self.append(custom_dns_row)
 
     def _on_dns_delete_clicked(self, button: Gtk.Button):
-        parent_widget = button.get_parent()
+        parent_widget = cast(CustomDNSRow, button.get_parent())
         self.remove(parent_widget)
         self.emit("dns-ip-removed", parent_widget.custom_dns_entry)
 
@@ -91,17 +92,14 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         controller: Controller,
-        gtk: Gtk = None,
-        custom_dns_list: CustomDNSList = None
+        gtk: Optional[ModuleType] = None,
+        custom_dns_list: Optional[CustomDNSList] = None
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.set_spacing(15)
 
         self.gtk = gtk or Gtk
         self._controller = controller
-
-        self._dns_entry = None
-        self._add_button = None
 
         label = self.gtk.Label(label="Add new server")
         label.set_halign(Gtk.Align.START)
@@ -122,11 +120,11 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         row = self.gtk.Grid(orientation=Gtk.Orientation.HORIZONTAL)
         row.set_column_spacing(10)
 
-        self._dns_entry = self.gtk.Entry()
+        self._dns_entry: Gtk.Entry = self.gtk.Entry()
         self._dns_entry.set_hexpand(True)
         self._dns_entry.set_halign(Gtk.Align.FILL)
 
-        self._add_button = self.gtk.Button(label="Add")
+        self._add_button: Gtk.Button = self.gtk.Button(label="Add")
         self._add_button.connect("clicked", self._on_dns_add_clicked, error_message_revealer)
 
         row.attach(self._dns_entry, 0, 0, 1, 1)
@@ -172,7 +170,8 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
             ip_list.remove(existing_dns_ip_entry)
 
     def _notify_user_of_invalid_dns_entry(self, error_message_revealer: Gtk.Revealer):
-        error_message_revealer.get_child().set_label(self.INVALID_IP_ERROR_MESSAGE)
+        child = error_message_revealer.get_child()
+        child.set_label(self.INVALID_IP_ERROR_MESSAGE)
         error_message_revealer.set_reveal_child(True)
 
     @contextmanager
@@ -206,7 +205,10 @@ class CustomDNSWidget(ToggleWidget):
     DESCRIPTION = "Connect to Proton VPN using your own domain name servers (DNS)."
     SETTING_NAME = "settings.custom_dns.enabled"
 
-    def __init__(self, controller: Controller, settings_window: Gtk.Window, gtk: Gtk = None, ):
+    def __init__(
+        self, controller: Controller, settings_window: Gtk.Window,
+        gtk: Optional[ModuleType] = None
+    ):
         super().__init__(
             controller=controller,
             title=self.LABEL,
@@ -218,7 +220,7 @@ class CustomDNSWidget(ToggleWidget):
 
         self.gtk = gtk or Gtk
         self._controller = controller
-        self.revealer = None
+        self.revealer: Optional[Gtk.Revealer] = None
         self._settings_window = settings_window
 
     @staticmethod

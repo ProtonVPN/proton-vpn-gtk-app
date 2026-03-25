@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 import time
-from typing import List
+from typing import List, Optional, cast
 import logging
 from unittest.mock import Mock
 
@@ -53,7 +53,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
     def __init__(self, controller: Controller, search_entry: SearchEntry | None = None):
         super().__init__()
         self._controller = controller
-        self._user_tier = None
+        self._user_tier: Optional[int] = None
         self._search_entry = search_entry
 
         self.set_policy(
@@ -130,7 +130,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
     @property
     def country_rows(self) -> List[CountryRow]:
         """Returns the list of country rows currently displayed."""
-        return get_children(self._country_rows_container)
+        return cast(List[CountryRow], get_children(self._country_rows_container))
 
     def _remove_country_rows(self):
         for row in self.country_rows:

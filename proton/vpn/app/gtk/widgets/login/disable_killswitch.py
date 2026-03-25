@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from gi.repository import GObject
 
@@ -63,8 +63,8 @@ class DisableKillSwitchWidget(Gtk.Revealer):
 
     def __init__(
         self, main_window: "MainWindow",
-        killswitch_label: KillSwitchLabel = None,
-        killswitch_button: DisableKillSwitchButton = None,
+        killswitch_label: Optional[KillSwitchLabel] = None,
+        killswitch_button: Optional[DisableKillSwitchButton] = None,
     ):
         super().__init__()
         self.set_name("login-kill-switch-revealer")

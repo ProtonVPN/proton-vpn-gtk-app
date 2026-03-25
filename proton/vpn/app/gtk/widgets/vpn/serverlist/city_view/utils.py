@@ -46,7 +46,7 @@ def make_connect_callback(
 def sync_rows_with_model_items(
     model_items: List[Any],
     existing_rows: List[Gtk.Widget],
-    container: Gtk.Widget,
+    container: Gtk.Box,
     row_factory: Type[Gtk.Widget],
     display_func: Callable[[Gtk.Widget, Any], None]
 ):

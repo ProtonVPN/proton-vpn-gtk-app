@@ -139,7 +139,7 @@ class TrayIndicator:
         gnome_tray_detection=GnomeTrayDetection()
     ):
         self._tray = tray_icon
-        self._main_window = None
+        self._main_window: Optional[MainWindow] = None
         self.display_disconnect_entry = None
         self.display_connect_entry = None
         self.enable_disconnect_entry = None

@@ -46,11 +46,11 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         self,
         controller: Controller,
         tray_indicator: Optional["TrayIndicator"] = None,
-        notification_bar: NotificationBar = None,
-        feature_settings: FeatureSettings = None,
-        connection_settings: ConnectionSettings = None,
-        general_settings: GeneralSettings = None,
-        account_settings: AccountSettings = None,
+        notification_bar: Optional[NotificationBar] = None,
+        feature_settings: Optional[FeatureSettings] = None,
+        connection_settings: Optional[ConnectionSettings] = None,
+        general_settings: Optional[GeneralSettings] = None,
+        account_settings: Optional[AccountSettings] = None,
     ):
         super().__init__()
         self.set_modal(True)

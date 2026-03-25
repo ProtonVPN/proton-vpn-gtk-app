@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
+from types import ModuleType
 from typing import Optional, Union
 
 from dataclasses import dataclass, asdict
@@ -67,7 +68,7 @@ def _get_missing_icon_pixbuff() -> GdkPixbuf.Pixbuf:
     return icons.get("no-app-icon.svg")
 
 
-def get_icon(img_path: Optional[str], gtk: Gtk = Gtk) -> Gtk.Image:
+def get_icon(img_path: Optional[str], gtk: ModuleType = Gtk) -> Gtk.Image:
     """Returns a Gtk.Image based either on the app path image or else
     uses a default one.
     """
@@ -113,7 +114,7 @@ class AppRowWithCheckbox(Gtk.Grid):
         self,
         app_data: AppData,
         checked: bool,
-        gtk: Gtk = Gtk
+        gtk: ModuleType = Gtk
     ):
         super().__init__()
         self.set_column_spacing(10)
@@ -122,7 +123,7 @@ class AppRowWithCheckbox(Gtk.Grid):
         self.app_data = app_data
         self._checked = checked
         self.gtk = gtk
-        self._check_button = None
+        self._check_button: Optional[Gtk.CheckButton] = None
 
     @staticmethod
     def build(app_data: AppData, checked: bool) -> AppRowWithCheckbox:
@@ -175,7 +176,7 @@ class AppRowWithCheckbox(Gtk.Grid):
 class AppRowWithRemoveButton(Gtk.Grid):
     """_summary_
     """
-    def __init__(self, app_data: AppData, gtk: Gtk = Gtk):
+    def __init__(self, app_data: AppData, gtk: ModuleType = Gtk):
         super().__init__()
         self.set_column_spacing(10)
         self.set_name(app_data.executable)

@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-from typing import Callable, Any
+from types import ModuleType
+from typing import Callable, Optional
 
 
 from gi.repository import Gtk
@@ -41,10 +42,10 @@ class SplitTunnelingSettings(Gtk.Box):
     def __init__(
         self,
         controller: Controller,
-        split_tunneling_mode: SplitTunnelingModeSetting = None,
-        split_tunneling_apps: AppBasedSplitTunnelingSettings = None,
-        split_tunneling_ips: IpBasedSplitTunnelingSettings = None,
-        gtk: Gtk = None,
+        split_tunneling_mode: Optional[SplitTunnelingModeSetting] = None,
+        split_tunneling_apps: Optional[AppBasedSplitTunnelingSettings] = None,
+        split_tunneling_ips: Optional[IpBasedSplitTunnelingSettings] = None,
+        gtk: Optional[ModuleType] = None,
     ):  # pylint: disable=too-many-arguments
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller
@@ -72,10 +73,10 @@ class SplitTunnelingSettings(Gtk.Box):
     @staticmethod
     def build(
         controller: Controller,
-        split_tunneling_mode: SplitTunnelingModeSetting = None,
-        split_tunneling_apps: AppBasedSplitTunnelingSettings = None,
-        split_tunneling_ips: IpBasedSplitTunnelingSettings = None,
-        gtk: Gtk = None,
+        split_tunneling_mode: Optional[SplitTunnelingModeSetting] = None,
+        split_tunneling_apps: Optional[AppBasedSplitTunnelingSettings] = None,
+        split_tunneling_ips: Optional[IpBasedSplitTunnelingSettings] = None,
+        gtk: Optional[ModuleType] = None,
     ) -> SplitTunnelingSettings:
         """A quicker way of building this object.
 
@@ -111,13 +112,13 @@ class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
     def __init__(
             self,
             controller: Controller,
-            settings_container: SplitTunnelingSettings = None,
+            settings_container: Optional[SplitTunnelingSettings] = None,
             setting_name: str = SPLIT_TUNNELING_TOGGLE_SETTING_NAME,
-            do_set: Callable = None,
-            do_revert: Callable = None,
-            enabled: bool = None,
-            gtk: Gtk = Gtk,
-            conflict_resolver: Callable[[str, Any], str] = None
+            do_set: Optional[Callable] = None,
+            do_revert: Optional[Callable] = None,
+            enabled: Optional[bool] = None,
+            gtk: ModuleType = Gtk,
+            conflict_resolver: Optional[Callable] = None
     ):  # pylint: disable=too-many-arguments
         super().__init__(
             controller=controller,
@@ -134,7 +135,7 @@ class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
         )
         self._controller = controller
         self.gtk = gtk
-        self.revealer = None
+        self.revealer: Optional[Gtk.Revealer] = None
         self._settings_container = settings_container
         self._revealer_built = False
         self.set_tooltip(self.TOOLTIP_MESSAGE)
@@ -195,7 +196,7 @@ class IpBasedSplitTunnelingSettings(Gtk.Box):
         self,
         controller: Controller,
         setting_path_name: str = "settings.features.split_tunneling.config.ip_ranges",
-        gtk: Gtk = Gtk
+        gtk: ModuleType = Gtk
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._controller = controller

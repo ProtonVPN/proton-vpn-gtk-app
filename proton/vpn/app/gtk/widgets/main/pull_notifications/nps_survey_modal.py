@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from pathlib import Path
 from enum import Enum, auto
-from typing import Callable
+from typing import Callable, Optional
 
 from gi.repository import Gtk, Gdk
 
@@ -126,8 +126,8 @@ class NPSSurvey(Gtk.Window):
         self._dismiss_handler = dismiss_handler
         self._dismiss_handler_id = \
             self.connect("close-request", lambda _: self._dismiss_handler())
-        self._chosen_score = None
-        self._current_state: NPSSurvey.State = None
+        self._chosen_score: Optional[int] = None
+        self._current_state: Optional["NPSSurvey.State"] = None
 
         header_bar = Gtk.HeaderBar()
         header_bar.set_show_title_buttons(True)

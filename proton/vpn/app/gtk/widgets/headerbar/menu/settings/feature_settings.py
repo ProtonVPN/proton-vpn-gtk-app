@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
@@ -55,10 +55,10 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
         super().__init__(self.CATEGORY_NAME)
         self._controller = controller
         self._settings_window = settings_window
-        self.netshield = None
-        self.killswitch = None
-        self.port_forwarding = None
-        self.split_tunneling = None
+        self.netshield: Optional[ComboboxWidget] = None
+        self.killswitch: Optional[KillSwitchWidget] = None
+        self.port_forwarding: Optional[ToggleWidget] = None
+        self.split_tunneling: Optional[SplitTunnelingToggle] = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
@@ -136,7 +136,9 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
 
             confirmation_dialog.destroy()
 
-        netshield_disabled = int(self.netshield.get_setting()) == NetShield.NO_BLOCK
+        netshield_disabled = (
+            int(self.netshield.get_setting()) == NetShield.NO_BLOCK
+        )
 
         if not custom_dns_enabled or netshield_disabled:
             self._settings_window.notify_user_with_reconnect_message(

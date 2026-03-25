@@ -33,8 +33,8 @@ def add_accessibility(
     if isinstance(related_widgets, Gtk.Widget):
         related_widgets = [related_widgets]
     related_widgets = [Gtk.AccessibleList.new_from_list(related_widgets)]
-    relation_type = [relation_type]
-    target_widget.update_relation(relation_type, related_widgets)
+    relation_types = [relation_type]
+    target_widget.update_relation(relation_types, related_widgets)
 
 
 def remove_accessibility(
@@ -46,6 +46,6 @@ def remove_accessibility(
         return
 
     # Remove relation by setting it to an empty list
-    relation_type = [relation_type]
+    relation_types = [relation_type]
     empty_list = [Gtk.AccessibleList.new_from_list([])]
-    target_widget.update_relation(relation_type, empty_list)
+    target_widget.update_relation(relation_types, empty_list)

@@ -22,7 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import shutil
 from dataclasses import dataclass
 from concurrent.futures import Future
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union, IO
 import os
 import distro
 import requests
@@ -58,7 +58,7 @@ class DistroManager:  # pylint: disable=too-many-instance-attributes
     def download_release_package(self, url: str) -> None:
         """Builds and returns a string which contains a command to
         download a package from our repositories."""
-        file = url.split("/")[-1]
+        file: Union[str, IO[bytes]] = url.split("/")[-1]
         filepath = os.path.join(self.runtime_path, file)
 
         with requests.get(url, stream=True, timeout=2) as req:  # pylint: disable=line-too-long # noqa: E501 # nosemgrep: python.requests.best-practice.use-raise-for-status.use-raise-for-status
@@ -189,8 +189,8 @@ class EarlyAccessWidget(ToggleWidget):
 
     def __init__(
         self, controller: Controller,
-        distro_manager: DistroManager = None,
-        early_access_dialog: EarlyAccessDialog = None,
+        distro_manager: Optional[DistroManager] = None,
+        early_access_dialog: Optional[EarlyAccessDialog] = None,
     ):
         self._distro_manager = distro_manager
 

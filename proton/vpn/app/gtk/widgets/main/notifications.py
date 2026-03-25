@@ -46,7 +46,7 @@ class Notifications:
     ):
         self._main_window = main_window
         self.notification_bar = notification_bar
-        self.error_dialog = None
+        self.error_dialog: Optional[Gtk.MessageDialog] = None
         Notify.init("Proton VPN")
 
     def show_error_dialog(

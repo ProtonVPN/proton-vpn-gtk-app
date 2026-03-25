@@ -178,7 +178,7 @@ class ServerRow(Gtk.Box):
         return upgrade_button
 
     def _build_server_feature_icons(self) -> List[Gtk.Image]:
-        server_feature_icons = []
+        server_feature_icons: List[Gtk.Image] = []
 
         if self._server.tier > 0:
             server_feature_icons.append(StreamingIcon())
@@ -273,7 +273,7 @@ class ServerRow(Gtk.Box):
     @property
     def under_maintenance_icon_visible(self) -> bool:
         """Whether the under maintenance icon is shown or not."""
-        return self._under_maintenance_icon and self._under_maintenance_icon.is_visible()
+        return bool(self._under_maintenance_icon and self._under_maintenance_icon.is_visible())
 
     def is_server_feature_icon_displayed(self, icon_class):
         """Returns True if an instance of the specified icon class is displayed

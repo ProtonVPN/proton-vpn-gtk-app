@@ -18,7 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 from pathlib import Path
-from typing import Optional
+from typing import ClassVar, Dict, Optional
 
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
@@ -210,7 +210,7 @@ class LocationIcon(Gtk.Image):
 class CountryFlagIcon(Gtk.Image):
     """Flag displayed on each country row."""
 
-    _cache = {}
+    _cache: ClassVar[Dict[str, CountryFlagIcon]] = {}
 
     def __init__(self, country_code: str):
         super().__init__()

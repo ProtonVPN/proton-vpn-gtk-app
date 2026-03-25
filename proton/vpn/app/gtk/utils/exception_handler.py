@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import sys
 import threading
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 import gi
 
 from proton.vpn.app.gtk.widgets.main.notifications import DialogButton
@@ -64,7 +64,9 @@ class ExceptionHandler:
         " with your hardware key.\nAfter that, the traffic will be enabled."
     )
 
-    def __init__(self, main_widget: "MainWidget" = None, controller: "Controller" = None):
+    def __init__(
+        self, main_widget: Optional["MainWidget"] = None, controller: Optional["Controller"] = None
+    ):
         super().__init__()
         self.main_widget = main_widget
         self.controller = controller

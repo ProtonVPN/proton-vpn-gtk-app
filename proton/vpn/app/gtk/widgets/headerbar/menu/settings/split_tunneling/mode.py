@@ -18,6 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 from dataclasses import dataclass
+from typing import ClassVar, List
 
 from gi.repository import Gtk, GObject
 
@@ -53,7 +54,7 @@ INCLUDE_MODE = ModeData(
 class ModeRadioButton(Gtk.Box):
     """Custom radio button for mode selection"""
     # Class-level group storage
-    _radio_buttons = []
+    _radio_buttons: ClassVar[List[Gtk.CheckButton]] = []
 
     def __init__(self, mode_data: ModeData):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)

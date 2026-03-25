@@ -199,7 +199,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         return connect_button
 
     def _build_feature_icons(self, row_data: RowViewModel) -> List[Gtk.Image]:
-        feature_icons = []
+        feature_icons: List[Gtk.Image] = []
         if ServerFeatureEnum.SECURE_CORE in row_data.features:
             if row_data.secure_core_countries:
                 entry, exit_ = row_data.secure_core_countries

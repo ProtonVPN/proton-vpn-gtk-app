@@ -72,7 +72,7 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
             controller: Controller,
             notifications: Notifications,
             overlay_widget: OverlayWidget,
-            authenticate_button: AuthenticateButton = None
+            authenticate_button: Optional[AuthenticateButton] = None
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=15)
 

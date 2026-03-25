@@ -21,6 +21,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+from typing import Optional, Union
 from proton.vpn.app.gtk import Gtk
 
 
@@ -78,7 +79,7 @@ class LoadingConnectionWidget(BaseLoadingContainerWidget):
     def __init__(
         self, label: str,
         cancel_button: Gtk.Button,
-        display_loading_status: Gtk.Widget = None
+        display_loading_status: Optional[Gtk.Widget] = None
     ):
         super().__init__()
 
@@ -87,6 +88,7 @@ class LoadingConnectionWidget(BaseLoadingContainerWidget):
         self._cancel_button.add_css_class("danger")
         self._cancel_button.set_halign(Gtk.Align.CENTER)
 
+        self._display_loading_status: Union[Spinner, Gtk.Widget]
         if not display_loading_status:
             self._display_loading_status = Spinner()
             self._display_loading_status.start()

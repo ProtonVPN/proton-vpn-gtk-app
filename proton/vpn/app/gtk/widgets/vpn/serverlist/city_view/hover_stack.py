@@ -47,9 +47,9 @@ class HoverStack(Gtk.Stack):
 
         self._is_hovered = False
         self._hover_parent = parent_for_hover or self
-        self._motion_controller = None
-        self._child_focus_controller = None
-        self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
+        self._motion_controller: Optional[Gtk.EventControllerMotion] = None
+        self._child_focus_controller: Optional[Gtk.EventControllerFocus] = None
+        self._connected_signals: List[Tuple[int, GObject.Object]] = []
 
         if leave_child is not None:
             self.set_leave_child(leave_child)
@@ -126,6 +126,8 @@ class HoverStack(Gtk.Stack):
         self._hover_parent.add_controller(self._motion_controller)
 
         child = self.get_hover_child()
+        if child is None:
+            return
         self._child_focus_controller = Gtk.EventControllerFocus()
         signal_id = self._child_focus_controller.connect(
             "leave", lambda _: self._on_child_focus_leave()
@@ -133,7 +135,9 @@ class HoverStack(Gtk.Stack):
         self._connected_signals.append((signal_id, self._child_focus_controller))
         child.add_controller(self._child_focus_controller)
 
-        if GObject.signal_lookup("clicked", type(child).__gtype__) != 0:
+        child_gtype = type(child).__gtype__
+        has_clicked = GObject.signal_lookup("clicked", child_gtype) != 0
+        if has_clicked:
             signal_id = child.connect("clicked", self._on_hover_child_clicked)
             self._connected_signals.append((signal_id, child))
 

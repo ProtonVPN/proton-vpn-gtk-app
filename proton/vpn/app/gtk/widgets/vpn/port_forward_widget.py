@@ -32,7 +32,7 @@ class PortForwardRevealer(Gtk.Revealer):  # pylint: disable=too-few-public-metho
     """The container that has all PF widgets and reveals on demand."""
     def __init__(self,
                  notifications: Notifications,
-                 port_forward_widget: PortForwardWidget = None):
+                 port_forward_widget: Optional["PortForwardWidget"] = None):
         super().__init__()
         self._port_forward_widget = \
             port_forward_widget or PortForwardWidget(notifications)
@@ -55,15 +55,16 @@ class PortForwardWidget(Gtk.Button):
     TOOLTIP_LABEL = "Copy port number"
 
     def __init__(
-            self, notifications: Notifications, clipboard: Gdk.Clipboard = None,
+            self, notifications: Notifications, clipboard: Optional[Gdk.Clipboard] = None,
             forwarded_port: Optional[int] = None
     ):
         super().__init__()
         self.set_name("port-forwarding-widget")
         self._notifications = notifications
-        self._clipboard = clipboard or Gdk.Display.get_default().get_clipboard()
+        self._clipboard = (
+            clipboard or Gdk.Display.get_default().get_clipboard()
+        )
         self._current_forwarded_port = forwarded_port
-        self._port_forward_label = None
         self._build_ui()
 
         cursor = Gdk.Cursor.new_from_name("pointer", None)
@@ -87,7 +88,7 @@ class PortForwardWidget(Gtk.Button):
 
         # Create the label that will contain the active port, so that it can
         # be easily copied to clipboard
-        self._port_forward_label = Gtk.Label(label="")
+        self._port_forward_label: Gtk.Label = Gtk.Label(label="")
         self._port_forward_label.add_css_class("dim-label")
 
         # Create the copy icon

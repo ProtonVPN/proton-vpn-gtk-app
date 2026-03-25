@@ -20,7 +20,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Union, TYPE_CHECKING
+from typing import Union, TYPE_CHECKING, Optional
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.login.login_widget import LoginWidget
@@ -48,7 +48,7 @@ class MainWidget(Gtk.Overlay):
 
     def __init__(
         self, controller: "Controller", main_window: "MainWindow",
-        overlay_widget: OverlayWidget, notifications: Notifications = None
+        overlay_widget: OverlayWidget, notifications: Optional[Notifications] = None
     ):
         super().__init__()
         self.set_name("main-widget")
@@ -119,7 +119,7 @@ class MainWidget(Gtk.Overlay):
 
     def show_error_message(
         self, error_message: str, blocking: bool = False,
-        error_title: str = None
+        error_title: Optional[str] = None
     ):
         """
         Shows an error message to the user. The message is hidden after the

@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import Protocol
+from typing import Protocol, Optional
 
 from gi.repository import GObject
 
@@ -60,7 +60,7 @@ class LoginStack(Gtk.Stack):
 
         self.set_name("login-stack")
         self._controller = controller
-        self.active_widget = None
+        self.active_widget: Optional[ResettableWidget] = None
 
         self.login_form = LoginForm(controller, notifications, overlay_widget)
         self.add_named(self.login_form, "login_form")

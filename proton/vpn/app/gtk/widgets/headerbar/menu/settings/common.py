@@ -19,13 +19,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import List, Tuple, Callable, Any
+from typing import List, Tuple, Callable, Any, Optional, TYPE_CHECKING, cast
 from gi.repository import Gtk, Gio
 
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog \
     import ConfirmationDialog, show_confirmation_dialog
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn import logging
+
+if TYPE_CHECKING:
+    from proton.vpn.app.gtk.conflicts import Conflict
 
 logger = logging.getLogger(__name__)
 
@@ -205,9 +208,9 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         description: str,
         setting_name: str,
         requires_subscription_to_be_active: bool = False,
-        callback: Callable = None,
+        callback: Optional[Callable] = None,
         disable_on_active_connection: bool = False,
-        enabled: bool = None,
+        enabled: Optional[bool] = None,
         display_tooltip_only_on_active_connection: bool = False
     ):
         super().__init__()
@@ -238,7 +241,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
     def get_setting(self) -> bool:
         """Shortcut property that returns the current setting"""
-        return self._controller.get_setting_attr(self._setting_name)
+        return cast(bool, self._controller.get_setting_attr(self._setting_name))
 
     def save_setting(self, new_value: bool):
         """Shortcut property that sets the new setting and stores to disk."""
@@ -335,9 +338,9 @@ class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instan
         do_revert: Callable[[ToggleWidget], None],
         requires_subscription: bool = False,
         disable_on_active_connection: bool = False,
-        enabled: bool = None,
+        enabled: Optional[bool] = None,
         display_tooltip_only_on_active_connection: bool = False,
-        conflict_resolver: Callable[[str, Any], str] = None,
+        conflict_resolver: Optional[Callable[[str, Any], Optional["Conflict"]]] = None,
     ):
         super().__init__(
             controller=controller, title=title,
@@ -405,9 +408,9 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         title: str,
         setting_name: str,
         combobox_options: List[Tuple[int, str]],
-        description: str = None,
+        description: Optional[str] = None,
         requires_subscription_to_be_active: bool = False,
-        callback: Callable = None,
+        callback: Optional[Callable] = None,
         disable_on_active_connection: bool = False
     ):
         super().__init__()
@@ -458,7 +461,7 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         self.set_row_spacing(10)
         self.set_column_spacing(100)
 
-    def _build_combobox(self) -> Gtk.Switch:
+    def _build_combobox(self) -> Gtk.ComboBoxText:
         combobox = Gtk.ComboBoxText()
         for value, display in self._combobox_options:
             combobox.append(str(value), display)
@@ -525,7 +528,7 @@ class ConflictableComboboxWidget(ComboboxWidget):
         combobox_options: List[Tuple[int, str]],
         do_set: Callable[[ComboboxWidget, int], None],
         do_revert: Callable[[ComboboxWidget], None],
-        description: str = None,
+        description: Optional[str] = None,
         requires_subscription: bool = False,
         disable_on_active_connection: bool = False
     ):
@@ -591,7 +594,7 @@ class EntryWidget(Gtk.Grid):
         title: str,
         setting_name: str,
         description: str,
-        callback: Callable = None,
+        callback: Optional[Callable] = None,
         requires_subscription_to_be_active: bool = False,
     ):
         super().__init__()
@@ -615,7 +618,7 @@ class EntryWidget(Gtk.Grid):
         """Set if the widget should be active or not."""
         self.set_property("sensitive", new_value)
 
-    def get_setting(self) -> bool:
+    def get_setting(self) -> object:
         """Shortcut property that returns the current setting"""
         return self._controller.get_setting_attr(self._setting_name)
 

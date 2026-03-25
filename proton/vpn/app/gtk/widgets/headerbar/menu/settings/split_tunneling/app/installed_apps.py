@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-from typing import Optional, Union
+from typing import Optional
 import html
 import re
 import shutil
@@ -51,6 +51,8 @@ class DesktopFileParsingError(Exception):
 def _check_is_flatpak(app: Gio.AppInfo) -> bool:
     """Check if executable is a flatpak. """
     command_line = app.get_commandline()
+    if command_line is None:
+        return False
     return command_line.startswith("flatpak") or command_line.startswith("/usr/bin/flatpak")
 
 
@@ -76,6 +78,8 @@ def _get_flatpak_executable(app: Gio.AppInfo) -> str:
 def _check_is_snap(app: Gio.AppInfo) -> bool:
     """Checks if the command line string runs a snap app."""
     command_line = app.get_commandline()
+    if command_line is None:
+        return False
     return command_line.startswith("/snap/bin/")
 
 
@@ -102,7 +106,7 @@ def _check_is_command(command_line: str) -> bool:
     :returns: True if it's a command, and False otherwise.
     """
     command, *_ = command_line.split()
-    return "/" not in command and shutil.which(command)
+    return "/" not in command and bool(shutil.which(command))
 
 
 def _get_native_app_executable(app: Gio.AppInfo):
@@ -110,7 +114,7 @@ def _get_native_app_executable(app: Gio.AppInfo):
     executable = app.get_executable()
 
     if _check_is_command(executable):
-        executable = shutil.which(executable)
+        executable: Optional[str] = shutil.which(executable)
 
     if not executable:
         raise DesktopFileParsingError(
@@ -124,7 +128,7 @@ def get_app_icon(app: Gio.AppInfo) -> Optional[str]:
     """Returns either the name of a themed icon or the full path to the icon."""
     icon = None
 
-    received_icon: Union[Gio.ThemedIcon, Gio.FileIcon] = app.get_icon()
+    received_icon: Optional[Gio.Icon] = app.get_icon()
     if isinstance(received_icon, Gio.ThemedIcon):
         icon = received_icon.get_names()[0]
     elif isinstance(received_icon, Gio.FileIcon):

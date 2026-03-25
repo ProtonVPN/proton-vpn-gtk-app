@@ -27,7 +27,7 @@ import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from tempfile import NamedTemporaryFile
 from concurrent.futures import Future
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 from gi.repository import Gtk, GLib
 
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
@@ -65,7 +65,8 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
     def __init__(
         self, controller: Controller, main_window: MainWindow,
-        notification_bar: NotificationBar = None, log_collector: LogCollector = None
+        notification_bar: Optional[NotificationBar] = None,
+        log_collector: Optional["LogCollector"] = None
     ):
         super().__init__()
         self.set_name("bug-report-dialog")

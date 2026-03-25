@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+from typing import Any, Optional
 from gi.repository import GObject, Gtk, Gdk, GLib
 
 from proton.vpn import logging
@@ -55,9 +56,9 @@ class App(Gtk.Application):
         super().__init__(application_id=APPLICATION_ID)
         logger.info(f"{self=}", category="APP", event="PROCESS_START")
         self._controller = controller
-        self.window = None
+        self.window: Optional[MainWindow] = None
         self._tray_indicator = None
-        self._signal_connect_queue = []
+        self._signal_connect_queue: list[Any] = []
         self._start_minimized_from_cli = False
         self.add_options()
 
@@ -121,7 +122,7 @@ class App(Gtk.Application):
         Gives access to currently opened error message dialogs. This method
         was made available for testing purposes.
         """
-        return self.window.main_widget.notifications.error_dialog  # pylint: disable=W0212
+        return self.window.main_widget.notifications.error_dialog
 
     @GObject.Signal(name="app-ready")
     def app_ready(self):

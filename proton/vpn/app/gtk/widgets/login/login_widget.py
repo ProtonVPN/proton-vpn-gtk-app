@@ -19,7 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from gi.repository import GObject
 
@@ -52,8 +52,8 @@ class LoginWidget(Gtk.Box):
         notifications: Notifications,
         overlay_widget: OverlayWidget,
         main_window: "MainWindow",
-        login_stack: "LoginStack" = None,
-        disable_killswitch_widget: DisableKillSwitchWidget = None
+        login_stack: Optional["LoginStack"] = None,
+        disable_killswitch_widget: Optional[DisableKillSwitchWidget] = None
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 

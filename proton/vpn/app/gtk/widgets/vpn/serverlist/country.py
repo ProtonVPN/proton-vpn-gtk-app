@@ -24,7 +24,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, Optional, Callable
 from gi.repository import GLib, GObject
 
 from proton.vpn.app.gtk.utils.accessibility import add_accessibility
@@ -54,7 +54,7 @@ class CountryAnalysis:
 
 
 def _analyze_servers(ordered_servers: List[LogicalServer],
-                     connected_server_id: str = None) -> CountryAnalysis:
+                     connected_server_id: Optional[str] = None) -> CountryAnalysis:
     """
     Iterates over the ordered list of servers and extracts information
     to be displayed for the country.
@@ -122,14 +122,14 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._smart_routing = smart_routing
         self._controller = controller
 
-        self._country_name_label = None
+        self._country_name_label: Optional[Gtk.Label] = None
         self._under_maintenance_icon = None
         self._country_details = None
 
-        self._connect_button = None
-        self._connect_button_handler_id = None
-        self._toggle_button = None
-        self._toggle_button_handler_id = None
+        self._connect_button: Optional[Gtk.Button] = None
+        self._connect_button_handler_id: Optional[int] = None
+        self._toggle_button: Gtk.Button
+        self._toggle_button_handler_id: Optional[int] = None
 
         self._collapsed_img = Gtk.Image.new_from_icon_name("pan-down-symbolic")
         self._expanded_img = Gtk.Image.new_from_icon_name("pan-up-symbolic")
@@ -246,7 +246,7 @@ class CountryHeader(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         return connect_button
 
     def _build_server_feature_icons(self) -> List[Gtk.Image]:
-        server_feature_icons = []
+        server_feature_icons: List[Gtk.Image] = []
         if ServerFeatureEnum.P2P in self._server_features:
             server_feature_icons.append(P2PIcon())
         if ServerFeatureEnum.TOR in self._server_features:
@@ -382,13 +382,13 @@ class DeferredCountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             country: Country,
             user_tier: int,
             controller: Controller,
-            connected_server_id: str = None,
+            connected_server_id: Optional[str] = None,
             show_country_servers: bool = False,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         self._controller = controller
-        self._indexed_server_rows = {}
+        self._indexed_server_rows: dict[str, ServerRow] = {}
 
         free_servers, plus_servers =\
             self._group_servers_by_tier(country.servers)
@@ -441,7 +441,7 @@ class DeferredCountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attribut
                 if self._connected_server_id == server.id:
                     server_row.connection_state = ConnectionStateEnum.CONNECTED
 
-        self._add_servers_to_country = add_servers_to_country
+        self._add_servers_to_country: Optional[Callable] = add_servers_to_country
 
         self._upgrade_required = is_free_user and not self._is_free_country
 
@@ -497,7 +497,7 @@ class DeferredCountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attribut
     def is_free_country(self) -> bool:
         """Returns True if this country has any servers available to
         users with a free account. Otherwise, it returns False."""
-        return self._is_free_country
+        return bool(self._is_free_country)
 
     @property
     def showing_servers(self):
@@ -520,7 +520,7 @@ class DeferredCountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attribut
     def server_rows(self) -> List[ServerRow]:
         """Returns the list of server rows for this server.
         This method was made available for tests."""
-        server_rows = []
+        server_rows: List[ServerRow] = []
         revealer_child = self._server_rows_revealer.get_child()
         if revealer_child:
             child = revealer_child.get_first_child()
@@ -540,7 +540,7 @@ class DeferredCountryRow(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         return normalize(self.country_name)
 
     @staticmethod
-    def _group_servers_by_tier(country_servers) -> Tuple[List[LogicalServer]]:
+    def _group_servers_by_tier(country_servers) -> Tuple[List[LogicalServer], List[LogicalServer]]:
         free_servers = []
         plus_servers = []
         for server in country_servers:

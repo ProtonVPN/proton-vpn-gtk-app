@@ -18,6 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from typing import Optional
 from gi.repository import Gtk, GObject
 
 from proton.vpn import logging
@@ -41,7 +42,7 @@ class TwoFactorAuthWidget(Gtk.Box):
         controller: Controller,
         notifications: Notifications,
         overlay_widget: OverlayWidget,
-        two_factor_auth_stack: TwoFactorAuthStack = None
+        two_factor_auth_stack: Optional[TwoFactorAuthStack] = None
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=20)
         self.set_name("two-factor-auth-widget")

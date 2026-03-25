@@ -18,6 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 
+from typing import Optional
 from gi.repository import Gtk, GObject
 
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data_structures \
@@ -33,7 +34,7 @@ class SelectedAppList(Gtk.ScrolledWindow):
     MAX_AMOUNT_OF_APPS_TO_DISPLAY = 6
     APP_ROW_SIZE = 35
 
-    def __init__(self, apps_to_add: list[AppData] = None):
+    def __init__(self, apps_to_add: Optional[list[AppData]] = None):
         super().__init__()
         self.set_name("selected-app-list")
 

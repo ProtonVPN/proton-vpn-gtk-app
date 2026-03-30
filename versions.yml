@@ -1,29 +1,13 @@
-version: 4.15.2rc3
-time: 2026/03/24 20:15
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "chore: add type hints (round 1)"
----
-version: 4.15.2rc2
-time: 2026/03/24 12:00
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "feat: Group the USA by states instead of cities"
----
-version: 4.15.2rc1
-time: 2026/03/23 10:44
+version: 4.15.2
+time: 2026/03/30 10:56
 author: Richard Paterson
 email: richard.paterson@proton.ch
 urgency: low
 stability: unstable
 description:
 - "feat: NPS survey popover"
+- "feat: Group the USA by states instead of cities (Pep Llaneras)"
+- "chore: add type hints (round 1) (Pep Llaneras)"
 ---
 version: 4.15.1
 time: 2026/03/17 15:00

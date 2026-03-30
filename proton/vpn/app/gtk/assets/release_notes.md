@@ -1,4 +1,8 @@
-## What's new (4.15.1)
+## What's new (4.15.2)
+
+- Minor UI and stability improvements
+
+## 4.15.1
 
 - Minor improvements.
 

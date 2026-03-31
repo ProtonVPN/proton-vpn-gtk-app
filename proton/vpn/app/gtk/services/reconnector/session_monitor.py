@@ -60,7 +60,7 @@ class SessionMonitor:
         if not self._session_object_path:
             try:
                 self._setup()
-            except Exception:
+            except dbus.exceptions.DBusException:
                 # logind is inaccessible (e.g. AppArmor in strict snap confinement).
                 # Session-unlock reconnection won't work, but everything else is fine.
                 return
@@ -85,7 +85,7 @@ class SessionMonitor:
         if not self._session_object_path:
             try:
                 self._setup()
-            except Exception:
+            except dbus.exceptions.DBusException:
                 # logind is inaccessible; assume session is unlocked so reconnection
                 # can proceed when network comes up.
                 return True

@@ -68,6 +68,30 @@ def test_enable_raises_runtime_error_if_there_is_not_an_active_session(dbus_mock
         session_monitor.enable()
 
 
+@patch("proton.vpn.app.gtk.services.reconnector.session_monitor.dbus")
+def test_enable_ignores_dbus_exception_if_logind_is_inaccessible(dbus_mock):
+    bus_mock = Mock()
+    callback_mock = Mock()
+    session_monitor = SessionMonitor(bus_mock)
+    session_monitor.session_unlocked_callback = callback_mock
+
+    bus_mock.get_object.side_effect = dbus_mock.exceptions.DBusException("access denied")
+
+    session_monitor.enable()
+
+    bus_mock.add_signal_receiver.assert_not_called()
+
+
+@patch("proton.vpn.app.gtk.services.reconnector.session_monitor.dbus")
+def test_is_session_unlocked_returns_true_if_logind_is_inaccessible(dbus_mock):
+    bus_mock = Mock()
+    session_monitor = SessionMonitor(bus_mock)
+
+    bus_mock.get_object.side_effect = dbus_mock.exceptions.DBusException("access denied")
+
+    assert session_monitor.is_session_unlocked is True
+
+
 def test_disable_unhooks_login1_signal():
     bus_mock = Mock()
     signal_receiver_mock = Mock()

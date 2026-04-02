@@ -1,3 +1,13 @@
+version: 4.15.3rc1
+time: 2026/04/02 12:57
+author: Elena Švilpė
+email: elena.svilpe@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: Check StatusNotifierWatcher availability for tray detection (thanks to https://github.com/kenvandine)"
+- "fix: Use a snap friendly bus name to work with the generated apparmor profile (https://github.com/kenvandine)"
+---
 version: 4.15.2
 time: 2026/03/30 10:56
 author: Richard Paterson

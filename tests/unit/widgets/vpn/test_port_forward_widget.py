@@ -152,6 +152,6 @@ class TestPortForwardWidget:
         pfwidget = PortForwardWidget(notifications=Mock(), clipboard=clipboard_mock)
         pfwidget.set_port_forward_label(port)
 
-        pfwidget.emit("clicked")
+        pfwidget.click_copy_button()
         value: GObject.Value = clipboard_mock.set.call_args_list[0][0][0]
         assert value.get_string() == str(port)

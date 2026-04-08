@@ -38,7 +38,7 @@ class QuickConnectWidget(Gtk.Box):
         self._connection_state: states.State = None
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
-        self.connect_button = Gtk.Button(label="Quick Connect")
+        self.connect_button = Gtk.Button(label="Connect")
         self.connect_button.add_css_class("primary")
         self.connect_button.connect(
             "clicked", self._on_connect_button_clicked)

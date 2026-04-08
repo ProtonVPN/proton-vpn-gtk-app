@@ -1,0 +1,70 @@
+#server-list-widget #server-load levelbar#server-load-bar trough {
+    min-height: 6px;
+    border-radius: 3px;
+    border: none;
+    background-color: @background-strong;
+    padding: 0;
+}
+
+#server-list-widget #server-load levelbar#server-load-bar trough block {
+    min-height: 6px;
+    border-radius: 3px;
+    border: none;
+}
+
+#server-list-widget #server-load levelbar#server-load-bar trough block.empty {
+    background-color: transparent;
+}
+
+#server-list-widget #server-load levelbar#server-load-bar.signal-success trough block.filled {
+    background-color: @signal-success;
+}
+
+#server-list-widget #server-load levelbar#server-load-bar.signal-warning trough block.filled {
+    background-color: @signal-warning;
+}
+
+#server-list-widget #server-load levelbar#server-load-bar.signal-danger trough block.filled {
+    background-color: @signal-danger;
+}
+
+/* Show under maintenance icon vertically aligned with toggle button icons */
+#server-list-widget .row-content .under-maintenance-icon {
+    margin: 10px;
+}
+
+/* Keep row height consistent whether showing connect button or upgrade link */
+#server-list-widget .row-content {
+    min-height: 32px;
+}
+
+#feature-legend-popover {
+    padding: 0;
+}
+
+#feature-legend-popover .feature-legend-header {
+    margin: 6px 10px;
+    border-spacing: 6px;
+}
+
+#feature-legend-popover .feature-legend-content {
+    margin: 0 10px 10px 10px;
+    padding-top: 2px;
+    border-spacing: 10px;
+}
+
+#feature-legend-popover .feature-legend-row {
+    border-spacing: 6px;
+}
+
+#feature-legend-popover .feature-legend-icon {
+    margin-top: 3px;
+}
+
+#feature-legend-popover .feature-legend-learn-more {
+    padding: 0;
+}
+
+#server-list-widget #server-list-header-row {
+    border-spacing: 10px;
+}

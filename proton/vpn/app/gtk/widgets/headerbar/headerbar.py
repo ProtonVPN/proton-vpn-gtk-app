@@ -48,6 +48,7 @@ class HeaderBar(Gtk.HeaderBar):
         self.set_decoration_layout("menu:minimize,close")
 
         menu_button = Gtk.MenuButton()
+        menu_button.set_has_frame(False)
         menu_button.set_icon_name("open-menu-symbolic")
         self.menu = Menu(
             controller=controller,

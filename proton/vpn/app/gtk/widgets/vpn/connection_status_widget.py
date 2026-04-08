@@ -19,12 +19,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from pathlib import Path
 from typing import Optional, cast
-from gi.repository import GLib
+from gi.repository import Gdk
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.connection import events, states
+from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, LoadingConnectionWidget
+from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import DoubleFlagIcon
+from proton.vpn.session.servers import ServerFeatureEnum, TierEnum
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.vpn.port_forward_widget import PortForwardRevealer
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.split_tunneling import \
@@ -37,112 +40,243 @@ SPLIT_TUNNELING_APP_RESTART_MESSAGE = \
     "Split tunneling enabled. Remember to restart affected apps."
 
 
-class VPNConnectionStatusWidget(Gtk.Box):
+class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Displays the current connection status."""
     MAXIMUM_SESSIONS_ERROR = "You've reached your maximum device limit. " \
         "To reconnect to VPN, please disconnect from another device."
 
     def __init__(
         self, controller: Controller,
-        overlay_widget: OverlayWidget,
         notifications: Notifications,
-        port_forward_revealer: Optional[PortForwardRevealer] = None
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         self.set_name("vpn-connection-status-widget")
-        self._overlay_widget = overlay_widget
         self._controller = controller
         self._notifications = notifications
+        self._connection_details_icon: Gtk.Image
 
-        self._connection_status_label = Gtk.Label(label="")
-        self._connection_status_label.set_name("connection-status-label")
-        self._connection_status_label.set_wrap(True)
-        # Setting max_width_chars to a small value prevents the label from
-        # requesting extra horizontal space, forcing it to wrap within its
-        # allocated width instead.
-        self._connection_status_label.set_max_width_chars(1)
-        self._loading_widget = self._build_loading_connection_widget()
+        self.append(self._build_status_box())
 
-        self.append(self._connection_status_label)
+        self._port_forward_revealer = PortForwardRevealer(notifications)
+        self._connection_details_text_box.append(self._port_forward_revealer)
 
-        self._port_forward_revealer: Optional[PortForwardRevealer] = None
-        display_port_forwarding = controller.feature_flags\
-            .get("DisplayPortForwarding")
-        if display_port_forwarding:
-            self._port_forward_revealer = port_forward_revealer \
-                or PortForwardRevealer(notifications)
-            self.append(self._port_forward_revealer)
+    def _build_status_box(self) -> Gtk.Box:
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        box.set_name("vpn-status-box")
 
-    def _build_loading_connection_widget(self) -> LoadingConnectionWidget:
-        cancel_button = Gtk.Button.new_with_label("Cancel Connection")
-        cancel_button.connect("clicked", self._on_cancel_button_clicked)
+        self._protected_pixbuf = icons.get(
+            Path("connection-status/protected.svg"), width=24, height=24)
+        self._unprotected_pixbuf = icons.get(
+            Path("connection-status/unprotected.svg"), width=24, height=24)
+        self._fastest_pixbuf = icons.get(Path("connection-status/fastest.svg"), width=36, height=24)
 
-        loading_widget = LoadingConnectionWidget(
-            label="",
-            cancel_button=cancel_button
+        self._status_title_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
+        self._status_title_row.set_name("status-title-row")
+        self._status_title_row.set_halign(Gtk.Align.CENTER)
+        self._status_title_row.add_css_class("unprotected")
+
+        self._status_icon = Gtk.Image.new_from_paintable(
+            Gdk.Texture.new_for_pixbuf(self._unprotected_pixbuf)
         )
+        self._status_icon.set_name("status-icon")
+        self._status_icon.set_size_request(
+            self._unprotected_pixbuf.get_width(), self._unprotected_pixbuf.get_height()
+        )
+        self._status_icon.set_valign(Gtk.Align.CENTER)
 
-        return loading_widget
+        self._status_spinner = Gtk.Spinner()
+        self._status_spinner.set_size_request(
+            self._unprotected_pixbuf.get_width(), self._unprotected_pixbuf.get_height()
+        )
+        self._status_spinner.set_valign(Gtk.Align.CENTER)
+        self._status_spinner.set_visible(False)
 
-    def _on_cancel_button_clicked(self, _):
-        logger.info("Disconnect from VPN", category="ui", event="disconnect")
-        future = self._controller.disconnect()
-        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+        self._status_title_label = Gtk.Label(label="")
+        self._status_title_label.set_name("status-title-label")
+        self._status_title_label.add_css_class("title-4")
+
+        self._status_title_row.append(self._status_icon)
+        self._status_title_row.append(self._status_spinner)
+        self._status_title_row.append(self._status_title_label)
+
+        self._connection_details_box = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL, spacing=4
+        )
+        self._connection_details_box.set_name("connection-details-box")
+
+        self._connection_details_icon = Gtk.Image()
+        self._connection_details_icon.set_valign(Gtk.Align.START)
+
+        self._connection_details_text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        self._connection_details_title = Gtk.Label()
+        self._connection_details_title.set_name("connection-details-title")
+        self._connection_details_title.add_css_class("title-4")
+        self._connection_details_title.set_halign(Gtk.Align.START)
+
+        self._connection_details_subtitle = Gtk.Label()
+        self._connection_details_subtitle.set_name("connection-details-subtitle")
+        self._connection_details_subtitle.set_halign(Gtk.Align.START)
+
+        self._connection_details_text_box.append(self._connection_details_title)
+        self._connection_details_text_box.append(self._connection_details_subtitle)
+        self._connection_details_box.append(self._connection_details_icon)
+        self._connection_details_box.append(self._connection_details_text_box)
+
+        self._error_detail_label = Gtk.Label(label="")
+        self._error_detail_label.set_name("error-detail-label")
+        self._error_detail_label.set_halign(Gtk.Align.CENTER)
+
+        box.append(self._status_title_row)
+        box.append(self._error_detail_label)
+        box.append(self._connection_details_box)
+
+        return box
 
     @property
     def status_message(self) -> str:
         """Returns the connection status message being displayed to the user."""
-        return self._connection_status_label.get_label()
+        return self._status_title_label.get_text()
 
     def connection_status_update(self, connection_state: states.State):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
-        self._update_connection_status_label(connection_state)
+        disconnected = isinstance(connection_state, states.Disconnected)
+        disconnecting = isinstance(connection_state, states.Disconnecting)
+        connecting = isinstance(connection_state, states.Connecting)
+        connected = isinstance(connection_state, states.Connected)
+        error = isinstance(connection_state, states.Error)
+        reconnecting = connection_state.context.reconnection
 
-    def _update_connection_status_label(self, connection_state: states.State):
-        connection = connection_state.context.connection
+        if not error:
+            self._error_detail_label.set_text("")
 
-        label = ""
-        if isinstance(connection_state, states.Disconnected):
-            label = "You are disconnected"
-            self._overlay_widget.hide()
-        elif isinstance(connection_state, states.Connecting):
-            self._loading_widget.set_label(f"Connecting to {connection.server_name}")
-            self._overlay_widget.show(self._loading_widget)
-        elif isinstance(connection_state, states.Connected):
-            label = f"You are connected to {connection.server_name}"
-            self._overlay_widget.hide()
+        if connecting or (disconnecting and reconnecting):
+            self._show_spinner()
+            self._set_status_title("Connecting...", None)
+        elif connected:
+            self._show_icon(self._protected_pixbuf)
+            self._set_status_title("Protected", "protected")
             if self._split_tunneling_enabled:
                 self._notifications.show_info_message(
                     message=SPLIT_TUNNELING_APP_RESTART_MESSAGE
                 )
-        elif isinstance(connection_state, states.Disconnecting):
-            label = f"Disconnecting from {connection.server_name}"
-        elif isinstance(connection_state, states.Error):
-            last_connection_event = connection_state.context.event
-            label = "Connection error"
-            if isinstance(last_connection_event, events.TunnelSetupFailed):
-                label = f"{label}: tunnel setup failed"
-            elif isinstance(last_connection_event, events.AuthDenied):
-                label = f"{label}: authentication denied"
-            elif isinstance(last_connection_event, events.Timeout):
-                label = f"{label}: timeout"
-            elif isinstance(last_connection_event, events.DeviceDisconnected):
-                label = f"{label}: device disconnected"
-            elif isinstance(last_connection_event, events.MaximumSessionsReached):
-                label = f"{label}: session limit reached"
-                self._notifications.show_error_dialog(
-                    message=self.MAXIMUM_SESSIONS_ERROR,
-                    title=label
-                )
+        elif disconnecting and not reconnecting:
+            self._show_spinner()
+            self._set_status_title("Disconnecting...", None)
+        elif error:
+            self._show_icon(None)
+            self._set_status_title("Connection error", "error")
+            self._on_connection_error(connection_state)
+        elif disconnected:
+            self._show_icon(self._unprotected_pixbuf)
+            self._set_status_title("Unprotected", "unprotected")
 
-            self._overlay_widget.hide()
+        self._update_connection_details(
+            connection_state.context.connection,
+            disconnected and not reconnecting
+        )
 
-        # This condition will be removed once we remove the feature flag.
-        if self._port_forward_revealer:
-            self._port_forward_revealer.on_new_state(connection_state)
+        self._port_forward_revealer.on_new_state(connection_state)
 
-        self._connection_status_label.set_label(label)
+    def _show_spinner(self):
+        self._status_icon.set_visible(False)
+        self._status_spinner.set_visible(True)
+        self._status_spinner.start()
+
+    def _show_icon(self, pixbuf):
+        self._status_spinner.stop()
+        self._status_spinner.set_visible(False)
+        if pixbuf is not None:
+            self._status_icon.set_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
+            self._status_icon.set_size_request(pixbuf.get_width(), pixbuf.get_height())
+            self._status_icon.set_visible(True)
+        else:
+            self._status_icon.set_visible(False)
+
+    def _set_status_title(self, text: str, css_class: Optional[str]):
+        self._status_title_label.set_text(text)
+        for cls in ("protected", "unprotected", "error"):
+            if cls == css_class:
+                self._status_title_row.add_css_class(cls)
+            else:
+                self._status_title_row.remove_css_class(cls)
+
+    def _on_connection_error(self, connection_state: states.Error):
+        last_connection_event = connection_state.context.event
+        error_detail = None
+        if isinstance(last_connection_event, events.TunnelSetupFailed):
+            error_detail = "Tunnel setup failed"
+        elif isinstance(last_connection_event, events.AuthDenied):
+            error_detail = "Authentication denied"
+        elif isinstance(last_connection_event, events.Timeout):
+            error_detail = "Timeout"
+        elif isinstance(last_connection_event, events.DeviceDisconnected):
+            error_detail = "Device disconnected"
+        elif isinstance(last_connection_event, events.MaximumSessionsReached):
+            error_detail = "Session limit reached"
+            self._notifications.show_error_dialog(
+                message=self.MAXIMUM_SESSIONS_ERROR,
+                title="Connection error: session limit reached"
+            )
+        if error_detail:
+            self._error_detail_label.set_text(error_detail)
+
+    def _update_connection_details(self, connection, disconnected: bool):
+        if not self._controller.user_logged_in:
+            # State updates can arrive via GLib.idle_add after the user has
+            # logged out, at which point session data is already cleared.
+            return
+
+        if disconnected:
+            pixbuf = self._fastest_pixbuf
+            self._connection_details_icon.set_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
+            self._connection_details_icon.set_size_request(pixbuf.get_width(), pixbuf.get_height())
+            is_free = self._controller.user_tier == TierEnum.FREE
+            if is_free:
+                self._connection_details_title.set_text("Fastest free server")
+                self._connection_details_subtitle.set_text("Auto-selected from free locations")
+            else:
+                self._connection_details_title.set_text("Fastest country")
+                self._connection_details_subtitle.set_text("")
+        else:
+            server_name = connection.server_name
+            logical_server = self._controller.server_list.get_by_name(server_name)
+            is_secure_core = ServerFeatureEnum.SECURE_CORE in logical_server.features
+
+            new_connection_details_icon = self._build_connection_details_icon(
+                logical_server, is_secure_core)
+            self._connection_details_box.remove(self._connection_details_icon)
+            self._connection_details_icon = new_connection_details_icon
+            self._connection_details_box.prepend(self._connection_details_icon)
+
+            self._connection_details_title.set_text(logical_server.exit_country_name)
+            if is_secure_core:
+                self._connection_details_subtitle.set_label(
+                    f"Via {logical_server.entry_country_name}")
+            else:
+                self._connection_details_subtitle.set_label(
+                    f"{logical_server.location} - {server_name}")
+
+    def _build_connection_details_icon(self, logical_server, is_secure_core: bool) -> Gtk.Image:
+        if is_secure_core:
+            icon = DoubleFlagIcon(
+                exit_country_code=logical_server.exit_country,
+                entry_country_code=logical_server.entry_country,
+            )
+            icon.set_valign(Gtk.Align.START)
+            return icon
+        try:
+            pixbuf = icons.get(
+                Path("flags") / f"{logical_server.exit_country.lower()}.svg",
+                width=36, height=24
+            )
+        except ValueError:
+            # A ValueError could be raised if we don't have a flag icon for the country yet
+            pixbuf = icons.get(Path("flags") / "placeholder.svg", width=36, height=24)
+        image = Gtk.Image.new_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
+        image.set_size_request(pixbuf.get_width(), pixbuf.get_height())
+        image.set_valign(Gtk.Align.START)
+        return image
 
     @property
     def _split_tunneling_enabled(self) -> bool:

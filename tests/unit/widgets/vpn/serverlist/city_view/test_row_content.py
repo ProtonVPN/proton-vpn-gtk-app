@@ -76,6 +76,27 @@ def test_header_displays_server_load_when_server_group_is_a_single_server():
     assert header.server_load == "75%"
 
 
+def test_header_hides_details_and_shows_maintenance_icon_when_under_maintenance():
+    header = RowContent()
+    header.display(row_data=_row_data(under_maintenance=True))
+    assert header.under_maintenance_icon.get_visible()
+    assert not header.details_visible
+
+
+def test_header_disables_label_when_under_maintenance():
+    header = RowContent()
+    header.display(row_data=_row_data(under_maintenance=True))
+    assert not header.label_sensitive
+
+
+def test_header_connect_button_calls_on_connect_callback_when_clicked():
+    on_connect = Mock()
+    header = RowContent()
+    header.display(row_data=_row_data(toggable=False, load=50, on_connect=on_connect))
+    header.click_connect_button()
+    on_connect.assert_called_once()
+
+
 def test_header_displays_server_features():
     header = RowContent()
     header.display(row_data=_row_data(

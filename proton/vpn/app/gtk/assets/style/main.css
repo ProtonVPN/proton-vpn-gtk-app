@@ -1,6 +1,53 @@
 @import "dark_colours.css";
 @import "dark_buttons.css";
+@import "connection_status.css";
+@import "main_widget.css";
+@import "server_list.css";
 
+entry:focus-within,
+button:focus-visible,
+label:focus-visible,
+label link:focus-visible,
+switch:focus-visible {
+    outline-color: @interaction-norm;
+}
+
+switch:checked {
+    background-color: @interaction-norm;
+    background-image: image(@interaction-norm);
+    border-color: @interaction-norm;
+}
+
+switch:checked:hover {
+    background-color: @interaction-norm-hover;
+    background-image: image(@interaction-norm-hover);
+    border-color: @interaction-norm-hover;
+}
+
+entry text selection {
+    background-color: @interaction-norm;
+    color: @text-norm;
+}
+
+label link {
+    color: @interaction-norm;
+}
+
+label link:hover {
+    color: @interaction-norm-hover;
+}
+
+scrollbar slider {
+    background-color: @interaction-norm;
+}
+
+scrollbar slider:hover {
+    background-color: @interaction-norm-hover;
+}
+
+scrollbar slider:active {
+    background-color: @interaction-norm-active;
+}
 
 label.info {
     background-color: @signal-info;
@@ -52,18 +99,6 @@ label.success {
     margin-left: 5px;
 }
 
-#server-load.signal-danger {
-    color: @signal-danger;
-}
-
-#server-load.signal-warning {
-    color: @signal-warning;
-}
-
-#server-load.signal-success {
-    color: @signal-success;
-}
-
 .setting-category {
     margin-top: 20px;
     margin-left: 20px;
@@ -100,30 +135,6 @@ label.success {
 
 label.signal-danger {
     color: @signal-danger;
-}
-
-#connection-status-label {
-    font-weight: bold;
-}
-
-#port-forwarding-widget {
-    background-image: none;
-    transition: background-color 0.2s;
-    border-radius: 5px;
-}
-
-#port-forwarding-widget:hover {
-    background-image: none;
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-#port-forwarding-widget:active {
-    background-image: none;
-    background-color: rgba(255, 255, 255, 0.02);
-}
-
-#port-forwarding-widget>box {
-    padding: 5px;
 }
 
 #split-tunneling-app-selection-window viewport {
@@ -167,47 +178,6 @@ label.signal-danger {
 	margin-right: 1.8em;
 }
 
-
-/* Show under maintenance icon vertically aligned with toggle button icons */
-.row-content .under-maintenance-icon {
-    margin: 10px;
-}
-
-/* Keep row height consistent whether showing connect button or upgrade link */
-.row-content {
-    min-height: 32px;
-}
-
-#feature-legend-popover {
-    padding: 0;
-}
-
-#feature-legend-popover .feature-legend-header {
-    margin: 6px 10px;
-    border-spacing: 6px;
-}
-
-#feature-legend-popover .feature-legend-content {
-    margin: 0 10px 10px 10px;
-    padding-top: 2px;
-    border-spacing: 10px;
-}
-
-#feature-legend-popover .feature-legend-row {
-    border-spacing: 6px;
-}
-
-#feature-legend-popover .feature-legend-icon {
-    margin-top: 3px;
-}
-
-#feature-legend-popover .feature-legend-learn-more {
-    padding: 0;
-}
-
-#server-list-header-row {
-    border-spacing: 10px;
-}
 
 #nps-survey-modal-content {
     margin: 24px 32px 32px 32px;
@@ -285,3 +255,4 @@ label.signal-danger {
     font-weight: 400;
     margin: 12px 0 0 0;
 }
+

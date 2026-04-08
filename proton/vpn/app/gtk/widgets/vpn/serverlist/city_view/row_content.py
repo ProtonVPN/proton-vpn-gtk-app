@@ -36,7 +36,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     P2PIcon, SecureCoreIcon, SmartRoutingIcon, TORIcon, UnderMaintenanceIcon
 )
 
-from proton.vpn.app.gtk.widgets.vpn.serverlist.server import ServerLoad
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.server_load import ServerLoad
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.hover_stack import HoverStack
 
 logger = logging.getLogger(__name__)
@@ -98,8 +98,8 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._collapsed_img = Gtk.Image.new_from_icon_name("pan-down-symbolic")
         self._expanded_img = Gtk.Image.new_from_icon_name("pan-up-symbolic")
         self.toggle_button = Gtk.Button()
+        self.toggle_button.set_has_frame(False)
         self.toggle_button.add_css_class("secondary")
-        self.toggle_button.add_css_class("subtle-toggle")
         self.toggle_button.set_visible(False)
         self._details.append(self.toggle_button)
 
@@ -227,6 +227,26 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             icons.append(child)
             child = child.get_next_sibling()
         return icons
+
+    @property
+    def details_visible(self) -> bool:
+        """Returns whether the details box (connect button, load, etc.) is visible."""
+        return self._details.get_visible()
+
+    @property
+    def label_sensitive(self) -> bool:
+        """Returns whether the label is sensitive (not greyed out)."""
+        return self._label.get_sensitive()
+
+    @property
+    def icon(self) -> Optional[Gtk.Widget]:
+        """Returns the icon widget for this row, or None if not set."""
+        return self._row_data.icon if self._row_data else None
+
+    @property
+    def connect_button_tooltip(self) -> Optional[str]:
+        """Returns the connect button tooltip text."""
+        return self.connect_button.get_tooltip_text()
 
     @property
     def server_load(self) -> Optional[str]:

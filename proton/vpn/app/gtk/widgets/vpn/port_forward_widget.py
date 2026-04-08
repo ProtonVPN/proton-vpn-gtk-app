@@ -20,9 +20,11 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-from typing import Optional
-from gi.repository import Gdk, GObject
+from pathlib import Path
+from typing import List, Optional
+from gi.repository import Gdk, GLib, GObject
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.assets import icons
 from proton.vpn.connection import states
 
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
@@ -49,7 +51,7 @@ class PortForwardRevealer(Gtk.Revealer):  # pylint: disable=too-few-public-metho
         self.set_reveal_child(display_child)
 
 
-class PortForwardWidget(Gtk.Button):
+class PortForwardWidget(Gtk.Box):
     """Widgets handles the display and interactivity to copy por to clipboard."""
     ACTIVE_PORT_LABEL = "Active port:"
     TOOLTIP_LABEL = "Copy port number"
@@ -58,17 +60,16 @@ class PortForwardWidget(Gtk.Button):
             self, notifications: Notifications, clipboard: Optional[Gdk.Clipboard] = None,
             forwarded_port: Optional[int] = None
     ):
-        super().__init__()
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.set_name("port-forwarding-widget")
         self._notifications = notifications
         self._clipboard = (
             clipboard or Gdk.Display.get_default().get_clipboard()
         )
         self._current_forwarded_port = forwarded_port
+        self._pending_sources: List[int] = []
         self._build_ui()
-
-        cursor = Gdk.Cursor.new_from_name("pointer", None)
-        self.set_cursor(cursor)
+        self.connect("destroy", self._on_destroy)
 
     @GObject.Signal(name="update-visibility", arg_types=(bool,))
     def update_visibility(self, display_child: bool):
@@ -78,41 +79,37 @@ class PortForwardWidget(Gtk.Button):
         """
 
     def _build_ui(self):
-        self.set_halign(Gtk.Align.CENTER)
-        self.set_property("margin-top", 10)
-        self.set_tooltip_text(self.TOOLTIP_LABEL)
+        self.set_halign(Gtk.Align.START)
 
-        # Create the label that will contain the static text
         active_port_label = Gtk.Label(label=self.ACTIVE_PORT_LABEL)
         active_port_label.add_css_class("dim-label")
 
-        # Create the label that will contain the active port, so that it can
-        # be easily copied to clipboard
         self._port_forward_label: Gtk.Label = Gtk.Label(label="")
         self._port_forward_label.add_css_class("dim-label")
 
-        # Create the copy icon
-        copy_port_to_clipboard_image = Gtk.Image.new_from_icon_name("edit-copy")
-        copy_port_to_clipboard_image.add_css_class("dim-label")
+        copy_pixbuf = icons.get(Path("copy.svg"), width=16, height=16)
+        copy_icon = Gtk.Image.new_from_paintable(Gdk.Texture.new_for_pixbuf(copy_pixbuf))
+        copy_icon.set_size_request(copy_pixbuf.get_width(), copy_pixbuf.get_height())
 
-        # Create a label box that will contain the port info. This will us to give
-        # more breathing room between text and icon.
-        label_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        label_box.append(active_port_label)
-        label_box.append(self._port_forward_label)
-        label_box.set_spacing(3)
+        button_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
+        button_content.append(self._port_forward_label)
+        button_content.append(copy_icon)
 
-        # This box will contain both the label and the icon,
-        # for easier styling manipulation.
-        content_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        content_box.append(label_box)
-        content_box.append(copy_port_to_clipboard_image)
-        content_box.set_spacing(10)
+        self._copy_button = Gtk.Button()
+        self._copy_button.set_has_frame(False)
+        self._copy_button.set_child(button_content)
+        self._copy_button.set_cursor(Gdk.Cursor.new_from_name("pointer", None))
+        self._copy_button.connect("clicked", self._on_button_press)
 
-        self.set_child(content_box)
+        self._copied_popover = Gtk.Popover()
+        self._copied_popover.set_child(Gtk.Label(label="Copied!"))
+        self._copied_popover.set_autohide(False)
+        self._copied_popover.set_has_arrow(False)
+        self._copied_popover.set_parent(self._copy_button)
 
-        # set up click to copy port to clipboard
-        self.connect("clicked", self._on_button_press)
+        self.set_spacing(3)
+        self.append(active_port_label)
+        self.append(self._copy_button)
 
     def on_new_state(self, connection_state: states.State):
         """Receives new connection state and emits a signal
@@ -149,12 +146,28 @@ class PortForwardWidget(Gtk.Button):
         self.emit("update-visibility", reveal_child)
         self.set_port_forward_label(forwarded_port)
 
-    def _on_button_press(
-        self, _: "PortForwardWidget"
-    ):
+    def _on_destroy(self, _):
+        self._copied_popover.unparent()
+        for source_id in self._pending_sources:
+            GLib.source_remove(source_id)
+        self._pending_sources.clear()
+
+    def _on_button_press(self, _: "PortForwardWidget"):
         port_to_be_copied_to_clipboard = self._port_forward_label.get_label()
         value = GObject.Value(GObject.TYPE_STRING, port_to_be_copied_to_clipboard)
         self._clipboard.set(value)
+        if isinstance(self.get_root(), Gtk.Window):
+            self._copied_popover.popup()
+            for source_id in self._pending_sources:
+                GLib.source_remove(source_id)
+            self._pending_sources.clear()
+            self._pending_sources.append(
+                GLib.timeout_add(1500, self._copied_popover.popdown)
+            )
+
+    def click_copy_button(self):
+        """Simulates a click on the copy button."""
+        self._copy_button.emit("clicked")
 
     def set_port_forward_label(self, new_port: int):
         """Helper method to set port forward label."""

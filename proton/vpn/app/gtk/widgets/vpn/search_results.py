@@ -140,7 +140,7 @@ class SearchResults(Gtk.ScrolledWindow):
     """Display a filtered view of countries and servers.
        Inside a scroll-able widget.
     """
-    def __init__(self, controller, search_cities: bool):
+    def __init__(self, controller):
         super().__init__()
         self.set_policy(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
@@ -166,29 +166,23 @@ class SearchResults(Gtk.ScrolledWindow):
 
             return result
 
-        if search_cities:
-            def locations(
-                search_text: Optional[str] = None
-            ) -> Iterable[Tuple[Optional[str], Optional[int]]]:
-                result = set({})
-                server_list = controller.server_list
+        def locations(
+            search_text: Optional[str] = None
+        ) -> Iterable[Tuple[Optional[str], Optional[int]]]:
+            result = set({})
+            server_list = controller.server_list
 
-                if not server_list:
-                    yield (None, None)
-                    return
+            if not server_list:
+                yield (None, None)
+                return
 
-                for server in controller.server_list:
-                    if self._search_input_exists(search_text, server, location_name=True):
-                        if server.location:
-                            result.add(server.location)
+            for server in controller.server_list:
+                if self._search_input_exists(search_text, server, location_name=True):
+                    if server.location:
+                        result.add(server.location)
 
-                for location in sorted(result):
-                    yield (location, None)
-        else:
-            def locations(  # pylint: disable=unused-argument
-                search_text: Optional[str] = None
-            ) -> Iterable[Tuple[Optional[str], Optional[int]]]:
-                return set()
+            for location in sorted(result):
+                yield (location, None)
 
         def servers(
             search_text: Optional[str] = None

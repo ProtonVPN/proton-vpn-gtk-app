@@ -21,13 +21,15 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 import itertools
-from typing import Any, Callable, List, Type
+from typing import Any, Callable, List, Type, TypeVar
 
 from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.session.servers import ServerList
+
+GtkWidget = TypeVar("GtkWidget", bound=Gtk.Widget)
 
 
 def make_connect_callback(
@@ -45,10 +47,10 @@ def make_connect_callback(
 
 def sync_rows_with_model_items(
     model_items: List[Any],
-    existing_rows: List[Gtk.Widget],
+    existing_rows: List[GtkWidget],
     container: Gtk.Box,
-    row_factory: Type[Gtk.Widget],
-    display_func: Callable[[Gtk.Widget, Any], None]
+    row_factory: Type[GtkWidget],
+    display_func: Callable[[GtkWidget, Any], None]
 ):
     """Synchronizes a list of row widgets with model items using zip_longest.
 

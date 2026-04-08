@@ -22,8 +22,11 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
+from gi.repository import Gdk
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     P2PIcon,
     SecureCoreIcon,
@@ -200,12 +203,16 @@ class ServerListHeaderRow(Gtk.Box):
 
         self._info_button = Gtk.MenuButton()
         self._info_button.set_can_focus(False)
+        self._info_button.set_has_frame(False)
         self._info_button.add_css_class("dim-label")
         self._info_button.add_css_class("server-list-header-info-icon")
         self._info_button.set_popover(FeatureLegendPopover())
         self._info_button.set_direction(Gtk.ArrowType.DOWN)
         self._info_button.set_always_show_arrow(False)
-        info_icon = Gtk.Image.new_from_icon_name("dialog-information-symbolic")
+        self._info_button.set_cursor(Gdk.Cursor.new_from_name("pointer", None))
+        pixbuf = icons.get(Path("info.svg"), width=18, height=18)
+        info_icon = Gtk.Image.new_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
+        info_icon.set_size_request(pixbuf.get_width(), pixbuf.get_height())
         self._info_button.set_child(info_icon)
         spacer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         spacer.set_hexpand(True)

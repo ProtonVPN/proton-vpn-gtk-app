@@ -135,7 +135,7 @@ class HoverStack(Gtk.Stack):
         self._connected_signals.append((signal_id, self._child_focus_controller))
         child.add_controller(self._child_focus_controller)
 
-        child_gtype = type(child).__gtype__
+        child_gtype = type(child).__gtype__  # type: ignore[attr-defined]
         has_clicked = GObject.signal_lookup("clicked", child_gtype) != 0
         if has_clicked:
             signal_id = child.connect("clicked", self._on_hover_child_clicked)

@@ -23,6 +23,7 @@ from typing import ClassVar, Dict, Optional
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
 from proton.vpn.app.gtk.assets import icons
+from proton.vpn.app.gtk.utils.assertions import runtime_assert
 
 
 class UnderMaintenanceIcon(Gtk.Image):
@@ -108,12 +109,18 @@ class SecureCoreIcon(Gtk.Image):
     def __init__(
         self,
         entry_country_name: Optional[str] = None,
-        exit_country_name: Optional[str] = None
+        exit_country_name: Optional[str] = None,
+        size: Optional[int] = None,
     ):
         super().__init__()
-        pixbuf = icons.get(Path("servers/secure-core.svg"))
+        if size is not None:
+            pixbuf = icons.get(Path("servers/secure-core.svg"), width=size, height=size)
+        else:
+            pixbuf = icons.get(Path("servers/secure-core.svg"))
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
+        if size is not None:
+            self.set_size_request(pixbuf.get_width(), pixbuf.get_height())
         if entry_country_name and exit_country_name:
             help_text = (
                 "Secure core server that "
@@ -131,41 +138,43 @@ class DoubleFlagIcon(Gtk.Image):
     Exit country (front) is slightly larger and placed at top-right.
     Entry country (back) is slightly smaller and placed at bottom-left.
 
-    Canvas dimensions are derived from both flags:
-      canvas_w = max(back_w, offset_x + front_w)
-      canvas_h = max(front_h, offset_y + back_h)
-
-    For front to visually dominate the height, keep offset_y + back_h <= front_h.
+    Canvas dimensions:
+      canvas_w = front_w + offset_x
+      canvas_h = back_h + offset_y
     """
-    _FRONT_WIDTH = 24
-    _FRONT_HEIGHT = 16
-    _BACK_WIDTH = 18
-    _BACK_HEIGHT = 12
+    _FRONT_WIDTH = 36
+    _FRONT_HEIGHT = 24
+    _BACK_WIDTH = 27
+    _BACK_HEIGHT = 18
     # How far right the front flag starts / how far down the back flag starts.
-    _OFFSET_X = 12
-    _OFFSET_Y = 10
+    _OFFSET_X = 18
+    _OFFSET_Y = 15
 
     def __init__(self, exit_country_code: str, entry_country_code: str):
         super().__init__()
 
-        back_pixbuf = self._load_flag_pixbuf(
-            entry_country_code, self._BACK_WIDTH, self._BACK_HEIGHT
-        )
-        front_pixbuf = self._load_flag_pixbuf(
-            exit_country_code, self._FRONT_WIDTH, self._FRONT_HEIGHT
-        )
+        front_w = self._FRONT_WIDTH
+        front_h = self._FRONT_HEIGHT
+        back_w = self._BACK_WIDTH
+        back_h = self._BACK_HEIGHT
+        offset_x = self._OFFSET_X
+        offset_y = self._OFFSET_Y
 
-        canvas_w = self._FRONT_WIDTH + self._OFFSET_X
-        canvas_h = self._BACK_HEIGHT + self._OFFSET_Y
+        back_pixbuf = self._load_flag_pixbuf(entry_country_code, back_w, back_h)
+        front_pixbuf = self._load_flag_pixbuf(exit_country_code, front_w, front_h)
+
+        canvas_w = front_w + offset_x
+        canvas_h = back_h + offset_y
         composite = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, canvas_w, canvas_h)
+        runtime_assert(composite is not None, "Failed to create Pixbuf canvas")
         composite.fill(0x00000000)
 
         # Back flag (entry country) at bottom-left.
         back_pixbuf.composite(
             composite,
-            dest_x=0, dest_y=self._OFFSET_Y,
-            dest_width=self._BACK_WIDTH, dest_height=self._BACK_HEIGHT,
-            offset_x=0.0, offset_y=self._OFFSET_Y,
+            dest_x=0, dest_y=offset_y,
+            dest_width=back_w, dest_height=back_h,
+            offset_x=0.0, offset_y=offset_y,
             scale_x=1.0, scale_y=1.0,
             interp_type=GdkPixbuf.InterpType.BILINEAR,
             overall_alpha=255,
@@ -173,15 +182,16 @@ class DoubleFlagIcon(Gtk.Image):
         # Front flag (exit country) at top-right, drawn on top.
         front_pixbuf.composite(
             composite,
-            dest_x=self._OFFSET_X, dest_y=0,
-            dest_width=self._FRONT_WIDTH, dest_height=self._FRONT_HEIGHT,
-            offset_x=self._OFFSET_X, offset_y=0.0,
+            dest_x=offset_x, dest_y=0,
+            dest_width=front_w, dest_height=front_h,
+            offset_x=offset_x, offset_y=0.0,
             scale_x=1.0, scale_y=1.0,
             interp_type=GdkPixbuf.InterpType.BILINEAR,
             overall_alpha=255,
         )
 
         self.set_from_paintable(Gdk.Texture.new_for_pixbuf(composite))
+        self.set_size_request(canvas_w, canvas_h)
 
     @staticmethod
     def _load_flag_pixbuf(country_code: str, width: int, height: int) -> GdkPixbuf.Pixbuf:
@@ -202,9 +212,10 @@ class LocationIcon(Gtk.Image):
 
     def __init__(self):
         super().__init__()
-        pixbuf = icons.get(Path("location.svg"))
+        pixbuf = icons.get(Path("location.svg"), width=24, height=24)
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
+        self.set_size_request(pixbuf.get_width(), pixbuf.get_height())
 
 
 class CountryFlagIcon(Gtk.Image):
@@ -216,16 +227,9 @@ class CountryFlagIcon(Gtk.Image):
         super().__init__()
 
         try:
-            pixbuf = icons.get(Path("flags") / f"{country_code.lower()}.svg")
+            pixbuf = icons.get(Path("flags") / f"{country_code.lower()}.svg", width=24, height=16)
         except ValueError:
             pixbuf = icons.get(Path("flags") / "placeholder.svg")
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
-
-    @classmethod
-    def get_cached(cls, country_code: str) -> CountryFlagIcon:
-        """Returns a cached CountryFlagIcon instance for the given country code."""
-        country_code = country_code.lower()
-        if country_code not in cls._cache:
-            cls._cache[country_code] = CountryFlagIcon(country_code)
-        return cls._cache[country_code]
+        self.set_size_request(pixbuf.get_width(), pixbuf.get_height())

@@ -49,18 +49,3 @@ button.link label {
     color: @interaction-norm;
 }
 
-button.subtle-toggle {
-    background-color: transparent;
-    background-image: none;
-    border-color: transparent;
-    border-width: 1px;
-    border-radius: 6px;
-    box-shadow: none;
-}
-
-button.subtle-toggle:hover,
-button.subtle-toggle:focus {
-    background-color: @interaction-norm-hover;
-    background-image: image(@interaction-norm-hover);
-    border-color: @interaction-norm-hover;
-}

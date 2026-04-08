@@ -142,6 +142,63 @@ SERVER_LIST_UPDATED = ServerList.from_dict({
 })
 
 
+SERVER_LIST_WITH_CITIES = ServerList.from_dict({
+    "LogicalServers": [
+        {
+            "ID": 1, "Name": "JP#1", "Status": 1, "Load": 50,
+            "Servers": [{"Status": 1}], "ExitCountry": "JP",
+            "City": "Tokyo", "Tier": PLUS_TIER,
+        },
+        {
+            "ID": 2, "Name": "JP#2", "Status": 1, "Load": 50,
+            "Servers": [{"Status": 1}], "ExitCountry": "JP",
+            "City": "Osaka", "Tier": PLUS_TIER,
+        },
+    ],
+    "MaxTier": PLUS_TIER
+})
+
+
+def _displayed_widget(server_list=SERVER_LIST_WITH_CITIES, user_tier=PLUS_TIER):
+    widget = ServerListWidget(controller=Mock())
+    widget.display(user_tier=user_tier, server_list=server_list)
+    process_gtk_events()
+    return widget
+
+
+def test_focus_on_entry_connects_directly_when_name_contains_hash():
+    mock_controller = Mock()
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=SERVER_LIST_WITH_CITIES)
+
+    widget.focus_on_entry(None, "JP#1")
+
+    mock_controller.connect_to_server.assert_called_once_with("JP#1")
+
+
+def test_focus_on_entry_focuses_country_row_when_name_matches_country():
+    widget = _displayed_widget()
+    country_row = widget.country_rows[0]
+    country_row.grab_focus = Mock()
+
+    widget.focus_on_entry(None, "Japan")
+
+    country_row.grab_focus.assert_called_once()
+
+
+def test_focus_on_entry_focuses_location_when_name_matches_city():
+    widget = _displayed_widget()
+    country_row = widget.country_rows[0]
+    country_row.click_toggle_button()
+    process_gtk_events()
+    location_row = next(r for r in country_row.location_rows if r.label == "Tokyo")
+    location_row.grab_focus = Mock()
+
+    widget.focus_on_entry(None, "Tokyo")
+
+    location_row.grab_focus.assert_called_once()
+
+
 def test_server_list_widget_subscribes_to_server_list_updates_on_realize():
     mock_controller = Mock()
 

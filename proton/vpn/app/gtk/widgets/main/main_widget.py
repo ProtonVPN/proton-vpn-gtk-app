@@ -22,6 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import Union, TYPE_CHECKING, Optional
 
+from proton.vpn.connection import states
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.login.login_widget import LoginWidget
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
@@ -62,6 +63,7 @@ class MainWidget(Gtk.Overlay):
         self._active_widget = None
         self._controller = controller
         self._main_window = main_window
+        self._connected_signals: list[tuple[int, Gtk.Widget]] = []
 
         self._notifications = notifications or Notifications(
             main_window, NotificationBar()
@@ -101,6 +103,24 @@ class MainWidget(Gtk.Overlay):
             self.layout.remove(self._active_widget)
         self._active_widget = widget
         self.layout.append(self._active_widget)
+
+    _STATE_CSS_CLASSES = {
+        states.Connected: "connected",
+        states.Connecting: "connecting",
+        states.Disconnecting: "disconnecting",
+        states.Disconnected: "disconnected",
+        states.Error: "error",
+    }
+
+    def set_background_gradient(self, state: Optional[states.State]):
+        """Sets the gradient on the main widget background for the given VPN state.
+
+        :param state: a connection state instance, or None to clear all.
+        """
+        for css_class in self._STATE_CSS_CLASSES.values():
+            self.remove_css_class(css_class)
+        if state and (css_class := self._STATE_CSS_CLASSES.get(type(state))):
+            self.add_css_class(css_class)
 
     def initialize_visible_widget(self):
         """
@@ -167,12 +187,16 @@ class MainWidget(Gtk.Overlay):
         vpn_widget = VPNWidget(
             controller=self._controller,
             main_window=self._main_window,
-            overlay_widget=self._overlay_widget,
             notifications=self.notifications
         )
         vpn_widget.connect(
             "vpn-widget-ready", self._hide_overlay_widget
         )
+        signal_id = vpn_widget.connect(
+            "connection-state-changed",
+            lambda _, state: self.set_background_gradient(state)
+        )
+        self._connected_signals.append((signal_id, vpn_widget))
 
         return vpn_widget
 
@@ -187,6 +211,10 @@ class MainWidget(Gtk.Overlay):
         self.vpn_widget.load()
 
     def _display_login_widget(self):
+        self.set_background_gradient(None)
+        for signal_id, widget in self._connected_signals:
+            widget.disconnect(signal_id)
+        self._connected_signals.clear()
         self._main_window.header_bar.menu.logout_enabled = False
         self._main_window.header_bar.menu.settings_enabled = False
         # Close the settings window in case the session expires with the settings windows open.

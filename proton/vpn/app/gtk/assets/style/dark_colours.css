@@ -1,10 +1,10 @@
-/* Primary colour 
+/* Primary colour
 
 Used for non-interactive elements.
 */
 @define-color primary #8A6EFF;
 
-/* Interaction-norm 
+/* Interaction-norm
 
 Used for button-norm, links and other interactive elements.
 */
@@ -17,7 +17,7 @@ Used for button-norm, links and other interactive elements.
 @define-color interaction-norm-accent-hover #A898ED;
 @define-color interaction-norm-accent-active #BBABFF;
 
-/* Text 
+/* Text
 
 Text and icon colors.
 */
@@ -27,7 +27,7 @@ Text and icon colors.
 @define-color text-disabled #5B576B;
 @define-color text-invert #1C1B24;
 
-/* Field 
+/* Field
 
 Used for input fields, selects and selection controls.
 */
@@ -35,7 +35,7 @@ Used for input fields, selects and selection controls.
 @define-color field-hover #6D697D;
 @define-color field-disabled #3F3B4C;
 
-/* Border 
+/* Border
 
 Used as separators in tables and lists,
 for section lines and for containers.
@@ -43,7 +43,7 @@ for section lines and for containers.
 @define-color border-norm #4A4658;
 @define-color border-weak #343140;
 
-/* Background 
+/* Background
 
 Used for main layout areas and components.
 */
@@ -51,7 +51,7 @@ Used for main layout areas and components.
 @define-color background-weak #292733;
 @define-color background-strong #3F3B4C;
 
-/* Interaction-weak 
+/* Interaction-weak
 
 Used for button-weak.
 */
@@ -59,7 +59,7 @@ Used for button-weak.
 @define-color interaction-weak-hover #5B576B;
 @define-color interaction-weak-active #6D697D;
 
-/* Interaction-default 
+/* Interaction-default
 
 Used for button-ghost and interactions that have
 distinct visible background.
@@ -73,9 +73,9 @@ E.g. sidenavigation and toolbar.
 
 Used for banners, form-validation, buttons and meter-bars.
 */
-@define-color signal-danger #F5385A;
-@define-color signal-danger-hover #FF5473;
-@define-color signal-danger-active #DC3251;
+@define-color signal-danger #F7607E;
+@define-color signal-danger-hover #F47B93;
+@define-color signal-danger-active #F68EA3;
 
 @define-color signal-warning #FF9900;
 @define-color signal-warning-hover #FFB800;

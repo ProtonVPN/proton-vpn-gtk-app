@@ -1,0 +1,32 @@
+#vpn-connection-status-widget {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+#vpn-connection-status-widget #status-title-row {
+    margin-bottom: 4px;
+}
+
+#vpn-connection-status-widget #status-title-row.protected {
+    color: @signal-success;
+}
+
+#vpn-connection-status-widget #status-title-row.unprotected {
+    color: @signal-danger;
+}
+
+#vpn-connection-status-widget #status-title-row.unprotected #status-icon {
+    margin-right: 3px; /* Extra margin to unprotected icon since it's right-heavy */
+}
+
+#vpn-connection-status-widget #status-title-label {
+    padding-top: 4px; /* Padding to compensate protected/unprotected icon being top-heavy */
+}
+
+#vpn-connection-status-widget #error-detail-label {
+    margin-bottom: 8px;
+}
+
+#port-forwarding-widget button {
+    padding: 0;
+}

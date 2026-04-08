@@ -20,18 +20,8 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import Callable, Optional
-import dbus
-from dbus import SystemBus
-from dbus.mainloop.glib import DBusGMainLoop
-DBusGMainLoop(set_as_default=True)
 
-
-BUS_NAME = "org.freedesktop.login1"
-SEAT_AUTO_PATH = "/org/freedesktop/login1/seat/auto"
-SESSION_INTERFACE = "org.freedesktop.login1.Session"
-SEAT_INTERFACE = "org.freedesktop.login1.Seat"
-PROPERTIES_INTERFACE = "org.freedesktop.DBus.Properties"
-UNLOCK_SIGNAL = "Unlock"
+from proton.vpn.app.gtk.services.reconnector.login_session_service import LoginSessionService
 
 
 class SessionMonitor:
@@ -43,9 +33,9 @@ class SessionMonitor:
         session_unlocked_callback: callable that will be called when the user
         session is unlocked.
     """
-    def __init__(self, bus: SystemBus = None, session_object_path: Optional[str] = None):
-        self._bus = bus
-        self._session_object_path = session_object_path
+
+    def __init__(self, login_session_service: LoginSessionService = None):
+        self._login_session_service = login_session_service or LoginSessionService()
         self._signal_receiver: Optional[object] = None
         self.session_unlocked_callback: Optional[Callable] = None
 
@@ -54,68 +44,31 @@ class SessionMonitor:
         if not callable(self.session_unlocked_callback):
             raise RuntimeError("Callback was not set")
 
-        if not self._bus:
-            self._bus = SystemBus()
-
-        if not self._session_object_path:
-            try:
-                self._setup()
-            except dbus.exceptions.DBusException:
-                # logind is inaccessible (e.g. AppArmor in strict snap confinement).
-                # Session-unlock reconnection won't work, but everything else is fine.
-                return
-
-        self._signal_receiver = self._bus.add_signal_receiver(
-            handler_function=self.session_unlocked_callback,
-            signal_name=UNLOCK_SIGNAL,
-            dbus_interface=SESSION_INTERFACE,
-            bus_name=BUS_NAME,
-            path=self._session_object_path,
-        )
+        try:
+            self._signal_receiver = \
+                self._login_session_service.add_session_unlocked_signal_receiver(
+                    self.session_unlocked_callback
+                )
+        except LoginSessionService.DBusUnavailableError:
+            # logind is inaccessible (e.g. AppArmor in strict snap confinement).
+            # Session-unlock reconnection won't work, but everything else is fine.
+            pass
 
     def disable(self):
-        """Disables user session monitoring"""
+        """Disables user session monitoring."""
         if self._signal_receiver:
             self._signal_receiver.remove()
             self._signal_receiver = None
 
     @property
-    def is_session_unlocked(self):
+    def is_session_unlocked(self) -> bool:
         """Returns True if the user session is unlocked or False otherwise."""
-        if not self._session_object_path:
-            try:
-                self._setup()
-            except dbus.exceptions.DBusException:
-                # logind is inaccessible; assume session is unlocked so reconnection
-                # can proceed when network comes up.
-                return True
-
-        active_session = self._bus.get_object(BUS_NAME, self._session_object_path)
-        active_session_properties = dbus.Interface(active_session, PROPERTIES_INTERFACE)
-        return not bool(active_session_properties.Get(SESSION_INTERFACE, "LockedHint"))
-
-    def _setup(self):
-        seat_auto_proxy = self._bus.get_object(
-            BUS_NAME,
-            SEAT_AUTO_PATH
-        )
-
-        seat_auto_properties_proxy = dbus.Interface(
-            seat_auto_proxy,
-            PROPERTIES_INTERFACE
-        )
-
-        # There should always be session for a seat. If there is no seat then
-        # it means that the user is not directly controlling the machine,
-        # but rather controlloing it via ssh or some other indirect
-        # type of control.
-        seat_properties = seat_auto_properties_proxy.GetAll(SEAT_INTERFACE)
-        active_sessions = seat_properties.get("ActiveSession", [])
-
-        if not active_sessions:
-            raise RuntimeError("There are no active sessions for this seat")
-
-        _session_id, self._session_object_path = active_sessions
+        try:
+            return self._login_session_service.is_session_unlocked
+        except LoginSessionService.DBusUnavailableError:
+            # logind is inaccessible; assume session is unlocked so reconnection
+            # can proceed when network comes up.
+            return True
 
     def set_signal_receiver(self, new_object: Optional[object]):
         """Sets signal receiver.

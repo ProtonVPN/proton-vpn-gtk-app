@@ -1,3 +1,12 @@
+version: 4.15.3rc4
+time: 2026/04/09 14:48
+author: Richard Paterson
+email: richard.paterson@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: Gracefully fail if without session bus (thanks to https://github.com/kenvandine)"
+---
 version: 4.15.3rc3
 time: 2026/04/09 09:14
 author: Elena Švilpė

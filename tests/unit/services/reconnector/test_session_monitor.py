@@ -16,89 +16,67 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, PropertyMock
 import pytest
 
-from proton.vpn.app.gtk.services.reconnector.session_monitor import (
-    SessionMonitor, BUS_NAME,
-    SESSION_INTERFACE, UNLOCK_SIGNAL
-)
+from proton.vpn.app.gtk.services.reconnector.login_session_service import LoginSessionService
+from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 
 
-PATH_NAME = "/some/random/bus/object/path"
-
-
-def test_enable_hooks_login1_unlock_signal():
-    bus_mock = Mock()
+def test_enable_hooks_session_unlocked_signal():
+    login_session_service_mock = Mock(LoginSessionService)
     callback_mock = Mock()
-    session_monitor = SessionMonitor(bus_mock, PATH_NAME)
+    session_monitor = SessionMonitor(login_session_service_mock)
     session_monitor.session_unlocked_callback = callback_mock
 
     session_monitor.enable()
 
-    bus_mock.add_signal_receiver.assert_called_once_with(
-        handler_function=callback_mock,
-        signal_name=UNLOCK_SIGNAL,
-        dbus_interface=SESSION_INTERFACE,
-        bus_name=BUS_NAME,
-        path=PATH_NAME
+    login_session_service_mock.add_session_unlocked_signal_receiver.assert_called_once_with(
+        callback_mock
     )
 
 
 def test_enable_raises_runtime_error_if_callback_is_not_set():
-    bus_mock = Mock()
-    session_monitor = SessionMonitor(bus_mock, PATH_NAME)
+    session_monitor = SessionMonitor(Mock(LoginSessionService))
 
     with pytest.raises(RuntimeError):
         session_monitor.enable()
 
 
-@patch("proton.vpn.app.gtk.services.reconnector.session_monitor.dbus")
-def test_enable_raises_runtime_error_if_there_is_not_an_active_session(dbus_mock):
-    bus_mock = Mock()
-    callback_mock = Mock()
-    properties_proxy_mock = Mock()
-    session_monitor = SessionMonitor(bus_mock)
-    session_monitor.session_unlocked_callback = callback_mock
-
-    properties_proxy_mock.GetAll.return_value = {"ActiveSession": []}
-    dbus_mock.Interface.return_value = properties_proxy_mock
-
-    with pytest.raises(RuntimeError):
-        session_monitor.enable()
-
-
-@patch("proton.vpn.app.gtk.services.reconnector.session_monitor.dbus")
-def test_enable_ignores_dbus_exception_if_logind_is_inaccessible(dbus_mock):
-    bus_mock = Mock()
-    callback_mock = Mock()
-    session_monitor = SessionMonitor(bus_mock)
-    session_monitor.session_unlocked_callback = callback_mock
-
-    bus_mock.get_object.side_effect = dbus_mock.exceptions.DBusException("access denied")
+def test_enable_ignores_dbus_unavailable_error():
+    login_session_service_mock = Mock(LoginSessionService)
+    login_session_service_mock.add_session_unlocked_signal_receiver.side_effect = (
+        LoginSessionService.DBusUnavailableError
+    )
+    session_monitor = SessionMonitor(login_session_service_mock)
+    session_monitor.session_unlocked_callback = Mock()
 
     session_monitor.enable()
 
-    bus_mock.add_signal_receiver.assert_not_called()
+    assert session_monitor._signal_receiver is None
 
 
-@patch("proton.vpn.app.gtk.services.reconnector.session_monitor.dbus")
-def test_is_session_unlocked_returns_true_if_logind_is_inaccessible(dbus_mock):
-    bus_mock = Mock()
-    session_monitor = SessionMonitor(bus_mock)
-
-    bus_mock.get_object.side_effect = dbus_mock.exceptions.DBusException("access denied")
+def test_is_session_unlocked_returns_true_if_dbus_is_unavailable():
+    login_session_service_mock = Mock(LoginSessionService)
+    type(login_session_service_mock).is_session_unlocked = PropertyMock(
+        side_effect=LoginSessionService.DBusUnavailableError
+    )
+    session_monitor = SessionMonitor(login_session_service_mock)
 
     assert session_monitor.is_session_unlocked is True
 
 
-def test_disable_unhooks_login1_signal():
-    bus_mock = Mock()
+def test_is_session_unlocked_returns_false_if_session_is_locked():
+    login_session_service_mock = Mock(LoginSessionService)
+    type(login_session_service_mock).is_session_unlocked = PropertyMock(return_value=False)
+    session_monitor = SessionMonitor(login_session_service_mock)
+
+    assert session_monitor.is_session_unlocked is False
+
+
+def test_disable_unhooks_session_unlocked_signal():
     signal_receiver_mock = Mock()
-
-    bus_mock.add_signal_receiver.return_value = signal_receiver_mock
-
-    session_monitor = SessionMonitor(bus_mock, PATH_NAME)
+    session_monitor = SessionMonitor(Mock(LoginSessionService))
     session_monitor.set_signal_receiver(signal_receiver_mock)
 
     session_monitor.disable()
@@ -106,13 +84,10 @@ def test_disable_unhooks_login1_signal():
     signal_receiver_mock.remove.assert_called_once()
 
 
-def test_disable_does_not_unhook_from_login1_signal_if_it_was_not_hooked_before():
-    bus_mock = Mock()
+def test_disable_does_not_unhook_if_not_previously_enabled():
     signal_receiver_mock = Mock()
-    signal_receiver_mock.return_value = None
-
-    session_monitor = SessionMonitor(bus_mock, PATH_NAME)
-    bus_mock.add_signal_receiver.return_value = signal_receiver_mock
+    session_monitor = SessionMonitor(Mock(LoginSessionService))
 
     session_monitor.disable()
-    assert not signal_receiver_mock.remove.call_count
+
+    signal_receiver_mock.remove.assert_not_called()

@@ -1,3 +1,12 @@
+version: 4.15.3rc3
+time: 2026/04/09 09:14
+author: Elena Švilpė
+email: elena.svilpe@proton.ch
+urgency: low
+stability: unstable
+description:
+- "fix: keep tray menu state aligned with window visibility (thanks to https://github.com/dragonleopardpig)"
+---
 version: 4.15.3rc2
 time: 2026/04/08 10:00
 author: Pep Llaneras

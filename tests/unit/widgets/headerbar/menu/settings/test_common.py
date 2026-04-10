@@ -21,8 +21,10 @@ import pytest
 from dataclasses import dataclass
 from unittest.mock import Mock, PropertyMock, patch
 from tests.unit.testing_utils import process_gtk_events
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import UpgradePlusTag, ToggleWidget, ComboboxWidget, \
-    EntryWidget, is_upgrade_required
+from gi.repository import Gtk
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
+    BetaTag, UpgradePlusTag, ToggleWidget, ComboboxWidget, EntryWidget, is_upgrade_required
+)
 from proton.vpn.core.settings import NetShield
 
 
@@ -314,3 +316,58 @@ class TestEntryWidget:
 
         ew.entry.set_text(control_bool_val)
         ew.entry.observe_controllers()[0].emit("leave")
+
+
+class TestBetaTag:
+    def test_label_is_beta(self):
+        assert BetaTag().get_label() == BetaTag.LABEL
+
+    def test_has_beta_tag_css_class(self):
+        assert BetaTag().has_css_class("beta-tag")
+
+    def test_is_vertically_centered(self):
+        assert BetaTag().get_valign() == Gtk.Align.CENTER
+
+
+class TestPauseCallback:
+    OPTIONS = [("0", "Zero"), ("1", "One"), ("2", "Two")]
+
+    def _make_widget(self, callback):
+        controller = Mock()
+        controller.get_setting_attr.return_value = "0"
+        controller.connection_disconnected = True
+        controller.user_tier = USER_TIER_PLUS
+        return ComboboxWidget(
+            controller=controller,
+            title="T",
+            setting_name="s",
+            combobox_options=self.OPTIONS,
+            callback=callback,
+        )
+
+    def test_callback_not_fired_while_paused(self):
+        call_count = 0
+
+        def on_change(_combobox, _widget):
+            nonlocal call_count
+            call_count += 1
+
+        cw = self._make_widget(on_change)
+        with cw.pause_callback():
+            cw.combobox.set_active_id("1")
+
+        assert call_count == 0
+
+    def test_callback_fires_normally_after_context_exits(self):
+        call_count = 0
+
+        def on_change(_combobox, _widget):
+            nonlocal call_count
+            call_count += 1
+
+        cw = self._make_widget(on_change)
+        with cw.pause_callback():
+            pass
+        cw.combobox.set_active_id("1")
+
+        assert call_count == 1

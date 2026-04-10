@@ -21,11 +21,13 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from typing import TYPE_CHECKING
 
+from gi.repository import Gtk
+
 from proton.vpn.app.gtk.conflicts import WIREGUARD_PROTOCOL
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
-    BaseCategoryContainer, ToggleWidget, ConflictableComboboxWidget,
+    BaseCategoryContainer, BetaTag, ToggleWidget, ConflictableComboboxWidget,
     ReactiveSettingContainer, ReactiveSetting
 )
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import CustomDNSWidget
@@ -37,9 +39,88 @@ if TYPE_CHECKING:
 
 class ProtocolComboboxWidget(ConflictableComboboxWidget, ReactiveSetting):
     """Combobox widget for selecting the VPN protocol."""
+
+    PROTUN_CHECKBOX_LABEL = "Use Proton protocols"
+
+    PROTUN_PROTOCOL_GROUP = "protun"
+    GENERIC_PROTOCOL_GROUP = "generic"
+
     def on_settings_changed(self, settings):
+        """
+        When settings are changed, we need to check if the protocol is
+        still valid and update the combobox accordingly.
+        """
         if self.combobox.get_active_text() != settings.protocol:
             self.combobox.set_active_id(settings.protocol)
+
+    def get_protun_protocols(self) -> list[str]:
+        """
+        Returns the list of protun protocols if the feature flag is enabled,
+        otherwise returns an empty list. We can use this method to determine
+        whether the protun protocols should be shown in the UI or not.
+        """
+        # is_protun_enabled = self._controller.feature_flags.get("ProTunV1")
+        is_protun_enabled = True
+        if is_protun_enabled:
+            return self._controller.get_available_protocols(self.PROTUN_PROTOCOL_GROUP)
+        return []
+
+    def protocol_group(self, current_protocol: str, protun_protocols: list) -> str:
+        """Returns the protocol group for the given protocol."""
+        for protocol in protun_protocols:
+            if str(protocol.protocol) == current_protocol:
+                return self.PROTUN_PROTOCOL_GROUP
+        return self.GENERIC_PROTOCOL_GROUP
+
+    def _build_ui(self):
+        super()._build_ui()
+
+        current_protocol = self.get_setting()
+        protun_protocols = self.get_protun_protocols()
+
+        if protun_protocols:
+            current_protocol_group = self.protocol_group(current_protocol, protun_protocols)
+            self._build_protun_checkbox(current_protocol_group)
+        else:
+            current_protocol_group = self.GENERIC_PROTOCOL_GROUP
+
+        current_protocols = self._controller.get_available_protocols(current_protocol_group)
+        self._repopulate_combobox(current_protocols)
+
+        with self.pause_callback():
+            self.combobox.set_active_id(current_protocol)
+
+    def _build_protun_checkbox(self, current_protocol_group):
+        """Builds and attaches the protun checkbox, initialising it from the current setting."""
+        is_protun = current_protocol_group == self.PROTUN_PROTOCOL_GROUP
+
+        protun_checkbox = Gtk.CheckButton(label=self.PROTUN_CHECKBOX_LABEL)
+        protun_checkbox.set_active(is_protun)
+        protun_checkbox.connect("toggled", self._on_protun_checkbox_toggled)
+
+        checkbox_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        checkbox_row.append(protun_checkbox)
+        checkbox_row.append(BetaTag())
+        self.attach(checkbox_row, 0, 2, 2, 1)
+
+    def _repopulate_combobox(self, protocols):
+        """Repopulates the combobox with the given protocols."""
+        with self.pause_callback():
+            self.combobox.set_entry_text_column(0)
+            self.combobox.remove_all()
+            for protocol in protocols:
+                self.combobox.append(str(protocol.protocol), protocol.ui_protocol)
+            self.combobox.set_entry_text_column(1)
+
+    def _on_protun_checkbox_toggled(self, checkbox):
+        if checkbox.get_active():
+            protocol_group = self.PROTUN_PROTOCOL_GROUP
+        else:
+            protocol_group = self.GENERIC_PROTOCOL_GROUP
+        protocols = self._controller.get_available_protocols(protocol_group)
+        self._repopulate_combobox(protocols)
+        if protocols:
+            self.combobox.set_active(0)
 
 
 class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa: E501 # pylint: disable=line-too-long, too-many-instance-attributes
@@ -77,11 +158,6 @@ class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # no
 
     def build_protocol(self):
         """Builds and adds the `protocol` setting to the widget."""
-        protocol_list_of_tuples = [
-            (protocol.cls.protocol, protocol.cls.ui_protocol)
-            for protocol in self._controller.get_available_protocols()
-        ]
-
         def do_set(combobox, new_value: str):
             combobox.save_setting(new_value)
 
@@ -93,7 +169,7 @@ class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # no
                 title=self.PROTOCOL_LABEL,
                 description=self.PROTOCOL_DESCRIPTION,
                 setting_name="settings.protocol",
-                combobox_options=protocol_list_of_tuples,
+                combobox_options=[],
                 disable_on_active_connection=True,
                 do_set=do_set,
                 do_revert=do_revert

@@ -22,7 +22,7 @@ import pytest
 
 from proton.vpn.connection import states, events
 from proton.vpn.connection.exceptions import AuthenticationError
-from proton.vpn.core.connection import VPNConnector
+from proton.vpn.core.vpnconnector import VPNConnector
 from proton.vpn.core.refresher import VPNDataRefresher
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor

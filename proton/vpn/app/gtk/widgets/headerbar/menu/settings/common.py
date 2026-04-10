@@ -19,6 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from contextlib import contextmanager
 from typing import List, Tuple, Callable, Any, Optional, TYPE_CHECKING, cast
 from gi.repository import Gtk, Gio
 
@@ -89,6 +90,16 @@ class BaseCategoryContainer(Gtk.Box):
         self.set_spacing(15)
 
         self.append(CategoryHeader(category_name))
+
+
+class BetaTag(Gtk.Label):
+    """A label styled with a purple border to indicate a beta feature."""
+    LABEL = "BETA"
+
+    def __init__(self):
+        super().__init__(label=self.LABEL)
+        self.add_css_class("beta-tag")
+        self.set_valign(Gtk.Align.CENTER)
 
 
 class UpgradePlusTag(Gtk.Button):
@@ -502,6 +513,16 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
             self._requires_subscription_to_be_active,
             self._controller.user_tier
         )
+
+    @contextmanager
+    def pause_callback(self):
+        """Context manager that temporarily blocks the combobox 'changed' signal."""
+        handler = self._callback or self._on_combobox_change
+        self.combobox.handler_block_by_func(handler)
+        try:
+            yield
+        finally:
+            self.combobox.handler_unblock_by_func(handler)
 
     def _on_combobox_change(self, combobox: Gtk.ComboBox):
         model = combobox.get_model()

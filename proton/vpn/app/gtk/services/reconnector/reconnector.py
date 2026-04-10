@@ -29,7 +29,7 @@ from proton.vpn import logging
 from proton.vpn.connection import states, VPNConnection, events
 from proton.vpn.connection.exceptions import VPNConnectionError, \
     AuthenticationError, HardJailedTwoFAError
-from proton.vpn.core.connection import VPNConnector
+from proton.vpn.core.vpnconnector import VPNConnector
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor

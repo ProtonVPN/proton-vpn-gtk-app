@@ -123,6 +123,14 @@ label.success {
     background-image: none;
 }
 
+.beta-tag {
+    border-radius: 5px;
+    border: 1px solid @primary;
+    color: @primary;
+    padding: 2px 6px;
+    font-size: 0.9em;
+}
+
 .release-notes-collection {
     margin: 20px 20px 60px 20px;
 }

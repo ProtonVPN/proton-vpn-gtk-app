@@ -22,7 +22,7 @@ from concurrent.futures import Future
 from importlib import metadata
 from threading import Event
 from types import TracebackType
-from typing import Optional, Type, Callable, Union, Tuple
+from typing import Optional, Type, Callable, Union, Tuple, List
 
 from gi.repository import GLib
 from proton.vpn.session import ServerList
@@ -32,7 +32,7 @@ from proton.vpn import logging
 from proton.vpn.connection import VPNConnection, states
 from proton.vpn.core.api import ProtonVPNAPI, VPNAccount
 from proton.vpn.core.session_holder import ClientTypeMetadata
-from proton.vpn.core.connection import VPNConnector
+from proton.vpn.core.vpnconnector import VPNConnector
 from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.core.settings import Settings
 from proton.vpn.session.servers import LogicalServer
@@ -63,7 +63,6 @@ DOT = "."  # pylint: disable=invalid-name
 
 class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-attributes
     """The C in the MVC pattern."""
-    DEFAULT_BACKEND = "linuxnetworkmanager"
 
     @staticmethod
     def get(executor: AsyncExecutor, exception_handler: "ExceptionHandler") -> Controller:
@@ -496,16 +495,10 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         save_settings(Conflicts.resolve(setting_type, setting_attrs, new_value,
                                         settings))
 
-    def get_available_protocols(self) -> list:
-        """Returns an alphabetically sorted list of available protocol to use."""
-        available_protocols = self._connector.get_available_protocols_for_backend(
-            self.DEFAULT_BACKEND
-        )
+    def get_available_protocols(self, protocol_group: str) -> List[type[VPNConnection]]:
+        """Returns a list of available protocols sorted by priority."""
 
-        return sorted(
-            available_protocols,
-            key=lambda protocol: protocol.cls.ui_protocol
-        )
+        return list(self._connector.iter_available_protocols(protocol_group))
 
     def send_error_to_proton(
         self,

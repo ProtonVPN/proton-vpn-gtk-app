@@ -24,7 +24,7 @@ from typing import Callable, Optional
 from gi.repository import GLib
 
 from proton.vpn.connection import states
-from proton.vpn.core.connection import VPNConnector
+from proton.vpn.core.vpnconnector import VPNConnector
 
 
 class VPNMonitor:

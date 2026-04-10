@@ -95,11 +95,15 @@ class SessionMonitor:
             PROPERTIES_INTERFACE
         )
 
-        # There should always be session for a seat. If there is no seat then
+        # There should always be a seat, and a session for a seat. If there is no seat then
         # it means that the user is not directly controlling the machine,
         # but rather controlloing it via ssh or some other indirect
         # type of control.
-        seat_properties = seat_auto_properties_proxy.GetAll(SEAT_INTERFACE)
+        try:
+            seat_properties = seat_auto_properties_proxy.GetAll(SEAT_INTERFACE)
+        except dbus.exceptions.DBusException as dbus_exc:
+            raise SeatNotFoundError(dbus_exc.get_dbus_message())
+
         active_sessions = seat_properties.get("ActiveSession", [])
 
         if not active_sessions:
@@ -112,3 +116,6 @@ class SessionMonitor:
         This is mainly used for testing purposes.
         """
         self._signal_receiver = new_object
+
+class SeatNotFoundError(Exception):
+    """Exception raised when the session monitor is not able to find the current seat."""

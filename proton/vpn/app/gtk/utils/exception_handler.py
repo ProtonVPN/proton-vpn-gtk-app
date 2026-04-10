@@ -24,6 +24,7 @@ import threading
 from typing import TYPE_CHECKING, Optional
 import gi
 
+from proton.vpn.app.gtk.services.reconnector.session_monitor import SeatNotFoundError
 from proton.vpn.app.gtk.widgets.main.notifications import DialogButton
 from proton.vpn.connection.exceptions import AuthenticationError, HardJailedTwoFAError
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
@@ -140,6 +141,8 @@ class ExceptionHandler:
             self._on_hard_jailed_2fa_error(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, OSError) and exc_value.errno == NO_SPACE_LEFT_ON_DEVICE_ERRNO:
             self._on_no_space_left_on_device(exc_type, exc_value, exc_traceback)
+        elif isinstance(exc_value, SeatNotFoundError):
+            self._on_seat_not_found(exc_value)
         elif issubclass(exc_type, AssertionError):
             # We shouldn't catch assertion errors raised by tests.
             raise exc_value
@@ -267,6 +270,32 @@ class ExceptionHandler:
             self.main_widget.notifications.show_error_dialog(
                 title="No space left on device",
                 message="There is not enough space left on your device."
+            )
+
+    def _on_seat_not_found(self, exc_value):
+        logger.critical(
+            f"Seat not found; possible remote desktop session ({exc_value})",
+            category="APP", event="ERROR",
+        )
+        
+        def on_dialog_closed(response_type: Gtk.ResponseType):
+            if Gtk.ResponseType.OK == response_type:
+                Gtk.show_uri_on_window(
+                    None, "https://protonvpn.com/support/wireguard-linux#how-to-manually-configure-wireguard", 0
+                )
+            self.main_widget._main_window.quit()
+
+        buttons = (
+            DialogButton(label="Quit", response_type=Gtk.ResponseType.CLOSE),
+            DialogButton(label="Set up manual connection", response_type=Gtk.ResponseType.OK)
+        )
+
+        if self.main_widget:
+            self.main_widget.notifications.show_error_dialog(
+                title="Seat not found",
+                message="A session seat was not found, which indicates that you might be running the application from a remote desktop session. This is not supported, and we instead suggest you log in physically, or set up a manual connection.",
+                buttons=buttons,
+                on_dialog_closed=on_dialog_closed
             )
 
     def _on_exception(self, exc_type, exc_value, exc_traceback):

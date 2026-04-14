@@ -1,48 +1,16 @@
-version: 4.15.3rc5
-time: 2026/04/10 11:03
+version: 4.15.3
+time: 2026/04/14 10:10
 author: Luke Titley
 email: luke.titley@proton.ch
 urgency: low
 stability: unstable
 description:
-- "feat!: Pcap groundwork"
----
-version: 4.15.3rc4
-time: 2026/04/09 14:48
-author: Richard Paterson
-email: richard.paterson@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: Gracefully fail if without session bus (thanks to https://github.com/kenvandine)"
----
-version: 4.15.3rc3
-time: 2026/04/09 09:14
-author: Elena Švilpė
-email: elena.svilpe@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: keep tray menu state aligned with window visibility (thanks to https://github.com/dragonleopardpig)"
----
-version: 4.15.3rc2
-time: 2026/04/08 10:00
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "feat: Show connected location"
----
-version: 4.15.3rc1
-time: 2026/04/02 12:57
-author: Elena Švilpė
-email: elena.svilpe@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: Check StatusNotifierWatcher availability for tray detection (thanks to https://github.com/kenvandine)"
-- "fix: Use a snap friendly bus name to work with the generated apparmor profile (https://github.com/kenvandine)"
+- "feat!: Pcap groundwork (Luke Titley)"
+- "fix: Gracefully fail if without session bus (Richard Paterson) (thanks to https://github.com/kenvandine)"
+- "fix: keep tray menu state aligned with window visibility (Elena Švilpė) (thanks to https://github.com/dragonleopardpig)"
+- "feat: Show connected location (Pep Llaneras)"
+- "fix: Check StatusNotifierWatcher availability for tray detection (Elena Švilpė) (thanks to https://github.com/kenvandine)"
+- "fix: Use a snap friendly bus name to work with the generated apparmor profile (Elena Švilpė) (https://github.com/kenvandine)"
 ---
 version: 4.15.2
 time: 2026/03/30 10:56

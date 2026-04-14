@@ -1,4 +1,9 @@
-## What's new (4.15.2)
+## What's new (4.15.3)
+
+- Now displays the location of the server you are connected to.
+- Minor bug fixes.
+
+## 4.15.2
 
 - Minor UI and stability improvements
 

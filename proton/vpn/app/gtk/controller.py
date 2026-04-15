@@ -51,6 +51,7 @@ from proton.vpn.app.gtk.utils import glib
 from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugReportForm
+from proton.vpn.session.dataclasses import NPSSurveyResponse
 from proton.vpn.app.gtk.config import AppConfig, APP_CONFIG
 from proton.vpn.app.gtk.conflicts import Conflicts, Conflict
 
@@ -317,6 +318,14 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         return self.executor.submit(
             self._api.submit_bug_report,
             bug_report
+        )
+
+    def submit_nps_survey_response(self, nps_response: NPSSurveyResponse) -> Future:
+        """Submits an NPS survey response.
+        :return: A Future object wrapping the result of the API."""
+        return self.executor.submit(
+            self._api.submit_nps_response,
+            nps_response
         )
 
     def register_connection_status_subscriber(self, subscriber):

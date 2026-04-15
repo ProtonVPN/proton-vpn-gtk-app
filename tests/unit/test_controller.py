@@ -2,6 +2,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.session.dataclasses import NPSSurveyResponse
 
 
 MockOpenVPNTCP = Mock(name="MockOpenVPNTCP")
@@ -46,6 +47,23 @@ def test_autoconnect_feature(
             mock_method.assert_called_once_with(call_arg) 
         else:
             mock_method.assert_called_once()
+
+
+def test_submit_nps_survey_response_delegates_to_api():
+    mock_executor = Mock()
+    mock_api = Mock()
+    controller = Controller(
+        executor=mock_executor,
+        exception_handler=Mock(),
+        api=mock_api,
+        vpn_reconnector=Mock(),
+        app_config=Mock()
+    )
+    nps_response = Mock(NPSSurveyResponse)
+
+    controller.submit_nps_survey_response(nps_response)
+
+    mock_executor.submit.assert_called_once_with(mock_api.submit_nps_response, nps_response)
 
 
 @patch("proton.vpn.app.gtk.controller.Controller.get_settings")

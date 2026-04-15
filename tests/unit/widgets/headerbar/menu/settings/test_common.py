@@ -286,9 +286,8 @@ class TestEntryWidget:
         )
         assert ew.overridden_by_upgrade_tag
 
-    @pytest.mark.parametrize("new_value", ["New string to save"])
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.common.EntryWidget.save_setting")
-    def test_default_widget_callback_saves_new_received_state_when_leaving_widget_focus(self, save_setting_mock, new_value):
+    def test_default_widget_callback_saves_new_received_state(self):
+        new_value = "New string to save"
         ew = EntryWidget(
             controller=Mock(),
             title=self.DEFAULT_TITLE,
@@ -296,9 +295,8 @@ class TestEntryWidget:
             setting_name=self.DEFAULT_SETTING_NAME,
         )
         ew.entry.set_text(new_value)
-        ew.entry.observe_controllers()[0].emit("leave")
-
-        save_setting_mock.assert_called_once_with(new_value)
+        ew.entry.emit("changed")
+        ew._controller.save_setting_attr.assert_any_call(self.DEFAULT_SETTING_NAME,new_value)
 
     def test_widget_callback_is_received_with_expected_values_when_passing_a_custom_callback(self):
         control_bool_val = "New test string"
@@ -315,7 +313,7 @@ class TestEntryWidget:
         )
 
         ew.entry.set_text(control_bool_val)
-        ew.entry.observe_controllers()[0].emit("leave")
+        ew.entry.emit("changed")
 
 
 class TestBetaTag:

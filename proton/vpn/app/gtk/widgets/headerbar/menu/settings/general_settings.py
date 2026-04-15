@@ -48,12 +48,12 @@ class TrayPinnedServersWidget(EntryWidget):
             title=self.TRAY_PINNED_SERVERS_LABEL,
             description=self.TRAY_PINNED_SERVERS_DESCRIPTION,
             setting_name=self.SETTING_NAME,
-            callback=self._on_focus_outside_entry
+            callback=self._save_and_reload_pinned_servers
         )
         self._controller = controller
         self._tray_indicator = tray_indicator
 
-    def _on_focus_outside_entry(self, entry: Gtk.Entry, *_):
+    def _save_and_reload_pinned_servers(self, entry: Gtk.Entry, *_):
         self.save_setting(entry.get_text())
         if self._tray_indicator:
             self._tray_indicator.reload_pinned_servers()
@@ -115,7 +115,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     def build_connect_at_app_startup(self):
         """Builds and adds the `connect_at_app_startup` setting to the widget."""
-        def on_focus_out_callback(entry: Gtk.Entry, entry_widget: EntryWidget, *_):
+        def _format_and_save_autoconnect_field(entry: Gtk.Entry, entry_widget: EntryWidget, *_):
             new_value: Optional[str] = entry.get_text().strip().upper()
             if new_value == "OFF":
                 new_value = None
@@ -127,7 +127,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
             title=self.CONNECT_AT_APP_STARTUP_LABEL,
             description=self.CONNECT_AT_APP_STARTUP_DESCRIPTION,
             setting_name="app_configuration.connect_at_app_startup",
-            callback=on_focus_out_callback
+            callback=_format_and_save_autoconnect_field
         ))
 
     def build_start_app_minimized(self):

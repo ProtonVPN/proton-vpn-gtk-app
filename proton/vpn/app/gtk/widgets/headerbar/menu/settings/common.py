@@ -672,20 +672,9 @@ class EntryWidget(Gtk.Grid):
 
         entry.set_text(str(value))
         if self._callback:
-            focus_controller = Gtk.EventControllerFocus()
-            focus_controller.connect(
-                "leave",
-                lambda controller, *args: self._callback(entry, self, *args)
-            )
-            entry.add_controller(focus_controller)
+            entry.connect("changed", lambda *args: self._callback(entry, self, *args))
         else:
-            focus_controller = Gtk.EventControllerFocus()
-            focus_controller.connect(
-                "leave",
-                lambda controller, *args: self._on_focus_out_event(entry, *args)
-            )
-            entry.add_controller(focus_controller)
-
+            entry.connect("changed", self._on_changed_event)
         return entry
 
     def change_value(self, new_value: str):
@@ -713,7 +702,7 @@ class EntryWidget(Gtk.Grid):
         if self.description:
             self.attach(self.description, 0, 1, 2, 1)
 
-    def _on_focus_out_event(self, gtk_widget: Gtk.Entry, *_):
+    def _on_changed_event(self, gtk_widget: Gtk.Entry, *_):
         self.save_setting(gtk_widget.get_text())
 
     @property

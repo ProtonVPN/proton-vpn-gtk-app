@@ -36,7 +36,7 @@ class TestGeneralSettings:
         entry_widget = gs.get_last_child()
         entry_widget.change_value(value_to_store)
 
-        controller.save_setting_attr.assert_called_once_with("app_configuration.connect_at_app_startup", value_to_store.upper())
+        controller.save_setting_attr.assert_called_with("app_configuration.connect_at_app_startup", value_to_store.upper())
 
     def test_build_connect_at_app_startup_populates_disabled_with_off(self):
         controller = Mock()
@@ -46,7 +46,7 @@ class TestGeneralSettings:
         entry_widget = gs.get_last_child()
         entry_widget.change_value("off")
 
-        controller.save_setting_attr.assert_called_once_with("app_configuration.connect_at_app_startup", None)
+        controller.save_setting_attr.assert_called_with("app_configuration.connect_at_app_startup", None)
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.EarlyAccessWidget")
     def test_build_beta_upgrade_is_only_displayed_if_condition_allows_it(self, early_access_widget_class):

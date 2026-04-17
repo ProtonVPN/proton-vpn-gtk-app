@@ -19,13 +19,14 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from unittest.mock import Mock
 
 from proton.vpn.app.gtk.widgets.main.pull_notifications.nps_survey_modal import \
-    NPSSurvey, \
+    NPSSurveyModal, \
+    LimitedTextView, \
     ProtonReport
 from tests.unit.testing_utils import process_gtk_events
 
 
 def build_nps_survey(submit_handler=None, dismiss_handler=None):
-    return NPSSurvey(
+    return NPSSurveyModal(
         controller=Mock(),
         submit_handler=submit_handler or Mock(),
         dismiss_handler=dismiss_handler or Mock()
@@ -49,12 +50,55 @@ class TestProtonReport:
         assert report.paintable == report.texture_success
 
 
+class TestLimitedTextView:
+
+    def test_typing_within_limit_is_accepted(self):
+        view = LimitedTextView(max_chars=10)
+
+        view.get_buffer().insert_at_cursor("hello")
+
+        assert view.char_count == 5
+        assert not view.is_at_limit
+
+    def test_typing_to_exact_limit_is_accepted(self):
+        view = LimitedTextView(max_chars=5)
+
+        view.get_buffer().insert_at_cursor("hello")
+
+        assert view.char_count == 5
+        assert view.is_at_limit
+
+    def test_typing_beyond_limit_is_truncated(self):
+        view = LimitedTextView(max_chars=5)
+
+        view.get_buffer().insert_at_cursor("hello world")
+
+        assert view.char_count == 5
+
+    def test_paste_that_partially_fits_is_truncated_to_limit(self):
+        view = LimitedTextView(max_chars=10)
+        view.get_buffer().insert_at_cursor("hello")  # 5 chars
+
+        view.get_buffer().insert_at_cursor(" world!!!")  # 9 chars, only 5 fit
+
+        assert view.char_count == 10
+        assert view.is_at_limit
+
+    def test_paste_into_full_buffer_is_rejected(self):
+        view = LimitedTextView(max_chars=5)
+        view.get_buffer().insert_at_cursor("hello")
+
+        view.get_buffer().insert_at_cursor("x")
+
+        assert view.char_count == 5
+
+
 class TestNPSSurveyInitialState:
 
     def test_score_buttons_created_for_every_score_value(self):
         survey = build_nps_survey()
 
-        assert len(survey.score_buttons) == NPSSurvey.MAX_SCORE + 1
+        assert len(survey.score_buttons) == NPSSurveyModal.MAX_SCORE + 1
 
     def test_score_button_labels_match_score_values(self):
         survey = build_nps_survey()
@@ -65,12 +109,12 @@ class TestNPSSurveyInitialState:
     def test_initial_state_is_prompt(self):
         survey = build_nps_survey()
 
-        assert survey.state == NPSSurvey.State.PROMPT
+        assert survey.state == NPSSurveyModal.State.PROMPT
 
     def test_title_shows_survey_question_initially(self):
         survey = build_nps_survey()
 
-        assert survey.title == NPSSurvey.TITLE_SURVEY
+        assert survey.title == NPSSurveyModal.TITLE_SURVEY
 
 
 class TestNPSSurveyFeedbackState:
@@ -80,7 +124,7 @@ class TestNPSSurveyFeedbackState:
 
         survey.select_score(5)
 
-        assert survey.state == NPSSurvey.State.FEEDBACK
+        assert survey.state == NPSSurveyModal.State.FEEDBACK
 
 
 class TestNPSSurveySubmission:
@@ -122,7 +166,7 @@ class TestNPSSurveySubmission:
         survey.submit()
         process_gtk_events()
 
-        assert survey.state == NPSSurvey.State.SUBMITTED
+        assert survey.state == NPSSurveyModal.State.SUBMITTED
 
 
 class TestNPSSurveySubmittedState:
@@ -130,22 +174,22 @@ class TestNPSSurveySubmittedState:
     def test_submitted_state_updates_title_to_thanks(self):
         survey = build_nps_survey()
 
-        survey.set_survey_state(NPSSurvey.State.SUBMITTED)
+        survey.set_survey_state(NPSSurveyModal.State.SUBMITTED)
 
-        assert survey.title == NPSSurvey.SUBMITTED_TITLE
+        assert survey.title == NPSSurveyModal.SUBMITTED_TITLE
 
     def test_submitted_state_appends_subtitle(self):
         survey = build_nps_survey()
 
-        survey.set_survey_state(NPSSurvey.State.SUBMITTED)
+        survey.set_survey_state(NPSSurveyModal.State.SUBMITTED)
 
-        assert survey.subtitle == NPSSurvey.SUBMITTED_SUBTITLE
+        assert survey.subtitle == NPSSurveyModal.SUBMITTED_SUBTITLE
 
     def test_submitted_state_disconnects_dismiss_handler(self):
         dismiss_handler = Mock()
         survey = build_nps_survey(dismiss_handler=dismiss_handler)
 
-        survey.set_survey_state(NPSSurvey.State.SUBMITTED)
+        survey.set_survey_state(NPSSurveyModal.State.SUBMITTED)
         survey.emit("close-request")
         process_gtk_events()
 

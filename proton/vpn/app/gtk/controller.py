@@ -36,7 +36,9 @@ from proton.vpn.core.vpnconnector import VPNConnector
 from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.core.settings import Settings
 from proton.vpn.session.servers import LogicalServer
-from proton.vpn.session.session import FeatureFlags
+from proton.vpn.session.session import \
+    FeatureFlags, \
+    Notifications as PullNotifications
 from proton.vpn.session.u2f_interaction import UserInteraction
 
 from proton.vpn.connection.enum import KillSwitchSetting as\
@@ -311,6 +313,15 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     def feature_flags(self) -> FeatureFlags:
         """Returns object which specifies which features are to be enabled or not."""
         return self._api.refresher.feature_flags
+
+    @property
+    def notifications(self) -> PullNotifications:
+        """Returns cached VPN pull notifications."""
+        return self._api.refresher.notifications
+
+    def set_notification_seen(self, notification_id: str):
+        """Marks a notification as seen and persists the change to disk."""
+        self._api.set_notification_seen(notification_id)
 
     def submit_bug_report(self, bug_report: BugReportForm) -> Future:
         """Submits an issue report.

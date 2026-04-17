@@ -27,6 +27,7 @@ from gi.repository import Gtk, Gdk
 
 from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.session.dataclasses import NPSSurveyResponse
 
 
 class ProtonReport(Gtk.Box):
@@ -85,15 +86,59 @@ class ProtonReport(Gtk.Box):
             self._picture.set_paintable(self.texture)
 
 
+class LimitedTextView(Gtk.TextView):
+    """A TextView that silently truncates input to a maximum character count.
+
+    When typed or pasted input would exceed the limit, only the portion that
+    fits is inserted.
+    """
+
+    def __init__(self, max_chars: int):
+        super().__init__()
+        self._max_chars = max_chars
+        self.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+        self._buffer = self.get_buffer()
+        self._handler_id = self._buffer.connect("insert-text", self._on_insert_text)
+        self.connect("unrealize", self._on_unrealize)
+
+    @property
+    def char_count(self) -> int:
+        """Returns the current number of characters in the buffer."""
+        return self._buffer.get_char_count()
+
+    @property
+    def is_at_limit(self) -> bool:
+        """Returns True when the buffer has reached the character limit."""
+        return self.char_count >= self._max_chars
+
+    def _on_unrealize(self, _):
+        if self._handler_id is not None:
+            self._buffer.disconnect(self._handler_id)
+            self._handler_id = None
+
+    def _on_insert_text(self, buffer, _location, text, _length):
+        remaining_allowed = self._max_chars - buffer.get_char_count()
+        if len(text) > remaining_allowed:
+            buffer.stop_emission_by_name("insert-text")
+            if remaining_allowed > 0:
+                # A fresh iter from the insert mark is used rather than
+                # _location, which is only valid for the duration of the
+                # stopped emission and may be in an undefined state after
+                # stop_emission_by_name is called.
+                insert_iter = buffer.get_iter_at_mark(buffer.get_insert())
+                buffer.handler_block(self._handler_id)
+                buffer.insert(insert_iter, text[:remaining_allowed])
+                buffer.handler_unblock(self._handler_id)
+
+
 NPSSubmitHandler = Callable[[int, str], None]
 NPSDismissHandler = Callable[[], None]
 
 
 # pylint: disable=too-many-instance-attributes
-class NPSSurvey(Gtk.Window):
+class NPSSurveyModal(Gtk.Window):
     """NPS Survey modal window."""
     TITLE_SURVEY = "How likely are you to recommend Proton VPN to a friend?"
-    TITLE_THANKS = "Thanks for your feedback"
     MAX_SCORE = 10
     SCORE_LOWER_DESCRIPTION = "0 is very unlikely"
     SCORE_UPPER_DESCRIPTION = "10 is very likely"
@@ -127,7 +172,7 @@ class NPSSurvey(Gtk.Window):
         self._dismiss_handler_id = \
             self.connect("close-request", lambda _: self._dismiss_handler())
         self._chosen_score: Optional[int] = None
-        self._current_state: Optional["NPSSurvey.State"] = None
+        self._current_state: Optional[NPSSurveyModal.State] = None
 
         header_bar = Gtk.HeaderBar()
         header_bar.set_show_title_buttons(True)
@@ -136,7 +181,7 @@ class NPSSurvey(Gtk.Window):
         self.set_titlebar(header_bar)
 
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self._container.set_name("nps-survey-modal-content")
+        self._container.add_css_class("content")
         self._container.set_vexpand(True)
         self.set_child(self._container)
 
@@ -145,13 +190,13 @@ class NPSSurvey(Gtk.Window):
         self._build_feedback_text()
         self._build_submit()
 
-        self.set_survey_state(NPSSurvey.State.PROMPT)
+        self.set_survey_state(NPSSurveyModal.State.PROMPT)
 
     def _build_icon_and_title(self):
         self._icon = ProtonReport()
-        self._title = Gtk.Label(label=NPSSurvey.TITLE_SURVEY)
+        self._title = Gtk.Label(label=NPSSurveyModal.TITLE_SURVEY)
         self._title.set_vexpand(False)
-        self._title.set_name("nps-survey-modal-title-label")
+        self._title.add_css_class("title-label")
         self._title.set_wrap(True)
         self._title.set_justify(Gtk.Justification.CENTER)
 
@@ -166,9 +211,9 @@ class NPSSurvey(Gtk.Window):
 
     def _build_score(self):
         self._score_layout = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self._score_layout.add_css_class("nps-score-layout")
+        self._score_layout.add_css_class("score-layout")
         previous_button: Gtk.ToggleButton = None
-        for score in range(NPSSurvey.MAX_SCORE+1):
+        for score in range(NPSSurveyModal.MAX_SCORE+1):
             score_button = Gtk.ToggleButton.new_with_label(f"{score}")
             score_button.connect("clicked", self._on_clicked_score)
             if score != 0:
@@ -176,18 +221,19 @@ class NPSSurvey(Gtk.Window):
             score_button.set_hexpand(False)
             score_button.set_halign(Gtk.Align.CENTER)
             score_button.set_valign(Gtk.Align.CENTER)
-            score_button.add_css_class("nps-score-button")
+            score_button.add_css_class("score-button")
             previous_button = score_button
             self._score_layout.append(score_button)
 
         self._score_description_layout = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        left_label = Gtk.Label(label=NPSSurvey.SCORE_LOWER_DESCRIPTION)
-        right_label = Gtk.Label(label=NPSSurvey.SCORE_UPPER_DESCRIPTION)
+        self._score_description_layout.add_css_class("score-description-layout")
+        left_label = Gtk.Label(label=NPSSurveyModal.SCORE_LOWER_DESCRIPTION)
+        right_label = Gtk.Label(label=NPSSurveyModal.SCORE_UPPER_DESCRIPTION)
         left_label.set_margin_start(0)
         left_label.set_hexpand(True)
         left_label.set_xalign(0.0)
-        left_label.add_css_class("nps-light-label")
-        right_label.add_css_class("nps-light-label")
+        left_label.add_css_class("light-label")
+        right_label.add_css_class("light-label")
         right_label.set_margin_end(0)
         self._score_description_layout.append(left_label)
         self._score_description_layout.append(right_label)
@@ -196,30 +242,51 @@ class NPSSurvey(Gtk.Window):
         self._container.append(self._score_description_layout)
 
     def _build_feedback_text(self):
-        self._prompt_label = Gtk.Label(label=NPSSurvey.FEEDBACK_PROMPT)
+        self._prompt_label = Gtk.Label(label=NPSSurveyModal.FEEDBACK_PROMPT)
         self._prompt_label.set_xalign(0.0)
-        self._prompt_label.add_css_class("nps-feedback-prompt-label")
+        self._prompt_label.add_css_class("feedback-prompt-label")
 
         self._scrolled_text_view = Gtk.ScrolledWindow()
-        self._scrolled_text_view.add_css_class("nps-feedback-scroll")
+        self._scrolled_text_view.add_css_class("feedback-scroll")
         self._scrolled_text_view.set_min_content_height(120)
         self._scrolled_text_view.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
-        self._feedback_text_view = Gtk.TextView()
-        self._feedback_text_view.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+        self._feedback_text_view = LimitedTextView(NPSSurveyResponse.COMMENT_CHAR_MAX_LENGTH)
         self._scrolled_text_view.set_child(self._feedback_text_view)
 
-        self._optional_label = Gtk.Label(label=NPSSurvey.FEEDBACK_OPTIONAL)
+        self._feedback_footer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self._optional_label = Gtk.Label(label=NPSSurveyModal.FEEDBACK_OPTIONAL)
         self._optional_label.set_xalign(0.0)
-        self._optional_label.add_css_class("nps-light-label")
-        self._optional_label.add_css_class("nps-feedback-optional-label")
+        self._optional_label.set_hexpand(True)
+        self._optional_label.add_css_class("light-label")
+        self._optional_label.add_css_class("feedback-footer-label")
+        self._char_counter_label = \
+            Gtk.Label(label=f"0/{NPSSurveyResponse.COMMENT_CHAR_MAX_LENGTH}")
+        self._char_counter_label.set_xalign(0.0)
+        self._char_counter_label.set_margin_end(0)
+        self._char_counter_label.add_css_class("light-label")
+        self._char_counter_label.add_css_class("feedback-footer-label")
+        self._feedback_footer.append(self._optional_label)
+        self._feedback_footer.append(self._char_counter_label)
+
+        def _on_text_changed(_):
+            count = self._feedback_text_view.char_count
+            self._char_counter_label.set_label(
+                f"{count}/{NPSSurveyResponse.COMMENT_CHAR_MAX_LENGTH}"
+            )
+            if self._feedback_text_view.is_at_limit:
+                self._char_counter_label.add_css_class("char-counter-limit")
+            else:
+                self._char_counter_label.remove_css_class("char-counter-limit")
+
+        self._feedback_text_view.get_buffer().connect("changed", _on_text_changed)
 
         self._container.append(self._prompt_label)
         self._container.append(self._scrolled_text_view)
-        self._container.append(self._optional_label)
+        self._container.append(self._feedback_footer)
 
     def _build_submit(self):
-        self._submit_button = Gtk.Button(label=NPSSurvey.SUBMIT_BUTTON_TITLE)
+        self._submit_button = Gtk.Button(label=NPSSurveyModal.SUBMIT_BUTTON_TITLE)
         self._submit_button.add_css_class("primary")
         self._submit_button.set_halign(Gtk.Align.CENTER)
         self._container.append(self._submit_button)
@@ -231,12 +298,12 @@ class NPSSurvey(Gtk.Window):
 
             feedback_text = self.feedback_text
             self._submit_handler(self._chosen_score, feedback_text)
-            self.set_survey_state(NPSSurvey.State.SUBMITTED)
+            self.set_survey_state(NPSSurveyModal.State.SUBMITTED)
 
         self._submit_button.connect("clicked", _on_clicked_submit)
 
     @property
-    def state(self) -> "NPSSurvey.State":
+    def state(self) -> "NPSSurveyModal.State":
         """Returns the current survey state."""
         return self._current_state
 
@@ -263,7 +330,7 @@ class NPSSurvey(Gtk.Window):
     def select_score(self, score: int):
         """Selects a score and transitions to the FEEDBACK state."""
         self._chosen_score = score
-        self.set_survey_state(NPSSurvey.State.FEEDBACK)
+        self.set_survey_state(NPSSurveyModal.State.FEEDBACK)
 
     @property
     def feedback_text(self) -> str:
@@ -280,34 +347,34 @@ class NPSSurvey(Gtk.Window):
         """Programmatically triggers the submit action."""
         self._submit_button.emit("clicked")
 
-    def set_survey_state(self, state: "NPSSurvey.State"):
+    def set_survey_state(self, state: "NPSSurveyModal.State"):
         """Sets the current survey configuration"""
         self._current_state = state
-        if state == NPSSurvey.State.PROMPT:
+        if state == NPSSurveyModal.State.PROMPT:
             self._scrolled_text_view.set_opacity(0)
             self._prompt_label.set_opacity(0)
-            self._optional_label.set_opacity(0)
+            self._feedback_footer.set_opacity(0)
             self._scrolled_text_view.set_sensitive(False)
             self._submit_button.set_sensitive(False)
 
-        if state == NPSSurvey.State.FEEDBACK:
+        if state == NPSSurveyModal.State.FEEDBACK:
             self._scrolled_text_view.set_opacity(1)
             self._prompt_label.set_opacity(1)
-            self._optional_label.set_opacity(1)
+            self._feedback_footer.set_opacity(1)
             self._scrolled_text_view.set_sensitive(True)
             self._submit_button.set_sensitive(True)
 
-        if state == NPSSurvey.State.SUBMITTED:
+        if state == NPSSurveyModal.State.SUBMITTED:
             self._scrolled_text_view.set_visible(False)
             self._prompt_label.set_visible(False)
-            self._optional_label.set_visible(False)
+            self._feedback_footer.set_visible(False)
             self._score_layout.set_visible(False)
             self._score_description_layout.set_visible(False)
             self._submit_button.set_visible(False)
 
-            self._title.set_label(NPSSurvey.SUBMITTED_TITLE)
-            self._subtitle = Gtk.Label(label=NPSSurvey.SUBMITTED_SUBTITLE)
-            self._subtitle.set_name("nps-survey-modal-subtitle-label")
+            self._title.set_label(NPSSurveyModal.SUBMITTED_TITLE)
+            self._subtitle = Gtk.Label(label=NPSSurveyModal.SUBMITTED_SUBTITLE)
+            self._subtitle.add_css_class("subtitle-label")
             self._nps_description_layout.append(self._subtitle)
             self._nps_description_layout.set_valign(Gtk.Align.CENTER)
             self._nps_description_layout.set_vexpand(True)

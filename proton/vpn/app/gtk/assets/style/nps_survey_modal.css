@@ -1,0 +1,86 @@
+@import "dark_colours.css";
+
+#nps-survey-modal .content {
+    margin: 24px 32px 32px 32px;
+}
+
+#nps-survey-modal.submitted .content {
+    margin-top: 0;
+}
+
+#nps-survey-modal headerbar {
+    background: transparent;
+    background-image: none;
+    box-shadow: none;
+    border: none;
+    min-height: 32px;
+    padding: 0 4px;
+}
+
+#nps-survey-modal .score-layout {
+    margin-top: 32px;
+}
+
+#nps-survey-modal .score-button {
+    padding: 0;
+    min-width: 32px;
+    min-height: 32px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+}
+
+#nps-survey-modal .score-button + .score-button {
+    margin-left: 4px;
+}
+
+#nps-survey-modal .score-button:checked {
+    background: @interaction-norm-active;
+    background-image: none;
+    color: @text-norm;
+}
+
+#nps-survey-modal .light-label {
+    font-size: 12px;
+    font-weight: 400;
+    margin: 0;
+}
+
+#nps-survey-modal .score-description-layout {
+    margin-top: 8px;
+}
+
+#nps-survey-modal .feedback-footer-label {
+    margin-top: 4px;
+}
+
+#nps-survey-modal .char-counter-limit {
+    color: @signal-danger;
+}
+
+#nps-survey-modal .feedback-prompt-label {
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 32px;
+}
+
+#nps-survey-modal .feedback-scroll {
+    margin-top: 8px;
+}
+
+#nps-survey-modal .title-label {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 32px 0 0 0;
+}
+
+#nps-survey-modal button.primary {
+    margin-top: 24px;
+    margin-bottom: 32px;
+}
+
+#nps-survey-modal .subtitle-label {
+    font-size: 14px;
+    font-weight: 400;
+    margin: 12px 0 0 0;
+}

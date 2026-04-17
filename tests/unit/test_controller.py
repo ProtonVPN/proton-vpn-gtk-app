@@ -66,6 +66,21 @@ def test_submit_nps_survey_response_delegates_to_api():
     mock_executor.submit.assert_called_once_with(mock_api.submit_nps_response, nps_response)
 
 
+def test_set_notification_seen_delegates_to_api():
+    mock_api = Mock()
+    controller = Controller(
+        executor=Mock(),
+        exception_handler=Mock(),
+        api=mock_api,
+        vpn_reconnector=Mock(),
+        app_config=Mock()
+    )
+
+    controller.set_notification_seen("survey-123")
+
+    mock_api.set_notification_seen.assert_called_once_with("survey-123")
+
+
 @patch("proton.vpn.app.gtk.controller.Controller.get_settings")
 def test_get_available_protocols_returns_list_of_protocols_which_includes_wireguard_when_feature_flag_is_disabled_and_selected_protocol_is_wireguard(mock_get_settings):
     mock_connector = Mock()

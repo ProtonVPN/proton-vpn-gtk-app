@@ -19,20 +19,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+from concurrent.futures import Future
 import logging
-from os import environ
 from typing import Optional
 
-from gi.repository import Gtk
+from gi.repository import GLib, Gtk
 
+from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.exceptions import NPSError
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar.headerbar import HeaderBar
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.app.gtk.widgets.main.pull_notifications.nps_survey_modal import \
-    NPSSurvey
+    NPSSurveyModal
+from proton.vpn.session.dataclasses import NPSSurveyResponse
+
+
+logger = logging.getLogger(__name__)
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -81,7 +87,7 @@ class MainWindow(Gtk.ApplicationWindow):
         )
         self.set_child(self.main_widget)
 
-        self.connect("show", self._display_pending_widget)
+        self.connect("notify::visible", self._display_pending_notifications)
 
         self.main_widget.set_visible(True)
 
@@ -187,15 +193,65 @@ class MainWindow(Gtk.ApplicationWindow):
             on_close_button_clicked_then_click_quit_menu_entry
         )
 
-    def _display_pending_widget(self, _):
-        if "PROTON_VPN_FEATURE_FLAG_NPS" not in environ:
+    def _display_pending_notifications(self, *_):
+        if not self._controller.user_logged_in:
+            # need to be logged in to submit NPS Survey response
             return
 
-        if self.is_visible():
-            pending_attention_window = NPSSurvey(
-                self._controller,
-                submit_handler=lambda score, text: logging.info("NPS: %i %s", score, text),
-                dismiss_handler=lambda: logging.info("NPS dismissed")
+        if not self.get_visible():
+            # ensure we're visible, and not going invisible
+            return
+
+        nps_notifications = self._controller.notifications.get_nps_survey_notifications()
+        while nps_notifications:
+            nps_survey = nps_notifications.pop()
+            if not nps_survey.seen and nps_survey.is_active:
+                self._controller.set_notification_seen(nps_survey.survey_id)
+                GLib.idle_add(self._show_nps_survey)
+                break
+
+    def create_nps_survey_modal(self) -> NPSSurveyModal:
+        """Creates the NPS survey modal."""
+        def submit_nps_survey_feedback(score: int, comments: str):
+            nps_user_response = NPSSurveyResponse(
+                user_score=score,
+                user_comments=comments,
+                response_type=NPSSurveyResponse.ResponseType.SUBMIT
             )
-            pending_attention_window.set_transient_for(self)
-            pending_attention_window.show()
+            future = self._controller.submit_nps_survey_response(nps_user_response)
+            future.add_done_callback(self._on_nps_submission_result)
+
+        def dismiss_nps_survey():
+            nps_user_response = \
+                NPSSurveyResponse(response_type=NPSSurveyResponse.ResponseType.DISMISS)
+            future = self._controller.submit_nps_survey_response(nps_user_response)
+            future.add_done_callback(self._on_nps_submission_result)
+
+        return NPSSurveyModal(
+            self._controller,
+            submit_handler=submit_nps_survey_feedback,
+            dismiss_handler=dismiss_nps_survey
+        )
+
+    def _show_nps_survey(self):
+        nps_modal = self.create_nps_survey_modal()
+        nps_modal.set_transient_for(self)
+        nps_modal.show()
+        return GLib.SOURCE_REMOVE
+
+    def _on_nps_submission_result(self, future: Future):
+        try:
+            future.result()
+        except ProtonAPINotReachable:
+            logger.warning("NPS survey submission failed: API not reachable.")
+        except ProtonAPIError as exc:
+            logger.warning("Proton API error: %s", exc)
+        except Exception as exc:  # pylint: disable=broad-except
+            logger.exception("Unexpected error submitting NPS survey response.")
+
+            def _reraise_on_main_thread(exc=exc):
+                raise NPSError(
+                    "Unexpected error submitting NPS survey response."
+                ) from exc
+
+            GLib.idle_add(_reraise_on_main_thread)

@@ -1,3 +1,12 @@
+version: 4.16.0rc3
+time: 2026/04/16 17:31
+author: Richard Paterson
+email: richard.paterson@proton.ch
+urgency: low
+stability: unstable
+description:
+- "feat: NPS Survey presentation driven by pull notifications"
+---
 version: 4.16.0rc2
 time: 2026/04/15 12:01
 author: Elena Švilpė

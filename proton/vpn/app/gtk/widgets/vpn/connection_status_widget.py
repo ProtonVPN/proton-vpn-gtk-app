@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from pathlib import Path
 from typing import Optional, cast
-from gi.repository import Gdk
+from gi.repository import Gdk, GdkPixbuf
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.connection import events, states
 from proton.vpn.app.gtk.assets import icons
@@ -32,6 +32,7 @@ from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.vpn.port_forward_widget import PortForwardRevealer
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.split_tunneling import \
     SPLIT_TUNNELING_TOGGLE_SETTING_NAME
+from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -54,12 +55,25 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         self.set_name("vpn-connection-status-widget")
         self._controller = controller
         self._notifications = notifications
+
+        self._protected_pixbuf: GdkPixbuf.Pixbuf
+        self._unprotected_pixbuf: GdkPixbuf.Pixbuf
+        self._fastest_pixbuf: GdkPixbuf.Pixbuf
+
+        self._status_title_row: Gtk.Box
+        self._status_icon: Gtk.Image
+        self._status_spinner: Gtk.Spinner
+        self._status_title_label: Gtk.Label
+
+        self._connection_details_box: Gtk.Grid
         self._connection_details_icon: Gtk.Image
+        self._connection_details_title: Gtk.Label
+        self._connection_details_subtitle: Gtk.Label
+
+        self._error_detail_label: Gtk.Label
+        self._port_forward_revealer: PortForwardRevealer
 
         self.append(self._build_status_box())
-
-        self._port_forward_revealer = PortForwardRevealer(notifications)
-        self._connection_details_text_box.append(self._port_forward_revealer)
 
     def _build_status_box(self) -> Gtk.Box:
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -100,15 +114,16 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         self._status_title_row.append(self._status_spinner)
         self._status_title_row.append(self._status_title_label)
 
-        self._connection_details_box = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL, spacing=4
-        )
+        self._connection_details_box = Gtk.Grid()
         self._connection_details_box.set_name("connection-details-box")
+        self._connection_details_box.set_column_spacing(8)
+        self._connection_details_box.set_halign(Gtk.Align.START)
 
         self._connection_details_icon = Gtk.Image()
+        self._connection_details_icon.set_halign(Gtk.Align.START)
         self._connection_details_icon.set_valign(Gtk.Align.START)
+        self._connection_details_icon.set_size_request(36, 24)
 
-        self._connection_details_text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         self._connection_details_title = Gtk.Label()
         self._connection_details_title.set_name("connection-details-title")
         self._connection_details_title.add_css_class("title-4")
@@ -118,10 +133,12 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         self._connection_details_subtitle.set_name("connection-details-subtitle")
         self._connection_details_subtitle.set_halign(Gtk.Align.START)
 
-        self._connection_details_text_box.append(self._connection_details_title)
-        self._connection_details_text_box.append(self._connection_details_subtitle)
-        self._connection_details_box.append(self._connection_details_icon)
-        self._connection_details_box.append(self._connection_details_text_box)
+        self._connection_details_box.attach(self._connection_details_icon, 0, 0, 1, 1)
+        self._connection_details_box.attach(self._connection_details_title, 1, 0, 1, 1)
+        self._connection_details_box.attach(self._connection_details_subtitle, 1, 1, 1, 1)
+
+        self._port_forward_revealer = PortForwardRevealer(self._notifications)
+        self._connection_details_box.attach(self._port_forward_revealer, 1, 2, 1, 1)
 
         self._error_detail_label = Gtk.Label(label="")
         self._error_detail_label.set_name("error-detail-label")
@@ -230,7 +247,6 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         if disconnected:
             pixbuf = self._fastest_pixbuf
             self._connection_details_icon.set_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
-            self._connection_details_icon.set_size_request(pixbuf.get_width(), pixbuf.get_height())
             is_free = self._controller.user_tier == TierEnum.FREE
             if is_free:
                 self._connection_details_title.set_text("Fastest free server")
@@ -247,7 +263,7 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
                 logical_server, is_secure_core)
             self._connection_details_box.remove(self._connection_details_icon)
             self._connection_details_icon = new_connection_details_icon
-            self._connection_details_box.prepend(self._connection_details_icon)
+            self._connection_details_box.attach(self._connection_details_icon, 0, 0, 1, 1)
 
             self._connection_details_title.set_text(logical_server.exit_country_name)
             if is_secure_core:
@@ -259,24 +275,11 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
 
     def _build_connection_details_icon(self, logical_server, is_secure_core: bool) -> Gtk.Image:
         if is_secure_core:
-            icon = DoubleFlagIcon(
+            return DoubleFlagIcon(
                 exit_country_code=logical_server.exit_country,
                 entry_country_code=logical_server.entry_country,
             )
-            icon.set_valign(Gtk.Align.START)
-            return icon
-        try:
-            pixbuf = icons.get(
-                Path("flags") / f"{logical_server.exit_country.lower()}.svg",
-                width=36, height=24
-            )
-        except ValueError:
-            # A ValueError could be raised if we don't have a flag icon for the country yet
-            pixbuf = icons.get(Path("flags") / "placeholder.svg", width=36, height=24)
-        image = Gtk.Image.new_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
-        image.set_size_request(pixbuf.get_width(), pixbuf.get_height())
-        image.set_valign(Gtk.Align.START)
-        return image
+        return CountryFlagIcon(logical_server.exit_country)
 
     @property
     def _split_tunneling_enabled(self) -> bool:

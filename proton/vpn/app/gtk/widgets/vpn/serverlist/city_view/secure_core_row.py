@@ -88,7 +88,7 @@ class SecureCoreRow(Gtk.Box):
             smart_routing=False,
             toggable=True,
             upgrade_required=upgrade_required,
-            icon=SecureCoreIcon(size=24),
+            icon_factory=lambda: SecureCoreIcon(size=24),
             connect_button_tooltip=connect_button_tooltip,
             toggle_button_tooltips=toggle_button_tooltips,
         )
@@ -147,10 +147,10 @@ class SecureCoreRow(Gtk.Box):
                 smart_routing=False,
                 toggable=False,
                 upgrade_required=upgrade_required,
-                load=server.load,
-                icon=DoubleFlagIcon(
-                    exit_country_code=server.exit_country,
-                    entry_country_code=server.entry_country,
+                load=None if server.under_maintenance else server.load,
+                icon_factory=lambda s=server: DoubleFlagIcon(
+                    exit_country_code=s.exit_country,
+                    entry_country_code=s.entry_country,
                 ),
                 connect_button_tooltip=(
                     f"Connect to {server.exit_country_name}\nvia {server.entry_country_name}"

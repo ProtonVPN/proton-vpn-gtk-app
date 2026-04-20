@@ -26,85 +26,111 @@ def _row_data(**kwargs) -> RowViewModel:
     return RowViewModel(**defaults)
 
 
-def test_header_displays_country_name_when_server_group_is_a_country():
-    header = RowContent()
-    header.display(row_data=_row_data(name="United States"))
-    assert header.label == "United States"
+def test_row_content_displays_country_name_when_server_group_is_a_country():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(name="United States"))
+    assert row_content.label == "United States"
 
 
-def test_header_displays_city_name_when_server_group_is_a_city():
-    header = RowContent()
-    header.display(row_data=_row_data(name="Tokyo"))
-    assert header.label == "Tokyo"
+def test_row_content_displays_city_name_when_server_group_is_a_city():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(name="Tokyo"))
+    assert row_content.label == "Tokyo"
 
 
-def test_header_displays_server_name_when_server_group_is_a_single_server():
-    header = RowContent()
-    header.display(row_data=_row_data(name="US#1", toggable=False, load=50))
-    assert header.label == "US#1"
+def test_row_content_displays_server_name_when_server_group_is_a_single_server():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(name="US#1", toggable=False, load=50))
+    assert row_content.label == "US#1"
 
 
-def test_header_displays_toggle_button_when_server_group_is_toggleable():
-    header = RowContent()
-    header.display(row_data=_row_data(toggable=True))
-    assert header.toggle_button.get_visible()
+def test_row_content_displays_toggle_button_when_server_group_is_toggleable():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(toggable=True))
+    assert row_content.toggle_button.get_visible()
 
 
-def test_header_does_not_display_toggle_button_when_server_group_is_a_single_server():
-    header = RowContent()
-    header.display(row_data=_row_data(toggable=False, load=50))
-    assert not header.toggle_button.get_visible()
+def test_row_content_does_not_display_toggle_button_when_server_group_is_a_single_server():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(toggable=False, load=50))
+    assert row_content.toggle_button.get_opacity() == 0
+    assert not row_content.toggle_button.get_sensitive()
 
 
-def test_header_displays_upgrade_required_link_button_to_free_users_on_non_free_server_groups():
-    header = RowContent()
-    header.display(row_data=_row_data(upgrade_required=True))
-    assert header.upgrade_required_link_button.get_visible()
-    assert not header.connect_button.get_visible()
+def test_row_content_displays_upgrade_required_link_button_to_free_users_on_non_free_server_groups():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(upgrade_required=True))
+    assert row_content.action_text == "Upgrade"
 
 
-def test_header_displays_connect_button_to_paid_users_on_paid_server_groups():
-    header = RowContent()
-    header.display(row_data=_row_data(upgrade_required=False, toggable=False, load=50))
-    assert not header.upgrade_required_link_button.get_visible()
-    assert header.connect_button.get_visible()
+def test_row_content_displays_connect_button_to_paid_users_on_paid_server_groups():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(upgrade_required=False, toggable=False, load=50))
+    assert row_content.action_text == "Connect"
 
 
-def test_header_displays_server_load_when_server_group_is_a_single_server():
-    header = RowContent()
-    header.display(row_data=_row_data(toggable=False, load=75))
-    assert header.server_load == "75%"
+def test_row_content_displays_server_load_when_server_group_is_a_single_server():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(toggable=False, load=75))
+    assert row_content.server_load == "75%"
 
 
-def test_header_hides_details_and_shows_maintenance_icon_when_under_maintenance():
-    header = RowContent()
-    header.display(row_data=_row_data(under_maintenance=True))
-    assert header.under_maintenance_icon.get_visible()
-    assert not header.details_visible
+def test_row_content_hides_details_and_shows_maintenance_icon_when_under_maintenance():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(under_maintenance=True))
+    assert row_content.under_maintenance_icon.get_visible()
+    assert not row_content.details_visible  # no connect/upgrade button for maintenance rows
 
 
-def test_header_disables_label_when_under_maintenance():
-    header = RowContent()
-    header.display(row_data=_row_data(under_maintenance=True))
-    assert not header.label_sensitive
+def test_row_content_dims_row_when_under_maintenance():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(under_maintenance=True))
+    assert row_content.has_css_class("dimmed")
 
 
-def test_header_connect_button_calls_on_connect_callback_when_clicked():
+def test_row_content_dims_row_when_upgrade_required():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(upgrade_required=True))
+    assert row_content.has_css_class("dimmed")
+
+
+def test_row_content_connect_button_calls_on_connect_callback_when_clicked():
     on_connect = Mock()
-    header = RowContent()
-    header.display(row_data=_row_data(toggable=False, load=50, on_connect=on_connect))
-    header.click_connect_button()
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(toggable=False, load=50, on_connect=on_connect))
+    row_content.click_action_button()
     on_connect.assert_called_once()
 
 
-def test_header_displays_server_features():
-    header = RowContent()
-    header.display(row_data=_row_data(
+def test_row_content_is_not_dimmed_when_neither_under_maintenance_nor_upgrade_required():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(under_maintenance=False, upgrade_required=False))
+    assert not row_content.has_css_class("dimmed")
+    assert row_content.label_sensitive
+
+
+def test_row_content_label_sensitive_is_false_when_dimmed():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(under_maintenance=True))
+    assert not row_content.label_sensitive
+
+
+def test_row_content_dimmed_class_cleared_on_reset():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(under_maintenance=True))
+    assert row_content.has_css_class("dimmed")
+    row_content.display(row_data=_row_data(under_maintenance=False))
+    assert not row_content.has_css_class("dimmed")
+
+
+def test_row_content_displays_server_features():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(
         features={ServerFeatureEnum.P2P, ServerFeatureEnum.TOR},
         smart_routing=True,
     ))
 
-    feature_icons = header.get_feature_icons()
+    feature_icons = row_content.get_feature_icons()
     assert len(feature_icons) == 3
     icon_types = [type(icon) for icon in feature_icons]
     assert SmartRoutingIcon in icon_types

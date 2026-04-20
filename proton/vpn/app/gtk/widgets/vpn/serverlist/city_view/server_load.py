@@ -36,6 +36,8 @@ class ServerLoad(Gtk.Box):
         self.append(self._bar)
 
         self._label = Gtk.Label()
+        self._label.set_width_chars(4)  # Reserve space for "100%"
+        self._label.set_xalign(1.0)
         self.append(self._label)
 
         self.set_load(load)

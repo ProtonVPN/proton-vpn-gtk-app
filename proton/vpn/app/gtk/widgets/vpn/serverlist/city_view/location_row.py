@@ -82,7 +82,7 @@ class LocationRow(Gtk.Box):
             smart_routing=location.smart_routing,
             toggable=True,
             upgrade_required=upgrade_required,
-            icon=LocationIcon(),
+            icon_factory=LocationIcon,
             connect_button_tooltip=f"Connect to {location.name}",
             toggle_button_tooltips=(
                 f"Show all servers from {location.name}",
@@ -152,7 +152,7 @@ class LocationRow(Gtk.Box):
                 smart_routing=server.smart_routing,
                 toggable=False,
                 upgrade_required=upgrade_required,
-                load=server.load,
+                load=None if server.under_maintenance else server.load,
                 connect_button_tooltip=f"Connect to {server.name}",
             )
             server_row.display(row_data)

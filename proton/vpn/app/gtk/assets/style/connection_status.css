@@ -1,6 +1,7 @@
 #vpn-connection-status-widget {
     margin-top: 8px;
     margin-bottom: 8px;
+    padding-left: 8px;
 }
 
 #vpn-connection-status-widget #status-title-row {
@@ -27,6 +28,19 @@
     margin-bottom: 8px;
 }
 
-#port-forwarding-widget button {
-    padding: 0;
+#port-forwarding-widget {
+    margin-top: 4px;
+}
+
+#port-forwarding-widget .active-port-icon {
+    margin-right: 4px;
+}
+
+#port-forwarding-widget button.flat {
+    padding: 2px 4px;
+}
+
+#port-forwarding-widget button.flat:hover {
+    background-color: @interaction-default-hover;
+    background-image: image(@interaction-default-hover);
 }

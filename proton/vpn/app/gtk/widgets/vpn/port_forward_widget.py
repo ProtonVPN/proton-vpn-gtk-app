@@ -81,6 +81,15 @@ class PortForwardWidget(Gtk.Box):
     def _build_ui(self):
         self.set_halign(Gtk.Align.START)
 
+        active_port_pixbuf = icons.get(
+            Path("connection-status/active-port.svg"), width=12, height=12)
+        active_port_icon = Gtk.Image.new_from_paintable(
+            Gdk.Texture.new_for_pixbuf(active_port_pixbuf))
+        active_port_icon.set_size_request(
+            active_port_pixbuf.get_width(), active_port_pixbuf.get_height())
+        active_port_icon.set_valign(Gtk.Align.CENTER)
+        active_port_icon.add_css_class("active-port-icon")
+
         active_port_label = Gtk.Label(label=self.ACTIVE_PORT_LABEL)
         active_port_label.add_css_class("dim-label")
 
@@ -91,12 +100,14 @@ class PortForwardWidget(Gtk.Box):
         copy_icon = Gtk.Image.new_from_paintable(Gdk.Texture.new_for_pixbuf(copy_pixbuf))
         copy_icon.set_size_request(copy_pixbuf.get_width(), copy_pixbuf.get_height())
 
-        button_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
+        button_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        button_content.append(active_port_icon)
+        button_content.append(active_port_label)
         button_content.append(self._port_forward_label)
         button_content.append(copy_icon)
 
         self._copy_button = Gtk.Button()
-        self._copy_button.set_has_frame(False)
+        self._copy_button.add_css_class("flat")
         self._copy_button.set_child(button_content)
         self._copy_button.set_cursor(Gdk.Cursor.new_from_name("pointer", None))
         self._copy_button.connect("clicked", self._on_button_press)
@@ -107,8 +118,6 @@ class PortForwardWidget(Gtk.Box):
         self._copied_popover.set_has_arrow(False)
         self._copied_popover.set_parent(self._copy_button)
 
-        self.set_spacing(3)
-        self.append(active_port_label)
         self.append(self._copy_button)
 
     def on_new_state(self, connection_state: states.State):

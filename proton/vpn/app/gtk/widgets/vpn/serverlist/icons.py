@@ -190,8 +190,12 @@ class DoubleFlagIcon(Gtk.Image):
             overall_alpha=255,
         )
 
-        self.set_from_paintable(Gdk.Texture.new_for_pixbuf(composite))
-        self.set_size_request(canvas_w, canvas_h)
+        scaled = composite.scale_simple(
+            CountryFlagIcon._FLAG_WIDTH, CountryFlagIcon._FLAG_HEIGHT,
+            GdkPixbuf.InterpType.BILINEAR
+        )
+        self.set_from_paintable(Gdk.Texture.new_for_pixbuf(scaled))
+        self.set_size_request(CountryFlagIcon._FLAG_WIDTH, CountryFlagIcon._FLAG_HEIGHT)
 
     @staticmethod
     def _load_flag_pixbuf(country_code: str, width: int, height: int) -> GdkPixbuf.Pixbuf:
@@ -210,9 +214,11 @@ class DoubleFlagIcon(Gtk.Image):
 class LocationIcon(Gtk.Image):
     """Icon displayed on each location row."""
 
+    SIZE = 24
+
     def __init__(self):
         super().__init__()
-        pixbuf = icons.get(Path("location.svg"), width=24, height=24)
+        pixbuf = icons.get(Path("location.svg"), width=self.SIZE, height=self.SIZE)
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
         self.set_size_request(pixbuf.get_width(), pixbuf.get_height())
@@ -221,13 +227,18 @@ class LocationIcon(Gtk.Image):
 class CountryFlagIcon(Gtk.Image):
     """Flag displayed on each country row."""
 
+    _FLAG_WIDTH = 24
+    _FLAG_HEIGHT = 16
     _cache: ClassVar[Dict[str, CountryFlagIcon]] = {}
 
     def __init__(self, country_code: str):
         super().__init__()
 
         try:
-            pixbuf = icons.get(Path("flags") / f"{country_code.lower()}.svg", width=24, height=16)
+            pixbuf = icons.get(
+                Path("flags") / f"{country_code.lower()}.svg",
+                width=self._FLAG_WIDTH, height=self._FLAG_HEIGHT
+            )
         except ValueError:
             pixbuf = icons.get(Path("flags") / "placeholder.svg")
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)

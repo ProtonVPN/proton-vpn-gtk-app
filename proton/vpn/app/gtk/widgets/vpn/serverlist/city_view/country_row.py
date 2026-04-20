@@ -93,7 +93,7 @@ class CountryRow(Gtk.Box):
             smart_routing=country.smart_routing,
             toggable=True,
             upgrade_required=upgrade_required,
-            icon=CountryFlagIcon(country.code),
+            icon_factory=lambda c=country: CountryFlagIcon(c.code),
             connect_button_tooltip=f"Connect to {country.name}",
             toggle_button_tooltips=(
                 f"Show all locations from {country.name}",

@@ -49,7 +49,7 @@ class RowViewModel:  # pylint: disable=too-many-instance-attributes
     upgrade_required: bool = False
     load: Optional[int] = None
     secure_core_countries: Optional[Tuple[str, str]] = None  # (entry_name, exit_name)
-    icon: Optional[Gtk.Widget] = None
+    icon_factory: Optional[Callable[[], Gtk.Widget]] = None
     toggle_button_tooltips: Optional[Tuple[str, str]] = None
 
     def __post_init__(self):

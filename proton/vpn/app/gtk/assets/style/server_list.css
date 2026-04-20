@@ -28,14 +28,60 @@
     background-color: @signal-danger;
 }
 
-/* Show under maintenance icon vertically aligned with toggle button icons */
-#server-list-widget .row-content .under-maintenance-icon {
-    margin: 10px;
+#server-list-widget .row-content {
+    /* Keep row height consistent whether showing connect button or upgrade link */
+    min-height: 32px;
+    /* Leave space for the scrollbar */
+    margin-right: 18px;
 }
 
-/* Keep row height consistent whether showing connect button or upgrade link */
-#server-list-widget .row-content {
-    min-height: 32px;
+#server-list-widget #server-list-header-row {
+    /* Leave space for the scrollbar */
+    margin-right: 18px;
+}
+
+/* Avoid flag shifts right when row button is displayed */
+#server-list-widget #server-list-header-row,
+#server-list-widget .row-leave-box,
+#server-list-widget .row-content button.connect-button {
+    padding-left: 8px;
+}
+
+#server-list-widget {
+    /* Add padding to the right for consistency with the padding-left
+    added to avoid the flag shifting right when row button is displayed */
+    padding-right: 8px;
+}
+
+#server-list-widget .row-content button.connect-button {
+    border: 0;
+}
+
+#server-list-widget .row-content button.connect-button .connect-action-label {
+    font-weight: bold;
+}
+
+#server-list-widget .row-content button.toggle-button:focus-visible,
+#server-list-widget .row-content button.connect-button:focus-visible {
+    outline-color: @interaction-norm;
+}
+
+#server-list-widget .row-content button.connect-button:hover,
+#server-list-widget .row-content button.toggle-button:hover {
+    background-color: @interaction-default-hover;
+    background-image: image(@interaction-default-hover);
+}
+
+#server-list-widget .row-content button.connect-button:active,
+#server-list-widget .row-content button.toggle-button:active {
+    background-color: @interaction-default-active;
+    background-image: image(@interaction-default-active);
+}
+
+/* Dim the leave-child content when upgrade is required.
+   The hover child (connect/upgrade button) and toggle button are unaffected. */
+#server-list-widget .row-content.dimmed .row-leave-box {
+    opacity: 0.55;
 }
 
 #feature-legend-popover {

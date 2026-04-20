@@ -67,7 +67,6 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._container.set_name("server-list-widget-container")
         self._container.set_vexpand(True)
-        self._container.set_margin_end(10)  # Leave space for the scroll bar.
         self._container.set_spacing(5)
         self.set_child(self._container)
 

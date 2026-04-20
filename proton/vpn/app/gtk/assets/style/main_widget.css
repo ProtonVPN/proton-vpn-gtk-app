@@ -7,6 +7,10 @@
     );
 }
 
+#main-widget #content-layout {
+    padding: 20px;
+}
+
 #main-widget.connected {
     background-image: linear-gradient(
         to bottom,

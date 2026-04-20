@@ -53,11 +53,16 @@ class MainWidget(Gtk.Overlay):
     ):
         super().__init__()
         self.set_name("main-widget")
-        self.layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.layout.set_name("main-widget-layout")
+
+        self.main_layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.main_layout.set_name("main-layout")
+
+        self.content_layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.content_layout.set_name("content-layout")
 
         self._overlay_widget = overlay_widget
-        self.set_child(self.layout)
+        self.main_layout.append(self.content_layout)
+        self.set_child(self.main_layout)
         self.add_overlay(self._overlay_widget)
 
         self._active_widget = None
@@ -68,7 +73,7 @@ class MainWidget(Gtk.Overlay):
         self._notifications = notifications or Notifications(
             main_window, NotificationBar()
         )
-        self.layout.append(self.notifications.notification_bar)
+        self.main_layout.prepend(self.notifications.notification_bar)
         self.login_widget = self._create_login_widget()
         self.vpn_widget = None
 
@@ -100,9 +105,9 @@ class MainWidget(Gtk.Overlay):
         """Sets the active widget. That is, the widget to be shown
         to the user."""
         if self._active_widget:
-            self.layout.remove(self._active_widget)
+            self.content_layout.remove(self._active_widget)
         self._active_widget = widget
-        self.layout.append(self._active_widget)
+        self.content_layout.append(self._active_widget)
 
     _STATE_CSS_CLASSES = {
         states.Connected: "connected",

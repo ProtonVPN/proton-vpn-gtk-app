@@ -2,6 +2,8 @@
 @import "dark_buttons.css";
 @import "connection_status.css";
 @import "main_widget.css";
+@import "quick_connect_widget.css";
+@import "search_entry.css";
 @import "server_list.css";
 @import "nps_survey_modal.css";
 
@@ -20,6 +22,34 @@ switch:checked {
 }
 
 switch:checked:hover {
+    background-color: @interaction-norm-hover;
+    background-image: image(@interaction-norm-hover);
+    border-color: @interaction-norm-hover;
+}
+
+checkbutton > check:checked,
+checkbutton > check:indeterminate {
+    background-color: @interaction-norm;
+    background-image: image(@interaction-norm);
+    border-color: @interaction-norm;
+    color: @text-norm;
+}
+
+checkbutton > check:checked:hover,
+checkbutton > check:indeterminate:hover {
+    background-color: @interaction-norm-hover;
+    background-image: image(@interaction-norm-hover);
+    border-color: @interaction-norm-hover;
+}
+
+checkbutton > radio:checked {
+    background-color: @interaction-norm;
+    background-image: image(@interaction-norm);
+    border-color: @interaction-norm;
+    color: @text-norm;
+}
+
+checkbutton > radio:checked:hover {
     background-color: @interaction-norm-hover;
     background-image: image(@interaction-norm-hover);
     border-color: @interaction-norm-hover;
@@ -72,11 +102,6 @@ label.success {
     color: @text-norm;
     text-shadow: None;
     padding: 5px;
-}
-
-#vpn-widget,
-#login-widget {
-    margin: 10px;
 }
 
 #login-logo {

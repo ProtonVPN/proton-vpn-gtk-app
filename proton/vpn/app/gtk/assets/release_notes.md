@@ -1,22 +1,20 @@
-## What's new (4.15.3)
+## What's new (4.16.0)
+- Minor UI improvements and bug fixes.
 
+## 4.15.3
 - Now displays the location of the server you are connected to.
 - Minor bug fixes.
 
 ## 4.15.2
-
 - Minor UI and stability improvements
 
 ## 4.15.1
-
 - Minor improvements.
 
 ## 4.15.0
-
 - Choose your preferred city when connecting. Expand any country to see all available locations and select the one you want.
 
 ### Community contributions
-
 - Fixed an issue where the menu button was not visible on some unsupported distros. Thanks to [Peter Jung](https://github.com/ptr1337).
 - Improved desktop environment detection for the tray indicator. Thanks to [Sebastian Rugina](https://github.com/SRugina) and [proletarius101](https://github.com/proletarius101).
 

@@ -1,38 +1,14 @@
-version: 4.16.0rc4
-time: 2026/04/20 10:52
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-urgency: low
-stability: unstable
-description:
-- "fix: UI cosmetics"
----
-version: 4.16.0rc3
-time: 2026/04/16 17:31
-author: Richard Paterson
-email: richard.paterson@proton.ch
-urgency: low
-stability: unstable
-description:
-- "feat: NPS Survey presentation driven by pull notifications"
----
-version: 4.16.0rc2
-time: 2026/04/15 12:01
+version: 4.16.0
+time: 2026/04/21 11:12
 author: Elena Švilpė
 email: elena.svilpe@proton.ch
 urgency: low
 stability: unstable
 description:
-- "fix: settings changes are not saved"
----
-version: 4.16.0rc1
-time: 2026/04/14 16:40
-author: Richard Paterson
-email: richard.paterson@proton.ch
-urgency: low
-stability: unstable
-description:
-- "feat: NPS survey response submission"
+- "feat: NPS Survey presentation driven by pull notifications (Richard Paterson)"
+- "fix: settings changes are not saved (Elena Švilpė)"
+- "feat: NPS survey response submission (Richard Paterson)"
+- "fix: UI cosmetics (Pep Llaneras)"
 ---
 version: 4.15.3
 time: 2026/04/14 10:10

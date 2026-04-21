@@ -15,6 +15,18 @@ switch:focus-visible {
     outline-color: @interaction-norm;
 }
 
+entry:focus-within {
+    border-color: @interaction-norm;
+    box-shadow: none;
+}
+
+switch {
+    background-color: @field-norm;
+    background-image: image(@field-norm);
+    border-color: @field-norm;
+    border-radius: 999px;
+}
+
 switch:checked {
     background-color: @interaction-norm;
     background-image: image(@interaction-norm);
@@ -25,6 +37,12 @@ switch:checked:hover {
     background-color: @interaction-norm-hover;
     background-image: image(@interaction-norm-hover);
     border-color: @interaction-norm-hover;
+}
+
+switch slider {
+    border-radius: 999px;
+    background-color: @text-norm;
+    background-image: image(@text-norm);
 }
 
 checkbutton > check:checked,
@@ -42,17 +60,15 @@ checkbutton > check:indeterminate:hover {
     border-color: @interaction-norm-hover;
 }
 
+checkbutton > radio {
+    border-radius: 999px;
+}
+
 checkbutton > radio:checked {
     background-color: @interaction-norm;
     background-image: image(@interaction-norm);
     border-color: @interaction-norm;
     color: @text-norm;
-}
-
-checkbutton > radio:checked:hover {
-    background-color: @interaction-norm-hover;
-    background-image: image(@interaction-norm-hover);
-    border-color: @interaction-norm-hover;
 }
 
 entry text selection {
@@ -68,16 +84,13 @@ label link:hover {
     color: @interaction-norm-hover;
 }
 
-scrollbar slider {
-    background-color: @interaction-norm;
+scrollbar {
+    border: none;
 }
 
+scrollbar slider,
 scrollbar slider:hover {
-    background-color: @interaction-norm-hover;
-}
-
-scrollbar slider:active {
-    background-color: @interaction-norm-active;
+    background-color: @border-norm;
 }
 
 label.info {

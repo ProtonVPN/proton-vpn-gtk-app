@@ -62,6 +62,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
         )
         self.set_propagate_natural_width(True)
         self.set_name("server-list-widget")
+        self.set_overlay_scrolling(False)
 
         # pylint: disable=duplicate-code
         self._container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)

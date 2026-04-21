@@ -72,12 +72,16 @@ class SecureCoreRow(Gtk.Box):
         self._expandable_row.reset(keep_children=False)
         self._expandable_row.connect_toggle()
         exit_country_name = secure_core_group.servers[0].exit_country_name
-        connect_button_tooltip = f"Connect to {exit_country_name} via Secure Core"
+        upgrade_required = user_tier == TierEnum.FREE and not secure_core_group.free
+        connect_button_tooltip = (
+            f"Upgrade to connect to {exit_country_name} via Secure Core"
+            if upgrade_required else
+            f"Connect to {exit_country_name} via Secure Core"
+        )
         toggle_button_tooltips = (
             f"Show all Secure Core servers\nto connect to {exit_country_name}",
             f"Hide all Secure Core servers\nto connect to {exit_country_name}"
         )
-        upgrade_required = user_tier == TierEnum.FREE and not secure_core_group.free
 
         row_data = RowViewModel(
             name=self.LABEL,
@@ -153,7 +157,11 @@ class SecureCoreRow(Gtk.Box):
                     entry_country_code=s.entry_country,
                 ),
                 connect_button_tooltip=(
-                    f"Connect to {server.exit_country_name}\nvia {server.entry_country_name}"
+                    f"Upgrade to connect to {server.exit_country_name}"
+                    f" via {server.entry_country_name}"
+                    if upgrade_required else
+                    f"Connect to {server.exit_country_name}"
+                    f" via {server.entry_country_name}"
                 ),
             )
             server_row.display(row_data)

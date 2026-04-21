@@ -64,8 +64,8 @@ def test_secure_core_row_server_row_icon_is_double_flag(multi_server_group):
 
 def test_secure_core_row_server_row_connect_tooltip_includes_both_countries(multi_server_group):
     server_rows = _toggled_row(multi_server_group).server_rows
-    assert server_rows[0].connect_button_tooltip == "Connect to Netherlands\nvia Switzerland"
-    assert server_rows[1].connect_button_tooltip == "Connect to Netherlands\nvia Iceland"
+    assert server_rows[0].connect_button_tooltip == "Connect to Netherlands via Switzerland"
+    assert server_rows[1].connect_button_tooltip == "Connect to Netherlands via Iceland"
 
 
 def test_secure_core_row_shows_server_rows_when_toggled(multi_server_group):

@@ -94,7 +94,11 @@ class CountryRow(Gtk.Box):
             toggable=True,
             upgrade_required=upgrade_required,
             icon_factory=lambda c=country: CountryFlagIcon(c.code),
-            connect_button_tooltip=f"Connect to {country.name}",
+            connect_button_tooltip=(
+                f"Upgrade to connect to {country.name}"
+                if upgrade_required else
+                f"Connect to {country.name}"
+            ),
             toggle_button_tooltips=(
                 f"Show all locations from {country.name}",
                 f"Hide all locations from {country.name}",

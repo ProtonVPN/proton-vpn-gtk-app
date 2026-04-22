@@ -1,11 +1,11 @@
-version: 4.16.1rc1
+version: 4.16.1
 time: 2026/04/21 10:07
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
+author: Elena Švilpė
+email: elena.svilpe@proton.ch
 urgency: low
 stability: unstable
 description:
-- "fix: improve CSS styling"
+- "fix: improve CSS styling (Pep Llaneras)"
 ---
 version: 4.16.0
 time: 2026/04/21 11:12

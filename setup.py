@@ -28,11 +28,11 @@ setup(
         "development": [
             "proton-core-internal",
             "proton-keyring-linux",
-            "proton-vpn-network-manager",
             "behave",
             "pyotp",
             "pytest",
             "pytest-cov",
+            "pytest-xvfb",
             "pygobject-stubs",
             "flake8",
             "pylint",

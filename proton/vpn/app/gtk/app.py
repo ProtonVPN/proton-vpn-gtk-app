@@ -28,7 +28,7 @@ from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.assets.style import STYLE_PATH
-from proton.vpn.app.gtk.util import APPLICATION_ID
+from proton.vpn.app.gtk.util import APPLICATION_ID, log_proton_package_versions
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,7 @@ class App(Gtk.Application):
     ):
         super().__init__(application_id=APPLICATION_ID)
         logger.info(f"{self=}", category="APP", event="PROCESS_START")
+        log_proton_package_versions()
         self._controller = controller
         self.window: Optional[MainWindow] = None
         self._tray_indicator = None

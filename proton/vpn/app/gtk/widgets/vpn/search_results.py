@@ -24,6 +24,10 @@ from typing import Callable, Iterable, Optional, Set, Tuple
 
 from gi.repository import GObject
 
+from proton.vpn.session.servers.logicals import (
+    sort_servers_alphabetically_by_country_and_server_name
+)
+
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
 
@@ -107,18 +111,18 @@ class FilteredList(Gtk.TreeView):
         self._model.clear()
 
         sections = (
-            ("Countries", self._countries),
-            ("Locations", self._locations),
-            ("Servers", self._servers)
+            ("Countries", self._countries, ""),
+            ("Locations", self._locations, ""),
+            ("Servers", self._servers, "Server load")
         )
 
         for section in sections:
-            section_name, section_data = section
+            section_name, section_data, section_load_header = section
             data = list(section_data(search_text))
             if not data:
                 continue
 
-            row = [f"{section_name} ({len(data)})", "", LOAD_COLOR, False]
+            row = [f"{section_name} ({len(data)})", section_load_header, LOAD_COLOR, False]
             root = self._model.append(None, row)
             for i, (name, load) in enumerate(data):
                 load_string = "" if load is None else f"{load}%"
@@ -142,6 +146,7 @@ class SearchResults(Gtk.ScrolledWindow):
     """
     def __init__(self, controller):
         super().__init__()
+        self.set_name("search-results")
         self.set_policy(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
             vscrollbar_policy=Gtk.PolicyType.AUTOMATIC
@@ -161,7 +166,8 @@ class SearchResults(Gtk.ScrolledWindow):
                 return result
 
             for server in controller.server_list:
-                if self._search_input_exists(search_text, server, entry_country_name=True):
+                if not server.under_maintenance and \
+                        self._search_input_exists(search_text, server, entry_country_name=True):
                     result.add((server.entry_country_name, None))
 
             return result
@@ -177,7 +183,8 @@ class SearchResults(Gtk.ScrolledWindow):
                 return
 
             for server in controller.server_list:
-                if self._search_input_exists(search_text, server, location_name=True):
+                if not server.under_maintenance and \
+                        self._search_input_exists(search_text, server, location_name=True):
                     if server.location:
                         result.add(server.location)
 
@@ -196,12 +203,17 @@ class SearchResults(Gtk.ScrolledWindow):
                 yield (None, None)
                 return
 
-            for server in controller.server_list:
-                if not user_tier_allows_access_to_server(server.tier, user_tier):
-                    continue
-
-                if self._search_input_exists(search_text, server, server_name=True):
-                    yield (server.name, server.load)
+            matches = [
+                server for server in server_list
+                if not server.under_maintenance
+                and user_tier_allows_access_to_server(server.tier, user_tier)
+                and self._search_input_exists(search_text, server, server_name=True)
+            ]
+            for server in sorted(
+                matches,
+                key=sort_servers_alphabetically_by_country_and_server_name
+            ):
+                yield (server.name, server.load)
 
         self._filtered_country_list = FilteredList(countries, locations, servers)
         self._filtered_country_list.connect(

@@ -85,14 +85,18 @@ class VPNWidget(Gtk.Box):
         )
         self.append(self.connection_status_widget)
 
+        self._connected_signals: list[tuple[int, Gtk.Widget]] = []
+
         self.quick_connect_widget = QuickConnectWidget(self._controller)
         self.append(self.quick_connect_widget)
 
         self.search_widget = SearchEntry()
         self.server_list_widget = ServerListWidget(self._controller, self.search_widget)
         self.append(self.server_list_widget)
-        self.server_list_widget.connect("ui-updated",
-                                        self._on_server_list_updated)
+        self._connected_signals.append((
+            self.server_list_widget.connect("ui-updated", self._on_server_list_updated),
+            self.server_list_widget
+        ))
         main_window.add_keyboard_shortcut(
             target_widget=self.search_widget,
             target_signal="request_focus",
@@ -102,23 +106,31 @@ class VPNWidget(Gtk.Box):
         revealer = Gtk.Revealer()
         revealer.set_child(self.search_results_widget)
 
-        self.search_widget.connect(
-            "search-changed",
-            self.search_results_widget.on_search_changed,
-            revealer
-        )
-        self.search_results_widget.connect(
-            "result-chosen",
-            self.server_list_widget.focus_on_entry
-        )
-        self.search_results_widget.connect(
-            "result-chosen",
-            lambda _, row: self.search_widget.reset()  # pylint: disable=no-member, disable=line-too-long # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
-        )
+        self._connected_signals.append((
+            self.search_widget.connect(
+                "search-changed",
+                self.search_results_widget.on_search_changed,
+                revealer
+            ),
+            self.search_widget
+        ))
+        self._connected_signals.append((
+            self.search_results_widget.connect(
+                "result-chosen",
+                self.server_list_widget.focus_on_entry
+            ),
+            self.search_results_widget
+        ))
+        self._connected_signals.append((
+            self.search_results_widget.connect(
+                "result-chosen",
+                lambda _, row: self.search_widget.reset()
+            ),
+            self.search_results_widget
+        ))
         self.insert_child_after(self.search_widget, self.quick_connect_widget)
         self.insert_child_after(revealer, self.search_widget)
 
-        self._connected_signals: list[tuple[int, Gtk.Widget]] = []
         for widget in [
             self.connection_status_widget,
             self.quick_connect_widget,

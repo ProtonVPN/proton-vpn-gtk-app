@@ -18,11 +18,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import re
+from importlib.metadata import distributions
 from typing import Callable
 from gi.repository import Gtk
 
+from proton.vpn import logging
+
 # See: https://docs.gtk.org/gtk4/migrating-3to4.html#set-a-proper-application-id  # pylint: disable=line-too-long # noqa: E501
 APPLICATION_ID = "proton.vpn.app.gtk"
+
+logger = logging.getLogger(__name__)
+
+
+def log_proton_package_versions():
+    """Logs the versions of all installed proton-* python packages."""
+    seen = set()
+    packages = []
+    for dist in distributions():
+        name = dist.metadata["Name"]
+        if name and re.match(r"proton", name, re.IGNORECASE) and name not in seen:
+            seen.add(name)
+            packages.append(f"{name}=={dist.metadata['Version']}")
+    logger.info("Proton python packages:\n" + "\n".join(sorted(packages)))
 
 
 def connect_once(widget: Gtk.Widget, signal: str, callback: Callable, *args):

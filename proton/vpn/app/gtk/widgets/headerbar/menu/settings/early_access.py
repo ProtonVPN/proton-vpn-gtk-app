@@ -22,12 +22,9 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 import shutil
 from dataclasses import dataclass
 from concurrent.futures import Future
-from typing import Optional, Tuple, Union, IO
-import os
+from typing import Optional, Tuple
 import distro
-import requests
 from gi.repository import Gtk, GLib, Pango
-from proton.utils.environment import VPNExecutionEnvironment
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.main.loading_widget import Spinner
@@ -44,51 +41,32 @@ class DistroManager:  # pylint: disable=too-many-instance-attributes
     """Holds data related to supported distributions grouped by package manager."""
     names: list[str]
     package_manager: str
-    uninstall_repo_command: str
     install_repo_command: str
     update_local_index_command: str
     reinstall_app_command: str
     list_installed_packages_command: str
-    stable_url: str
-    beta_url: str
     stable_package_name: str = "protonvpn-stable-release"
     beta_package_name: str = "protonvpn-beta-release"
-    runtime_path: str = VPNExecutionEnvironment().path_runtime
 
-    def download_release_package(self, url: str) -> None:
-        """Builds and returns a string which contains a command to
-        download a package from our repositories."""
-        file: Union[str, IO[bytes]] = url.split("/")[-1]
-        filepath = os.path.join(self.runtime_path, file)
+    def _build_install_repo_command(self, package: str) -> str:
+        """Builds command to install release package."""
+        return f"{self.install_repo_command} {package}"
 
-        with requests.get(url, stream=True, timeout=2) as req:  # pylint: disable=line-too-long # noqa: E501 # nosemgrep: python.requests.best-practice.use-raise-for-status.use-raise-for-status
-            req.raise_for_status()
-            with open(filepath, "wb") as file:
-                for chunk in req.iter_content(chunk_size=8192):
-                    file.write(chunk)
-
-    def build_uninstall_repo_command(self, package: str) -> str:
-        """Builds and returns a string which contains a command to
-        uninstall a package."""
-        return f"{self.uninstall_repo_command} {package}"
-
-    def build_install_repo_command(self, package: str) -> str:
-        """Builds and returns a string which contains a command to
-        install the downloaded."""
-        return f"{self.install_repo_command} {self.runtime_path}/{package}"
+    def build_update_command(self, package_to_install: str) -> str:
+        """Builds command to install new release package and reinstall the app"""
+        commands = []
+        commands.append(self._build_install_repo_command(package_to_install))
+        commands.append(self.update_local_index_command)
+        commands.append(self.reinstall_app_command)
+        return " && ".join(c for c in commands if c)
 
 
 DEBIAN_MANAGER = DistroManager(
     names=["debian", "ubuntu"],
     package_manager="/usr/bin/apt",
-    uninstall_repo_command="sudo /usr/bin/apt -y purge",
-    install_repo_command="sudo /usr/bin/apt -y install",
+    install_repo_command="/usr/bin/apt -y install",
     list_installed_packages_command="/usr/bin/apt list --installed",
-    stable_url="https://repo.protonvpn.com/debian/dists/stable/main/binary-all/"
-    "protonvpn-stable-release_1.0.8_all.deb",
-    beta_url="https://repo.protonvpn.com/debian/dists/unstable/main/binary-all/"
-    "protonvpn-beta-release_1.0.8_all.deb",
-    update_local_index_command="sudo /usr/bin/apt update",
+    update_local_index_command="/usr/bin/apt update",
     reinstall_app_command="sudo /usr/bin/apt autoremove -y proton-vpn-gnome-desktop "
     "&& sudo /usr/bin/apt install -y proton-vpn-gnome-desktop"
 )
@@ -96,14 +74,9 @@ DEBIAN_MANAGER = DistroManager(
 FEDORA_MANAGER = DistroManager(
     names=["fedora"],
     package_manager="dnf",
-    uninstall_repo_command="sudo dnf remove -y",
-    install_repo_command="sudo dnf install -y",
     list_installed_packages_command="rpm -qa",
-    stable_url=f"https://repo.protonvpn.com/fedora-{distro.version()}-"
-    "stable/protonvpn-stable-release/protonvpn-stable-release-1.0.3-1.noarch.rpm",
-    beta_url=f"https://repo.protonvpn.com/fedora-{distro.version()}-"
-    "unstable/protonvpn-beta-release/protonvpn-beta-release-1.0.3-1.noarch.rpm",
-    update_local_index_command="",
+    install_repo_command="sudo dnf install -y",
+    update_local_index_command="dnf makecache",
     reinstall_app_command="sudo dnf remove -y proton-vpn-gnome-desktop "
     "&& sudo dnf install -y proton-vpn-gnome-desktop"
 )
@@ -183,7 +156,6 @@ class EarlyAccessWidget(ToggleWidget):
     SUPPORTED_DISTRO_MANAGERS = [FEDORA_MANAGER, DEBIAN_MANAGER]
     DISABLE_BETA_ACCESS_MESSAGE = "Disabling Beta access..."
     ENABLE_BETA_ACCESS_MESSAGE = "Enabling Beta access..."
-    UNABLE_TO_DOWNLOAD_REPO_PACKAGE_MESSAGE = "Unable to download package from repository."
     BETA_LABEL = "Beta access"
     BETA_DESCRIPTION = "Get early access and help us test new versions of Proton VPN."
 
@@ -204,7 +176,7 @@ class EarlyAccessWidget(ToggleWidget):
         )
         self._controller = controller
         self._dialog = early_access_dialog or EarlyAccessDialog()
-        self._dialog.connect("response", lambda w, _: w.set_visible(False))  # pylint: disable=no-member, disable=line-too-long # nosec B311, B101 # noqa: E501 # nosemgrep: python.lang.correctness.return-in-init.return-in-init
+        self._dialog.connect("response", lambda w, _: w.set_visible(False))
 
     @property
     def distro_manager(self) -> DistroManager:
@@ -268,38 +240,12 @@ class EarlyAccessWidget(ToggleWidget):
     def _disable_early_access(self) -> None:
         """Disables early access."""
         self._dialog.display_loading_view(self.DISABLE_BETA_ACCESS_MESSAGE)
-        self._process(
-            self.distro_manager.stable_url,
-            self.distro_manager.beta_package_name
-        )
+        self._run_commands(self.distro_manager.stable_package_name, early_access_enabled=False)
 
     def _enable_early_access(self) -> None:
         """Enables early access."""
         self._dialog.display_loading_view(self.ENABLE_BETA_ACCESS_MESSAGE)
-        self._process(
-            self.distro_manager.beta_url,
-            self.distro_manager.stable_package_name,
-            early_access_enabled=True
-        )
-
-    def _process(self, url: str, package_to_uninstall: str, early_access_enabled: bool = False):
-        def _on_finish_download_release_package(_future: Future):
-            try:
-                _future.result()
-            except requests.exceptions.RequestException:
-                self._restore_switch_to_previous_state()
-                self._dialog.display_status_view(
-                    self.UNABLE_TO_DOWNLOAD_REPO_PACKAGE_MESSAGE
-                )
-            else:
-                package_to_install = url.split("/")[-1]
-                self._run_commands(package_to_install, package_to_uninstall, early_access_enabled)
-
-        future = self._controller.executor.submit(
-            self.distro_manager.download_release_package,
-            url
-        )
-        future.add_done_callback(_on_finish_download_release_package)
+        self._run_commands(self.distro_manager.beta_package_name, early_access_enabled=True)
 
     def _find_installed_repo_packages(self) -> Tuple[bool, bool]:
         """Returns if any of the repo packages are installed.
@@ -337,8 +283,7 @@ class EarlyAccessWidget(ToggleWidget):
         return stable_repo_package_installed, beta_repo_package_installed
 
     def _run_commands(
-        self, package_to_install: str,
-        package_to_uninstall: str, early_access_enabled: bool
+        self, package_to_install: str, early_access_enabled: bool
     ) -> None:
         def on_handle_early_access(future: Future) -> None:
             result = future.result()
@@ -366,25 +311,9 @@ class EarlyAccessWidget(ToggleWidget):
                 f"Beta access has been {'enabled' if early_access_enabled else 'disabled'}.\n"
                 "Please restart the app for changes to take effect."
             )
-        uninstall_existing_repo_command = \
-            self.distro_manager.build_uninstall_repo_command(package_to_uninstall)
 
-        install_new_repo_command = \
-            self.distro_manager.build_install_repo_command(package_to_install)
-
-        update_index_command = ""
-        if self.distro_manager.update_local_index_command:
-            update_index_command = f"&& {self.distro_manager.update_local_index_command}"
-
-        full_command = \
-            "pkexec sh -c '"\
-            f"{uninstall_existing_repo_command} "\
-            f"&& {install_new_repo_command}"\
-            f"{update_index_command}"\
-            f"&& {self.distro_manager.reinstall_app_command}'"
-
-        # Requires shell access to be able to run all commands under one `pkexec` prompt.
-        future = self._controller.run_subprocess(full_command, shell=True)  # noqa E501 # pylint: disable=no-member, disable=line-too-long # nosec B604 # nosemgrep: gitlab.bandit.B604
+        cmd = ["pkexec", "sh", "-c", self.distro_manager.build_update_command(package_to_install)]
+        future = self._controller.run_subprocess(cmd)
         future.add_done_callback(on_handle_early_access)
 
     def _get_system_distro_manager(self) -> Optional[DistroManager]:

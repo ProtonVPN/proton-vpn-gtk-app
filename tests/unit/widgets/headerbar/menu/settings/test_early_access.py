@@ -19,82 +19,51 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from unittest.mock import patch, Mock, PropertyMock
+from unittest.mock import patch, Mock
 import pytest
 import proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access as early_access
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access import DistroManager, EarlyAccessDialog, EarlyAccessWidget, ToggleWidget
 
-@pytest.fixture
-def early_access_raw_data():
-    data = {
+
+early_access_raw_data = {
         "names": ["test-first-supported-distro", "test-second-supported-distro"],
         "package_manager": "test-package-manager",
-        "uninstall_repo_command": "mock-uninstall-command",
         "install_repo_command": "mock-install-command",
         "update_local_index_command": "mock-update-local-index-command",
         "reinstall_app_command": "mock-reinstall-command",
         "list_installed_packages_command": "mock-list-installed-packages-command",
-        "stable_url": "mock-stable-url",
-        "beta_url": "mock-beta-url",
         "stable_package_name": "mock-stable-release",
-        "beta_package_name": "mock-beta-release",
-        "runtime_path": "mock-runtime-path"
+        "beta_package_name": "mock-beta-release"
     }
-    return data
-
 
 @pytest.fixture
-def distro_manager(early_access_raw_data):
-    ea_data = DistroManager(
-        early_access_raw_data.get("names"),
-        early_access_raw_data.get("package_manager"),
-        early_access_raw_data.get("uninstall_repo_command"),
-        early_access_raw_data.get("install_repo_command"),
-        early_access_raw_data.get("update_local_index_command"),
-        early_access_raw_data.get("reinstall_app_command"),
-        early_access_raw_data.get("list_installed_packages_command"),
-        early_access_raw_data.get("stable_url"),
-        early_access_raw_data.get("beta_url"),
-        early_access_raw_data.get("stable_package_name"),
-        early_access_raw_data.get("beta_package_name"),
-        early_access_raw_data.get("runtime_path")
-    )
-
-    return ea_data
-
-
+def mock_distro_manager():
+    """Create a mocked DistroManager for testing."""
+    mock = Mock(spec=DistroManager)
+    mock.stable_package_name = "protonvpn-stable-release"
+    mock.beta_package_name = "protonvpn-beta-release"
+    return mock
 class TestEarlyAccess:
 
-    def test_dataclass_build_when_arguments_are_passed(self, early_access_raw_data):
+    def test_dataclass_build_when_arguments_are_passed(self):
         ea_data = DistroManager(
             early_access_raw_data.get("names"),
             early_access_raw_data.get("package_manager"),
-            early_access_raw_data.get("uninstall_repo_command"),
             early_access_raw_data.get("install_repo_command"),
             early_access_raw_data.get("update_local_index_command"),
             early_access_raw_data.get("reinstall_app_command"),
             early_access_raw_data.get("list_installed_packages_command"),
-            early_access_raw_data.get("stable_url"),
-            early_access_raw_data.get("beta_url"),
             early_access_raw_data.get("stable_package_name"),
-            early_access_raw_data.get("beta_package_name"),
-            early_access_raw_data.get("runtime_path")
+            early_access_raw_data.get("beta_package_name")
         )
 
         assert ea_data.__dict__ == early_access_raw_data
 
-    def test_build_uninstall_command_returns_expected_string_when_called(self, early_access_raw_data, distro_manager):
-        package = "mock-repo-package"
-        generated_uninstall_command = distro_manager.build_uninstall_repo_command(package)
-
-        assert generated_uninstall_command == f"{early_access_raw_data.get('uninstall_repo_command')} {package}"
-
-    def test_build_install_command_returns_expected_string_when_called(self, early_access_raw_data, distro_manager):
-        package = "mock-repo-package"
-        generated_install_command = distro_manager.build_install_repo_command(package)
-
-        assert generated_install_command == f"{early_access_raw_data.get('install_repo_command')} {early_access_raw_data.get('runtime_path')}/{package}"
-
+    def test_build_update_command_returns_expected_string_when_called(self):
+        distro_manager = DistroManager(**early_access_raw_data)
+        built_cmd = distro_manager.build_update_command(package_to_install="test_pkg")
+        expected_cmd = "mock-install-command test_pkg && mock-update-local-index-command && mock-reinstall-command"
+        assert built_cmd==expected_cmd
 
 class TestEarlyAccessDialog:
 
@@ -166,25 +135,23 @@ class TestEarlyAccessWidget:
             assert switch.get_property("sensitive") == early_access_enabled_value
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.get_setting")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget._process")
-    def test_enable_early_access(self, mock_process, get_setting_mock, distro_manager):
+    def test_enable_early_access(self, get_setting_mock, mock_distro_manager):
         with patch.object(ToggleWidget, '__init__', return_value=None) as mock_parent_init:
             get_setting_mock.return_value = False
-            EarlyAccessWidget(Mock(), distro_manager, Mock())
+            EarlyAccessWidget(Mock(), mock_distro_manager, Mock())
             callback = mock_parent_init.call_args[1]["callback"]
 
             callback(None, True, None)
 
-            mock_process.assert_called_once_with(distro_manager.beta_url, distro_manager.stable_package_name, early_access_enabled=True)
+            mock_distro_manager.build_update_command.assert_called_once_with(mock_distro_manager.beta_package_name)
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.get_setting")
-    @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget._process")
-    def test_disable_early_access(self, mock_process, get_setting_mock, distro_manager):
+    def test_disable_early_access(self, get_setting_mock, mock_distro_manager):
         with patch.object(ToggleWidget, '__init__', return_value=None) as mock_parent_init:
             get_setting_mock.return_value = True
-            EarlyAccessWidget(Mock(), distro_manager, Mock())
+            EarlyAccessWidget(Mock(), mock_distro_manager, Mock())
             callback = mock_parent_init.call_args[1]["callback"]
 
             callback(None, False, None)
 
-            mock_process.assert_called_once_with(distro_manager.stable_url, distro_manager.beta_package_name)
+            mock_distro_manager.build_update_command.assert_called_once_with(mock_distro_manager.stable_package_name)

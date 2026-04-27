@@ -533,15 +533,14 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """Sends the error to Sentry."""
         self._api.usage_reporting.report_error(error)
 
-    def run_subprocess(self, commands: list, shell: bool = False) -> Future:
+    def run_subprocess(self, commands: list, check: bool = False) -> Future:
         """Run asynchronously subprocess command so it does not block UI."""
         return self.executor.submit(
             subprocess.run,
             commands,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            check=False,
-            shell=shell  # nosec B604
+            check=check,
         )
 
     @property

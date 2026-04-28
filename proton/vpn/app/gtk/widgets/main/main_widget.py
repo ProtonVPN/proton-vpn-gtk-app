@@ -110,11 +110,11 @@ class MainWidget(Gtk.Overlay):
         self.content_layout.append(self._active_widget)
 
     _STATE_CSS_CLASSES = {
-        states.Connected: "connected",
-        states.Connecting: "connecting",
-        states.Disconnecting: "disconnecting",
-        states.Disconnected: "disconnected",
-        states.Error: "error",
+        states.Connected: "vpn-connected",
+        states.Connecting: "vpn-connecting",
+        states.Disconnecting: "vpn-disconnecting",
+        states.Disconnected: "vpn-disconnected",
+        states.Error: "vpn-error",
     }
 
     def set_background_gradient(self, state: Optional[states.State]):

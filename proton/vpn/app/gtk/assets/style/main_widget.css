@@ -11,7 +11,7 @@
     padding: 20px;
 }
 
-#main-widget.connected {
+#main-widget.vpn-connected {
     background-image: linear-gradient(
         to bottom,
         rgba(30, 168, 133, 0.2) 0%,
@@ -19,7 +19,7 @@
     );
 }
 
-#main-widget.disconnected {
+#main-widget.vpn-disconnected {
     background-image: linear-gradient(
         to bottom,
         rgba(245, 56, 90, 0.2) 0%,
@@ -27,8 +27,8 @@
     );
 }
 
-#main-widget.connecting,
-#main-widget.disconnecting {
+#main-widget.vpn-connecting,
+#main-widget.vpn-disconnecting {
     background-image: linear-gradient(
         to bottom,
         rgba(255, 255, 255, 0.1) 0%,
@@ -36,7 +36,7 @@
     );
 }
 
-#main-widget.error {
+#main-widget.vpn-error {
     background-image: linear-gradient(
         to bottom,
         rgba(255, 255, 255, 0.1) 0%,

@@ -1,3 +1,10 @@
+version: 4.16.3rc2
+time: 2026/05/06 09:25
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+description:
+- "fix: red fonts on VPN error in Ubuntu 22"
+---
 version: 4.16.3rc1
 time: 2026/04/30 08:14
 author: Luke Titley

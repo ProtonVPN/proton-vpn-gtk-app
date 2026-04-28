@@ -1,3 +1,10 @@
+version: 4.16.2rc3
+time: 2026/04/28 08:44
+author: Elena Švilpė
+email: elena.svilpe@proton.ch
+description:
+- "fix: release package replace for fedora"
+---
 version: 4.16.2rc2
 time: 2026/04/23 09:38
 author: Elena Švilpė

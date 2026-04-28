@@ -47,15 +47,18 @@ class DistroManager:  # pylint: disable=too-many-instance-attributes
     list_installed_packages_command: str
     stable_package_name: str = "protonvpn-stable-release"
     beta_package_name: str = "protonvpn-beta-release"
+    remove_old_package: bool = False
 
-    def _build_install_repo_command(self, package: str) -> str:
+    def _build_install_repo_command(self, package_to_remove: str, package_to_install: str) -> str:
         """Builds command to install release package."""
-        return f"{self.install_repo_command} {package}"
+        if self.remove_old_package:
+            return f"{self.install_repo_command} {package_to_remove} {package_to_install}"
+        return f"{self.install_repo_command} {package_to_install}"
 
-    def build_update_command(self, package_to_install: str) -> str:
+    def build_update_command(self, package_to_remove: str, package_to_install: str) -> str:
         """Builds command to install new release package and reinstall the app"""
         commands = []
-        commands.append(self._build_install_repo_command(package_to_install))
+        commands.append(self._build_install_repo_command(package_to_remove, package_to_install))
         commands.append(self.update_local_index_command)
         commands.append(self.reinstall_app_command)
         return " && ".join(c for c in commands if c)
@@ -68,17 +71,19 @@ DEBIAN_MANAGER = DistroManager(
     list_installed_packages_command="/usr/bin/apt list --installed",
     update_local_index_command="/usr/bin/apt update",
     reinstall_app_command="sudo /usr/bin/apt autoremove -y proton-vpn-gnome-desktop "
-    "&& sudo /usr/bin/apt install -y proton-vpn-gnome-desktop"
+    "&& sudo /usr/bin/apt install -y proton-vpn-gnome-desktop",
+    remove_old_package=False  # debian handles old package removal when installing new one
 )
 
 FEDORA_MANAGER = DistroManager(
     names=["fedora"],
     package_manager="dnf",
     list_installed_packages_command="rpm -qa",
-    install_repo_command="sudo dnf install -y",
+    install_repo_command="sudo dnf swap -y",
     update_local_index_command="dnf makecache",
     reinstall_app_command="sudo dnf remove -y proton-vpn-gnome-desktop "
-    "&& sudo dnf install -y proton-vpn-gnome-desktop"
+    "&& sudo dnf install -y proton-vpn-gnome-desktop",
+    remove_old_package=True
 )
 
 
@@ -240,12 +245,18 @@ class EarlyAccessWidget(ToggleWidget):
     def _disable_early_access(self) -> None:
         """Disables early access."""
         self._dialog.display_loading_view(self.DISABLE_BETA_ACCESS_MESSAGE)
-        self._run_commands(self.distro_manager.stable_package_name, early_access_enabled=False)
+        self._run_commands(
+            self.distro_manager.beta_package_name,
+            self.distro_manager.stable_package_name,
+            early_access_enabled=False)
 
     def _enable_early_access(self) -> None:
         """Enables early access."""
         self._dialog.display_loading_view(self.ENABLE_BETA_ACCESS_MESSAGE)
-        self._run_commands(self.distro_manager.beta_package_name, early_access_enabled=True)
+        self._run_commands(
+            self.distro_manager.stable_package_name,
+            self.distro_manager.beta_package_name,
+            early_access_enabled=True)
 
     def _find_installed_repo_packages(self) -> Tuple[bool, bool]:
         """Returns if any of the repo packages are installed.
@@ -283,7 +294,7 @@ class EarlyAccessWidget(ToggleWidget):
         return stable_repo_package_installed, beta_repo_package_installed
 
     def _run_commands(
-        self, package_to_install: str, early_access_enabled: bool
+        self, package_to_remove: str, package_to_install: str, early_access_enabled: bool
     ) -> None:
         def on_handle_early_access(future: Future) -> None:
             result = future.result()
@@ -312,7 +323,8 @@ class EarlyAccessWidget(ToggleWidget):
                 "Please restart the app for changes to take effect."
             )
 
-        cmd = ["pkexec", "sh", "-c", self.distro_manager.build_update_command(package_to_install)]
+        cmd = ["pkexec", "sh", "-c",
+               self.distro_manager.build_update_command(package_to_remove, package_to_install)]
         future = self._controller.run_subprocess(cmd)
         future.add_done_callback(on_handle_early_access)
 

@@ -33,7 +33,20 @@ early_access_raw_data = {
         "reinstall_app_command": "mock-reinstall-command",
         "list_installed_packages_command": "mock-list-installed-packages-command",
         "stable_package_name": "mock-stable-release",
-        "beta_package_name": "mock-beta-release"
+        "beta_package_name": "mock-beta-release",
+        "remove_old_package": False
+    }
+
+early_access_raw_data_swap = {
+        "names": "test-name",
+        "package_manager": "test-package-manager-2",
+        "install_repo_command": "mock-swap",
+        "update_local_index_command": "mock-update-local-index-command",
+        "reinstall_app_command": "mock-reinstall-command",
+        "list_installed_packages_command": "mock-list-installed-packages-command",
+        "stable_package_name": "mock-stable-release",
+        "beta_package_name": "mock-beta-release",
+        "remove_old_package": True
     }
 
 @pytest.fixture
@@ -54,15 +67,22 @@ class TestEarlyAccess:
             early_access_raw_data.get("reinstall_app_command"),
             early_access_raw_data.get("list_installed_packages_command"),
             early_access_raw_data.get("stable_package_name"),
-            early_access_raw_data.get("beta_package_name")
+            early_access_raw_data.get("beta_package_name"),
+            early_access_raw_data.get("remove_old_package")            
         )
 
         assert ea_data.__dict__ == early_access_raw_data
 
     def test_build_update_command_returns_expected_string_when_called(self):
         distro_manager = DistroManager(**early_access_raw_data)
-        built_cmd = distro_manager.build_update_command(package_to_install="test_pkg")
-        expected_cmd = "mock-install-command test_pkg && mock-update-local-index-command && mock-reinstall-command"
+        built_cmd = distro_manager.build_update_command(package_to_remove="test_pkg1",package_to_install="test_pkg2")
+        expected_cmd = "mock-install-command test_pkg2 && mock-update-local-index-command && mock-reinstall-command"
+        assert built_cmd==expected_cmd
+
+    def test_build_update_command_returns_expected_string_when_called_with_package_swap(self):
+        distro_manager = DistroManager(**early_access_raw_data_swap)
+        built_cmd = distro_manager.build_update_command(package_to_remove="test_pkg1",package_to_install="test_pkg2")
+        expected_cmd = "mock-swap test_pkg1 test_pkg2 && mock-update-local-index-command && mock-reinstall-command"
         assert built_cmd==expected_cmd
 
 class TestEarlyAccessDialog:
@@ -143,7 +163,7 @@ class TestEarlyAccessWidget:
 
             callback(None, True, None)
 
-            mock_distro_manager.build_update_command.assert_called_once_with(mock_distro_manager.beta_package_name)
+            mock_distro_manager.build_update_command.assert_called_once_with(mock_distro_manager.stable_package_name, mock_distro_manager.beta_package_name)
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access.EarlyAccessWidget.get_setting")
     def test_disable_early_access(self, get_setting_mock, mock_distro_manager):
@@ -154,4 +174,4 @@ class TestEarlyAccessWidget:
 
             callback(None, False, None)
 
-            mock_distro_manager.build_update_command.assert_called_once_with(mock_distro_manager.stable_package_name)
+            mock_distro_manager.build_update_command.assert_called_once_with(mock_distro_manager.beta_package_name, mock_distro_manager.stable_package_name)

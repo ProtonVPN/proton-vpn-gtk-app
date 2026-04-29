@@ -1,23 +1,13 @@
-version: 4.16.2rc3
-time: 2026/04/28 08:44
-author: Elena Švilpė
-email: elena.svilpe@proton.ch
+version: 4.16.2
+time: 2026/04/29 09:32
+author: Richard Paterson
+email: richard.paterson@proton.ch
+urgency: low
+stability: unstable
 description:
-- "fix: release package replace for fedora"
----
-version: 4.16.2rc2
-time: 2026/04/23 09:38
-author: Elena Švilpė
-email: elena.svilpe@proton.ch
-description:
-- "fix: update early access toggle"
----
-version: 4.16.2rc1
-time: 2026/04/22 07:44
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-description:
-- "fix: order search results alphabetically"
+- "fix: order search results alphabetically (Pep Llaneras)"
+- "fix: update early access toggle (Elena Švilpė)"
+- "fix: release package replace for fedora (Elena Švilpė)"
 ---
 version: 4.16.1
 time: 2026/04/21 10:07

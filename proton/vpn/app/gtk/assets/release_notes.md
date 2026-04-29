@@ -1,4 +1,7 @@
-## What's new (4.16.1)
+## What's new (4.16.2)
+- Bug fixes and stability improvements.
+
+## 4.16.1
 - Minor UI improvements.
 
 ## 4.16.0

@@ -17,12 +17,15 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import pytest
-from unittest.mock import Mock, PropertyMock, patch
+from unittest.mock import Mock, MagicMock, PropertyMock, patch
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.early_access import EarlyAccessWidget
 from tests.unit.testing_utils import process_gtk_events
 from proton.vpn.app.gtk import gi
 from gi.repository import Gdk  # pylint: disable=C0413 # noqa: E402
-from proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings import GeneralSettings, TrayPinnedServersWidget, EntryWidget
+from proton.vpn.connection import states
+from proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings import (
+    GeneralSettings, TrayPinnedServersWidget, EntryWidget, PacketCaptureWidget
+)
 
 
 class TestGeneralSettings:
@@ -65,7 +68,7 @@ class TestGeneralSettings:
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_start_app_minimized")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_tray_pinned_servers")
     def test_display_start_app_minimized_and_tray_pinned_servers_if_tray_indicator_is_found(self, build_tray_pinned_servers_mock, build_start_app_minimized_mock, tray_indicator_mock):
-        gs = GeneralSettings(Mock(), tray_indicator=tray_indicator_mock)
+        gs = GeneralSettings(MagicMock(), tray_indicator=tray_indicator_mock)
         gs.build_ui()
 
         if tray_indicator_mock:
@@ -74,6 +77,131 @@ class TestGeneralSettings:
         else:
             build_tray_pinned_servers_mock.assert_not_called()
             build_start_app_minimized_mock.assert_not_called()
+
+
+class TestBuildPacketCapture:
+
+    def _make_controller(self, protocol: str, supports_capture: bool) -> Mock:
+        controller = Mock()
+        controller.get_settings.return_value.protocol = protocol
+        mock_cls = Mock()
+        mock_cls.protocol = protocol
+        mock_cls.supports_packet_capture.return_value = supports_capture
+        controller.get_available_protocols.return_value = [mock_cls]
+        return controller
+
+    @pytest.mark.parametrize("supports_capture,expected_visible", [(True, True), (False, False)])
+    def test_widget_visibility_matches_protocol_support(self, supports_capture, expected_visible):
+        controller = self._make_controller("wireguard", supports_capture=supports_capture)
+        gs = GeneralSettings(controller)
+        gs.build_packet_capture()
+        assert gs._packet_capture_widget.get_visible() == expected_visible
+
+    def test_settings_changed_updates_widget_visibility(self):
+        controller = self._make_controller("wireguard", supports_capture=True)
+        gs = GeneralSettings(controller)
+        gs.build_packet_capture()
+        assert gs._packet_capture_widget.get_visible()
+
+        non_supporting = Mock(protocol="openvpn-tcp")
+        non_supporting.supports_packet_capture.return_value = False
+        controller.get_available_protocols.return_value = [non_supporting]
+        gs.on_settings_changed(Mock(protocol="openvpn-tcp"))
+        assert not gs._packet_capture_widget.get_visible()
+
+        supporting = Mock(protocol="wireguard")
+        supporting.supports_packet_capture.return_value = True
+        controller.get_available_protocols.return_value = [supporting]
+        gs.on_settings_changed(Mock(protocol="wireguard"))
+        assert gs._packet_capture_widget.get_visible()
+
+class TestPacketCaptureWidget:
+
+    def _make_widget(self, is_connected: bool = False, file_browser=lambda widget: None) -> tuple:
+        controller = Mock()
+        controller.is_connection_active = is_connected
+        controller.get_setting_attr.return_value = "/tmp/capture.pcap"
+        future = Mock()
+        future.add_done_callback.side_effect = lambda cb: cb(future)
+        controller.executor.submit.return_value = future
+        widget = PacketCaptureWidget(controller, file_browser=file_browser)
+        return widget, controller
+
+    def test_initial_state(self):
+        widget, _ = self._make_widget(is_connected=False)
+        assert not widget._start_stop_button.get_sensitive()
+        assert widget._start_stop_button.get_label() == "Start"
+        assert not widget.capturing
+
+        widget2, _ = self._make_widget(is_connected=True)
+        assert widget2._start_stop_button.get_sensitive()
+
+    def test_start_capture(self):
+        widget, controller = self._make_widget(is_connected=True)
+        widget._start_stop_button.emit("clicked")
+        process_gtk_events()
+        controller.executor.submit.assert_called_once_with(
+            controller.current_connection.start_packet_capture
+        )
+        assert widget._start_stop_button.get_label() == "Stop"
+        assert widget._start_stop_button.has_css_class("destructive-action")
+        assert widget.capturing
+
+    def test_stop_capture(self):
+        widget, controller = self._make_widget(is_connected=True)
+        widget._start_stop_button.emit("clicked")  # start
+        process_gtk_events()
+        controller.executor.submit.reset_mock()
+        widget._start_stop_button.emit("clicked")  # stop
+        process_gtk_events()
+        controller.executor.submit.assert_called_once_with(
+            controller.current_connection.stop_packet_capture
+        )
+        assert widget._start_stop_button.get_label() == "Start"
+        assert not widget._start_stop_button.has_css_class("destructive-action")
+        assert not widget.capturing
+
+    def test_connection_state_changes(self):
+        widget, _ = self._make_widget(is_connected=True)
+        widget._start_stop_button.emit("clicked")  # start capturing
+        process_gtk_events()
+        assert widget.capturing
+
+        widget._on_connection_state_changed(states.Disconnected())
+        assert not widget._start_stop_button.get_sensitive()
+        assert not widget.capturing
+        assert widget._start_stop_button.get_label() == "Start"
+        assert not widget._start_stop_button.has_css_class("destructive-action")
+
+        widget._on_connection_state_changed(states.Connected())
+        assert widget._start_stop_button.get_sensitive()
+
+    def test_realize_unrealize(self):
+        widget, controller = self._make_widget(is_connected=True)
+
+        widget.emit("realize")
+        controller.register_connection_status_subscriber.assert_called_once_with(widget)
+
+        widget.emit("unrealize")
+        controller.executor.submit.assert_not_called()
+        controller.unregister_connection_status_subscriber.assert_called_once_with(widget)
+
+        widget._start_stop_button.emit("clicked")  # start capturing
+        process_gtk_events()
+        assert widget.capturing
+        widget.emit("unrealize")
+        process_gtk_events()
+        controller.executor.submit.assert_called_with(
+            controller.current_connection.stop_packet_capture
+        )
+        assert not widget.capturing
+
+    def test_file_browser_callable_is_used_as_browse_handler(self):
+        mock_click_handler = Mock()
+        mock_file_browser = Mock(return_value=mock_click_handler)
+        widget, _ = self._make_widget(file_browser=mock_file_browser)
+        mock_file_browser.assert_called_once_with(widget)
+        assert widget._on_browse_clicked is mock_click_handler
 
 
 class TestTrayPinnedServersWidget:

@@ -182,6 +182,7 @@ class ReleaseNote(Gtk.Box):
         bullet_point_label.set_wrap(True)
         bullet_point_label.set_max_width_chars(1)
         bullet_point_label.set_property("xalign", 0)
+        bullet_point_label.set_property("selectable", True)
 
         self._bullet_points.append(bullet_point_label)
 

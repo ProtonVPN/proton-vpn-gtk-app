@@ -82,6 +82,7 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
     def _on_settings_changed(self, settings):
         self._connection_settings.on_settings_changed(settings)
         self._feature_settings.on_settings_changed(settings)
+        self._general_settings.on_settings_changed(settings)
 
     def _on_destroy(self, _widget):
         self._controller.settings_watchers.remove(self._on_settings_changed)

@@ -41,6 +41,31 @@ button.danger:active {
 	text-shadow: none;
 }
 
+button.destructive-action:not(:disabled) {
+	background-color: @signal-danger;
+	background-image: image(@signal-danger);
+	border-color: @signal-danger;
+	color: @text-norm;
+	text-shadow: none;
+}
+
+button.destructive-action:not(:disabled):hover,
+button.destructive-action:not(:disabled):focus {
+	background-color: @signal-danger-hover;
+	background-image: image(@signal-danger-hover);
+	border-color: @signal-danger-hover;
+	color: @text-norm;
+	text-shadow: none;
+}
+
+button.destructive-action:not(:disabled):active {
+	background-color: @signal-danger-active;
+	background-image: image(@signal-danger-active);
+	border-color: @signal-danger-active;
+	color: @text-norm;
+	text-shadow: none;
+}
+
 button.spaced label {
 	padding: 5px 20px;
 }

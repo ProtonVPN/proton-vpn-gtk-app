@@ -1,3 +1,10 @@
+version: 4.16.4rc1
+time: 2026/05/12 15:38
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+description:
+- "fix: red fonts on connection error"
+---
 version: 4.16.3
 time: 2026/05/06 09:25
 author: Luke Titley

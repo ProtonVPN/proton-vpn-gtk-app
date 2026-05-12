@@ -182,7 +182,7 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
             self._set_status_title("Disconnecting...", None)
         elif error:
             self._show_icon(None)
-            self._set_status_title("Connection error", "error")
+            self._set_status_title("Connection error", None)
             self._on_connection_error(connection_state)
         elif disconnected:
             self._show_icon(self._unprotected_pixbuf)
@@ -212,7 +212,7 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
 
     def _set_status_title(self, text: str, css_class: Optional[str]):
         self._status_title_label.set_text(text)
-        for cls in ("protected", "unprotected", "error"):
+        for cls in ("protected", "unprotected"):
             if cls == css_class:
                 self._status_title_row.add_css_class(cls)
             else:

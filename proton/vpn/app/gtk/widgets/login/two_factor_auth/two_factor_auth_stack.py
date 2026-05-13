@@ -28,6 +28,7 @@ from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.util import connect_once
 from proton.vpn.app.gtk.utils.glib import add_done_callback
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.authenticator_app_form \
@@ -59,28 +60,36 @@ class TwoFactorAuthStack(Gtk.Stack):
         self._overlay_widget = overlay_widget
         self.active_widget: Optional[Union[AuthenticatorAppForm, SecurityKeyForm]] = None
         self.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        self._pending_logout_future = None
 
         # SecurityKeyForm
         self.security_key_form = security_key_form or SecurityKeyForm(
             controller, notifications, overlay_widget
         )
-        self.security_key_form.connect(
-            "two-factor-auth-successful", self._on_two_factor_auth_successful
+        safe_signal_connect(
+            self.security_key_form,
+            "two-factor-auth-successful",
+            self._on_two_factor_auth_successful
         )
-        self.security_key_form.connect(
-            "two-factor-auth-cancelled", self._on_two_factor_auth_cancelled
+        safe_signal_connect(
+            self.security_key_form,
+            "two-factor-auth-cancelled",
+            self._on_two_factor_auth_cancelled
         )
 
         # AuthenticatorAppForm
         self.authenticator_app_form = authenticator_app_form or AuthenticatorAppForm(
             controller, notifications, overlay_widget
         )
-        self.authenticator_app_form.connect(
+        safe_signal_connect(
+            self.authenticator_app_form,
             "two-factor-auth-successful",
             self._on_two_factor_auth_successful
         )
-        self.authenticator_app_form.connect(
-            "two-factor-auth-cancelled", self._on_two_factor_auth_cancelled
+        safe_signal_connect(
+            self.authenticator_app_form,
+            "two-factor-auth-cancelled",
+            self._on_two_factor_auth_cancelled
         )
 
     def display_widget(self, widget: Union[AuthenticatorAppForm, SecurityKeyForm]):
@@ -135,16 +144,21 @@ class TwoFactorAuthStack(Gtk.Stack):
         )
         self._overlay_widget.show_message("Signing out...")
         future = self._controller.logout()
+        add_done_callback(future, self._on_logout)
 
-        def on_overlay_hidden(_overlay_widget: OverlayWidget, logout_future: Future):
-            logout_future.result()
-            self.emit("two-factor-auth-cancelled")
+    def _on_logout(self, logout_future: Future):
+        self._pending_logout_future = logout_future
+        connect_once(
+            self._overlay_widget,
+            "hide",
+            self._on_overlay_hidden_after_logout,
+        )
+        self._overlay_widget.hide()
 
-        def on_logout(logout_future: Future):
-            connect_once(self._overlay_widget, "hide", on_overlay_hidden, logout_future)
-            self._overlay_widget.hide()
-
-        add_done_callback(future, on_logout)
+    def _on_overlay_hidden_after_logout(self, _overlay_widget: OverlayWidget):
+        self._pending_logout_future.result()
+        self._pending_logout_future = None
+        self.emit("two-factor-auth-cancelled")
 
     @GObject.Signal
     def two_factor_auth_successful(self):

@@ -23,6 +23,7 @@ from typing import List, Optional, Tuple
 from gi.repository import GLib, GObject
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
 
 class HoverStack(Gtk.Stack):
@@ -138,7 +139,7 @@ class HoverStack(Gtk.Stack):
         child_gtype = type(child).__gtype__  # type: ignore[attr-defined]
         has_clicked = GObject.signal_lookup("clicked", child_gtype) != 0
         if has_clicked:
-            signal_id = child.connect("clicked", self._on_hover_child_clicked)
+            signal_id = safe_signal_connect(child, "clicked", self._on_hover_child_clicked)
             self._connected_signals.append((signal_id, child))
 
     def _remove_visibility_handlers(self) -> None:

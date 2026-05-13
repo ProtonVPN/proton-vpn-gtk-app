@@ -23,7 +23,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 from itertools import chain
-from typing import List, Optional, cast
+from typing import List, Optional
 
 from proton.vpn.session.servers import Country, Location, TierEnum
 from proton.vpn.app.gtk import Gtk
@@ -33,7 +33,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import E
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 from proton.vpn.app.gtk.utils.assertions import runtime_assert
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils \
-    import get_children, make_connect_callback, sync_rows_with_model_items
+    import make_connect_callback, sync_rows_with_model_items
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.secure_core_row import SecureCoreRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
 
@@ -59,6 +59,9 @@ class CountryRow(Gtk.Box):
         self._secure_core_row_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self._secure_core_row_container.set_spacing(5)
         self._expandable_row.container.append(self._secure_core_row_container)
+
+        self._location_rows: List[LocationRow] = []
+        self._secure_core_row: Optional[SecureCoreRow] = None
 
     # pylint: disable=too-many-arguments
     def display(
@@ -163,45 +166,45 @@ class CountryRow(Gtk.Box):
     @property
     def location_rows(self) -> List[LocationRow]:
         """Returns the list of location rows currently displayed."""
-        return cast(List[LocationRow], get_children(self._location_row_container))
+        return list(self._location_rows)
 
     @property
     def secure_core_row(self) -> Optional[SecureCoreRow]:
         """Returns the secure core row currently displayed."""
-        return cast(Optional[SecureCoreRow], self._secure_core_row_container.get_first_child())
+        return self._secure_core_row
 
     def click_toggle_button(self):
         """Simulates a click on the toggle button to expand/collapse the row."""
         self._expandable_row.row_content.click_toggle_button()
 
     def _remove_location_rows(self):
-        for location_row in self.location_rows:
+        while self._location_rows:
+            location_row = self._location_rows.pop()
             self._location_row_container.remove(location_row)
             location_row.reset()
 
     def _remove_secure_core_row(self):
         """Removes the secure core row from its container."""
-        secure_core_row = self.secure_core_row
-        if secure_core_row:
-            self._secure_core_row_container.remove(secure_core_row)
-            secure_core_row.reset(keep_children=False)
+        if self._secure_core_row is not None:
+            self._secure_core_row_container.remove(self._secure_core_row)
+            self._secure_core_row.reset(keep_children=False)
+            self._secure_core_row = None
 
     def _add_secure_core_row(self, expanded: bool = False):
         """Adds the single Via Secure Core row when the country has secure core servers."""
         runtime_assert(self._country is not None, "Country is not set")
 
-        def display_secure_core_row(secure_core_row, secure_core_group):
-            secure_core_row.display(
-                self._controller, secure_core_group, self._user_tier,
-                expanded=expanded
-            )
+        if not self._country.secure_core_group:
+            self._remove_secure_core_row()
+            return
 
-        sync_rows_with_model_items(
-            [self._country.secure_core_group] if self._country.secure_core_group else [],
-            [self.secure_core_row] if self.secure_core_row else [],
-            self._secure_core_row_container,
-            SecureCoreRow,
-            display_secure_core_row
+        if self._secure_core_row is None:
+            self._secure_core_row = SecureCoreRow()
+            self._secure_core_row_container.append(self._secure_core_row)
+
+        self._secure_core_row.display(
+            self._controller, self._country.secure_core_group, self._user_tier,
+            expanded=expanded
         )
 
     def _add_location_rows(self, expanded_locations: Optional[set[str]] = None):
@@ -226,7 +229,7 @@ class CountryRow(Gtk.Box):
 
         sync_rows_with_model_items(
             locations,
-            self.location_rows,
+            self._location_rows,
             self._location_row_container,
             LocationRow,
             display_location_row

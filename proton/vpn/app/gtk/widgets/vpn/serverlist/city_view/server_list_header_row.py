@@ -33,6 +33,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     SmartRoutingIcon,
     TORIcon,
 )
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
 
 @dataclass
@@ -100,6 +101,9 @@ class FeatureLegendPopover(Gtk.Popover):
         main.append(self._build_feature_rows())
         return main
 
+    def _on_close_clicked(self, _):
+        self.popdown()
+
     def _build_header(self) -> Gtk.Box:
         """Builds the title bar with close button."""
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
@@ -117,7 +121,7 @@ class FeatureLegendPopover(Gtk.Popover):
         close_btn.add_css_class("flat")
         close_btn.add_css_class("circular")
         close_btn.set_tooltip_text("Close")
-        close_btn.connect("clicked", lambda _: self.popdown())
+        safe_signal_connect(close_btn, "clicked", self._on_close_clicked)
         header.append(close_btn)
         return header
 

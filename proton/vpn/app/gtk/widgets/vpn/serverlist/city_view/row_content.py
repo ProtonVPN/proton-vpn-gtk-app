@@ -32,6 +32,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import R
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.utils.accessibility import add_accessibility, remove_accessibility
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     LocationIcon, P2PIcon, SecureCoreIcon, SmartRoutingIcon, TORIcon, UnderMaintenanceIcon
 )
@@ -133,7 +134,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._set_toggle_button_visible(False)
         self.append(self.toggle_button)
 
-        self.connect("unrealize", self._on_unrealize)
+        safe_signal_connect(self, "unrealize", self._on_unrealize)
 
     def display(self, row_data: RowViewModel):
         """Displays the row content according to the specified parameters."""
@@ -176,7 +177,11 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
         if row_data.toggable:
             self._set_toggle_button_visible(True)
-            signal_id = self.toggle_button.connect("clicked", self._on_toggle_button_clicked)
+            signal_id = safe_signal_connect(
+                self.toggle_button,
+                "clicked",
+                self._on_toggle_button_clicked
+            )
             self._connected_signals.append((signal_id, self.toggle_button))
             self.expanded = False
         else:
@@ -193,11 +198,19 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self._hover_stack.set_visible(True)
         if self._row_data.upgrade_required:
             self._hover_action_label.set_text("Upgrade")
-            signal_id = self.action_button.connect("clicked", self._on_upgrade_button_clicked)
+            signal_id = safe_signal_connect(
+                self.action_button,
+                "clicked",
+                self._on_upgrade_button_clicked
+            )
             self.add_css_class("dimmed")
         else:
             self._hover_action_label.set_text("Connect")
-            signal_id = self.action_button.connect("clicked", self._on_connect_button_clicked)
+            signal_id = safe_signal_connect(
+                self.action_button,
+                "clicked",
+                self._on_connect_button_clicked
+            )
         self._connected_signals.append((signal_id, self.action_button))
         self._hover_stack.set_hover_child(self.action_button)
 

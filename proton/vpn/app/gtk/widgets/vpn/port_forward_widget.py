@@ -25,6 +25,7 @@ from typing import List, Optional
 from gi.repository import Gdk, GLib, GObject
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.assets import icons
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.connection import states
 
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
@@ -39,8 +40,10 @@ class PortForwardRevealer(Gtk.Revealer):  # pylint: disable=too-few-public-metho
         self._port_forward_widget = \
             port_forward_widget or PortForwardWidget(notifications)
         self.set_child(self._port_forward_widget)
-        self._port_forward_widget.connect(
-            "update-visibility", self._on_update_port_forwarding_visibility
+        safe_signal_connect(
+            self._port_forward_widget,
+            "update-visibility",
+            self._on_update_port_forwarding_visibility
         )
 
     def on_new_state(self, connection_state: states.State):
@@ -68,8 +71,8 @@ class PortForwardWidget(Gtk.Box):
         )
         self._current_forwarded_port = forwarded_port
         self._pending_sources: List[int] = []
+        self._copied_popover = None
         self._build_ui()
-        self.connect("destroy", self._on_destroy)
 
     @GObject.Signal(name="update-visibility", arg_types=(bool,))
     def update_visibility(self, display_child: bool):
@@ -110,7 +113,7 @@ class PortForwardWidget(Gtk.Box):
         self._copy_button.add_css_class("flat")
         self._copy_button.set_child(button_content)
         self._copy_button.set_cursor(Gdk.Cursor.new_from_name("pointer", None))
-        self._copy_button.connect("clicked", self._on_button_press)
+        safe_signal_connect(self._copy_button, "clicked", self._on_button_press)
 
         self._copied_popover = Gtk.Popover()
         self._copied_popover.set_child(Gtk.Label(label="Copied!"))
@@ -155,11 +158,17 @@ class PortForwardWidget(Gtk.Box):
         self.emit("update-visibility", reveal_child)
         self.set_port_forward_label(forwarded_port)
 
-    def _on_destroy(self, _):
-        self._copied_popover.unparent()
+    def do_dispose(self):
+        """GObject lifecycle hook to release references; may run more
+        than once, so cleanup must be idempotent."""
+        if self._copied_popover is not None:
+            self._copied_popover.unparent()
+            self._copied_popover = None
+
         for source_id in self._pending_sources:
             GLib.source_remove(source_id)
-        self._pending_sources.clear()
+            self._pending_sources.clear()
+        Gtk.Box.do_dispose(self)  # pylint: disable=no-member
 
     def _on_button_press(self, _: "PortForwardWidget"):
         port_to_be_copied_to_clipboard = self._port_forward_label.get_label()

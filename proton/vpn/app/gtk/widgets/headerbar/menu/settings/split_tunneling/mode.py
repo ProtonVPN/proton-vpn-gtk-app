@@ -24,6 +24,7 @@ from gi.repository import Gtk, GObject
 
 from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
     SettingName, SettingDescription
 
@@ -88,7 +89,10 @@ class ModeRadioButton(Gtk.Box):
         self.set_margin_top(8)
         self.set_margin_bottom(8)
 
-        self._radio_button.connect("toggled", lambda _: self.emit("toggled", self.mode))  # nosemgrep: python.lang.correctness.return-in-init.return-in-init  # noqa: E501 # pylint: disable=line-too-long
+        safe_signal_connect(self._radio_button, "toggled", self._on_radio_toggled)
+
+    def _on_radio_toggled(self, _):
+        self.emit("toggled", self.mode)
 
     @GObject.Signal(name="toggled", arg_types=(object,))
     def toggled(self, widget: SplitTunnelingMode):
@@ -138,8 +142,8 @@ class SplitTunnelingModeSetting(Gtk.Box):
 
         self._update_selection()
 
-        self._exclude_radio.connect("toggled", self._on_mode_changed)
-        self._include_radio.connect("toggled", self._on_mode_changed)
+        safe_signal_connect(self._exclude_radio, "toggled", self._on_mode_changed)
+        safe_signal_connect(self._include_radio, "toggled", self._on_mode_changed)
 
     @GObject.Signal(name="mode-switched", arg_types=(object,))
     def mode_switched(self, mode_changed: SplitTunnelingMode):

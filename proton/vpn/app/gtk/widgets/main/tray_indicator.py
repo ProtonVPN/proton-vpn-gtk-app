@@ -26,6 +26,7 @@ from proton.vpn import logging
 from proton.vpn.connection import states
 from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.widgets.main.tray_icon import TrayIcon, SNW_BUS_NAME
 
@@ -147,14 +148,17 @@ class TrayIndicator:
         self._main_window = main_window
         self._build_menu()
 
-        self._main_window.connect(
+        safe_signal_connect(
+            self._main_window,
             "notify::visible", self._on_main_window_visibility_changed
         )
 
-        self._main_window.main_widget.login_widget.connect(
+        safe_signal_connect(
+            self._main_window.main_widget.login_widget,
             "user-logged-in", self._on_user_logged_in
         )
-        self._main_window.header_bar.menu.connect(
+        safe_signal_connect(
+            self._main_window.header_bar.menu,
             "user-logged-out", self._on_user_logged_out
         )
 

@@ -25,6 +25,7 @@ from dataclasses import dataclass, asdict
 from gi.repository import Gtk, GObject, GdkPixbuf, GLib, Gdk
 
 
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
     SettingName
 from proton.vpn.app.gtk.assets import icons
@@ -207,7 +208,7 @@ class AppRowWithRemoveButton(Gtk.Grid):
         icon = get_icon(self.app_data.icon_name, self.gtk)
         label = SettingName(self.app_data.name)
         self._remove_button = Gtk.Button.new_from_icon_name("edit-delete-symbolic")
-        self._remove_button.connect("clicked", self._signal_remove_app)
+        safe_signal_connect(self._remove_button, "clicked", self._signal_remove_app)
 
         self.attach(icon, 0, 0, 1, 1)
         self.attach(label, 1, 0, 1, 1)

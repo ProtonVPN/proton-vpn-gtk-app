@@ -29,6 +29,7 @@ from proton.vpn.session.servers.logicals import (
 )
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -216,11 +217,16 @@ class SearchResults(Gtk.ScrolledWindow):
                 yield (server.name, server.load)
 
         self._filtered_country_list = FilteredList(countries, locations, servers)
-        self._filtered_country_list.connect(
+        safe_signal_connect(
+            self._filtered_country_list,
             "row-activated", self._on_row_activated
         )
 
         self._container.append(self._filtered_country_list)
+
+    def set_revealer(self, revealer: Optional[Gtk.Revealer]):
+        """Sets revealer for search results"""
+        self._revealer = revealer
 
     def _search_input_exists(  # pylint: disable=too-many-arguments
         self, search_text: Optional[str], server, entry_country_name: bool = False,
@@ -241,13 +247,13 @@ class SearchResults(Gtk.ScrolledWindow):
     def result_chosen(self, _row: str):
         """Broadcast that a result has been chosen in the search results."""
 
-    def on_search_changed(self, search_widget: Gtk.SearchEntry, revealer: Gtk.Revealer):
+    def on_search_changed(self, search_widget: Gtk.SearchEntry):
         """Callback when search entry has changed."""
         search_text = search_widget.get_text().lower()
-        self._revealer = revealer
 
         self._filtered_country_list.update(search_text)
-        self._revealer.set_reveal_child(bool(search_text))
+        if self._revealer:
+            self._revealer.set_reveal_child(bool(search_text))
 
     def _on_row_activated(
         self,

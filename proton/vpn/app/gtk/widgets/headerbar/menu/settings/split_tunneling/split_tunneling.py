@@ -24,6 +24,7 @@ from typing import Callable, Optional
 from gi.repository import Gtk
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
     ConflictableToggleWidget, ReactiveSetting
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app import \
@@ -68,7 +69,7 @@ class SplitTunnelingSettings(Gtk.Box):
         self.append(self._split_tunneling_apps)
         self.append(self._split_tunneling_ips)
 
-        self._split_tunneling_mode.connect("mode-switched", self._on_mode_switched)
+        safe_signal_connect(self._split_tunneling_mode, "mode-switched", self._on_mode_switched)
 
     @staticmethod
     def build(

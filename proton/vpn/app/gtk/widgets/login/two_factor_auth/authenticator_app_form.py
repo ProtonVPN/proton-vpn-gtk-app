@@ -26,6 +26,7 @@ from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.authenticate_button import AuthenticateButton
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
@@ -76,8 +77,8 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
 
         # pylint: disable=R0801
         self._code_entry = Gtk.Entry()
-        self._code_entry.connect(
-            "changed", self._on_entry_changed
+        safe_signal_connect(
+            self._code_entry, "changed", self._on_entry_changed
         )
         self._code_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
 
@@ -100,8 +101,8 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self.append(self._button_box)
 
         self._authenticate_button = authenticate_button or AuthenticateButton()
-        self._authenticate_button.connect(
-            "clicked", self._on_authenticate_button_clicked
+        safe_signal_connect(
+            self._authenticate_button, "clicked", self._on_authenticate_button_clicked
         )
         self._button_box.append(self._authenticate_button)
 
@@ -110,7 +111,8 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._toggle_authentication_mode_button.add_css_class("secondary")
         self._toggle_authentication_mode_button.set_halign(Gtk.Align.FILL)
         self._toggle_authentication_mode_button.set_hexpand(True)
-        self._toggle_authentication_mode_button.connect(
+        safe_signal_connect(
+            self._toggle_authentication_mode_button,
             "clicked", self._on_toggle_authentication_mode_clicked
         )
         self._button_box.append(self._toggle_authentication_mode_button)
@@ -118,12 +120,16 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         # Button to cancel 2FA.
         self._cancel_button = Gtk.Button(label="Cancel")
         self._cancel_button.add_css_class("danger")
-        self._cancel_button.connect("clicked", self._on_cancel_button_clicked)
+        safe_signal_connect(self._cancel_button, "clicked", self._on_cancel_button_clicked)
         self._button_box.append(self._cancel_button)
 
         # Pressing enter on the password entry triggers the clicked event
         # on the login button.
-        self._code_entry.connect("activate", lambda _: self._on_authenticate_button_clicked)
+        safe_signal_connect(
+            self._code_entry,
+            "activate",
+            self._on_authenticate_button_clicked
+        )
         self._display_2fa_ui()
         self.reset()
 

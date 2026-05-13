@@ -24,6 +24,7 @@ from typing import Callable, List, Tuple
 
 from proton.vpn.app.gtk import Gtk
 
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import get_children
 
@@ -48,7 +49,8 @@ class ExpandableRow(Gtk.Box):
         self._revealer.set_child(self._container)
         self.append(self._revealer)
         self._connected_signals: List[Tuple[int, Gtk.Widget]] = []
-        self.connect("unrealize", self._on_unrealize)
+        self._revealer_collapse_signal_id = None
+        safe_signal_connect(self, "unrealize", self._on_unrealize)
 
     @property
     def row_content(self) -> RowContent:
@@ -70,7 +72,7 @@ class ExpandableRow(Gtk.Box):
 
     def connect_toggle(self) -> None:
         """Connects the toggle-children signal. Call after displaying the row content."""
-        signal_id = self._row_content.connect("toggle-children", self._on_toggle)
+        signal_id = safe_signal_connect(self._row_content, "toggle-children", self._on_toggle)
         self._connected_signals.append((signal_id, self._row_content))
 
     def _on_toggle(self, row_content: RowContent) -> None:
@@ -78,7 +80,8 @@ class ExpandableRow(Gtk.Box):
 
     def _set_revealed(self, expanded: bool) -> None:
         if expanded:
-            self._on_expand()
+            if self._on_expand is not None:
+                self._on_expand()
         else:
             self._schedule_collapse_on_reveal_complete()
         self._revealer.set_reveal_child(expanded)
@@ -88,19 +91,25 @@ class ExpandableRow(Gtk.Box):
         self._row_content.expanded = expanded
         self._set_revealed(expanded)
 
-    def _schedule_collapse_on_reveal_complete(self) -> None:
-        """Waits for the revealer to finish collapsing, then calls _on_collapse."""
-
-        def on_collapse_complete(*_args) -> None:
-            self._revealer.disconnect(signal_id)
-            self._connected_signals.remove((signal_id, self._revealer))
+    def _on_collapse_complete(self, *_args) -> None:
+        self._revealer.disconnect(self._revealer_collapse_signal_id)
+        self._connected_signals.remove((self._revealer_collapse_signal_id, self._revealer))
+        if self._on_collapse is not None:
             self._on_collapse()
 
-        signal_id = self._revealer.connect("notify::child-revealed", on_collapse_complete)
-        self._connected_signals.append((signal_id, self._revealer))
+    def _schedule_collapse_on_reveal_complete(self) -> None:
+        """Waits for the revealer to finish collapsing, then calls _on_collapse."""
+        self._revealer_collapse_signal_id = safe_signal_connect(
+            self._revealer,
+            "notify::child-revealed",
+            self._on_collapse_complete
+        )
+        self._connected_signals.append((self._revealer_collapse_signal_id, self._revealer))
 
     def _on_unrealize(self, _widget: Gtk.Widget) -> None:
         self.reset()
+        self._on_expand = None
+        self._on_collapse = None
 
     def reset(self, keep_children: bool = False) -> None:
         """Resets the row. Disconnects signals and optionally removes children."""
@@ -108,5 +117,5 @@ class ExpandableRow(Gtk.Box):
             widget.disconnect(signal_id)
         self._connected_signals.clear()
         self._row_content.reset()
-        if not keep_children:
+        if not keep_children and self._on_collapse is not None:
             self._on_collapse()

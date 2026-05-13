@@ -43,6 +43,7 @@ class LocationRow(Gtk.Box):
     """Row representing a location in the server list widget."""
 
     def __init__(self):
+        # pylint: disable=duplicate-code
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._location: Optional[Location] = None
         self._controller = None
@@ -52,6 +53,7 @@ class LocationRow(Gtk.Box):
             on_collapse=self._remove_server_rows,
         )
         self.append(self._expandable_row)
+        self._server_rows: List[RowContent] = []
 
     # pylint: disable=too-many-arguments
     def display(
@@ -109,7 +111,7 @@ class LocationRow(Gtk.Box):
     @property
     def server_rows(self) -> List[RowContent]:
         """Returns the list of server rows currently displayed."""
-        return self._expandable_row.get_children()
+        return list(self._server_rows)
 
     @property
     def expanded(self) -> bool:
@@ -125,7 +127,8 @@ class LocationRow(Gtk.Box):
         self._expandable_row.row_content.click_toggle_button()
 
     def _remove_server_rows(self):
-        for server_row in self._expandable_row.get_children():
+        while self._server_rows:
+            server_row = self._server_rows.pop()
             self._expandable_row.remove_child(server_row)
             server_row.reset()
 
@@ -167,7 +170,7 @@ class LocationRow(Gtk.Box):
 
         sync_rows_with_model_items(
             list(servers),
-            self.server_rows,
+            self._server_rows,
             self._expandable_row.container,
             RowContent,
             display_server_row

@@ -27,6 +27,7 @@ from gi.repository import GLib, Notify
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.utils.glib import run_once
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 
 
@@ -47,6 +48,7 @@ class Notifications:
         self._main_window = main_window
         self.notification_bar = notification_bar
         self.error_dialog: Optional[Gtk.MessageDialog] = None
+        self._on_dialog_closed = None
         Notify.init("Proton VPN")
 
     def show_error_dialog(
@@ -92,13 +94,16 @@ class Notifications:
         self.error_dialog.set_modal(True)
         self.error_dialog.set_markup(secondary_text)
 
-        def on_dialog_response(dialog, response_id):
-            dialog.destroy()
-            self.error_dialog = None
-            if on_dialog_closed:
-                run_once(on_dialog_closed, response_id)
-        self.error_dialog.connect("response", on_dialog_response)
+        self._on_dialog_closed = on_dialog_closed
+        safe_signal_connect(self.error_dialog, "response", self._on_dialog_response)
         self.error_dialog.present()
+
+    def _on_dialog_response(self, dialog, response_id):
+        dialog.destroy()
+        self.error_dialog = None
+        if self._on_dialog_closed:
+            run_once(self._on_dialog_closed, response_id)
+            self._on_dialog_closed = None
 
     def show_error_message(self, message: str):
         """Shows the error message in the notification bar."""

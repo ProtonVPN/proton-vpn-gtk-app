@@ -27,6 +27,7 @@ from gi.repository import Gtk, Gdk
 
 from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.session.dataclasses import NPSSurveyResponse
 
 
@@ -98,8 +99,8 @@ class LimitedTextView(Gtk.TextView):
         self._max_chars = max_chars
         self.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
         self._buffer = self.get_buffer()
-        self._handler_id = self._buffer.connect("insert-text", self._on_insert_text)
-        self.connect("unrealize", self._on_unrealize)
+        self._handler_id = safe_signal_connect(self._buffer, "insert-text", self._on_insert_text)
+        safe_signal_connect(self, "unrealize", self._on_unrealize)
 
     @property
     def char_count(self) -> int:
@@ -170,7 +171,7 @@ class NPSSurveyModal(Gtk.Window):
         self._submit_handler = submit_handler
         self._dismiss_handler = dismiss_handler
         self._dismiss_handler_id = \
-            self.connect("close-request", lambda _: self._dismiss_handler())
+            safe_signal_connect(self, "close-request", self._on_close_request)
         self._chosen_score: Optional[int] = None
         self._current_state: Optional[NPSSurveyModal.State] = None
 
@@ -191,6 +192,9 @@ class NPSSurveyModal(Gtk.Window):
         self._build_submit()
 
         self.set_survey_state(NPSSurveyModal.State.PROMPT)
+
+    def _on_close_request(self, _):
+        self._dismiss_handler()
 
     def _build_icon_and_title(self):
         self._icon = ProtonReport()
@@ -215,7 +219,7 @@ class NPSSurveyModal(Gtk.Window):
         previous_button: Gtk.ToggleButton = None
         for score in range(NPSSurveyModal.MAX_SCORE+1):
             score_button = Gtk.ToggleButton.new_with_label(f"{score}")
-            score_button.connect("clicked", self._on_clicked_score)
+            safe_signal_connect(score_button, "clicked", self._on_clicked_score)
             if score != 0:
                 score_button.set_group(previous_button)
             score_button.set_hexpand(False)
@@ -269,38 +273,41 @@ class NPSSurveyModal(Gtk.Window):
         self._feedback_footer.append(self._optional_label)
         self._feedback_footer.append(self._char_counter_label)
 
-        def _on_text_changed(_):
-            count = self._feedback_text_view.char_count
-            self._char_counter_label.set_label(
-                f"{count}/{NPSSurveyResponse.COMMENT_CHAR_MAX_LENGTH}"
-            )
-            if self._feedback_text_view.is_at_limit:
-                self._char_counter_label.add_css_class("char-counter-limit")
-            else:
-                self._char_counter_label.remove_css_class("char-counter-limit")
-
-        self._feedback_text_view.get_buffer().connect("changed", _on_text_changed)
+        safe_signal_connect(
+            self._feedback_text_view.get_buffer(),
+            "changed",
+            self._on_text_changed
+        )
 
         self._container.append(self._prompt_label)
         self._container.append(self._scrolled_text_view)
         self._container.append(self._feedback_footer)
+
+    def _on_text_changed(self, _):
+        count = self._feedback_text_view.char_count
+        self._char_counter_label.set_label(
+            f"{count}/{NPSSurveyResponse.COMMENT_CHAR_MAX_LENGTH}"
+        )
+        if self._feedback_text_view.is_at_limit:
+            self._char_counter_label.add_css_class("char-counter-limit")
+        else:
+            self._char_counter_label.remove_css_class("char-counter-limit")
 
     def _build_submit(self):
         self._submit_button = Gtk.Button(label=NPSSurveyModal.SUBMIT_BUTTON_TITLE)
         self._submit_button.add_css_class("primary")
         self._submit_button.set_halign(Gtk.Align.CENTER)
         self._container.append(self._submit_button)
+        safe_signal_connect(self._submit_button, "clicked", self._on_clicked_submit)
 
-        def _on_clicked_submit(_: Gtk.Button):
-            if self._chosen_score is None:
-                # shouldn't happen
-                return
+    def _on_clicked_submit(self, _: Gtk.Button):
+        if self._chosen_score is None:
+            # shouldn't happen
+            return
 
-            feedback_text = self.feedback_text
-            self._submit_handler(self._chosen_score, feedback_text)
-            self.set_survey_state(NPSSurveyModal.State.SUBMITTED)
-
-        self._submit_button.connect("clicked", _on_clicked_submit)
+        feedback_text = self.feedback_text
+        self._submit_handler(self._chosen_score, feedback_text)
+        self.set_survey_state(NPSSurveyModal.State.SUBMITTED)
 
     @property
     def state(self) -> "NPSSurveyModal.State":

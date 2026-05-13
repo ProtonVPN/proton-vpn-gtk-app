@@ -27,6 +27,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.login.login_widget import LoginWidget
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, DefaultLoadingWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.util import connect_once
@@ -77,18 +78,23 @@ class MainWidget(Gtk.Overlay):
         self.login_widget = self._create_login_widget()
         self.vpn_widget = None
 
-        def register_to_exception_handler(*_):
-            self._controller.exception_handler.main_widget = self
-
-        def unregister_from_exception_handler(*_):
-            self._controller.exception_handler.main_widget = None
-
-        self.connect("realize", register_to_exception_handler)
-        self.connect("realize", lambda *_: self.initialize_visible_widget())
-        self.connect("unrealize", unregister_from_exception_handler)
-        self._main_window.header_bar.menu.connect(
-            "user-logged-out", self._on_user_logged_out
+        safe_signal_connect(self, "realize", self._register_to_exception_handler)
+        safe_signal_connect(self, "realize", self._init_on_realize)
+        safe_signal_connect(self, "unrealize", self._unregister_from_exception_handler)
+        safe_signal_connect(
+            self._main_window.header_bar.menu,
+            "user-logged-out",
+            self._on_user_logged_out
         )
+
+    def _register_to_exception_handler(self, *_):
+        self._controller.exception_handler.main_widget = self
+
+    def _unregister_from_exception_handler(self, *_):
+        self._controller.exception_handler.main_widget = None
+
+    def _init_on_realize(self, *_):
+        self.initialize_visible_widget()
 
     @property
     def notifications(self) -> Notifications:
@@ -185,7 +191,7 @@ class MainWidget(Gtk.Overlay):
             self._controller, self.notifications,
             self._overlay_widget, self._main_window
         )
-        login_widget.connect("user-logged-in", self._on_user_logged_in)
+        safe_signal_connect(login_widget, "user-logged-in", self._on_user_logged_in)
         return login_widget
 
     def _create_vpn_widget(self) -> VPNWidget:
@@ -194,16 +200,20 @@ class MainWidget(Gtk.Overlay):
             main_window=self._main_window,
             notifications=self.notifications
         )
-        vpn_widget.connect(
-            "vpn-widget-ready", self._hide_overlay_widget
+        safe_signal_connect(
+            vpn_widget, "vpn-widget-ready", self._hide_overlay_widget
         )
-        signal_id = vpn_widget.connect(
+        signal_id = safe_signal_connect(
+            vpn_widget,
             "connection-state-changed",
-            lambda _, state: self.set_background_gradient(state)
+            self._change_gradient_on_connection_state_change
         )
         self._connected_signals.append((signal_id, vpn_widget))
 
         return vpn_widget
+
+    def _change_gradient_on_connection_state_change(self, _, state):
+        self.set_background_gradient(state)
 
     def _display_vpn_widget(self):
         self.vpn_widget = self._create_vpn_widget()

@@ -25,6 +25,7 @@ from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.core.settings import NetShield
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, ComboboxWidget, ToggleWidget,
     ReactiveSettingContainer
@@ -59,6 +60,7 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
         self.killswitch: Optional[KillSwitchWidget] = None
         self.port_forwarding: Optional[ToggleWidget] = None
         self.split_tunneling: Optional[SplitTunnelingToggle] = None
+        self._conflict_custom_dns_widget: Optional[CustomDNSWidget] = None
 
     def build_ui(self):
         """Builds the UI, invoking all necessary methods that are
@@ -75,13 +77,6 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
         the user has the expected `tier` to be used. If the user has a
         lower tier then required then an upgrade UI is displayed.
         """
-        def on_combobox_changed(combobox: Gtk.ComboBoxText, combobox_widget: ComboboxWidget):
-            model = combobox.get_model()
-            treeiter = combobox.get_active_iter()
-            netshield = int(model[treeiter][1])
-            combobox_widget.save_setting(netshield)
-            self.emit("netshield-setting-changed", netshield)
-
         netshield_options = [
             (str(NetShield.NO_BLOCK.value), "Off"),
             (str(NetShield.BLOCK_MALICIOUS_URL.value), "Block Malware"),
@@ -94,9 +89,16 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
             setting_name="settings.features.netshield",
             combobox_options=netshield_options,
             requires_subscription_to_be_active=True,
-            callback=on_combobox_changed
+            callback=self._on_netshield_combobox_changed
         )
         self.append(self.netshield)
+
+    def _on_netshield_combobox_changed(self, combobox: Gtk.ComboBoxText):
+        model = combobox.get_model()
+        treeiter = combobox.get_active_iter()
+        netshield = int(model[treeiter][1])
+        self.netshield.save_setting(netshield)
+        self.emit("netshield-setting-changed", netshield)
 
     def build_killswitch(self):
         """Builds and adds the `killswitch` setting to the widget."""
@@ -120,22 +122,32 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
     def netshield_setting_changed(self, custom_dns_enabled: int):
         """Signal emitted after a netshield setting is set."""
 
-    def on_custom_dns_setting_changed(
-        self, custom_dns_widget: CustomDNSWidget, custom_dns_enabled: int
+    def _on_dialog_button_click(
+        self,
+        confirmation_dialog: ConfirmationDialog,
+        response_type: int
     ):
-        """temp"""
-        def _on_dialog_button_click(confirmation_dialog: ConfirmationDialog, response_type: int):
-            enable_custom_dns = Gtk.ResponseType(response_type) == Gtk.ResponseType.YES
-            if enable_custom_dns:
-                self.netshield.off()
-                self._settings_window.notify_user_with_reconnect_message()
-            else:
-                # We need to reverse back the option here since gtk does not allow an easy way to
-                # intercept changes before they happen.
-                custom_dns_widget.off()
+        if not self._conflict_custom_dns_widget:
+            return
 
-            confirmation_dialog.destroy()
+        enable_custom_dns = Gtk.ResponseType(response_type) == Gtk.ResponseType.YES
+        if enable_custom_dns:
+            self.netshield.off()
+            self._settings_window.notify_user_with_reconnect_message()
+        else:
+            # We need to reverse back the option here since gtk does not allow an easy way to
+            # intercept changes before they happen.
+            self._conflict_custom_dns_widget.off()
 
+        self._conflict_custom_dns_widget = None
+        confirmation_dialog.destroy()
+
+    def on_custom_dns_setting_changed(
+        self,
+        custom_dns_widget: CustomDNSWidget,
+        custom_dns_enabled: int
+    ):
+        """Called on custom DNS setting change (conflict resolution)"""
         netshield_disabled = (
             int(self.netshield.get_setting()) == NetShield.NO_BLOCK
         )
@@ -146,13 +158,15 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
             )
             return
 
+        self._conflict_custom_dns_widget = custom_dns_widget
+
         dialog = ConfirmationDialog(
             message=self._build_dialog_content(),
             title="Enable Custom DNS",
             yes_text="_Enable", no_text="_Cancel"
         )
         dialog.set_default_size(400, 200)
-        dialog.connect("response", _on_dialog_button_click)
+        safe_signal_connect(dialog, "response", self._on_dialog_button_click)
         dialog.set_modal(True)
         dialog.set_transient_for(self._settings_window)
         dialog.present()

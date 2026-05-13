@@ -27,6 +27,7 @@ import distro
 from gi.repository import Gtk, GLib, Pango
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.loading_widget import Spinner
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import ToggleWidget
 
@@ -181,7 +182,7 @@ class EarlyAccessWidget(ToggleWidget):
         )
         self._controller = controller
         self._dialog = early_access_dialog or EarlyAccessDialog()
-        self._dialog.connect("response", lambda w, _: w.set_visible(False))
+        safe_signal_connect(self._dialog, "response", lambda w, _: w.set_visible(False))
 
     @property
     def distro_manager(self) -> DistroManager:

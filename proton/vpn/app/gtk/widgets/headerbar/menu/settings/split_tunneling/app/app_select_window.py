@@ -25,6 +25,7 @@ from gi.repository import Gtk, GObject
 
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data_structures \
     import AppRowWithCheckbox, AppData
 
@@ -62,7 +63,7 @@ class AppSelectionWindow(Gtk.Window):
 
         self._create_elastic_window()
 
-        self.connect("realize", self._build_ui)
+        safe_signal_connect(self, "realize", self._build_ui)
 
     def _create_elastic_window(self):
         """This allows for the content to be always centered and expand or contract
@@ -99,8 +100,8 @@ class AppSelectionWindow(Gtk.Window):
         connect_button.set_name("split-tunneling-app-done-button")
         connect_button.add_css_class("primary")
         connect_button.set_halign(Gtk.Align.END)
-        connect_button.connect(
-            "clicked", self._on_done_button_clicked
+        safe_signal_connect(
+            connect_button, "clicked", self._on_done_button_clicked
         )
         self.main_container.append(connect_button)
 

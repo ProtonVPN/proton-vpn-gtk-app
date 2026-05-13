@@ -26,11 +26,12 @@ from gi.repository import GObject
 from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.login_form import LoginForm
 from proton.vpn.app.gtk.widgets.login.two_factor_auth import TwoFactorAuthWidget
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
-from proton.vpn.app.gtk.controller import Controller
 
 logger = logging.getLogger(__name__)
 
@@ -70,33 +71,35 @@ class LoginStack(Gtk.Stack):
         )
         self.add_named(self.two_factor_auth_widget, "2fa_form")
 
-        self.login_form.connect(
+        safe_signal_connect(
+            self.login_form,
             "user-authenticated",
-            lambda _, two_factor_auth_required:
-                self._on_user_authenticated(two_factor_auth_required)
+            self._on_user_authenticated
         )
         self.display_form(self.login_form)
 
-        self.two_factor_auth_widget.connect(
+        safe_signal_connect(
+            self.two_factor_auth_widget,
             "two-factor-auth-successful",
-            lambda _: self._on_two_factor_auth_successful()
+            self._on_two_factor_auth_successful
         )
 
-        self.two_factor_auth_widget.connect(
+        safe_signal_connect(
+            self.two_factor_auth_widget,
             "two-factor-auth-cancelled",
-            lambda _: self._on_two_factor_auth_cancelled()
+            self._on_two_factor_auth_cancelled
         )
 
-    def _on_user_authenticated(self, two_factor_auth_required: bool):
+    def _on_user_authenticated(self, _, two_factor_auth_required: bool):
         if not two_factor_auth_required:
             self._signal_user_logged_in()
         else:
             self.display_form(self.two_factor_auth_widget)
 
-    def _on_two_factor_auth_successful(self):
+    def _on_two_factor_auth_successful(self, _):
         self._signal_user_logged_in()
 
-    def _on_two_factor_auth_cancelled(self):
+    def _on_two_factor_auth_cancelled(self, _):
         self.display_form(self.login_form)
 
     @GObject.Signal

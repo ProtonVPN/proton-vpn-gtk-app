@@ -25,6 +25,7 @@ from contextlib import contextmanager
 
 from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.core.settings import CustomDNSEntry, NetShield
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import ToggleWidget
@@ -65,7 +66,7 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
 
         for custom_dns in ip_list:
             custom_dns_row = CustomDNSRow(custom_dns)
-            custom_dns_row.button.connect("clicked", self._on_dns_delete_clicked)
+            safe_signal_connect(custom_dns_row.button, "clicked", self._on_dns_delete_clicked)
             self.append(custom_dns_row)
 
     @GObject.Signal(name="dns-ip-removed", arg_types=(object,))
@@ -75,7 +76,7 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
     def add_dns(self, new_dns: CustomDNSEntry):
         """Add a new DNS entry to the list"""
         custom_dns_row = CustomDNSRow(new_dns)
-        custom_dns_row.button.connect("clicked", self._on_dns_delete_clicked)
+        safe_signal_connect(custom_dns_row.button, "clicked", self._on_dns_delete_clicked)
         self.append(custom_dns_row)
 
     def _on_dns_delete_clicked(self, button: Gtk.Button):
@@ -104,19 +105,21 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         label = self.gtk.Label(label="Add new server")
         label.set_halign(Gtk.Align.START)
 
-        error_message_revealer = self._build_error_message()
-        entry_row = self._build_entry_row(error_message_revealer)
+        self._error_message_revealer = self._build_error_message()
+        entry_row = self._build_entry_row()
         with self._get_ip_list() as ip_list:
             self._custom_dns_list = custom_dns_list or CustomDNSList(ip_list)
 
-        self._custom_dns_list.connect("dns-ip-removed", self._on_dns_delete_clicked)
+        safe_signal_connect(
+            self._custom_dns_list, "dns-ip-removed", self._on_dns_delete_clicked
+        )
 
         self.append(label)
         self.append(entry_row)
-        self.append(error_message_revealer)
+        self.append(self._error_message_revealer)
         self.append(self._custom_dns_list)
 
-    def _build_entry_row(self, error_message_revealer: Gtk.Revealer) -> Gtk.Grid:
+    def _build_entry_row(self) -> Gtk.Grid:
         row = self.gtk.Grid(orientation=Gtk.Orientation.HORIZONTAL)
         row.set_column_spacing(10)
 
@@ -125,7 +128,7 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         self._dns_entry.set_halign(Gtk.Align.FILL)
 
         self._add_button: Gtk.Button = self.gtk.Button(label="Add")
-        self._add_button.connect("clicked", self._on_dns_add_clicked, error_message_revealer)
+        safe_signal_connect(self._add_button, "clicked", self._on_dns_add_clicked)
 
         row.attach(self._dns_entry, 0, 0, 1, 1)
         row.attach(self._add_button, 1, 0, 1, 1)
@@ -143,17 +146,17 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         return revealer
 
     def _on_dns_add_clicked(
-        self, _: Gtk.Button, error_message_revealer: Gtk.Revealer
+        self, _: Gtk.Button
     ):
-        if error_message_revealer.get_reveal_child():
-            error_message_revealer.set_reveal_child(False)
+        if self._error_message_revealer.get_reveal_child():
+            self._error_message_revealer.set_reveal_child(False)
 
         string_from_entry = self._dns_entry.get_text().lower().strip()
 
         try:
             new_custom_dns_entry = CustomDNSEntry.new_from_string(string_from_entry)
         except ValueError:
-            self._notify_user_of_invalid_dns_entry(error_message_revealer)
+            self._notify_user_of_invalid_dns_entry(self._error_message_revealer)
             return
 
         self._add_dns(new_custom_dns_entry)
@@ -222,6 +225,7 @@ class CustomDNSWidget(ToggleWidget):
         self._controller = controller
         self.revealer: Optional[Gtk.Revealer] = None
         self._settings_window = settings_window
+        self._conflict_feature_settings = None
 
     @staticmethod
     def build(controller: Controller, settings_window: "SettingsWindow") -> "CustomDNSWidget":
@@ -251,25 +255,35 @@ class CustomDNSWidget(ToggleWidget):
     def custom_dns_setting_changed(self, new_setting: bool):
         """Signal emitted after a custom DNS setting is set."""
 
-    def on_netshield_setting_changed(self, feature_settings: "FeatureSettings", new_setting: int):
-        """temp"""
-        def _on_dialog_button_click(confirmation_dialog: ConfirmationDialog, response_type: int):
-            enable_netshield = Gtk.ResponseType(response_type) == Gtk.ResponseType.YES
-            if enable_netshield:
-                self.off()
-            else:
-                # We need to reverse back the option here since gtk does not allow an easy way to
-                # intercept changes before they happen.
-                feature_settings.netshield.off()
+    def _on_dialog_button_click(
+        self,
+        confirmation_dialog: ConfirmationDialog,
+        response_type: int
+    ):
+        enable_netshield = Gtk.ResponseType(response_type) == Gtk.ResponseType.YES
+        if enable_netshield:
+            self.off()
+        else:
+            # We need to reverse back the option here since gtk does not allow an easy way to
+            # intercept changes before they happen.
+            self._conflict_feature_settings.netshield.off()
 
-            confirmation_dialog.destroy()
+        self._conflict_feature_settings = None
+        confirmation_dialog.destroy()
 
+    def on_netshield_setting_changed(
+        self,
+        feature_settings: "FeatureSettings",
+        new_setting: int
+    ):
+        """Called on netshield setting change (conflict resolution)"""
         custom_dns_enabled = self.get_setting()
         netshield_disabled = new_setting == NetShield.NO_BLOCK
 
         if not custom_dns_enabled or netshield_disabled:
             return
 
+        self._conflict_feature_settings = feature_settings
         dialog = ConfirmationDialog(
             message=self._build_dialog_content(),
             title="Enable Netshield",
@@ -277,7 +291,7 @@ class CustomDNSWidget(ToggleWidget):
         )
         #  pylint: disable=duplicate-code
         dialog.set_default_size(400, 200)
-        dialog.connect("response", _on_dialog_button_click)
+        safe_signal_connect(dialog, "response", self._on_dialog_button_click)
         dialog.set_modal(True)
         dialog.set_transient_for(self._settings_window)
         dialog.present()

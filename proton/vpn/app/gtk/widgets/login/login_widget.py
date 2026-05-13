@@ -26,6 +26,7 @@ from gi.repository import GObject
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.login_stack import LoginStack
 from proton.vpn.app.gtk.widgets.login.disable_killswitch import DisableKillSwitchWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
@@ -64,12 +65,16 @@ class LoginWidget(Gtk.Box):
         self.login_stack = login_stack or LoginStack(
             self._controller, notifications, overlay_widget
         )
-        self.login_stack.connect("user-logged-in", self._on_user_logged_in)
+        safe_signal_connect(self.login_stack, "user-logged-in", self._on_user_logged_in)
 
         self.disable_killswitch = disable_killswitch_widget or DisableKillSwitchWidget(
             main_window
         )
-        self.disable_killswitch.connect("disable-killswitch", self._on_disable_killswitch)
+        safe_signal_connect(
+            self.disable_killswitch,
+            "disable-killswitch",
+            self._on_disable_killswitch
+        )
 
         self.append(self.login_stack)
         self.append(self.disable_killswitch)

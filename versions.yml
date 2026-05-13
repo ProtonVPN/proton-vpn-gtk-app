@@ -1,3 +1,10 @@
+version: 4.16.4rc2
+time: 2026/05/13 13:12
+author: Richard Paterson
+email: richard.paterson@proton.ch
+description:
+- "fix: Migrate to new signal connection system to mitigate leaks"
+---
 version: 4.16.4rc1
 time: 2026/05/12 15:38
 author: Pep Llaneras

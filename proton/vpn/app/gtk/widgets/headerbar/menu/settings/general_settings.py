@@ -242,6 +242,9 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         super().__init__(self.CATEGORY_NAME)
         self._controller = controller
         self._tray_indicator = tray_indicator
+        self._connect_at_startup_entry = None
+        self._start_app_minimized_toggle = None
+        self._anonymous_crash_reports_toggle = None
         self._packet_capture_widget: Optional[PacketCaptureWidget] = None
 
     def on_settings_changed(self, settings):
@@ -280,22 +283,24 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
             entry_widget.save_setting(new_value)
 
-        self.append(EntryWidget(
+        self._connect_at_startup_entry = EntryWidget(
             controller=self._controller,
             title=self.CONNECT_AT_APP_STARTUP_LABEL,
             description=self.CONNECT_AT_APP_STARTUP_DESCRIPTION,
             setting_name="app_configuration.connect_at_app_startup",
             callback=_format_and_save_autoconnect_field
-        ))
+        )
+        self.append(self._connect_at_startup_entry)
 
     def build_start_app_minimized(self):
         """Builds and adds the `start_app_minimized` setting to the widget."""
-        self.append(ToggleWidget(
+        self._start_app_minimized_toggle = ToggleWidget(
             controller=self._controller,
             title=self.START_APP_MINIMIZED_LABEL,
             description=self.START_APP_MINIMIZED_DESCRIPTION,
             setting_name="app_configuration.start_app_minimized"
-        ))
+        )
+        self.append(self._start_app_minimized_toggle)
 
     def build_tray_pinned_servers(self):
         """Builds and adds the `tray_pinned_servers` setting to the widget."""
@@ -305,12 +310,13 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
     def build_anonymous_crash_reports(self):
         """Builds and adds the `anonymous_crash_reports` setting to the widget."""
-        self.append(ToggleWidget(
+        self._anonymous_crash_reports_toggle = ToggleWidget(
             controller=self._controller,
             title=self.ANONYMOUS_CRASH_REPORTS_LABEL,
             description=self.ANONYMOUS_CRASH_REPORTS_DESCRIPTION,
             setting_name="settings.anonymous_crash_reports"
-        ))
+        )
+        self.append(self._anonymous_crash_reports_toggle)
 
     def build_packet_capture(self):
         """Builds and adds the `packet_capture` file path setting to the widget."""

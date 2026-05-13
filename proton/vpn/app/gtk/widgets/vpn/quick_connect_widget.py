@@ -24,6 +24,7 @@ from proton.vpn.connection import states
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -40,13 +41,15 @@ class QuickConnectWidget(Gtk.Box):
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.connect_button = Gtk.Button(label="Connect")
         self.connect_button.add_css_class("primary")
-        self.connect_button.connect(
+        safe_signal_connect(
+            self.connect_button,
             "clicked", self._on_connect_button_clicked)
         self.connect_button.set_visible(False)
         self.append(self.connect_button)
         self.disconnect_button = Gtk.Button(label="Disconnect")
         self.disconnect_button.add_css_class("danger")
-        self.disconnect_button.connect(
+        safe_signal_connect(
+            self.disconnect_button,
             "clicked", self._on_disconnect_button_clicked)
         self.disconnect_button.set_visible(False)
         self.append(self.disconnect_button)

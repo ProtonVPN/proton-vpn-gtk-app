@@ -21,7 +21,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 import time
-from typing import List, Optional, cast
+from typing import List, Optional
 import logging
 from unittest.mock import Mock
 
@@ -30,6 +30,7 @@ from gi.repository import GLib, GObject
 from proton.vpn import logging as proton_logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.session.servers import ServerList, TierEnum
 from proton.vpn.session.servers.server_list_fetcher import ServerListFetcher
 
@@ -40,7 +41,6 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.server_list_header_row 
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
-    get_children,
     sync_rows_with_model_items,
 )
 
@@ -79,6 +79,8 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._country_rows_container.set_vexpand(True)
         self._country_rows_container.set_spacing(5)
         self._container.append(self._country_rows_container)
+
+        self._country_rows: List[CountryRow] = []
 
     def display(self, user_tier: int, server_list: ServerList):
         """Builds and displays the server list."""
@@ -122,10 +124,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
     @property
     def country_rows(self) -> List[CountryRow]:
         """Returns the list of country rows currently displayed."""
-        return cast(List[CountryRow], get_children(self._country_rows_container))
+        return list(self._country_rows)
 
     def _remove_country_rows(self):
-        for row in self.country_rows:
+        while self._country_rows:
+            row = self._country_rows.pop()
             row.reset()
             self._country_rows_container.remove(row)
 
@@ -163,7 +166,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
         sync_rows_with_model_items(
             countries,
-            self.country_rows,
+            self._country_rows,
             self._country_rows_container,
             CountryRow,
             display_country_row
@@ -218,7 +221,7 @@ def main():
     """Main entry point for testing the server list widget standalone."""
     logger.setLevel(logging.DEBUG)
     app = Gtk.Application()
-    app.connect('activate', _on_activate)
+    safe_signal_connect(app, 'activate', _on_activate)
 
     app.run(None)
 

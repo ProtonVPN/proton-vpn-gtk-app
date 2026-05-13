@@ -28,6 +28,7 @@ from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
 from proton.vpn.app.gtk.widgets.login.password_entry import PasswordEntry
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
@@ -75,7 +76,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self.append(self._password_entry)
 
         self._login_button = Gtk.Button(label="Sign in")
-        self._login_button.connect("clicked", self._on_login_button_clicked)
+        safe_signal_connect(self._login_button, "clicked", self._on_login_button_clicked)
         self._login_button.add_css_class("primary")
         self._login_button.add_css_class("spaced")
         self._login_button.set_halign(Gtk.Align.CENTER)
@@ -87,16 +88,16 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
 
         # Listen to key entries so that the login button can be "unlocked"
         # once username and password are provided.
-        self._password_entry.connect(
-            "changed", self._on_entry_changed
+        safe_signal_connect(
+            self._password_entry, "changed", self._on_entry_changed
         )
-        self._username_entry.connect(
-            "changed", self._on_entry_changed
+        safe_signal_connect(
+            self._username_entry, "changed", self._on_entry_changed
         )
 
         # Allows both entries to react to 'Enter' button
-        self._username_entry.connect("activate", self._on_press_enter)
-        self._password_entry.connect("activate", self._on_press_enter)
+        safe_signal_connect(self._username_entry, "activate", self._on_press_enter)
+        safe_signal_connect(self._password_entry, "activate", self._on_press_enter)
 
         self.append(LoginLinks())
 

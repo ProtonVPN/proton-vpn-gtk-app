@@ -20,6 +20,7 @@ from pathlib import Path
 
 from gi.repository import Gdk, Gtk
 from proton.vpn.app.gtk.assets import icons
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
 
 class PasswordEntry(Gtk.Entry):
@@ -66,8 +67,8 @@ class PasswordEntry(Gtk.Entry):
             Gtk.EntryIconPosition.SECONDARY,
             True
         )
-        self.connect(
-            "icon-press", self._on_change_password_visibility_icon_press
+        safe_signal_connect(
+            self, "icon-press", self._on_change_password_visibility_icon_press
         )
 
     def _on_change_password_visibility_icon_press(self, gtk_entry_object, _icon_position):

@@ -23,8 +23,10 @@ from contextlib import contextmanager
 from typing import List, Tuple, Callable, Any, Optional, TYPE_CHECKING, cast
 from gi.repository import Gtk, Gio
 
-from proton.vpn.app.gtk.widgets.main.confirmation_dialog \
-    import ConfirmationDialog, show_confirmation_dialog
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.widgets.main.confirmation_dialog import \
+    ConfirmationDialog,\
+    show_confirmation_dialog
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn import logging
 
@@ -117,7 +119,7 @@ class UpgradePlusTag(Gtk.Button):
         super().__init__(label=self.LABEL)
         self.add_css_class("upgrade-tag")
         self.add_css_class("heading")
-        self.connect("clicked", self._on_button_clicked)
+        safe_signal_connect(self, "clicked", self._on_button_clicked)
 
     def _on_button_clicked(self, _):
         Gio.AppInfo.launch_default_for_uri(self.URL, None)
@@ -184,7 +186,7 @@ class CustomButton(Gtk.Grid):
     def _build_button(self, button_label: str, on_click_callback: Callable) -> Gtk.Button:
         button = Gtk.Button()
         button.set_label(button_label)
-        button.connect("clicked", on_click_callback)
+        safe_signal_connect(button, "clicked", on_click_callback)
         return button
 
     def _build_ui(self):
@@ -286,7 +288,7 @@ class ToggleWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
 
         switch.set_active(self._enabled)
 
-        switch.connect("notify::active", self._on_switch_state)
+        safe_signal_connect(switch, "notify::active", self._on_switch_state)
 
         return switch
 
@@ -362,6 +364,7 @@ class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instan
             enabled=enabled,
             display_tooltip_only_on_active_connection=display_tooltip_only_on_active_connection
         )
+        self._new_value = None
         self.do_set = do_set
         self.do_revert = do_revert
 
@@ -374,30 +377,7 @@ class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instan
 
         if conflict := self._conflict_resolver(self._setting_name, new_value):
 
-            def confirm_change(dialog: ConfirmationDialog, response: int):
-                if response == Gtk.ResponseType.YES:
-                    # do_set can be any callable that takes
-                    # (ToggleWidget, int) as arguments so although it looks
-                    # like we are calling a method on self, we are actually
-                    # calling the method that was passed to the constructor.
-                    # This allows for instantiating this class with different
-                    # do_set and do_revert methods without having to
-                    # subclass it.
-                    #
-                    # We are passing `self` as the first argument
-                    # because the do_set method expects a ToggleWidget.
-                    self.do_set(self, new_value)
-                else:
-                    # Similarly to above, we are calling the
-                    # do_revert method that was passed to the constructor,
-                    # it's not a method of this class.
-                    # This is why we are passing `self` as the first argument.
-                    self.do_revert(self)
-
-                # We cant just close the dialog, instead we destroy it
-                # directly.
-                dialog.destroy()
-
+            self._new_value = new_value
             show_confirmation_dialog(
                 self.get_root(),
                 title="",
@@ -405,10 +385,35 @@ class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instan
                 clarification=conflict.description,
                 yes_text="_Yes",
                 no_text="_Cancel",
-                callback_result=confirm_change
+                callback_result=self._confirm_change
             )
         else:
             self.do_set(self, new_value)
+
+    def _confirm_change(self, dialog: ConfirmationDialog, response: int):
+        if response == Gtk.ResponseType.YES:
+            # do_set can be any callable that takes
+            # (ToggleWidget, int) as arguments so although it looks
+            # like we are calling a method on self, we are actually
+            # calling the method that was passed to the constructor.
+            # This allows for instantiating this class with different
+            # do_set and do_revert methods without having to
+            # subclass it.
+            #
+            # We are passing `self` as the first argument
+            # because the do_set method expects a ToggleWidget.
+            self.do_set(self, self._new_value)
+        else:
+            # Similarly to above, we are calling the
+            # do_revert method that was passed to the constructor,
+            # it's not a method of this class.
+            # This is why we are passing `self` as the first argument.
+            self.do_revert(self)
+
+        self._new_value = None
+        # We cant just close the dialog, instead we destroy it
+        # directly.
+        dialog.destroy()
 
 
 class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
@@ -434,6 +439,7 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         self.label = SettingName(title)
         self.description = None if not description else SettingDescription(description)
         self._disable_on_active_connection = disable_on_active_connection
+        self._changed_callback_id = None
         self.combobox = self._build_combobox()
         self._build_ui()
 
@@ -481,9 +487,11 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
         combobox.set_active_id(self.get_setting())
 
         if self._callback:
-            combobox.connect("changed", self._callback, self)
+            self._changed_callback_id = \
+                safe_signal_connect(combobox, "changed", self._callback)
         else:
-            combobox.connect("changed", self._on_combobox_change)
+            self._changed_callback_id = \
+                safe_signal_connect(combobox, "changed", self._on_combobox_change)
 
         if not self._controller.connection_disconnected and self._disable_on_active_connection:
             self.active = False
@@ -517,12 +525,11 @@ class ComboboxWidget(Gtk.Grid):  # pylint: disable=too-many-instance-attributes
     @contextmanager
     def pause_callback(self):
         """Context manager that temporarily blocks the combobox 'changed' signal."""
-        handler = self._callback or self._on_combobox_change
-        self.combobox.handler_block_by_func(handler)
+        self.combobox.handler_block(self._changed_callback_id)
         try:
             yield
         finally:
-            self.combobox.handler_unblock_by_func(handler)
+            self.combobox.handler_unblock(self._changed_callback_id)
 
     def _on_combobox_change(self, combobox: Gtk.ComboBox):
         model = combobox.get_model()
@@ -560,40 +567,19 @@ class ConflictableComboboxWidget(ComboboxWidget):
             callback=self._on_conflictable_combobox_change,
             disable_on_active_connection=disable_on_active_connection
         )
+        self._new_value = None
         self._do_set = do_set
         self._do_revert = do_revert
 
     def _on_conflictable_combobox_change(
-            self, combobox_text_widget, _combobox: Gtk.ComboBox):
+            self, combobox_text_widget
+    ):
         new_value = combobox_text_widget.get_active_text()
 
         if conflict := self._controller.setting_attr_has_conflict(
                 self._setting_name, new_value):
 
-            def confirm_change(dialog: ConfirmationDialog, response: int):
-                if response == Gtk.ResponseType.YES:
-                    # do_set can be any callable that takes
-                    # (ComboboxWidget, int) as arguments so although it looks
-                    # like we are calling a method on self, we are actually
-                    # calling the method that was passed to the constructor.
-                    # This allows for instantiating this class with different
-                    # do_set and do_revert methods without having to
-                    # subclass it.
-                    #
-                    # We are passing `self` as the first argument
-                    # because the do_set method expects a ComboboxWidget.
-                    self._do_set(self, new_value)
-                else:
-                    # Similarly to above, we are calling the
-                    # do_revert method that was passed to the constructor,
-                    # it's not a method of this class.
-                    # This is why we are passing `self` as the first argument.
-                    self._do_revert(self)
-
-                # We cant just close the dialog, instead we destroy it
-                # directly.
-                dialog.destroy()
-
+            self._new_value = new_value
             show_confirmation_dialog(
                 self.get_root(),
                 title="",
@@ -601,10 +587,35 @@ class ConflictableComboboxWidget(ComboboxWidget):
                 clarification=conflict.description,
                 yes_text="_Yes",
                 no_text="_Cancel",
-                callback_result=confirm_change
+                callback_result=self._confirm_change
             )
         else:
             self._do_set(self, new_value)
+
+    def _confirm_change(self, dialog: ConfirmationDialog, response: int):
+        if response == Gtk.ResponseType.YES:
+            # do_set can be any callable that takes
+            # (ComboboxWidget, int) as arguments so although it looks
+            # like we are calling a method on self, we are actually
+            # calling the method that was passed to the constructor.
+            # This allows for instantiating this class with different
+            # do_set and do_revert methods without having to
+            # subclass it.
+            #
+            # We are passing `self` as the first argument
+            # because the do_set method expects a ComboboxWidget.
+            self._do_set(self, self._new_value)
+        else:
+            # Similarly to above, we are calling the
+            # do_revert method that was passed to the constructor,
+            # it's not a method of this class.
+            # This is why we are passing `self` as the first argument.
+            self._do_revert(self)
+
+        self._new_value = None
+        # We cant just close the dialog, instead we destroy it
+        # directly.
+        dialog.destroy()
 
 
 class EntryWidget(Gtk.Grid):
@@ -672,10 +683,13 @@ class EntryWidget(Gtk.Grid):
 
         entry.set_text(str(value))
         if self._callback:
-            entry.connect("changed", lambda *args: self._callback(entry, self, *args))
+            safe_signal_connect(entry, "changed", self._forward_to_callback)
         else:
-            entry.connect("changed", self._on_changed_event)
+            safe_signal_connect(entry, "changed", self._on_changed_event)
         return entry
+
+    def _forward_to_callback(self, *args):
+        self._callback(self.entry, self, *args)
 
     def change_value(self, new_value: str):
         """Change the value of the entry widget. Method added for testing purposes."""

@@ -56,6 +56,7 @@ class SecureCoreRow(Gtk.Box):
             on_collapse=self._remove_server_rows,
         )
         self.append(self._expandable_row)
+        self._server_rows: List[RowContent] = []
 
     # pylint: disable=too-many-arguments
     def display(
@@ -108,7 +109,7 @@ class SecureCoreRow(Gtk.Box):
     @property
     def server_rows(self) -> List[RowContent]:
         """Returns the list of server rows currently displayed."""
-        return self._expandable_row.get_children()
+        return list(self._server_rows)
 
     @property
     def expanded(self) -> bool:
@@ -125,7 +126,8 @@ class SecureCoreRow(Gtk.Box):
         self._expandable_row.reset(keep_children=keep_children)
 
     def _remove_server_rows(self) -> None:
-        for server_row in self._expandable_row.get_children():
+        while self._server_rows:
+            server_row = self._server_rows.pop()
             self._expandable_row.remove_child(server_row)
             server_row.reset()
 
@@ -168,7 +170,7 @@ class SecureCoreRow(Gtk.Box):
 
         sync_rows_with_model_items(
             list(self._secure_core_group.servers),
-            self.server_rows,
+            self._server_rows,
             self._expandable_row.container,
             RowContent,
             display_server_row,

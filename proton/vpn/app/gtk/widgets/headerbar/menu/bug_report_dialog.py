@@ -35,6 +35,7 @@ from proton.vpn.session.dataclasses import BugReportForm
 from proton.vpn.app.gtk import __version__
 from proton.vpn import logging
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 
 if TYPE_CHECKING:
@@ -86,7 +87,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.cancel_button.add_css_class("danger")
         self.submit_button.add_css_class("primary")
 
-        self.connect("response", self._on_response)
+        safe_signal_connect(self, "response", self._on_response)
 
         self._generate_fields()
         self.submit_button.set_sensitive(False)
@@ -285,14 +286,14 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         content_area.set_margin_end(0)
         content_area.set_spacing(20)
 
-        self.username_entry.connect(
-            "changed", self._on_entry_changed
+        safe_signal_connect(
+            self.username_entry, "changed", self._on_entry_changed
         )
-        self.email_entry.connect(
-            "changed", self._on_entry_changed
+        safe_signal_connect(
+            self.email_entry, "changed", self._on_entry_changed
         )
-        self.description_buffer.connect(
-            "changed", self._on_entry_changed
+        safe_signal_connect(
+            self.description_buffer, "changed", self._on_entry_changed
         )
 
     def get_submit_button(self):

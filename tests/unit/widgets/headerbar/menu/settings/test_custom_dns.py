@@ -105,7 +105,7 @@ class TestCustomDNSManager:
         revealer_mock.reset_mock()
 
         custom_dns_manager.set_entry_text(new_dns_to_be_added)
-        on_button_clicked_callback(add_button_mock, revealer_mock)
+        on_button_clicked_callback(add_button_mock)
 
         revealer_mock.set_reveal_child.assert_called_once_with(True)
 

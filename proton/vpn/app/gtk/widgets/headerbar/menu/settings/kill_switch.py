@@ -22,6 +22,7 @@ from typing import Callable, Optional
 from gi.repository import Gtk
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.connection.enum import KillSwitchSetting\
     as KillSwitchSettingEnum
 
@@ -108,8 +109,10 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
             1, 1, 1, 1
         )
 
-        self.standard_radio_button.connect(
-            "toggled", self._on_radio_button_toggle, KillSwitchSettingEnum.ON
+        safe_signal_connect(
+            self.standard_radio_button,
+            "toggled",
+            self._on_standard_radio_button_toggle
         )
 
         return main_standard_container
@@ -129,13 +132,21 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
             1, 1, 1, 1
         )
 
-        self.advanced_radio_button.connect(
-            "toggled", self._on_radio_button_toggle, KillSwitchSettingEnum.PERMANENT
+        safe_signal_connect(
+            self.advanced_radio_button,
+            "toggled",
+            self._on_advanced_radio_button_toggle
         )
 
         return main_advanced_container
 
-    def _on_radio_button_toggle(self, radio_button: Gtk.CheckButton, new_value: int):
+    def _on_standard_radio_button_toggle(self, button):
+        self._handle_toggle(button, KillSwitchSettingEnum.ON)
+
+    def _on_advanced_radio_button_toggle(self, button):
+        self._handle_toggle(button, KillSwitchSettingEnum.PERMANENT)
+
+    def _handle_toggle(self, radio_button: Gtk.CheckButton, new_value: int):
         # If revealer is hidden then we don't want to resolve the trigger from
         # programmatically setting the standard radio button.
         if not self.revealer.get_reveal_child():

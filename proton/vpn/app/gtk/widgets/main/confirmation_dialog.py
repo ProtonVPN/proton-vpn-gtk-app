@@ -24,6 +24,7 @@ from typing import Union, Callable, Optional
 from gi.repository import Pango
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
 logger = logging.getLogger(__name__)
 
@@ -100,5 +101,5 @@ def show_confirmation_dialog(  # pylint: disable=too-many-arguments
     dialog.set_default_size(400, 200)
     dialog.set_modal(True)
     dialog.set_transient_for(parent)
-    dialog.connect("response", callback_result)
+    safe_signal_connect(dialog, "response", callback_result)
     dialog.present()

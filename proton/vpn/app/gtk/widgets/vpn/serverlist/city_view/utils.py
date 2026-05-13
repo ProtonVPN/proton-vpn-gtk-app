@@ -20,7 +20,6 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-import itertools
 from typing import Any, Callable, List, Type, TypeVar
 
 from gi.repository import GLib
@@ -47,41 +46,39 @@ def make_connect_callback(
 
 def sync_rows_with_model_items(
     model_items: List[Any],
-    existing_rows: List[GtkWidget],
+    rows: List[GtkWidget],
     container: Gtk.Box,
     row_factory: Type[GtkWidget],
     display_func: Callable[[GtkWidget, Any], None]
 ):
-    """Synchronizes a list of row widgets with model items using zip_longest.
+    """Synchronizes a list of row widgets with model items.
 
     This utility function handles the common pattern of:
     - Creating new rows when there are more model items than rows
     - Removing rows when there are more rows than model items
     - Updating existing rows with their corresponding model items
 
-    Row widgets should connect their reset() method to the "unrealize" signal
-    for automatic cleanup when removed.
+    ``rows`` is the source of truth and is mutated in place.
+    Row widgets should connect their reset() method to the "unrealize"
+    signal for automatic cleanup when removed.
 
     Args:
         model_items: List of model objects to display
-        existing_rows: List of existing row widgets
+        rows: Mutable list of row widgets owned by the caller
         container: Container widget to add/remove rows from
         row_factory: Callable that creates a new row widget (no arguments)
-        display_func: Callable(row, model_item, ...) that updates a row with a model item
+        display_func: Callable(row, model_item) that updates a row with a model item
     """
-    for model_item, row in itertools.zip_longest(model_items, existing_rows):
-        if row is None:
-            # More model items than rows - create new row
+    for i, model_item in enumerate(model_items):
+        if i >= len(rows):
             row = row_factory()
+            rows.append(row)
             container.append(row)
+        display_func(rows[i], model_item)
 
-        if model_item is None:
-            # More rows than model items - remove row
-            # Reset will be called automatically via unrealize signal
-            container.remove(row)
-        else:
-            # Update existing row with model item
-            display_func(row, model_item)
+    while len(rows) > len(model_items):
+        row = rows.pop()
+        container.remove(row)
 
 
 def get_children(widget: Gtk.Widget) -> List[Gtk.Widget]:

@@ -25,6 +25,7 @@ from gi.repository import Gtk
 from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import SettingName
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.selected_app_list \
     import SelectedAppList
@@ -90,14 +91,16 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         self._update_app_count_label()
 
         # We need to track whenever an app is removed or added to the list
-        self._selected_app_list.connect("app-removed", self._on_app_removed)
-        self._selected_app_list.connect("app-list-refreshed", self._on_app_list_refreshed)
+        safe_signal_connect(self._selected_app_list, "app-removed", self._on_app_removed)
+        safe_signal_connect(
+            self._selected_app_list, "app-list-refreshed", self._on_app_list_refreshed
+        )
 
     def _create_add_button(self) -> Gtk.Button:
         button = self.gtk.Button.new_with_label("Add")
         button.set_name("split-tunneling-app-add-button")
         button.add_css_class("secondary")
-        button.connect("clicked", self._on_clicked_add)
+        safe_signal_connect(button, "clicked", self._on_clicked_add)
         button.set_hexpand(True)
         button.set_halign(Gtk.Align.START)
 
@@ -111,7 +114,9 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
             installed_apps=self._installed_apps
         )
 
-        add_app_window.connect("app-selection-completed", self._on_app_selection_completed)
+        safe_signal_connect(
+            add_app_window, "app-selection-completed", self._on_app_selection_completed
+        )
         add_app_window.present()
 
     @property

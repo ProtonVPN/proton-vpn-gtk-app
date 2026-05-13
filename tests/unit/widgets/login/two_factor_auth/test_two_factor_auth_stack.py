@@ -103,6 +103,10 @@ def test_two_factor_auth_stack_forwards_auth_successful_signal_when_received_fro
 
 def test_two_factor_auth_stack_logs_user_out_when_security_key_2fa_is_cancelled():
     controller = Mock(spec=Controller)
+    logout_future = Mock()
+    logout_future.add_done_callback.side_effect = lambda cb: cb(logout_future)
+    controller.logout.return_value = logout_future
+
     two_factor_auth_stack = TwoFactorAuthStack(
         controller=controller,
         notifications=Mock(spec=Notifications),
@@ -117,6 +121,10 @@ def test_two_factor_auth_stack_logs_user_out_when_security_key_2fa_is_cancelled(
 
 def test_two_factor_auth_stack_logs_user_out_when_authenticator_app_2fa_is_cancelled():
     controller = Mock(spec=Controller)
+    logout_future = Mock()
+    logout_future.add_done_callback.side_effect = lambda cb: cb(logout_future)
+    controller.logout.return_value = logout_future
+
     two_factor_auth_stack = TwoFactorAuthStack(
         controller=controller,
         notifications=Mock(spec=Notifications),

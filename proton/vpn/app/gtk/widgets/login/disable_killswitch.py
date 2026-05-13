@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, Optional
 from gi.repository import GObject
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 
 if TYPE_CHECKING:
@@ -81,7 +82,11 @@ class DisableKillSwitchWidget(Gtk.Revealer):
 
         self.set_child(container)
 
-        self.disable_killswitch_button.connect("clicked", self._on_button_click)
+        safe_signal_connect(
+            self.disable_killswitch_button,
+            "clicked",
+            self._on_button_click
+        )
 
     def _on_button_click(self, _: Gtk.Button):
         dialog = ConfirmationDialog(
@@ -91,13 +96,17 @@ class DisableKillSwitchWidget(Gtk.Revealer):
         dialog.set_transient_for(self._main_window)
         dialog.set_modal(True)
 
-        def on_dialog_response(dialog: ConfirmationDialog, response_id: int):
-            dialog.destroy()
-            if response_id == Gtk.ResponseType.YES:
-                self.emit("disable-killswitch")
-
-        dialog.connect("response", on_dialog_response)
+        safe_signal_connect(
+            dialog,
+            "response",
+            self._on_dialog_response
+        )
         dialog.present()
+
+    def _on_dialog_response(self, dialog: ConfirmationDialog, response_id: int):
+        dialog.destroy()
+        if response_id == Gtk.ResponseType.YES:
+            self.emit("disable-killswitch")
 
     @GObject.Signal
     def disable_killswitch(self):

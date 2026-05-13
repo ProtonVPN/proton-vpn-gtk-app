@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, Optional
 
 from gi.repository import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.account_settings import \
     AccountSettings
@@ -74,18 +75,20 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
 
         self._create_elastic_window()
 
-        self.connect("realize", self._build_ui)
+        safe_signal_connect(self, "realize", self._build_ui)
 
         self._controller.settings_watchers.add(self._on_settings_changed)
-        self.connect("destroy", self._on_destroy)
 
     def _on_settings_changed(self, settings):
         self._connection_settings.on_settings_changed(settings)
         self._feature_settings.on_settings_changed(settings)
         self._general_settings.on_settings_changed(settings)
 
-    def _on_destroy(self, _widget):
+    def do_dispose(self):
+        """GObject lifecycle hook to release references; may run more
+        than once, so cleanup must be idempotent."""
         self._controller.settings_watchers.remove(self._on_settings_changed)
+        Gtk.Window.do_dispose(self)  # pylint: disable=no-member
 
     def _build_ui(self, *_):
         self._account_settings.build_ui()
@@ -93,16 +96,16 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         self._feature_settings.build_ui()
         self._general_settings.build_ui()
 
-        self._feature_settings \
-            .connect(
-                "netshield-setting-changed",
-                self._connection_settings.custom_dns.on_netshield_setting_changed
-            )
-        self._connection_settings.custom_dns \
-            .connect(
-                "custom-dns-setting-changed",
-                self._feature_settings.on_custom_dns_setting_changed
-            )
+        safe_signal_connect(
+            self._feature_settings,
+            "netshield-setting-changed",
+            self._connection_settings.custom_dns.on_netshield_setting_changed
+        )
+        safe_signal_connect(
+            self._connection_settings.custom_dns,
+            "custom-dns-setting-changed",
+            self._feature_settings.on_custom_dns_setting_changed
+        )
 
     def notify_user_with_reconnect_message(
         self, force_notify: bool = False, only_notify_on_active_connection: bool = False

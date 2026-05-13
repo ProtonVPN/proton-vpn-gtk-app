@@ -32,6 +32,7 @@ from proton.vpn.session.exceptions import \
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.logo import SecurityKeyLogo
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import SettingDescription
 from proton.vpn.app.gtk.widgets.login.password_entry import PasswordEntry
@@ -83,13 +84,13 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
         self._overlay_widget = overlay_widget
 
         self._authenticate_button = authenticate_button or AuthenticateButton()
-        self._authenticate_button.connect(
-            "clicked", self._on_authenticate_button_clicked
+        safe_signal_connect(
+            self._authenticate_button, "clicked", self._on_authenticate_button_clicked
         )
 
         self._cancel_button = Gtk.Button(label="Cancel")
         self._cancel_button.add_css_class("danger")
-        self._cancel_button.connect("clicked", self._on_cancel_button_clicked)
+        safe_signal_connect(self._cancel_button, "clicked", self._on_cancel_button_clicked)
 
         self._instruction_label = SettingDescription(self.DESCRIPTION_LABEL)
         self._instruction_label.remove_css_class("dim-label")
@@ -100,10 +101,12 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
 
         self._pin_code_entry = PasswordEntry()
         self._pin_code_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
-        self._pin_code_entry.connect(
-            "changed", self._on_pin_code_entry_changed
+        safe_signal_connect(
+            self._pin_code_entry, "changed", self._on_pin_code_entry_changed
         )
-        self._pin_code_entry.connect("activate", self._on_authenticate_button_clicked)
+        safe_signal_connect(
+            self._pin_code_entry, "activate", self._on_authenticate_button_clicked
+        )
 
         self._requesting_pin: Optional[threading.Event] = None
         self._cancel_assertion: Optional[threading.Event] = None
@@ -118,7 +121,8 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
         self._pin_code_box_revealer = Gtk.Revealer()
         self._pin_code_box_revealer.set_name("pin-code-box-revealer")
         self._pin_code_box_revealer.set_child(self._pin_code_box)
-        self._pin_code_box_revealer.connect(
+        safe_signal_connect(
+            self._pin_code_box_revealer,
             "notify::reveal-child", self._on_pin_code_box_revealer_notify_reveal_child
         )
 

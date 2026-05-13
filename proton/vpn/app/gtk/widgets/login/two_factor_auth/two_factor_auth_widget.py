@@ -24,11 +24,12 @@ from gi.repository import Gtk, GObject
 from proton.vpn import logging
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.logo import TwoFactorAuthProtonVPNLogo
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
-from proton.vpn.app.gtk.widgets.login.two_factor_auth.two_factor_auth_stack \
-    import TwoFactorAuthStack
+from proton.vpn.app.gtk.widgets.login.two_factor_auth.two_factor_auth_stack import\
+    TwoFactorAuthStack
 
 logger = logging.getLogger(__name__)
 
@@ -74,14 +75,22 @@ class TwoFactorAuthWidget(Gtk.Box):
         self.append(self.stack_switch)
         self.append(self.two_factor_auth_stack)
 
-        self.two_factor_auth_stack.connect(
+        safe_signal_connect(
+            self.two_factor_auth_stack,
             "two-factor-auth-successful",
-            lambda _: self.emit("two-factor-auth-successful")
+            self._on_two_factor_auth_successful
         )
-        self.two_factor_auth_stack.connect(
-                "two-factor-auth-cancelled",
-                lambda _: self.emit("two-factor-auth-cancelled")
-            )
+        safe_signal_connect(
+            self.two_factor_auth_stack,
+            "two-factor-auth-cancelled",
+            self._on_two_factor_auth_cancelled
+        )
+
+    def _on_two_factor_auth_successful(self, _):
+        self.emit("two-factor-auth-successful")
+
+    def _on_two_factor_auth_cancelled(self, _):
+        self.emit("two-factor-auth-cancelled")
 
     def reset(self):
         """Resets the widget to its initial state."""

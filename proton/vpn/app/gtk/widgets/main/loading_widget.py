@@ -23,6 +23,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 from typing import Optional, Union
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
 
 class Spinner(Gtk.Spinner):
@@ -32,7 +33,7 @@ class Spinner(Gtk.Spinner):
     def __init__(self, size: int = 50):
         super().__init__()
         self.set_property("height-request", size)
-        self.connect("realize", self._on_realize)
+        safe_signal_connect(self, "realize", self._on_realize)
 
     def _on_realize(self, _: Gtk.Widget):
         """Starts spinning when the widget is realized."""

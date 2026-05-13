@@ -28,6 +28,7 @@ from gi.repository import GLib, Gtk
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.exceptions import NPSError
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar.headerbar import HeaderBar
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
@@ -87,7 +88,7 @@ class MainWindow(Gtk.ApplicationWindow):
         )
         self.set_child(self.main_widget)
 
-        self.connect("notify::visible", self._display_pending_notifications)
+        safe_signal_connect(self, "notify::visible", self._display_pending_notifications)
 
         self.main_widget.set_visible(True)
 
@@ -143,25 +144,26 @@ class MainWindow(Gtk.ApplicationWindow):
     def configure_close_button_to_hide_window(self):
         """Configures the x (close window) button so that when clicked,
         the window is hidden instead closed."""
-        def on_close_button_clicked_then_hide_window(*_) -> bool:
-            """
-            Instead of letting the window x button close the app, therefore
-            quitting the app, the action is delegated to the Exit entry in
-            the menu bar widget.
-            """
-            self.set_visible(False)
-
-            # Returning True when handling the close-request stops other handlers
-            # from being invoked for this event, therefore preventing the default
-            # behaviour:
-            # https://docs.gtk.org/gtk4/signal.Window.close-request.html
-            return True
-
         # Handle the event emitted when the user tries to close the window.
-        return self.connect(
+        return safe_signal_connect(
+            self,
             "close-request",
-            on_close_button_clicked_then_hide_window
+            self._on_close_button_clicked_then_hide_window
         )
+
+    def _on_close_button_clicked_then_hide_window(self, *_) -> bool:
+        """
+        Instead of letting the window x button close the app, therefore
+        quitting the app, the action is delegated to the Exit entry in
+        the menu bar widget.
+        """
+        self.set_visible(False)
+
+        # Returning True when handling the close-request stops other handlers
+        # from being invoked for this event, therefore preventing the default
+        # behaviour:
+        # https://docs.gtk.org/gtk4/signal.Window.close-request.html
+        return True
 
     def quit(self):
         """Closes the main window, which quits the app."""
@@ -173,25 +175,26 @@ class MainWindow(Gtk.ApplicationWindow):
     def configure_close_button_to_trigger_quit_menu_entry(self):
         """Configures the x (close window) button so that when clicked,
         the Exit menu entry is triggered instead."""
-        def on_close_button_clicked_then_click_quit_menu_entry(*_) -> bool:
-            """
-            Instead of letting the x button close the app, therefore
-            quitting the app, the action is delegated to the Exit entry in
-            the menu bar widget, which may request confirmation to the user.
-            """
-            self.header_bar.menu.quit_button_click()
-
-            # Returning True when handling the close-request stops other handlers
-            # from being invoked for this event, therefore preventing the default
-            # behaviour:
-            # https://docs.gtk.org/gtk4/signal.Window.close-request.html
-            return True
-
         # Handle the event emitted when the user tries to close the window.
-        return self.connect(
+        return safe_signal_connect(
+            self,
             "close-request",
-            on_close_button_clicked_then_click_quit_menu_entry
+            self._on_close_button_clicked_then_click_quit_menu_entry
         )
+
+    def _on_close_button_clicked_then_click_quit_menu_entry(self, *_) -> bool:
+        """
+        Instead of letting the x button close the app, therefore
+        quitting the app, the action is delegated to the Exit entry in
+        the menu bar widget, which may request confirmation to the user.
+        """
+        self.header_bar.menu.quit_button_click()
+
+        # Returning True when handling the close-request stops other handlers
+        # from being invoked for this event, therefore preventing the default
+        # behaviour:
+        # https://docs.gtk.org/gtk4/signal.Window.close-request.html
+        return True
 
     def _display_pending_notifications(self, *_):
         if not self._controller.user_logged_in:

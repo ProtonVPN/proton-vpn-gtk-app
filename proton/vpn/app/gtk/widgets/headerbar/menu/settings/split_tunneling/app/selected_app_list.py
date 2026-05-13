@@ -21,6 +21,7 @@ from __future__ import annotations
 from typing import Optional
 from gi.repository import Gtk, GObject
 
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data_structures \
     import AppRowWithRemoveButton, AppData
 
@@ -111,7 +112,7 @@ class SelectedAppList(Gtk.ScrolledWindow):
 
     def _generate_app_row(self, app_data: AppData) -> AppRowWithRemoveButton:
         app_row = AppRowWithRemoveButton.build(app_data)
-        app_row.connect("remove-app", self._remove_app)
+        safe_signal_connect(app_row, "remove-app", self._remove_app)
         return app_row
 
     @GObject.Signal(name="app-removed", arg_types=(object,))

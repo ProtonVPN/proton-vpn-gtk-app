@@ -226,11 +226,11 @@ class TestComboboxWidget:
     def test_widget_callback_is_received_with_expected_values_when_passing_a_custom_callback(self):
         control_bool_val = "1"
 
-        def test_callback(combobox: "Gtk.ComboBoxText", _: ComboboxWidget):
+        def test_callback(combobox: "Gtk.ComboBoxText", _: ComboboxWidget, control=control_bool_val):
             model = combobox.get_model()
             treeiter = combobox.get_active_iter()
             value = model[treeiter][1]
-            assert control_bool_val == value
+            assert control == value
 
         cw = ComboboxWidget(
             controller=Mock(),
@@ -330,6 +330,10 @@ class TestBetaTag:
 class TestPauseCallback:
     OPTIONS = [("0", "Zero"), ("1", "One"), ("2", "Two")]
 
+    def setup_method(self):
+        """Reset state before each test method."""
+        self.call_count = 0
+
     def _make_widget(self, callback):
         controller = Mock()
         controller.get_setting_attr.return_value = "0"
@@ -342,30 +346,21 @@ class TestPauseCallback:
             combobox_options=self.OPTIONS,
             callback=callback,
         )
+    
+    def _on_change(self, _combobox):
+        self.call_count += 1
 
     def test_callback_not_fired_while_paused(self):
-        call_count = 0
-
-        def on_change(_combobox, _widget):
-            nonlocal call_count
-            call_count += 1
-
-        cw = self._make_widget(on_change)
+        cw = self._make_widget(self._on_change)
         with cw.pause_callback():
             cw.combobox.set_active_id("1")
 
-        assert call_count == 0
+        assert self.call_count == 0
 
     def test_callback_fires_normally_after_context_exits(self):
-        call_count = 0
-
-        def on_change(_combobox, _widget):
-            nonlocal call_count
-            call_count += 1
-
-        cw = self._make_widget(on_change)
+        cw = self._make_widget(self._on_change)
         with cw.pause_callback():
             pass
         cw.combobox.set_active_id("1")
 
-        assert call_count == 1
+        assert self.call_count == 1

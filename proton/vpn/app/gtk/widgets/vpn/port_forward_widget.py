@@ -165,10 +165,25 @@ class PortForwardWidget(Gtk.Box):
             self._copied_popover.unparent()
             self._copied_popover = None
 
-        for source_id in self._pending_sources:
-            GLib.source_remove(source_id)
-            self._pending_sources.clear()
+        self._cancel_pending_popdowns()
+
         Gtk.Box.do_dispose(self)  # pylint: disable=no-member
+
+    def _cancel_pending_popdowns(self):
+        """Cancel pending popdown timers. Sources that have already fired
+        and self-removed are skipped."""
+        default_context = GLib.MainContext.default()
+        for source_id in self._pending_sources:
+            if default_context.find_source_by_id(source_id) is not None:
+                GLib.source_remove(source_id)
+        self._pending_sources.clear()
+
+    def _on_popdown_timer(self) -> bool:
+        """Hide the popover and remove ourselves from the pending list.
+        Returning ``False`` tells GLib to remove this timer source."""
+        self._copied_popover.popdown()
+        self._pending_sources.clear()
+        return False
 
     def _on_button_press(self, _: "PortForwardWidget"):
         port_to_be_copied_to_clipboard = self._port_forward_label.get_label()
@@ -176,11 +191,9 @@ class PortForwardWidget(Gtk.Box):
         self._clipboard.set(value)
         if isinstance(self.get_root(), Gtk.Window):
             self._copied_popover.popup()
-            for source_id in self._pending_sources:
-                GLib.source_remove(source_id)
-            self._pending_sources.clear()
+            self._cancel_pending_popdowns()
             self._pending_sources.append(
-                GLib.timeout_add(1500, self._copied_popover.popdown)
+                GLib.timeout_add(1500, self._on_popdown_timer)
             )
 
     def click_copy_button(self):

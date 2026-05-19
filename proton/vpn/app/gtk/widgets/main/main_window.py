@@ -42,6 +42,7 @@ from proton.vpn.session.dataclasses import NPSSurveyResponse
 logger = logging.getLogger(__name__)
 
 
+# pylint: disable=too-many-instance-attributes
 class MainWindow(Gtk.ApplicationWindow):
     """Main window."""
 
@@ -63,6 +64,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._controller = controller
         self._close_window_handler_id: Optional[int] = None
         self._shortcut_controller: Optional[Gtk.ShortcutController] = None
+        self._nps_modal: Optional[NPSSurveyModal] = None
 
         self._configure_window()
 
@@ -237,10 +239,14 @@ class MainWindow(Gtk.ApplicationWindow):
         )
 
     def _show_nps_survey(self):
-        nps_modal = self.create_nps_survey_modal()
-        nps_modal.set_transient_for(self)
-        nps_modal.show()
+        self._nps_modal = self.create_nps_survey_modal()
+        self._nps_modal.set_transient_for(self)
+        safe_signal_connect(self._nps_modal, "unrealize", self._on_nps_modal_unrealize)
+        self._nps_modal.show()
         return GLib.SOURCE_REMOVE
+
+    def _on_nps_modal_unrealize(self, _):
+        self._nps_modal = None
 
     def _on_nps_submission_result(self, future: Future):
         try:

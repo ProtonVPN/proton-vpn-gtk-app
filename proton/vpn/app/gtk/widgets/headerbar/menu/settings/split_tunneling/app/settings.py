@@ -77,6 +77,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         self._mode_label = SettingName("")
         self._app_count_label = SettingName("")
         self._add_button = self._create_add_button()
+        self._add_app_window: Optional[AppSelectionWindow] = None
 
         mode_and_app_count_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         mode_and_app_count_box.set_halign(Gtk.Align.START)
@@ -107,7 +108,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         return button
 
     def _on_clicked_add(self, _: Gtk.Button):
-        add_app_window = AppSelectionWindow(
+        self._add_app_window = AppSelectionWindow(
             title=self._window_title,
             controller=self._controller,
             stored_apps=self._stored_apps,
@@ -115,9 +116,15 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         )
 
         safe_signal_connect(
-            add_app_window, "app-selection-completed", self._on_app_selection_completed
+            self._add_app_window, "app-selection-completed", self._on_app_selection_completed
         )
-        add_app_window.present()
+        safe_signal_connect(
+            self._add_app_window, "unrealize", self._on_add_app_window_unrealize
+        )
+        self._add_app_window.present()
+
+    def _on_add_app_window_unrealize(self, _):
+        self._add_app_window = None
 
     @property
     def _window_title(self) -> str:

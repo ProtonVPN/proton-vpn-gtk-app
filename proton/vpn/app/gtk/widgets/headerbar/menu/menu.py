@@ -90,6 +90,8 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self.append_item(Gio.MenuItem.new("Quit", "win.quit"))
 
         self._settings_window = None
+        self._bug_dialog = None
+        self._release_notes = None
         self._dialog_callback = None
 
         self._setup_actions()
@@ -161,10 +163,14 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         )
 
     def _on_report_an_issue_clicked(self, *_):
-        bug_dialog = BugReportDialog(self._controller, self._main_window)
-        bug_dialog.set_transient_for(self._main_window)
-        bug_dialog.set_modal(True)
-        bug_dialog.present()
+        self._bug_dialog = BugReportDialog(self._controller, self._main_window)
+        self._bug_dialog.set_transient_for(self._main_window)
+        self._bug_dialog.set_modal(True)
+        safe_signal_connect(self._bug_dialog, "unrealize", self._on_bug_dialog_unrealize)
+        self._bug_dialog.present()
+
+    def _on_bug_dialog_unrealize(self, _):
+        self._bug_dialog = None
 
     def _on_settings_clicked(self,  *_):
         self._settings_window = SettingsWindow(
@@ -179,9 +185,13 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self._settings_window = None
 
     def _on_release_notes_clicked(self,  *_):
-        release_notes = ReleaseNotesDialog()
-        release_notes.set_transient_for(self._main_window)
-        release_notes.present()
+        self._release_notes = ReleaseNotesDialog()
+        self._release_notes.set_transient_for(self._main_window)
+        safe_signal_connect(self._release_notes, "unrealize", self._on_release_notes_unrealize)
+        self._release_notes.present()
+
+    def _on_release_notes_unrealize(self, _):
+        self._release_notes = None
 
     def _on_about_clicked(self, *_):
         about_dialog = AboutDialog()

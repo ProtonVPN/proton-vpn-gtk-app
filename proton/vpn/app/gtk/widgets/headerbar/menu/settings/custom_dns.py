@@ -224,6 +224,7 @@ class CustomDNSWidget(ToggleWidget):
         self.gtk = gtk or Gtk
         self._controller = controller
         self.revealer: Optional[Gtk.Revealer] = None
+        self._custom_dns_manager: Optional[CustomDNSManager] = None
         self._settings_window = settings_window
         self._conflict_feature_settings = None
 
@@ -243,8 +244,8 @@ class CustomDNSWidget(ToggleWidget):
         self.revealer.set_reveal_child(self.get_setting())
 
     def _build_revealer_container(self) -> Gtk.Box:
-        revealer_container = CustomDNSManager(self._controller)
-        return revealer_container
+        self._custom_dns_manager = CustomDNSManager(self._controller)
+        return self._custom_dns_manager
 
     def _on_switch_button_toggle(self, _, new_value: bool, __):
         self.revealer.set_reveal_child(new_value)

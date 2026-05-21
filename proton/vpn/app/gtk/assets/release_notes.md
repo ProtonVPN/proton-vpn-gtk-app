@@ -1,5 +1,8 @@
 
-## What's new (4.16.3)
+## What's new (4.16.4)
+- Minor bug fixes.
+
+## 4.16.3
 - Minor bug fixes.
 
 ## 4.16.2

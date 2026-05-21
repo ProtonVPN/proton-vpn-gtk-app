@@ -1,23 +1,11 @@
-version: 4.16.4rc3
+version: 4.16.4
 time: 2026/05/19 08:33
 author: Richard Paterson
 email: richard.paterson@proton.ch
 description:
-- "fix: Repair broken signals and port forwarding popover removal warning"
----
-version: 4.16.4rc2
-time: 2026/05/13 13:12
-author: Richard Paterson
-email: richard.paterson@proton.ch
-description:
-- "fix: Migrate to new signal connection system to mitigate leaks"
----
-version: 4.16.4rc1
-time: 2026/05/12 15:38
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-description:
-- "fix: red fonts on connection error"
+- "fix: Repair broken signals and port forwarding popover removal warning (Richard Paterson)"
+- "fix: Migrate to new signal connection system to mitigate leaks (Richard Paterson)"
+- "fix: Red fonts on connection error (Pep Llaneras)"
 ---
 version: 4.16.3
 time: 2026/05/06 09:25

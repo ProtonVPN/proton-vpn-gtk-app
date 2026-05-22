@@ -26,7 +26,6 @@ setup(
     ],
     extras_require={
         "development": [
-            "proton-core-internal",
             "proton-keyring-linux",
             "behave",
             "pyotp",

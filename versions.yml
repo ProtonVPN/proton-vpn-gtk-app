@@ -1,3 +1,10 @@
+version: 4.16.5rc1
+time: 2026/05/22 10:40
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
+description:
+- "fix: Remove proton-core-internal dependency"
+---
 version: 4.16.4
 time: 2026/05/19 08:33
 author: Richard Paterson

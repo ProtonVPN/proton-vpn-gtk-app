@@ -1,16 +1,10 @@
-version: 4.16.5rc2
+version: 4.16.5
 time: 2026/05/25 07:50
 author: Elena Švilpė
 email: elena.svilpe@proton.ch
 description:
-- "fix: [VPNLINUX-1437] add error handling for certificate not yet valid"
----
-version: 4.16.5rc1
-time: 2026/05/22 10:40
-author: Pep Llaneras
-email: josep.llaneras@proton.ch
-description:
-- "fix: Remove proton-core-internal dependency"
+- "fix: add error handling for certificate not yet valid (Elena Švilpė)"
+- "fix: Remove proton-core-internal dependency (Pep Llaneras)"
 ---
 version: 4.16.4
 time: 2026/05/19 08:33

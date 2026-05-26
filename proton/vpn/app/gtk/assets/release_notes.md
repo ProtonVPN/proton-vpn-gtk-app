@@ -1,5 +1,7 @@
+## What's new (4.16.5)
+- Minor stability improvements and development dependency cleanup.
 
-## What's new (4.16.4)
+## 4.16.4
 - Minor bug fixes.
 
 ## 4.16.3

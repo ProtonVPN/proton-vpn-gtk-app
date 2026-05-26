@@ -24,6 +24,7 @@ from types import SimpleNamespace
 import pytest
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
     ProtonAPIAuthenticationNeeded, ProtonAPIMissingScopeError
+from proton.vpn.connection.exceptions import NotYetValidCertificateError
 
 from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
@@ -215,3 +216,17 @@ def test_handle_exception_logs_user_out_and_shows_missing_scope_dialog_on_proton
 
     main_widget_mock.logout.assert_called_once()
     main_widget_mock.notifications.show_error_dialog.assert_called_once()
+
+def test_not_yet_valid_certificate_error_shows_dialog():
+    main_widget_mock = Mock(MainWidget)
+    exception_handler = ExceptionHandler(main_widget=main_widget_mock)
+    exc_value = NotYetValidCertificateError("Test certificate not valid yet")
+
+    exception_handler.handle_exception(
+        type(exc_value), exc_value, None
+    )
+    
+    main_widget_mock.notifications.show_error_dialog.assert_called_once_with(
+        title=ExceptionHandler.TIME_OUT_OF_SYNC_ERROR_TITLE,
+        message=ExceptionHandler.TIME_OUT_OF_SYNC_ERROR_MESSAGE
+    )

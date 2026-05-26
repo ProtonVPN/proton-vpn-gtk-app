@@ -28,7 +28,7 @@ from proton.vpn.core.refresher import VPNDataRefresher
 from proton.vpn import logging
 from proton.vpn.connection import states, VPNConnection, events
 from proton.vpn.connection.exceptions import VPNConnectionError, \
-    AuthenticationError, HardJailedTwoFAError
+    AuthenticationError, HardJailedTwoFAError, NotYetValidCertificateError
 from proton.vpn.core.vpnconnector import VPNConnector
 
 from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonitor
@@ -155,6 +155,11 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
             "Two factor authentication required to reconnect."
         )
 
+    def _on_not_yet_valid_certificate(self):
+        raise NotYetValidCertificateError(
+            "The certificate is not valid yet."
+        )
+
     def _on_session_unlocked(self):
         """
         Callback called by the session monitor once the user session has been
@@ -204,6 +209,10 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
 
         if isinstance(event, events.TwoFARequired):
             GLib.idle_add(self._on_two_fa_required)
+            return
+
+        if isinstance(event, events.NotYetValidCertificate):
+            GLib.idle_add(self._on_not_yet_valid_certificate)
             return
 
         if not self.is_connection_error_fatal:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses

@@ -25,7 +25,8 @@ from typing import TYPE_CHECKING, Optional
 import gi
 
 from proton.vpn.app.gtk.widgets.main.notifications import DialogButton
-from proton.vpn.connection.exceptions import AuthenticationError, HardJailedTwoFAError
+from proton.vpn.connection.exceptions import AuthenticationError, \
+    HardJailedTwoFAError, NotYetValidCertificateError
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
     ProtonAPIAuthenticationNeeded, ProtonAPIMissingScopeError
 from proton.vpn.session.exceptions import ServerNotFoundError
@@ -62,6 +63,12 @@ class ExceptionHandler:
         "You are connected to the VPN, but all traffic is blocked.\nYou need to"
         " go to the authentication page provided by security and authenticate"
         " with your hardware key.\nAfter that, the traffic will be enabled."
+    )
+    TIME_OUT_OF_SYNC_ERROR_TITLE = "Update system clock"
+    TIME_OUT_OF_SYNC_ERROR_MESSAGE = (
+        "Looks like your system clock is out of sync.\n"
+        "This may cause issues when connecting to VPN.\n"
+        "Update your system time and try to connect again."
     )
 
     def __init__(
@@ -138,6 +145,8 @@ class ExceptionHandler:
             self._on_vpn_authentication_error(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, HardJailedTwoFAError):
             self._on_hard_jailed_2fa_error(exc_type, exc_value, exc_traceback)
+        elif isinstance(exc_value, NotYetValidCertificateError):
+            self._on_certificate_not_yet_valid_error(exc_type, exc_value, exc_traceback)
         elif isinstance(exc_value, OSError) and exc_value.errno == NO_SPACE_LEFT_ON_DEVICE_ERRNO:
             self._on_no_space_left_on_device(exc_type, exc_value, exc_traceback)
         elif issubclass(exc_type, AssertionError):
@@ -249,6 +258,19 @@ class ExceptionHandler:
             self.main_widget.notifications.show_error_dialog(
                 title=self.VPN_HARD_JAILED_2FA_ERROR_TITLE,
                 message=self.VPN_HARD_JAILED_2FA_ERROR_MESSAGE
+            )
+
+        logger.error(
+            exc_value,
+            category="APP", event="ERROR",
+            exc_info=(exc_type, exc_value, exc_traceback)
+        )
+
+    def _on_certificate_not_yet_valid_error(self, exc_type, exc_value, exc_traceback):
+        if self.main_widget:
+            self.main_widget.notifications.show_error_dialog(
+                title=self.TIME_OUT_OF_SYNC_ERROR_TITLE,
+                message=self.TIME_OUT_OF_SYNC_ERROR_MESSAGE
             )
 
         logger.error(

@@ -27,6 +27,7 @@ from proton.vpn import logging
 logger = logging.getLogger(__name__)
 
 WIREGUARD_PROTOCOL = "wireguard"
+PROTUN_PROTOCOL_PREFIX = "protun-"
 
 SPLIT_TUNNEL_CONFLICT_LABEL = "Enable split tunneling?"
 SPLIT_TUNNEL_PROTOCOL_CONFLICT = "•  This will automatically set your "\
@@ -38,6 +39,11 @@ KILLSWITCH_CONFLICT = "•  This will disable split tunneling."
 
 PROTOCOL_CONFLICT_LABEL = "Disable WireGuard?"
 PROTOCOL_CONFLICT = "•  This will disable split tunneling."
+
+
+def _supports_split_tunneling(protocol: str):
+    return (protocol.startswith(PROTUN_PROTOCOL_PREFIX)
+            or protocol == WIREGUARD_PROTOCOL)
 
 
 @dataclass
@@ -75,7 +81,7 @@ class Conflicts:
         if setting_type == "settings":
             if setting == "features.split_tunneling.enabled" and value is True:
                 label = SPLIT_TUNNEL_CONFLICT_LABEL
-                if settings.protocol != WIREGUARD_PROTOCOL:
+                if not _supports_split_tunneling(settings.protocol):
                     msg.append(SPLIT_TUNNEL_PROTOCOL_CONFLICT)
                 if settings.killswitch != 0:
                     msg.append(SPLIT_TUNNEL_KILLSWITCH_CONFLICT)
@@ -85,7 +91,7 @@ class Conflicts:
                 if settings.features.split_tunneling.enabled:
                     msg.append(KILLSWITCH_CONFLICT)
 
-            if setting == "protocol" and value != WIREGUARD_PROTOCOL:
+            if setting == "protocol" and (not _supports_split_tunneling(value)):
                 label = PROTOCOL_CONFLICT_LABEL
                 if settings.features.split_tunneling.enabled:
                     msg.append(PROTOCOL_CONFLICT)
@@ -109,7 +115,8 @@ class Conflicts:
         # Split tunnelling conflicts
         if setting_type == "settings":
             if setting == "features.split_tunneling.enabled" and value is True:
-                settings.protocol = WIREGUARD_PROTOCOL
+                if not _supports_split_tunneling(settings.protocol):
+                    settings.protocol = WIREGUARD_PROTOCOL
                 settings.killswitch = 0
 
             # Kill switch conflicts
@@ -117,7 +124,7 @@ class Conflicts:
                 settings.features.split_tunneling.enabled = False
 
             # Protocol
-            if setting == "protocol" and value != WIREGUARD_PROTOCOL:
+            if setting == "protocol" and (not _supports_split_tunneling(value)):
                 settings.features.split_tunneling.enabled = False
 
         return settings  # No conflicts for now, but can be extended in the future.

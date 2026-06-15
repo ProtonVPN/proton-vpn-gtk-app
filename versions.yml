@@ -1,3 +1,10 @@
+version: 4.16.6
+time: 2026/06/15 09:15
+author: Luke Titley
+email: luke.titley@proton.ch
+description:
+- "feat: Allow split tunneling for protun"
+---
 version: 4.16.5
 time: 2026/05/25 07:50
 author: Elena Švilpė

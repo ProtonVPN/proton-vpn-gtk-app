@@ -22,7 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
 
-from proton.vpn.app.gtk.app import App
+from proton.vpn.app.gtk.app import App, demo_requested
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
@@ -30,6 +30,11 @@ from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 
 def main():
     """Runs the app."""
+
+    if demo_requested():
+        # Demo mode renders only mocked screens. no backend required
+        with ExceptionHandler():
+            sys.exit(App(controller=None).run(sys.argv))
 
     with AsyncExecutor() as executor, ExceptionHandler() as exception_handler:
         controller = Controller.get(executor, exception_handler)

@@ -1,0 +1,8 @@
+[MAIN]
+# The demo package (proton.vpn.app.gtk.demo) is a dev-only visual-check tool
+# deliberately excluded from the built package (see setup.py), so pylint can't
+# resolve it against the *installed* package.
+# Put the repo root on the path so demo (and the rest of proton.vpn.app) resolve
+# from source, without packaging it. Sibling proton.vpn.* packages (e.g.
+# connection) still resolve from site-packages via namespace-package merging.
+init-hook=import sys; sys.path.insert(0, ".")

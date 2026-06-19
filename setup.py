@@ -39,7 +39,11 @@ setup(
             "PyYAML"
         ]
     },
-    packages=find_namespace_packages(include=["proton.vpn.app.*"]),
+    packages=find_namespace_packages(
+        include=["proton.vpn.app.*"],
+        # The demo package is a development-only tool
+        exclude=["proton.vpn.app.gtk.demo", "proton.vpn.app.gtk.demo.*"],
+    ),
     include_package_data=True,
     python_requires=">=3.9",
     license="GPLv3",

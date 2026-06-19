@@ -20,8 +20,9 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import sys
 from typing import Any, Optional
-from gi.repository import GObject, Gtk, Gdk, GLib
+from gi.repository import GObject, Gtk, Gdk, GLib, Gio
 
 from proton.vpn import logging
 
@@ -32,6 +33,23 @@ from proton.vpn.app.gtk.util import APPLICATION_ID, log_proton_package_versions
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 
 logger = logging.getLogger(__name__)
+
+# Return values for GApplication's handle-local-options (see
+# do_handle_local_options): a negative value continues normal startup, 0 means
+# handled locally and exit successfully, and a positive value exits with that
+# value as the error code.
+CONTINUE_STARTUP = -1
+EXIT_SUCCESS = 0
+EXIT_FAILURE = 1
+
+
+def demo_requested(argv: Optional[list[str]] = None) -> bool:
+    """True if --demo/--demo-list is in argv (the command line by default)."""
+    argv = sys.argv if argv is None else argv
+    return any(
+        arg in ("--demo", "--demo-list") or arg.startswith("--demo=")
+        for arg in argv
+    )
 
 
 class App(Gtk.Application):
@@ -50,17 +68,33 @@ class App(Gtk.Application):
      - It allows desktop shell integration by exporting actions and menus.
     """
     def __init__(
-            self,
-            controller: Controller
+        self,
+        controller: Optional[Controller],
+        is_demo: Optional[bool] = None,
     ):
-        super().__init__(application_id=APPLICATION_ID)
-        logger.info(f"{self=}", category="APP", event="PROCESS_START")
-        log_proton_package_versions()
+        # Caller may inject is_demo (e.g. tests); otherwise read the command line.
+        is_demo = demo_requested() if is_demo is None else is_demo
+
+        flags = getattr(
+            Gio.ApplicationFlags, "DEFAULT_FLAGS", Gio.ApplicationFlags.FLAGS_NONE
+        )
+        if is_demo:
+            # avoid attaching to existing application instance in demo mode
+            flags |= Gio.ApplicationFlags.NON_UNIQUE
+
+        super().__init__(application_id=APPLICATION_ID, flags=flags)
+        if not is_demo:
+            # Demo mode is a visual-check tool; skip normal startup logging and
+            # the package-version listing.
+            logger.info(f"{self=}", category="APP", event="PROCESS_START")
+            log_proton_package_versions()
+
         self._controller = controller
         self.window: Optional[MainWindow] = None
         self._tray_indicator = None
         self._signal_connect_queue: list[Any] = []
         self._start_minimized_from_cli = False
+        self.demo_screen: Optional[str] = None
         self.add_options()
 
     def do_startup(self):  # pylint: disable=arguments-differ
@@ -85,6 +119,14 @@ class App(Gtk.Application):
         Method called by Gtk.Application when the default first window should
         be shown to the user.
         """
+        if self.demo_screen:
+            # Demo mode: show the requested screen instead of the main window.
+            # Demo discovery already ran in do_handle_local_options. Imported
+            # lazily so a build without the demo package still runs.
+            from proton.vpn.app.gtk.demo import launcher  # pylint: disable=import-outside-toplevel
+            launcher.show(self, self.demo_screen)
+            return
+
         if not self.window:
             self.window = MainWindow(self, self._controller)
             # Windows are associated with the application like this.
@@ -108,14 +150,75 @@ class App(Gtk.Application):
             Zero: Stop without error
             Any positive number: Stop with the number as error code
         """
+        if options.contains("demo-list"):
+            return self.handle_demo_list()
+
+        demo = options.lookup_value("demo", GLib.VariantType.new("s"))
+        if demo is not None:
+            return self.handle_demo(demo.get_string())
+
         if options.contains("version"):
             print(self._controller.app_version)
-            return 0
+            return EXIT_SUCCESS
 
         if options.contains("start-minimized"):
             self._start_minimized_from_cli = True
 
-        return -1
+        return CONTINUE_STARTUP
+
+    @staticmethod
+    def load_demo():
+        """Import the demo subsystem and run registered demo discovery.
+
+        Returns the (registry, launcher) modules, or None if demo mode is not
+        available in this build (the demo package is excluded from packaging).
+        """
+        try:
+            # Lazy + optional: the demo package is excluded from the build, so a
+            # shipped install hits the ImportError path below.
+            # pylint: disable=import-outside-toplevel
+            from proton.vpn.app.gtk.demo import discovery, registry, launcher
+        except ImportError:
+            print("Demo mode is not available in this build.", file=sys.stderr)
+            return None
+        discovery.load_demo_screens()
+        return registry, launcher
+
+    def handle_demo_list(self) -> int:
+        """
+        Handles --demo-list option.
+        Prints the registered demo screen names.
+        """
+        loaded = self.load_demo()
+        if loaded is None:
+            return EXIT_FAILURE
+
+        demo_registry, _ = loaded
+        for name in demo_registry.all_demo_screen_names():
+            print(name)
+
+        return EXIT_SUCCESS
+
+    def handle_demo(self, screen_name: str) -> int:
+        """
+        Handles --demo option.
+        Validate the requested demo screen and prepare for do_activate.
+        """
+        loaded = self.load_demo()
+        if loaded is None:
+            return EXIT_FAILURE
+        demo_registry, _ = loaded
+        available_demo_screens = demo_registry.all_demo_screen_names()
+        if screen_name not in available_demo_screens:
+            available = ", ".join(available_demo_screens)
+            print(
+                f"Unknown demo screen '{screen_name}'. Available: {available}",
+                file=sys.stderr,
+            )
+            return EXIT_FAILURE
+
+        self.demo_screen = screen_name
+        return CONTINUE_STARTUP  # Continue startup; do_activate shows the demo screen.
 
     @property
     def error_dialog(self) -> Gtk.MessageDialog:
@@ -152,6 +255,23 @@ class App(Gtk.Application):
             GLib.OptionFlags(0),
             GLib.OptionArg.NONE,
             "Display the application's version"
+        )
+
+        self.add_main_option(
+            "demo",
+            0,
+            GLib.OptionFlags(0),
+            GLib.OptionArg.STRING,
+            "Render one demo screen for visual checks (use --demo-list for names)",
+            "SCREEN"
+        )
+
+        self.add_main_option(
+            "demo-list",
+            0,
+            GLib.OptionFlags(0),
+            GLib.OptionArg.NONE,
+            "List the available demo screen names and exit"
         )
 
     @property

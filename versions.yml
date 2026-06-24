@@ -1,3 +1,10 @@
+version: 4.17.1rc1
+time: 2026/06/23 08:28
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "feat: introduce translation engine"
+---
 version: 4.17.0
 time: 2026/06/15 14:30
 author: Richard Paterson

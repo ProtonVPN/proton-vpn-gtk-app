@@ -1,18 +1,18 @@
-version: 4.17.1rc1
+version: 4.17.1rc3
 time: 2026/06/23 08:28
 author: alangens
 email: axel.langenskiold@proton.ch
 description:
 - "feat: introduce translation engine"
 ---
-version: 4.17.0
+version: 4.17.1rc2
 time: 2026/06/15 14:30
 author: Richard Paterson
 email: richard.paterson@proton.ch
 description:
 - "feat: Add widget demo framework"
 ---
-version: 4.16.6
+version: 4.17.1rc1
 time: 2026/06/15 09:15
 author: Luke Titley
 email: luke.titley@proton.ch

@@ -26,6 +26,7 @@ from gi.repository import GObject, Gtk
 
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import _
 from proton.vpn.app.gtk.util import connect_once
 from proton.vpn.app.gtk.utils.glib import add_done_callback
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
@@ -41,8 +42,10 @@ logger = logging.getLogger(__name__)
 
 class TwoFactorAuthStack(Gtk.Stack):
     """Stack used to display the 2FA methods."""
-    AUTHENTICATOR_APP_FORM_TITLE = "Authenticator app"
-    SECURITY_KEY_FORM_TITLE = "Security key"
+    # Tab title for the authenticator-app 2FA method.
+    AUTHENTICATOR_APP_FORM_TITLE = _("Authenticator app")
+    # Tab title for the security-key 2FA method.
+    SECURITY_KEY_FORM_TITLE = _("Security key")
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
@@ -137,12 +140,13 @@ class TwoFactorAuthStack(Gtk.Stack):
     def _on_two_factor_auth_successful(self, _):
         self.emit("two-factor-auth-successful")
 
-    def _on_two_factor_auth_cancelled(self, _):
+    def _on_two_factor_auth_cancelled(self, _form):
         logger.info(
             "2FA cancelled by user, signing out...",
             category="UI", subcategory="LOGIN-2FA", event="CLICK"
         )
-        self._overlay_widget.show_message("Signing out...")
+        # Overlay message shown while signing out after the user cancels 2FA.
+        self._overlay_widget.show_message(_("Signing out..."))
         future = self._controller.logout()
         add_done_callback(future, self._on_logout)
 

@@ -32,6 +32,7 @@ from proton.vpn.session.exceptions import \
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import _
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.logo import SecurityKeyLogo
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import SettingDescription
@@ -42,7 +43,8 @@ from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 
 logger = logging.getLogger(__name__)
 
-LEARN_MORE_LINK = '<a href="https://protonvpn.com/support/#">Learn more</a>'
+# Hyperlink-button leading to support website.
+LEARN_MORE_LINK = '<a href="https://protonvpn.com/support/#">' + _("Learn more") + '</a>'
 
 
 class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
@@ -51,22 +53,34 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
     Once the HOTP code is authenticated,
     it emits the `hotp-auth-successful` signal.
     """
-    DESCRIPTION_LABEL = "Insert the U2F or FIDO key linked to your Proton Account. " \
+    # Instructions shown above the security-key prompt.
+    DESCRIPTION_LABEL = _("Insert the U2F or FIDO key linked to your Proton Account. ") \
         + LEARN_MORE_LINK
-    PIN_CODE_LABEL = "PIN code"
+    # Label above the security-key PIN field.
+    PIN_CODE_LABEL = _("PIN code")
 
-    MULTIPLE_SECURITY_KEYS_FOUND = "Multiple security keys were found. Tap one to select it."
-    PHYSICAL_VERIFICATION_MESSAGE = "If your security key has a button or a gold disc, tap it now."
-    SECURITY_KEY_NOT_FOUND_MESSAGE = "Two-factor authentication failed: No security key detected"
-    INVALID_SECURITY_KEY_MESSAGE = "Two-factor authentication failed: The security key you used " \
-        "is not linked to your Proton Account."
-    FIDO2_NOT_SUPPORTED_MESSAGE = "Two-factor authentication failed. Security key 2FA is not " \
-        "enabled for your account."
-    SECURITY_KEY_PIN_NOT_SET_MESSAGE = "Two-factor authentication failed: " \
-        "Your security key has no PIN set"
-    SECURITY_KEY_PIN_INVALID_MESSAGE = "Two-factor authentication failed: Incorrect PIN"
-    GENERIC_ERROR_MESSAGE = "An unknown error occurred"
-    LOGGING_IN_MESSAGE = "Signing in..."
+    # Overlay message when several security keys are detected.
+    MULTIPLE_SECURITY_KEYS_FOUND = _("Multiple security keys were found. Tap one to select it.")
+    # Overlay message asking the user to physically tap their security key.
+    PHYSICAL_VERIFICATION_MESSAGE = _("If your security key has a button or a gold disc, "
+                                      "tap it now.")
+    # Error shown when no security key is detected.
+    SECURITY_KEY_NOT_FOUND_MESSAGE = _("Two-factor authentication failed: No security key detected")
+    # Error shown when the security key isn't linked to the account.
+    INVALID_SECURITY_KEY_MESSAGE = _("Two-factor authentication failed: The security key you used "
+                                     "is not linked to your Proton Account.")
+    # Error shown when security key 2FA isn't enabled for the account.
+    FIDO2_NOT_SUPPORTED_MESSAGE = _("Two-factor authentication failed. Security key 2FA is not "
+                                    "enabled for your account.")
+    # Error shown when the security key has no PIN set.
+    SECURITY_KEY_PIN_NOT_SET_MESSAGE = _("Two-factor authentication failed: "
+                                         "Your security key has no PIN set")
+    # Error shown when the entered security-key PIN is wrong.
+    SECURITY_KEY_PIN_INVALID_MESSAGE = _("Two-factor authentication failed: Incorrect PIN")
+    # Fallback error for security-key authentication.
+    GENERIC_ERROR_MESSAGE = _("An unknown error occurred")
+    # Shown in the loading overlay after a successful security-key assertion.
+    LOGGING_IN_MESSAGE = _("Signing in...")
 
     def __init__(
             self,
@@ -88,7 +102,8 @@ class SecurityKeyForm(Gtk.Box):  # pylint: disable=R0902
             self._authenticate_button, "clicked", self._on_authenticate_button_clicked
         )
 
-        self._cancel_button = Gtk.Button(label="Cancel")
+        # Button that cancels two-factor authentication.
+        self._cancel_button = Gtk.Button(label=_("Cancel"))
         self._cancel_button.add_css_class("danger")
         safe_signal_connect(self._cancel_button, "clicked", self._on_cancel_button_clicked)
 

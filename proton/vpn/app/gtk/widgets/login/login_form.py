@@ -28,6 +28,7 @@ from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import _
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
 from proton.vpn.app.gtk.widgets.login.password_entry import PasswordEntry
@@ -45,9 +46,12 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
     TwoFactorAuthForm.
 
     """
-    LOGGING_IN_MESSAGE = "Signing in..."
-    INVALID_USERNAME_MESSAGE = "Invalid username."
-    INCORRECT_CREDENTIALS_MESSAGE = "Incorrect credentials."
+    # Message displayed after pressing "Sign In" button.
+    LOGGING_IN_MESSAGE = _("Signing in...")
+    # Error message displayed if username is invalid.
+    INVALID_USERNAME_MESSAGE = _("Invalid username.")
+    # Error message displayed if credentials are invalid.
+    INCORRECT_CREDENTIALS_MESSAGE = _("Incorrect credentials.")
 
     def __init__(
         self,
@@ -67,15 +71,18 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self.append(ProtonVPNLogo())
 
         self._username_entry = Gtk.Entry()
-        self._username_entry.set_placeholder_text("Username")
+        # Placeholder for username textfield.
+        self._username_entry.set_placeholder_text(_("Username"))
         self._username_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
         self.append(self._username_entry)
 
         self._password_entry = PasswordEntry()
-        self._password_entry.set_placeholder_text("Password")
+        # Placeholder for password textfield.
+        self._password_entry.set_placeholder_text(_("Password"))
         self.append(self._password_entry)
 
-        self._login_button = Gtk.Button(label="Sign in")
+        # Button to start sign in workflow.
+        self._login_button = Gtk.Button(label=_("Sign in"))
         safe_signal_connect(self._login_button, "clicked", self._on_login_button_clicked)
         self._login_button.add_css_class("primary")
         self._login_button.add_css_class("spaced")
@@ -224,14 +231,16 @@ class LoginLinks(Gtk.Box):
         self.set_vexpand(True)
         self.set_valign(Gtk.Align.END)
         create_account_link = Gtk.LinkButton(
-            label="Create Account",
+            # Button leading to Proton Sign Up website
+            label=_("Create Account"),
             uri="https://account.protonvpn.com/signup?ref=linux"
         )
         create_account_link.set_halign(Gtk.Align.START)
         create_account_link.set_hexpand(True)
         self.append(create_account_link)
         help_link = Gtk.LinkButton(
-            label="Need Help?",
+            # Button leading to Proton support website
+            label=_("Need Help?"),
             uri="https://protonvpn.com/support"
         )
         help_link.set_halign(Gtk.Align.END)

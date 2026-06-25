@@ -1,3 +1,10 @@
+version: 4.17.1rc4
+time: 2026/06/24 08:39
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "feat: localize log in view"
+---
 version: 4.17.1rc3
 time: 2026/06/23 08:28
 author: alangens

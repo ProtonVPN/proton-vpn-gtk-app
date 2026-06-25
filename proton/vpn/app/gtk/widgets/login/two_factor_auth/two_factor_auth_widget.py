@@ -24,6 +24,7 @@ from gi.repository import Gtk, GObject
 from proton.vpn import logging
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import _
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.logo import TwoFactorAuthProtonVPNLogo
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
@@ -36,7 +37,8 @@ logger = logging.getLogger(__name__)
 
 class TwoFactorAuthWidget(Gtk.Box):
     """Widget used to display the 2FA methods."""
-    TWO_FACTOR_AUTH_LABEL = "Two-factor authentication"
+    # Heading of the two-factor authentication screen.
+    TWO_FACTOR_AUTH_LABEL = _("Two-factor authentication")
 
     def __init__(
         self,

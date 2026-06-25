@@ -78,22 +78,3 @@ def ngettext(
         The plural form of the message.
     """
     return translation.ngettext(singular, plural, n)
-
-
-# pylint: disable=invalid-name
-def N_(message: str) -> str:
-    """
-    Mark the message for extraction without translating, no-op marker.
-    This should be used for URIs, email adresses, etc. Example:
-
-    ```
-    help_link = Gtk.LinkButton(
-        label=_("Need Help?"),
-        uri=N_("https://protonvpn.com/support")
-    )
-    ```
-
-    :param message: the source text to mark for translation.
-    :return: The message unchanged.
-    """
-    return message

@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, Optional
 from gi.repository import GObject
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.translator import _
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 
@@ -33,7 +34,8 @@ if TYPE_CHECKING:
 
 class KillSwitchLabel(Gtk.Label):
     """Label objet that already contains some styling and pre-configurations"""
-    LABEL_TEXT = "Kill switch is blocking any outgoing connections."
+    # Label showed to user informing them of how kill switch works.
+    LABEL_TEXT = _("Kill switch is blocking any outgoing connections.")
 
     def __init__(self):
         super().__init__(label=KillSwitchLabel.LABEL_TEXT)
@@ -45,7 +47,8 @@ class KillSwitchLabel(Gtk.Label):
 
 class DisableKillSwitchButton(Gtk.Button):
     """Custom button that already has styling added to it."""
-    BUTTON_LABEL = "Disable"
+    # Button disabling the kill switch
+    BUTTON_LABEL = _("Disable")
 
     def __init__(self):
         super().__init__(label=DisableKillSwitchButton.BUTTON_LABEL)
@@ -57,10 +60,12 @@ class DisableKillSwitchWidget(Gtk.Revealer):
     """This is a revealer that displays a short informational message
     and a button it disable the kill switch.
     """
-    DIALOG_TITLE = "Kill Switch Enabled"
-    DIALOG_MESSAGE = "Permanent Kill Switch is blocking any outgoing connections "\
-        "and preventing your IP to be exposed.\n\n"\
-        "Do you want to disable Kill Switch ?"
+    # Title of pop-up with option to disable kill switch.
+    DIALOG_TITLE = _("Kill Switch Enabled")
+    # Dialog message of pop-up with option to disable kill switch.
+    DIALOG_MESSAGE = _("Permanent Kill Switch is blocking any outgoing connections "
+                       "and preventing your IP to be exposed.\n\n"
+                       "Do you want to disable Kill Switch ?")
 
     def __init__(
         self, main_window: "MainWindow",

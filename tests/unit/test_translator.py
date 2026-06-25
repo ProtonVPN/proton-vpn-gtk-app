@@ -1,6 +1,6 @@
 import gettext
 
-from proton.vpn.app.gtk.translator import _, ngettext, N_, localization_enabled
+from proton.vpn.app.gtk.translator import _, ngettext, localization_enabled
 
 
 class FrenchCatalog(gettext.NullTranslations):
@@ -39,7 +39,3 @@ def test_ngettext_returns_plural_translation_when_count_is_more_than_one():
 
 def test_ngettext_returns_plural_source_when_disabled_and_count_is_more_than_one():
     assert ngettext("server", "servers", 2, gettext.NullTranslations()) == "servers"
-
-
-def test_n_marker_returns_message_unchanged():
-    assert N_("Sign in") == "Sign in"

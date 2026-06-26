@@ -1,3 +1,10 @@
+version: 4.17.1rc5
+time: 2026/06/25 12:52
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "feat: Add GeneratorBot for translations"
+---
 version: 4.17.1rc4
 time: 2026/06/24 08:39
 author: alangens

@@ -10,4 +10,4 @@ venv_testing
 .vscode
 dist/
 package.spec
-po/*.pot
+po/proton-vpn-gtk-app.pot

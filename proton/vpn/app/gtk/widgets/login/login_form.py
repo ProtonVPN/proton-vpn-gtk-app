@@ -25,6 +25,7 @@ from concurrent.futures import Future
 from gi.repository import GLib, GObject
 
 from proton.vpn import logging
+from proton.session.exceptions import ProtonCryptoPasswordTooLongError
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
@@ -48,6 +49,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
     LOGGING_IN_MESSAGE = "Signing in..."
     INVALID_USERNAME_MESSAGE = "Invalid username."
     INCORRECT_CREDENTIALS_MESSAGE = "Incorrect credentials."
+    PASSWORD_TOO_LONG_MESSAGE = "Your password exceeds the 72-byte limit imposed by bcrypt. Please shorten your password and try again."
 
     def __init__(
         self,
@@ -120,6 +122,14 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
     def _on_login_result(self, future: Future):
         try:
             result = future.result()
+        except ProtonCryptoPasswordTooLongError as error:
+            self._notifications.show_error_message(self.PASSWORD_TOO_LONG_MESSAGE)
+            logger.warning(
+                error, category="APP", subcategory="LOGIN", event="RESULT",
+                exc_info=True
+            )
+            self.emit("login-error")
+            return
         except ValueError as error:
             self._notifications.show_error_message(self.INVALID_USERNAME_MESSAGE)
             logger.warning(

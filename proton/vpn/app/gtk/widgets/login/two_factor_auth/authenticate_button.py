@@ -20,10 +20,10 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from gi.repository import Gtk
-from proton.vpn.app.gtk.translator import _
+from proton.vpn.app.gtk.translator import C_
 
 # Button that submits the 2FA code / security-key authentication.
-AUTHENTICATE_BUTTON_LABEL = _("Authenticate")
+AUTHENTICATE_BUTTON_LABEL = C_("button", "Authenticate")
 
 
 class AuthenticateButton(Gtk.Button):

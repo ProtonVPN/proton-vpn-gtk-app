@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, Optional
 from gi.repository import GObject
 
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.translator import _
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 
@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 class KillSwitchLabel(Gtk.Label):
     """Label objet that already contains some styling and pre-configurations"""
     # Label showed to user informing them of how kill switch works.
-    LABEL_TEXT = _("Kill switch is blocking any outgoing connections.")
+    LABEL_TEXT = C_("message", "Kill switch is blocking any outgoing connections.")
 
     def __init__(self):
         super().__init__(label=KillSwitchLabel.LABEL_TEXT)
@@ -48,7 +48,7 @@ class KillSwitchLabel(Gtk.Label):
 class DisableKillSwitchButton(Gtk.Button):
     """Custom button that already has styling added to it."""
     # Button disabling the kill switch
-    BUTTON_LABEL = _("Disable")
+    BUTTON_LABEL = C_("button", "Disable")
 
     def __init__(self):
         super().__init__(label=DisableKillSwitchButton.BUTTON_LABEL)
@@ -61,11 +61,11 @@ class DisableKillSwitchWidget(Gtk.Revealer):
     and a button it disable the kill switch.
     """
     # Title of pop-up with option to disable kill switch.
-    DIALOG_TITLE = _("Kill Switch Enabled")
+    DIALOG_TITLE = C_("title", "Kill Switch Enabled")
     # Dialog message of pop-up with option to disable kill switch.
-    DIALOG_MESSAGE = _("Permanent Kill Switch is blocking any outgoing connections "
-                       "and preventing your IP to be exposed.\n\n"
-                       "Do you want to disable Kill Switch ?")
+    DIALOG_MESSAGE = C_("message", "Permanent Kill Switch is blocking any outgoing connections "
+                        "and preventing your IP to be exposed.\n\n"
+                        "Do you want to disable Kill Switch ?")
 
     def __init__(
         self, main_window: "MainWindow",

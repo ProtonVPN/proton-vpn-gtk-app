@@ -6,3 +6,10 @@ include:
  - project: 'ProtonVPN/Linux/integration/ci-libraries'
    ref: develop
    file: 'develop-pipeline.yml'
+ - component: gitlab.protontech.ch/translations/ci/standard@~latest
+   inputs:
+      stage: l10n
+      projects:
+        - linux-vpn
+      needs_sources:
+        - l10n

@@ -26,7 +26,7 @@ from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.translator import _
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.authenticate_button import AuthenticateButton
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
@@ -41,28 +41,28 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
     is provided, it emits the `two-factor-auth-successful` signal.
     """
     # Label above the code field, prompting for the 6-digit TOTP code.
-    TWOFA_HELP_LABEL = _("6-digit authentication code")
+    TWOFA_HELP_LABEL = C_("label", "6-digit authentication code")
     TWOFA_ENTRY_PLACEHOLDER = "123456"
     TWOFA_ENTRY_LIMIT_CLARIFICATION = ""
 
     # Label above the code field when entering a recovery code.
-    RECOVERY_HELP_LABEL = _("Recovery code")
+    RECOVERY_HELP_LABEL = C_("label", "Recovery code")
     RECOVERY_ENTRY_PLACEHOLDER = "y5d6132f"
     # Note shown under the recovery-code field.
-    RECOVERY_ENTRY_LIMIT_CLARIFICATION = _("Each code can only be used once")
+    RECOVERY_ENTRY_LIMIT_CLARIFICATION = C_("message", "Each code can only be used once")
 
     # Button switching from recovery code back to the authenticator-app code.
-    RECOVERY_TOGGLE_AUTHENICATION_MODE_LABEL = _("Use 6-digit authentication code")
+    RECOVERY_TOGGLE_AUTHENICATION_MODE_LABEL = C_("button", "Use 6-digit authentication code")
     # Button switching from authenticator-app code to recovery code.
-    TWOFA_TOGGLE_AUTHENICATION_MODE_LABEL = _("Use recovery code")
+    TWOFA_TOGGLE_AUTHENICATION_MODE_LABEL = C_("button", "Use recovery code")
 
     TWOFA_REQUIRED_CHARACTERS = 6
     RECOVERY_REQUIRED_CHARACTERS = 8
 
     # Error shown when the entered 2FA code is wrong.
-    INCORRECT_TWOFA_CODE_MESSAGE = _("Incorrect 2FA code.")
+    INCORRECT_TWOFA_CODE_MESSAGE = C_("error", "Incorrect 2FA code.")
     # Message shown while signing in after submitting the 2FA code.
-    LOGGING_IN_MESSAGE = _("Signing in...")
+    LOGGING_IN_MESSAGE = C_("message", "Signing in...")
 
     def __init__(
             self,
@@ -126,7 +126,7 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
         self._button_box.append(self._toggle_authentication_mode_button)
 
         # Button that cancels two-factor authentication.
-        self._cancel_button = Gtk.Button(label=_("Cancel"))
+        self._cancel_button = Gtk.Button(label=C_("button", "Cancel"))
         self._cancel_button.add_css_class("danger")
         safe_signal_connect(self._cancel_button, "clicked", self._on_cancel_button_clicked)
         self._button_box.append(self._cancel_button)

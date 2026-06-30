@@ -42,39 +42,38 @@ def localization_enabled(environ=None) -> bool:
 _translation = _load(localization_enabled())
 
 
-# gettext's conventional name for the translation function is `_`
+# pgettext's conventional name is `C_`
 # pylint: disable=invalid-name
-def _(message: str, translation: gettext.NullTranslations = _translation) -> str:
+def C_(
+    context: str,
+    message: str,
+    translation: gettext.NullTranslations = _translation,
+) -> str:
     """
-    Translate message via the active catalog.
+    Translate message within context via the active catalog.
+    :param context: the msgctxt describing the string's role (e.g. "button").
     :param message: the source text to translate.
-    :return: The translated message, or message if langauge-file not found.
+    :return: The translated message, or message if language-file not found.
     """
-    return translation.gettext(message)
+    return translation.pgettext(context, message)
 
 
-def ngettext(
+def npgettext(
+    context: str,
     singular: str,
     plural: str,
     n: int,
     translation: gettext.NullTranslations = _translation,
 ) -> str:
     """
-    Translate a count-dependent message.
+    Translate a count-dependent message within context.
+    :param context: the msgctxt describing the string's role.
     :param singular: the singular form.
     :param plural: the (English) plural form.
     :param n: the count. Languages may define more than two forms
-    (e.g. one/few/many) and gettext picks the right one, example:
-
-    ```
-    button = Gtk.Button(label=ngettext(
-        "{server_count} server available.",
-        "{server_count} servers available"),
-        server_count
-    )
-    ```
+    (e.g. one/few/many) and gettext picks the right one.
 
     Returns:
         The plural form of the message.
     """
-    return translation.ngettext(singular, plural, n)
+    return translation.npgettext(context, singular, plural, n)

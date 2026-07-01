@@ -1,3 +1,10 @@
+version: 4.17.1rc6
+time: 2026/06/30 12:21
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "feat: Add .pot-gen and check-missing-translations scripts to devtools submodule"
+---
 version: 4.17.1rc5
 time: 2026/06/25 12:52
 author: alangens

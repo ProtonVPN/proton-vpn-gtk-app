@@ -1,3 +1,10 @@
+version: 4.17.1rc7
+time: 2026/07/03 09:53
+author: Aurelien Garroux
+email: aurelien.garroux@proton.ch
+description:
+- "i18n(weekly-mr): Upgrade translations from crowdin (35aec34b)."
+---
 version: 4.17.1rc6
 time: 2026/06/30 12:21
 author: alangens

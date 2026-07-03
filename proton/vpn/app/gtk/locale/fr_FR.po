@@ -1,0 +1,173 @@
+#
+msgid ""
+msgstr ""
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n >= 2);\n"
+
+msgctxt "button"
+msgid "Authenticate"
+msgstr "S'authentifier"
+
+msgctxt "button"
+msgid "Cancel"
+msgstr "Annuler"
+
+msgctxt "button"
+msgid "Create Account"
+msgstr "Créer un compte"
+
+msgctxt "button"
+msgid "Disable"
+msgstr "Désactiver"
+
+msgctxt "button"
+msgid "Need Help?"
+msgstr "Besoin d’aide ?"
+
+msgctxt "button"
+msgid "Sign in"
+msgstr "Se connecter"
+
+msgctxt "button"
+msgid "Use 6-digit authentication code"
+msgstr "Utilisez le code d'authentification à 6 chiffres"
+
+msgctxt "button"
+msgid "Use recovery code"
+msgstr "Utiliser un code de récupération"
+
+msgctxt "error"
+msgid "An unknown error occurred"
+msgstr "Une erreur inconnue s'est produite"
+
+msgctxt "error"
+msgid "Incorrect 2FA code."
+msgstr "Le code 2FA n'est pas correct."
+
+msgctxt "error"
+msgid "Incorrect credentials."
+msgstr "Les identifiants sont incorrects."
+
+msgctxt "error"
+msgid "Invalid username."
+msgstr "Le nom d'utilisateur n'est pas valide."
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed. Security key 2FA is not enabled for your "
+"account."
+msgstr ""
+"L'authentification à deux facteurs n'a pas abouti. La clé de sécurité 2FA "
+"n'est pas activée pour votre compte."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Incorrect PIN"
+msgstr ""
+"L'authentification à deux facteurs n'a pas abouti : code PIN incorrect"
+
+msgctxt "error"
+msgid "Two-factor authentication failed: No security key detected"
+msgstr ""
+"L'authentification à deux facteurs n'a pas abouti : aucune clé de sécurité "
+"n'a été détectée"
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed: The security key you used is not linked to"
+" your Proton Account."
+msgstr ""
+"L'authentification à deux facteurs n'a pas abouti : la clé de sécurité que "
+"vous avez utilisée n'est pas liée à votre compte Proton."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Your security key has no PIN set"
+msgstr ""
+"L'authentification à deux facteurs n'a pas abouti : aucun code PIN n'a été "
+"défini pour votre clé de sécurité"
+
+msgctxt "label"
+msgid "6-digit authentication code"
+msgstr "Code d'authentification à 6 chiffres"
+
+msgctxt "label"
+msgid "PIN code"
+msgstr "Code PIN"
+
+msgctxt "label"
+msgid "Recovery code"
+msgstr "Code de récupération"
+
+msgctxt "link"
+msgid "Learn more"
+msgstr "En savoir plus"
+
+msgctxt "message"
+msgid "Each code can only be used once"
+msgstr "Chaque code ne peut être utilisé qu'une seule fois"
+
+msgctxt "message"
+msgid "If your security key has a button or a gold disc, tap it now."
+msgstr ""
+"Si votre clé de sécurité comporte un bouton ou un disque doré, appuyez "
+"dessus maintenant."
+
+msgctxt "message"
+msgid "Insert the U2F or FIDO key linked to your Proton Account. "
+msgstr "Insérez la clé U2F ou FIDO liée à votre compte Proton. "
+
+msgctxt "message"
+msgid "Kill switch is blocking any outgoing connections."
+msgstr ""
+"La fonctionnalité Arrêt d'urgence (kill switch) bloque toute connexion "
+"sortante."
+
+msgctxt "message"
+msgid "Multiple security keys were found. Tap one to select it."
+msgstr ""
+"Plusieurs clés de sécurité ont été trouvées. Appuyez sur l'une d'elles pour "
+"la sélectionner."
+
+msgctxt "message"
+msgid ""
+"Permanent Kill Switch is blocking any outgoing connections and preventing your IP to be exposed.\n"
+"\n"
+"Do you want to disable Kill Switch ?"
+msgstr ""
+"L'arrêt d'urgence (kill switch) permanent bloque toutes les connexions sortantes et empêche l'exposition de votre adresse IP.\n"
+"\n"
+"Souhaitez-vous désactiver l'arrêt d'urgence (kill switch) ?"
+
+msgctxt "message"
+msgid "Signing in..."
+msgstr "Connexion en cours..."
+
+msgctxt "message"
+msgid "Signing out..."
+msgstr "Déconnexion en cours..."
+
+msgctxt "placeholder"
+msgid "Password"
+msgstr "Mot de passe"
+
+msgctxt "placeholder"
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+msgctxt "title"
+msgid "Authenticator app"
+msgstr "Application d'authentification"
+
+msgctxt "title"
+msgid "Kill Switch Enabled"
+msgstr "Arrêt d'urgence (kill switch) activé"
+
+msgctxt "title"
+msgid "Security key"
+msgstr "Clé de sécurité"
+
+msgctxt "title"
+msgid "Two-factor authentication"
+msgstr "Authentification à deux facteurs"

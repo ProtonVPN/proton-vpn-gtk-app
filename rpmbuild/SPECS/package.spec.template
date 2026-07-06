@@ -2,8 +2,8 @@
 %define pep_625_name proton_vpn_gtk_app
 %define version {version}
 %define upstream_version {upstream_version}
-%define logo_filename proton-vpn-logo.svg
-%define desktop_entry_filename proton.vpn.app.gtk.desktop
+%define logo_filename com.protonvpn.app.svg
+%define desktop_entry_filename com.protonvpn.app.gtk.desktop
 %define release 1
 
 Prefix: %{{_prefix}}

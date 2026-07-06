@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.protonvpn.app.gtk</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <name>Proton VPN</name>
+  <summary>Official Proton VPN app for Linux desktop</summary>
+
+  <description>
+    <p>
+      Proton VPN is a privacy-focused VPN client for Linux. It lets you securely connect to Proton VPN servers and manage your VPN connection from a native GTK desktop application.
+    </p>
+    <p>
+      Sign in with your Proton account to access server locations, connect and disconnect with one click, and use account features provided by Proton VPN.
+    </p>
+  </description>
+
+  <developer id="com.protonvpn">
+    <name>Proton AG</name>
+  </developer>
+  <update_contact>opensource@proton.me</update_contact>
+
+  <launchable type="desktop-id">com.protonvpn.app.gtk.desktop</launchable>
+
+  <categories>
+    <category>Network</category>
+  </categories>
+
+  <url type="homepage">https://protonvpn.com</url>
+  <url type="bugtracker">https://github.com/ProtonVPN/proton-vpn-gtk-app/issues</url>
+</component>

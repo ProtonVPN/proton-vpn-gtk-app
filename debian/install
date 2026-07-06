@@ -1,2 +1,3 @@
 rpmbuild/SOURCES/com.protonvpn.app.gtk.desktop usr/share/applications/
 rpmbuild/SOURCES/com.protonvpn.app.gtk.svg usr/share/icons/hicolor/scalable/apps
+rpmbuild/SOURCES/com.protonvpn.app.gtk.metainfo.xml usr/share/metainfo/

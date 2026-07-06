@@ -37,7 +37,7 @@ class ProtonVPNLogo(Gtk.Picture):
         self.set_can_shrink(False)
 
         pixbuf = icons.get(
-            Path("com.protonvpn.app.gtk.svg"),
+            Path("proton-vpn-logo.svg"),
             width=self.LOGO_WIDTH,
             preserve_aspect_ratio=True
         )
@@ -59,7 +59,7 @@ class TwoFactorAuthProtonVPNLogo(Gtk.Picture):
         self.set_can_shrink(False)
 
         pixbuf = icons.get(
-            Path("com.protonvpn.app.gtk.svg"),
+            Path("proton-vpn-logo.svg"),
             width=self.LOGO_WIDTH,
             preserve_aspect_ratio=True
         )

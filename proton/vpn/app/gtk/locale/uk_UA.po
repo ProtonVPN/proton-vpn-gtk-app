@@ -1,0 +1,166 @@
+#
+msgid ""
+msgstr ""
+"Language-Team: Ukrainian\n"
+"Language: uk_UA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "button"
+msgid "Authenticate"
+msgstr "Перевірити"
+
+msgctxt "button"
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgctxt "button"
+msgid "Create Account"
+msgstr "Створити обліковий запис"
+
+msgctxt "button"
+msgid "Disable"
+msgstr "Вимкнути"
+
+msgctxt "button"
+msgid "Need Help?"
+msgstr "Потрібна допомога?"
+
+msgctxt "button"
+msgid "Sign in"
+msgstr "Увійти"
+
+msgctxt "button"
+msgid "Use 6-digit authentication code"
+msgstr "Використати 6-значний код перевірки"
+
+msgctxt "button"
+msgid "Use recovery code"
+msgstr "Використати код відновлення"
+
+msgctxt "error"
+msgid "An unknown error occurred"
+msgstr "Сталася невідома помилка"
+
+msgctxt "error"
+msgid "Incorrect 2FA code."
+msgstr "Неправильний код 2ЕП."
+
+msgctxt "error"
+msgid "Incorrect credentials."
+msgstr "Неправильні облікові дані."
+
+msgctxt "error"
+msgid "Invalid username."
+msgstr "Недійсне ім’я користувача."
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed. Security key 2FA is not enabled for your "
+"account."
+msgstr ""
+"Помилка двоетапної перевірки. Ключ безпеки 2ЕП не ввімкнено для вашого "
+"облікового запису."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Incorrect PIN"
+msgstr "Помилка двоетапної перевірки: неправильний PIN-код"
+
+msgctxt "error"
+msgid "Two-factor authentication failed: No security key detected"
+msgstr "Помилка двоетапної перевірки: не виявлено ключ безпеки"
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed: The security key you used is not linked to"
+" your Proton Account."
+msgstr ""
+"Помилка двоетапної перевірки: використаний ключ безпеки не пов’язаний з "
+"вашим обліковим записом Proton."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Your security key has no PIN set"
+msgstr ""
+"Помилка двоетапної перевірки: для вашого ключа безпеки не встановлено PIN-"
+"код"
+
+msgctxt "label"
+msgid "6-digit authentication code"
+msgstr "6-значний код перевірки"
+
+msgctxt "label"
+msgid "PIN code"
+msgstr "PIN-код"
+
+msgctxt "label"
+msgid "Recovery code"
+msgstr "Код відновлення"
+
+msgctxt "link"
+msgid "Learn more"
+msgstr "Докладніше"
+
+msgctxt "message"
+msgid "Each code can only be used once"
+msgstr "Кожен код можна використати лише один раз"
+
+msgctxt "message"
+msgid "If your security key has a button or a gold disc, tap it now."
+msgstr ""
+"Якщо ваш ключ безпеки має кнопку або золотистий диск, торкніться їх зараз."
+
+msgctxt "message"
+msgid "Insert the U2F or FIDO key linked to your Proton Account. "
+msgstr ""
+"Вставте ключ U2F або FIDO, пов’язаний з вашим обліковим записом Proton. "
+
+msgctxt "message"
+msgid "Kill switch is blocking any outgoing connections."
+msgstr "Kill switch блокує всі вихідні з’єднання."
+
+msgctxt "message"
+msgid "Multiple security keys were found. Tap one to select it."
+msgstr "Знайдено кілька ключів безпеки. Натисніть на один, щоби вибрати його."
+
+msgctxt "message"
+msgid ""
+"Permanent Kill Switch is blocking any outgoing connections and preventing your IP to be exposed.\n"
+"\n"
+"Do you want to disable Kill Switch ?"
+msgstr ""
+"Постійний Kill Switch блокує всі вихідні з’єднання та запобігає витоку вашої IP-адреси.\n"
+"\n"
+"Бажаєте вимкнути Kill Switch?"
+
+msgctxt "message"
+msgid "Signing in..."
+msgstr "Виконується вхід..."
+
+msgctxt "message"
+msgid "Signing out..."
+msgstr "Вихід із системи..."
+
+msgctxt "placeholder"
+msgid "Password"
+msgstr "Пароль"
+
+msgctxt "placeholder"
+msgid "Username"
+msgstr "Ім’я користувача"
+
+msgctxt "title"
+msgid "Authenticator app"
+msgstr "Застосунок автентифікації"
+
+msgctxt "title"
+msgid "Kill Switch Enabled"
+msgstr "Kill Switch увімкнено"
+
+msgctxt "title"
+msgid "Security key"
+msgstr "Ключ безпеки"
+
+msgctxt "title"
+msgid "Two-factor authentication"
+msgstr "Двоетапна перевірка"

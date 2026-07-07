@@ -1,0 +1,167 @@
+#
+msgid ""
+msgstr ""
+"Language-Team: Serbian (Cyrillic)\n"
+"Language: sr_CYRL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "button"
+msgid "Authenticate"
+msgstr "Потврди идентитет"
+
+msgctxt "button"
+msgid "Cancel"
+msgstr "Откажи"
+
+msgctxt "button"
+msgid "Create Account"
+msgstr "Отвори налог"
+
+msgctxt "button"
+msgid "Disable"
+msgstr "Искључи"
+
+msgctxt "button"
+msgid "Need Help?"
+msgstr "Треба вам помоћ?"
+
+msgctxt "button"
+msgid "Sign in"
+msgstr "Пријави се"
+
+msgctxt "button"
+msgid "Use 6-digit authentication code"
+msgstr "Користи 6-цифрени кôд за аутентификацију"
+
+msgctxt "button"
+msgid "Use recovery code"
+msgstr "Користи кôд за опоравак"
+
+msgctxt "error"
+msgid "An unknown error occurred"
+msgstr "Дошло је до непознате грешке"
+
+msgctxt "error"
+msgid "Incorrect 2FA code."
+msgstr "Нетачан 2FA кôд."
+
+msgctxt "error"
+msgid "Incorrect credentials."
+msgstr "Нетачне акредитиве."
+
+msgctxt "error"
+msgid "Invalid username."
+msgstr "Неважеће корисничко име."
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed. Security key 2FA is not enabled for your "
+"account."
+msgstr ""
+"Двофакторска аутентификација није успела. Безбедносни кључ 2ФА није омогућен"
+" за ваш налог."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Incorrect PIN"
+msgstr "Двофакторска аутентификација није успела: нетачан ПИН"
+
+msgctxt "error"
+msgid "Two-factor authentication failed: No security key detected"
+msgstr ""
+"Двофакторска аутентификација није успела: Безбедносни кључ није откривен"
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed: The security key you used is not linked to"
+" your Proton Account."
+msgstr ""
+"Двофакторска аутентификација није успела: Безбедносни кључ који сте "
+"користили није повезан са вашим Протон налогом."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Your security key has no PIN set"
+msgstr ""
+"Двофакторска аутентификација није успела: Ваш безбедносни кључ није подешен "
+"ПИН"
+
+msgctxt "label"
+msgid "6-digit authentication code"
+msgstr "6-цифрени кôд за аутентификацију"
+
+msgctxt "label"
+msgid "PIN code"
+msgstr "ПИН кôд"
+
+msgctxt "label"
+msgid "Recovery code"
+msgstr "Кôд за опоравак"
+
+msgctxt "link"
+msgid "Learn more"
+msgstr "Сазнај више"
+
+msgctxt "message"
+msgid "Each code can only be used once"
+msgstr "Сваки кôд се може користити само једном"
+
+msgctxt "message"
+msgid "If your security key has a button or a gold disc, tap it now."
+msgstr ""
+"Ако ваш безбедносни кључ има дугме или златни диск, додирните га сада."
+
+msgctxt "message"
+msgid "Insert the U2F or FIDO key linked to your Proton Account. "
+msgstr "Уметните U2F или FIDO кључ повезан са вашим Протон налогом. "
+
+msgctxt "message"
+msgid "Kill switch is blocking any outgoing connections."
+msgstr "Прекидач блокира све одлазне везе."
+
+msgctxt "message"
+msgid "Multiple security keys were found. Tap one to select it."
+msgstr ""
+"Пронађено је више сигурносних кључева. Додирните један да бисте га изабрали."
+
+msgctxt "message"
+msgid ""
+"Permanent Kill Switch is blocking any outgoing connections and preventing your IP to be exposed.\n"
+"\n"
+"Do you want to disable Kill Switch ?"
+msgstr ""
+"Трајни Kill Switch блокира све одлазне везе и спречава да се ваша ИП адреса открије.\n"
+"\n"
+"Да ли желите да онемогућите Kill Switch?"
+
+msgctxt "message"
+msgid "Signing in..."
+msgstr "Пријављивање..."
+
+msgctxt "message"
+msgid "Signing out..."
+msgstr "Одјави се..."
+
+msgctxt "placeholder"
+msgid "Password"
+msgstr "Лозинка"
+
+msgctxt "placeholder"
+msgid "Username"
+msgstr "Корисник"
+
+msgctxt "title"
+msgid "Authenticator app"
+msgstr "Апликација за аутентификацију"
+
+msgctxt "title"
+msgid "Kill Switch Enabled"
+msgstr "Kill switch упаљен"
+
+msgctxt "title"
+msgid "Security key"
+msgstr "Сигурносни кључ"
+
+msgctxt "title"
+msgid "Two-factor authentication"
+msgstr "Верификација у два корака"

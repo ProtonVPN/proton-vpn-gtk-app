@@ -1,3 +1,10 @@
+version: 4.17.1rc9
+time: 2026/07/07 17:50
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "chore: Make L10N jobs opt-in"
+---
 version: 4.17.1rc8
 time: 2026/07/07 13:20
 author: L10n bot

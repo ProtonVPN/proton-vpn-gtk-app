@@ -1,2 +1,3 @@
 recursive-include proton/vpn/app/gtk/assets *
+recursive-include proton/vpn/app/gtk/locale *.po
 include versions.yml

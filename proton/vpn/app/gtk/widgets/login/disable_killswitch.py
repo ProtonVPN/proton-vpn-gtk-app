@@ -65,7 +65,7 @@ class DisableKillSwitchWidget(Gtk.Revealer):
     # Dialog message of pop-up with option to disable kill switch.
     DIALOG_MESSAGE = C_("message", "Permanent Kill Switch is blocking any outgoing connections "
                         "and preventing your IP to be exposed.\n\n"
-                        "Do you want to disable Kill Switch ?")
+                        "Do you want to disable Kill Switch?")
 
     def __init__(
         self, main_window: "MainWindow",

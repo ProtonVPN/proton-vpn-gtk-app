@@ -1,3 +1,10 @@
+version: 4.17.1rc11
+time: 2026/07/08 12:00
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "make .po compilation job fail if no .po-files exist"
+---
 version: 4.17.1rc10
 time: 2026/07/08 07:44
 author: Luke Titley

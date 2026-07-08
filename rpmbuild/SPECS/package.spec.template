@@ -32,6 +32,7 @@ BuildRequires: python3-dbus
 BuildRequires: python3-proton-vpn-api-core >= 5.3.1
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
+BuildRequires: gettext
 
 Requires: gtk4
 Requires: libnotify

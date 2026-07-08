@@ -22,7 +22,7 @@ import gettext
 import os
 
 DOMAIN = "proton-vpn-gtk-app"
-LOCALE_DIR = os.path.join(os.path.dirname(__file__), "locale")
+LOCALE_DIR = os.path.join(os.path.dirname(__file__), "locale", "binaries")
 ENV_VAR = "PROTON_VPN_LOCALIZATION_ENABLED"
 
 

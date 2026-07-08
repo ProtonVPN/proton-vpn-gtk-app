@@ -11,3 +11,4 @@ venv_testing
 dist/
 package.spec
 po/*.pot
+proton/vpn/app/gtk/locale/binaries/*

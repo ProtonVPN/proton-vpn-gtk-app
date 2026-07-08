@@ -60,8 +60,7 @@ class ProtocolComboboxWidget(ConflictableComboboxWidget, ReactiveSetting):
         otherwise returns an empty list. We can use this method to determine
         whether the protun protocols should be shown in the UI or not.
         """
-        # is_protun_enabled = self._controller.feature_flags.get("ProTunV1")
-        is_protun_enabled = True
+        is_protun_enabled = self._controller.feature_flags.get("ProTunV1")
         if is_protun_enabled:
             return self._controller.get_available_protocols(self.PROTUN_PROTOCOL_GROUP)
         return []

@@ -37,7 +37,7 @@ class SearchEntry(Gtk.SearchEntry):
         super().__init__()
         self.set_name("search-entry")
         self.props.placeholder_text = "Press Ctrl+F to search"  # pylint: disable=no-member
-        safe_signal_connect(self, "request-focus", self.request_focus)
+        safe_signal_connect(self, "request-focus", self._on_request_focus)
 
     def _on_request_focus(self, _):
         self.grab_focus()

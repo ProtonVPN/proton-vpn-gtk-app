@@ -1,3 +1,10 @@
+version: 4.17.1rc12
+time: 2026/07/09 07:48
+author: Axel Langenskiold
+email: axel.langenskiold@proton.ch
+description:
+- "fix: Ctrl+F to set focus in Search Field not working."
+---
 version: 4.17.1rc11
 time: 2026/07/08 12:00
 author: alangens

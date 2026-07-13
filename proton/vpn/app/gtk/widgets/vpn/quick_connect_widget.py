@@ -24,6 +24,7 @@ from proton.vpn.connection import states
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn import logging
 
@@ -39,14 +40,14 @@ class QuickConnectWidget(Gtk.Box):
         self._connection_state: states.State = None
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
-        self.connect_button = Gtk.Button(label="Connect")
+        self.connect_button = Gtk.Button(label=C_("button", "Connect"))
         self.connect_button.add_css_class("primary")
         safe_signal_connect(
             self.connect_button,
             "clicked", self._on_connect_button_clicked)
         self.connect_button.set_visible(False)
         self.append(self.connect_button)
-        self.disconnect_button = Gtk.Button(label="Disconnect")
+        self.disconnect_button = Gtk.Button(label=C_("button", "Disconnect"))
         self.disconnect_button.add_css_class("danger")
         safe_signal_connect(
             self.disconnect_button,
@@ -88,12 +89,12 @@ class QuickConnectWidget(Gtk.Box):
 
     def _on_connection_state_connecting(self):
         self.connect_button.set_visible(False)
-        self.disconnect_button.set_label("Cancel Connection")
+        self.disconnect_button.set_label(C_("button", "Cancel Connection"))
         self.disconnect_button.set_visible(True)
 
     def _on_connection_state_connected(self):
         self.connect_button.set_visible(False)
-        self.disconnect_button.set_label("Disconnect")
+        self.disconnect_button.set_label(C_("button", "Disconnect"))
         self.disconnect_button.set_visible(True)
 
     def _on_connection_state_disconnecting(self):
@@ -101,7 +102,7 @@ class QuickConnectWidget(Gtk.Box):
 
     def _on_connection_state_error(self):
         self.connect_button.set_visible(False)
-        self.disconnect_button.set_label("Cancel Connection")
+        self.disconnect_button.set_label(C_("button", "Cancel Connection"))
         self.disconnect_button.set_visible(True)
 
     def _on_connect_button_clicked(self, _):

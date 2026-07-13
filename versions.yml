@@ -1,3 +1,10 @@
+version: 4.17.1rc13
+time: 2026/07/09 08:15
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "feat: add l10n to main VPN view"
+---
 version: 4.17.1rc12
 time: 2026/07/09 07:48
 author: Axel Langenskiold
@@ -10,7 +17,7 @@ time: 2026/07/08 12:00
 author: alangens
 email: axel.langenskiold@proton.ch
 description:
-- "make .po compilation job fail if no .po-files exist"
+- "feat: make .po compilation job fail if no .po-files exist"
 ---
 version: 4.17.1rc10
 time: 2026/07/08 07:44

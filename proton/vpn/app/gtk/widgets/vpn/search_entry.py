@@ -26,6 +26,7 @@ from gi.repository import GObject
 from proton.vpn import logging
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,8 @@ class SearchEntry(Gtk.SearchEntry):
     def __init__(self):
         super().__init__()
         self.set_name("search-entry")
-        self.props.placeholder_text = "Press Ctrl+F to search"  # pylint: disable=no-member
+        placeholder = C_("placeholder", "Press Ctrl+F to search")
+        self.props.placeholder_text = placeholder  # pylint: disable=no-member
         safe_signal_connect(self, "request-focus", self._on_request_focus)
 
     def _on_request_focus(self, _):

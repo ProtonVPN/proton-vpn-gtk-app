@@ -29,6 +29,7 @@ from proton.vpn.session.servers.logicals import (
 )
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn import logging
 
@@ -112,9 +113,9 @@ class FilteredList(Gtk.TreeView):
         self._model.clear()
 
         sections = (
-            ("Countries", self._countries, ""),
-            ("Locations", self._locations, ""),
-            ("Servers", self._servers, "Server load")
+            (C_("title", "Countries"), self._countries, ""),
+            (C_("title", "Locations"), self._locations, ""),
+            (C_("title", "Servers"), self._servers, C_("label", "Server load"))
         )
 
         for section in sections:

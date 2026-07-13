@@ -26,6 +26,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.connection import events, states
 from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import DoubleFlagIcon
 from proton.vpn.session.servers import ServerFeatureEnum, TierEnum
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
@@ -37,14 +38,19 @@ from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
 
-SPLIT_TUNNELING_APP_RESTART_MESSAGE = \
+SPLIT_TUNNELING_APP_RESTART_MESSAGE = C_(
+    "message",
     "Split tunneling enabled. Remember to restart affected apps."
+)
 
 
 class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Displays the current connection status."""
-    MAXIMUM_SESSIONS_ERROR = "You've reached your maximum device limit. " \
+    MAXIMUM_SESSIONS_ERROR = C_(
+        "error",
+        "You've reached your maximum device limit. "
         "To reconnect to VPN, please disconnect from another device."
+    )
 
     def __init__(
         self, controller: Controller,
@@ -169,24 +175,24 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
 
         if connecting or (disconnecting and reconnecting):
             self._show_spinner()
-            self._set_status_title("Connecting...", None)
+            self._set_status_title(C_("status", "Connecting..."), None)
         elif connected:
             self._show_icon(self._protected_pixbuf)
-            self._set_status_title("Protected", "protected")
+            self._set_status_title(C_("status", "Protected"), "protected")
             if self._split_tunneling_enabled:
                 self._notifications.show_info_message(
                     message=SPLIT_TUNNELING_APP_RESTART_MESSAGE
                 )
         elif disconnecting and not reconnecting:
             self._show_spinner()
-            self._set_status_title("Disconnecting...", None)
+            self._set_status_title(C_("status", "Disconnecting..."), None)
         elif error:
             self._show_icon(None)
-            self._set_status_title("Connection error", None)
+            self._set_status_title(C_("status", "Connection error"), None)
             self._on_connection_error(connection_state)
         elif disconnected:
             self._show_icon(self._unprotected_pixbuf)
-            self._set_status_title("Unprotected", "unprotected")
+            self._set_status_title(C_("status", "Unprotected"), "unprotected")
 
         self._update_connection_details(
             connection_state.context.connection,
@@ -222,18 +228,19 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         last_connection_event = connection_state.context.event
         error_detail = None
         if isinstance(last_connection_event, events.TunnelSetupFailed):
-            error_detail = "Tunnel setup failed"
+            error_detail = C_("error", "Tunnel setup failed")
         elif isinstance(last_connection_event, events.AuthDenied):
-            error_detail = "Authentication denied"
+            error_detail = C_("error", "Authentication denied")
         elif isinstance(last_connection_event, events.Timeout):
-            error_detail = "Timeout"
+            # Error shown when the VPN connection attempt times out.
+            error_detail = C_("error", "Timeout")
         elif isinstance(last_connection_event, events.DeviceDisconnected):
-            error_detail = "Device disconnected"
+            error_detail = C_("error", "Device disconnected")
         elif isinstance(last_connection_event, events.MaximumSessionsReached):
-            error_detail = "Session limit reached"
+            error_detail = C_("error", "Session limit reached")
             self._notifications.show_error_dialog(
                 message=self.MAXIMUM_SESSIONS_ERROR,
-                title="Connection error: session limit reached"
+                title=C_("title", "Connection error: session limit reached")
             )
         if error_detail:
             self._error_detail_label.set_text(error_detail)
@@ -249,10 +256,12 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
             self._connection_details_icon.set_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
             is_free = self._controller.user_tier == TierEnum.FREE
             if is_free:
-                self._connection_details_title.set_text("Fastest free server")
-                self._connection_details_subtitle.set_text("Auto-selected from free locations")
+                self._connection_details_title.set_text(C_("title", "Fastest free server"))
+                self._connection_details_subtitle.set_text(
+                    C_("label", "Auto-selected from free locations")
+                )
             else:
-                self._connection_details_title.set_text("Fastest country")
+                self._connection_details_title.set_text(C_("title", "Fastest country"))
                 self._connection_details_subtitle.set_text("")
         else:
             server_name = connection.server_name
@@ -268,7 +277,12 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
             self._connection_details_title.set_text(logical_server.exit_country_name)
             if is_secure_core:
                 self._connection_details_subtitle.set_label(
-                    f"Via {logical_server.entry_country_name}")
+                    C_(
+                        "label",
+                        # {country} is the entry country name.
+                        "Via {country}"
+                    ).format(country=logical_server.entry_country_name)
+                )
             else:
                 self._connection_details_subtitle.set_label(
                     f"{logical_server.location} - {server_name}")

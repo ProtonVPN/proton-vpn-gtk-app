@@ -27,6 +27,7 @@ from pathlib import Path
 from gi.repository import Gdk
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.assets import icons
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     P2PIcon,
     SecureCoreIcon,
@@ -53,33 +54,47 @@ class LegendItem:
     learn_more_url: str | None
 
 
+_SMART_ROUTING_DESCRIPTION = C_(
+    "message",
+    "This technology allows Proton VPN to provide higher speed and security in "
+    "difficult-to-reach countries."
+)
+_SECURE_CORE_DESCRIPTION = C_(
+    "message",
+    "Connect to your destination server through a second, maximum security VPN "
+    "server. Slower, but more private."
+)
+_TOR_DESCRIPTION = C_(
+    "message",
+    "Connect to a Tor server to access hidden services and onion sites using "
+    "any browser."
+)
+
+
 _LEGEND_ITEMS: list[LegendItem] = [
     LegendItem(
         SmartRoutingIcon,
-        "Smart routing",
-        # nosemgrep: string-concat-in-list
-        "This technology allows Proton VPN to provide higher speed and security in "
-        "difficult-to-reach countries.",
+        C_("title", "Smart routing"),
+        _SMART_ROUTING_DESCRIPTION,
         "https://protonvpn.com/support/how-smart-routing-works",
     ),
     LegendItem(
         SecureCoreIcon,
-        "Secure Core",
-        # nosemgrep: string-concat-in-list
-        "Connect to your destination server through a second, maximum security VPN server. "
-        "Slower, but more private.",
+        C_("title", "Secure Core"),
+        _SECURE_CORE_DESCRIPTION,
         "https://protonvpn.com/support/secure-core-vpn",
     ),
     LegendItem(
         P2PIcon,
-        "P2P/BitTorrent",
-        "These servers give the best performance for BitTorrent and file sharing.",
+        C_("title", "P2P/BitTorrent"),
+        C_("message", "These servers give the best performance for BitTorrent and file sharing."),
         "https://protonvpn.com/features/p2p-support",
     ),
     LegendItem(
         TORIcon,
-        "Tor",
-        "Connect to a Tor server to access hidden services and onion sites using any browser.",
+        # "Tor" is the anonymity network name (The Onion Router).
+        C_("title", "Tor"),
+        _TOR_DESCRIPTION,
         "https://protonvpn.com/support/tor-vpn",
     ),
 ]
@@ -109,7 +124,7 @@ class FeatureLegendPopover(Gtk.Popover):
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         header.add_css_class("feature-legend-header")
 
-        title = Gtk.Label(label="Features")
+        title = Gtk.Label(label=C_("title", "Features"))
         title.add_css_class("dim-label")
         title.set_halign(Gtk.Align.START)
         title.set_hexpand(True)
@@ -120,7 +135,7 @@ class FeatureLegendPopover(Gtk.Popover):
         close_btn.set_icon_name("window-close-symbolic")
         close_btn.add_css_class("flat")
         close_btn.add_css_class("circular")
-        close_btn.set_tooltip_text("Close")
+        close_btn.set_tooltip_text(C_("tooltip", "Close"))
         safe_signal_connect(close_btn, "clicked", self._on_close_clicked)
         header.append(close_btn)
         return header
@@ -187,7 +202,7 @@ class FeatureLegendPopover(Gtk.Popover):
     @staticmethod
     def _build_learn_more_link(url: str) -> Gtk.LinkButton:
         """Builds a Learn more link button."""
-        link = Gtk.LinkButton(uri=url, label="Learn more")
+        link = Gtk.LinkButton(uri=url, label=C_("link", "Learn more"))
         link.set_halign(Gtk.Align.START)
         link.add_css_class("feature-legend-learn-more")
         return link
@@ -232,4 +247,4 @@ class ServerListHeaderRow(Gtk.Box):
 
     def _format_count(self, count: int) -> str:
         """Returns the formatted count string."""
-        return f"All countries ({count})"
+        return C_("label", "All countries ({count})").format(count=count)

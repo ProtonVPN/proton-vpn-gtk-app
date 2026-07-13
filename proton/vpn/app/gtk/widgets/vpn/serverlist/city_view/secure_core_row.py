@@ -26,6 +26,7 @@ from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.session.dataclasses.servers import SecureCoreGroup
 from proton.vpn.session.servers import LogicalServer, TierEnum
 
@@ -44,7 +45,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
 
 class SecureCoreRow(Gtk.Box):
     """Toggleable row with label "Via Secure Core" that expands to show secure core servers."""
-    LABEL = "Via Secure Core"
+    LABEL = C_("label", "Via Secure Core")
 
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
@@ -75,13 +76,27 @@ class SecureCoreRow(Gtk.Box):
         exit_country_name = secure_core_group.servers[0].exit_country_name
         upgrade_required = user_tier == TierEnum.FREE and not secure_core_group.free
         connect_button_tooltip = (
-            f"Upgrade to connect to {exit_country_name} via Secure Core"
+            C_(
+                "tooltip",
+                "Upgrade to connect to {country} via Secure Core"
+            ).format(country=exit_country_name)
             if upgrade_required else
-            f"Connect to {exit_country_name} via Secure Core"
+            C_(
+                "tooltip",
+                "Connect to {country} via Secure Core"
+            ).format(country=exit_country_name)
         )
         toggle_button_tooltips = (
-            f"Show all Secure Core servers\nto connect to {exit_country_name}",
-            f"Hide all Secure Core servers\nto connect to {exit_country_name}"
+            C_(
+                "tooltip",
+                # The \n is a line break. {country} is the destination country name.
+                "Show all Secure Core servers\nto connect to {country}"
+            ).format(country=exit_country_name),
+            C_(
+                "tooltip",
+                # The \n is a line break. {country} is the destination country name.
+                "Hide all Secure Core servers\nto connect to {country}"
+            ).format(country=exit_country_name)
         )
 
         row_data = RowViewModel(
@@ -145,7 +160,8 @@ class SecureCoreRow(Gtk.Box):
                 future.add_done_callback(lambda f: GLib.idle_add(f.result))
 
             row_data = RowViewModel(
-                name=f"Via {server.entry_country_name}",
+                # {country} is the entry country name.
+                name=C_("label", "Via {country}").format(country=server.entry_country_name),
                 on_connect=on_connect,
                 free=server.free,
                 under_maintenance=server.under_maintenance and not upgrade_required,
@@ -159,11 +175,23 @@ class SecureCoreRow(Gtk.Box):
                     entry_country_code=s.entry_country,
                 ),
                 connect_button_tooltip=(
-                    f"Upgrade to connect to {server.exit_country_name}"
-                    f" via {server.entry_country_name}"
+                    C_(
+                        "tooltip",
+                        # {exit_country} and {entry_country} are country names.
+                        "Upgrade to connect to {exit_country} via {entry_country}"
+                    ).format(
+                        exit_country=server.exit_country_name,
+                        entry_country=server.entry_country_name
+                    )
                     if upgrade_required else
-                    f"Connect to {server.exit_country_name}"
-                    f" via {server.entry_country_name}"
+                    C_(
+                        "tooltip",
+                        # {exit_country} and {entry_country} are country names.
+                        "Connect to {exit_country} via {entry_country}"
+                    ).format(
+                        exit_country=server.exit_country_name,
+                        entry_country=server.entry_country_name
+                    )
                 ),
             )
             server_row.display(row_data)

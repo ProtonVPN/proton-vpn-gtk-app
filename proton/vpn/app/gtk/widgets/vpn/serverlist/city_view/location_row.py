@@ -30,6 +30,7 @@ from gi.repository import GLib
 from proton.vpn.session.servers import Location, TierEnum
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
@@ -86,13 +87,13 @@ class LocationRow(Gtk.Box):
             upgrade_required=upgrade_required,
             icon_factory=LocationIcon,
             connect_button_tooltip=(
-                f"Upgrade to connect to {location.name}"
+                C_("tooltip", "Upgrade to connect to {name}").format(name=location.name)
                 if upgrade_required else
-                f"Connect to {location.name}"
+                C_("tooltip", "Connect to {name}").format(name=location.name)
             ),
             toggle_button_tooltips=(
-                f"Show all servers from {location.name}",
-                f"Hide all servers from {location.name}",
+                C_("tooltip", "Show all servers from {name}").format(name=location.name),
+                C_("tooltip", "Hide all servers from {name}").format(name=location.name),
             ),
         )
         self._expandable_row.row_content.display(row_data)
@@ -161,9 +162,9 @@ class LocationRow(Gtk.Box):
                 upgrade_required=upgrade_required,
                 load=None if server.under_maintenance else server.load,
                 connect_button_tooltip=(
-                    f"Upgrade to connect to {server.name}"
+                    C_("tooltip", "Upgrade to connect to {name}").format(name=server.name)
                     if upgrade_required else
-                    f"Connect to {server.name}"
+                    C_("tooltip", "Connect to {name}").format(name=server.name)
                 ),
             )
             server_row.display(row_data)

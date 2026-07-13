@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.translator import C_
 
 
 class ServerLoad(Gtk.Box):
@@ -46,7 +47,7 @@ class ServerLoad(Gtk.Box):
         """Sets the load percentage to be displayed."""
         self._bar.set_value(load)
         self._label.set_label(f"{load}%")
-        self.set_tooltip_text(f"Server load is at {load}%")
+        self.set_tooltip_text(C_("tooltip", "Server load is at {load}%").format(load=load))
 
         for cls in ("signal-danger", "signal-warning", "signal-success"):
             self._bar.remove_css_class(cls)

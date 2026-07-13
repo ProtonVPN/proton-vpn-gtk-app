@@ -31,6 +31,7 @@ from proton.vpn.session.servers import ServerFeatureEnum
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.accessibility import add_accessibility, remove_accessibility
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
@@ -189,7 +190,8 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
 
     def _show_under_maintenance_icon(self):
         self.under_maintenance_icon.set_visible(True)
-        help_text = f"{self.label} is under maintenance"
+        # {name} is a country, location or server name.
+        help_text = C_("tooltip", "{name} is under maintenance").format(name=self.label)
         self.under_maintenance_icon.set_help_text(help_text)
         self.add_css_class("dimmed")
 
@@ -197,7 +199,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         self.under_maintenance_icon.set_visible(False)
         self._hover_stack.set_visible(True)
         if self._row_data.upgrade_required:
-            self._hover_action_label.set_text("Upgrade")
+            self._hover_action_label.set_text(C_("button", "Upgrade"))
             signal_id = safe_signal_connect(
                 self.action_button,
                 "clicked",
@@ -205,7 +207,7 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
             )
             self.add_css_class("dimmed")
         else:
-            self._hover_action_label.set_text("Connect")
+            self._hover_action_label.set_text(C_("button", "Connect"))
             signal_id = safe_signal_connect(
                 self.action_button,
                 "clicked",

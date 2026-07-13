@@ -25,6 +25,7 @@ from typing import List, Optional
 from gi.repository import Gdk, GLib, GObject
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.assets import icons
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.connection import states
 
@@ -56,8 +57,8 @@ class PortForwardRevealer(Gtk.Revealer):  # pylint: disable=too-few-public-metho
 
 class PortForwardWidget(Gtk.Box):
     """Widgets handles the display and interactivity to copy por to clipboard."""
-    ACTIVE_PORT_LABEL = "Active port:"
-    TOOLTIP_LABEL = "Copy port number"
+    ACTIVE_PORT_LABEL = C_("label", "Active port:")
+    TOOLTIP_LABEL = C_("tooltip", "Copy port number")
 
     def __init__(
             self, notifications: Notifications, clipboard: Optional[Gdk.Clipboard] = None,
@@ -116,7 +117,7 @@ class PortForwardWidget(Gtk.Box):
         safe_signal_connect(self._copy_button, "clicked", self._on_button_press)
 
         self._copied_popover = Gtk.Popover()
-        self._copied_popover.set_child(Gtk.Label(label="Copied!"))
+        self._copied_popover.set_child(Gtk.Label(label=C_("message", "Copied!")))
         self._copied_popover.set_autohide(False)
         self._copied_popover.set_has_arrow(False)
         self._copied_popover.set_parent(self._copy_button)
@@ -144,8 +145,8 @@ class PortForwardWidget(Gtk.Box):
         if new_port and (new_port != self._current_forwarded_port):
             if not is_focus:
                 self._notifications.show_gnome_notification(
-                    title="Port forwarding",
-                    description=f"Active port is {new_port}"
+                    title=C_("title", "Port forwarding"),
+                    description=C_("message", "Active port is {new_port}").format(new_port=new_port)
                 )
 
         self._current_forwarded_port = new_port

@@ -23,6 +23,7 @@ from typing import ClassVar, Dict, Optional
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
 from proton.vpn.app.gtk.assets import icons
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.assertions import runtime_assert
 
 
@@ -35,7 +36,11 @@ class UnderMaintenanceIcon(Gtk.Image):
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
         if widget_under_maintenance:
-            help_text = f"{widget_under_maintenance} is under maintenance"
+            # {name} is a country, location or server name.
+            help_text = C_(
+                "tooltip",
+                "{name} is under maintenance"
+            ).format(name=widget_under_maintenance)
             self.set_tooltip_text(help_text)
             self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
         self.set_halign(Gtk.Align.END)
@@ -55,7 +60,7 @@ class SmartRoutingIcon(Gtk.Image):
         pixbuf = icons.get(Path("servers/smart-routing.svg"))
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
-        help_text = "Smart routing is used"
+        help_text = C_("tooltip", "Smart routing is used")
         self.set_tooltip_text(help_text)
         self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
@@ -68,7 +73,7 @@ class StreamingIcon(Gtk.Image):
         pixbuf = icons.get(Path("servers/streaming.svg"))
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
-        help_text = "Streaming supported"
+        help_text = C_("tooltip", "Streaming supported")
         self.set_tooltip_text(help_text)
         self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
@@ -81,7 +86,7 @@ class P2PIcon(Gtk.Image):
         pixbuf = icons.get(Path("servers/p2p.svg"))
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
-        help_text = "P2P/BitTorrent supported"
+        help_text = C_("tooltip", "P2P/BitTorrent supported")
         self.set_tooltip_text(help_text)
         self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
@@ -94,7 +99,7 @@ class TORIcon(Gtk.Image):
         pixbuf = icons.get(Path("servers/tor.svg"))
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
-        help_text = "TOR supported"
+        help_text = C_("tooltip", "TOR supported")
         self.set_tooltip_text(help_text)
         self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
@@ -122,12 +127,14 @@ class SecureCoreIcon(Gtk.Image):
         if size is not None:
             self.set_size_request(pixbuf.get_width(), pixbuf.get_height())
         if entry_country_name and exit_country_name:
-            help_text = (
+            help_text = C_(
+                "tooltip",
+                # {exit_country} and {entry_country} are country names.
                 "Secure core server that "
-                f"connects to {exit_country_name} through {entry_country_name}."
-            )
+                "connects to {exit_country} through {entry_country}."
+            ).format(exit_country=exit_country_name, entry_country=entry_country_name)
         else:
-            help_text = "Secure Core supported"
+            help_text = C_("tooltip", "Secure Core supported")
         self.set_tooltip_text(help_text)
         self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 

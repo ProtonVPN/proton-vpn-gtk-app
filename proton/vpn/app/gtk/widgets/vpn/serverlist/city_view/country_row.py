@@ -28,6 +28,7 @@ from typing import List, Optional
 from proton.vpn.session.servers import Country, Location, TierEnum
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.location_row import LocationRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
@@ -98,13 +99,13 @@ class CountryRow(Gtk.Box):
             upgrade_required=upgrade_required,
             icon_factory=lambda c=country: CountryFlagIcon(c.code),
             connect_button_tooltip=(
-                f"Upgrade to connect to {country.name}"
+                C_("tooltip", "Upgrade to connect to {name}").format(name=country.name)
                 if upgrade_required else
-                f"Connect to {country.name}"
+                C_("tooltip", "Connect to {name}").format(name=country.name)
             ),
             toggle_button_tooltips=(
-                f"Show all locations from {country.name}",
-                f"Hide all locations from {country.name}",
+                C_("tooltip", "Show all locations from {name}").format(name=country.name),
+                C_("tooltip", "Hide all locations from {name}").format(name=country.name),
             ),
         )
         self._expandable_row.row_content.display(row_data)

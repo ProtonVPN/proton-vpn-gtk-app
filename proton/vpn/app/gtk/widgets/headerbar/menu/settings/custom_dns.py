@@ -25,6 +25,7 @@ from contextlib import contextmanager
 
 from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.core.settings import CustomDNSEntry, NetShield
@@ -88,7 +89,7 @@ class CustomDNSList(Gtk.Box):  # pylint: disable=too-few-public-methods
 class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
     """Serves as a container for everything related to management of custom DNS entries."""
     SETTING_NAME = "settings.custom_dns.ip_list"
-    INVALID_IP_ERROR_MESSAGE = "Enter a valid IPv4 or IPv6 address"
+    INVALID_IP_ERROR_MESSAGE = C_("error", "Enter a valid IPv4 or IPv6 address")
 
     def __init__(
         self,
@@ -102,7 +103,7 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         self.gtk = gtk or Gtk
         self._controller = controller
 
-        label = self.gtk.Label(label="Add new server")
+        label = self.gtk.Label(label=C_("label", "Add new server"))
         label.set_halign(Gtk.Align.START)
 
         self._error_message_revealer = self._build_error_message()
@@ -127,7 +128,7 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         self._dns_entry.set_hexpand(True)
         self._dns_entry.set_halign(Gtk.Align.FILL)
 
-        self._add_button: Gtk.Button = self.gtk.Button(label="Add")
+        self._add_button: Gtk.Button = self.gtk.Button(label=C_("button", "Add"))
         safe_signal_connect(self._add_button, "clicked", self._on_dns_add_clicked)
 
         row.attach(self._dns_entry, 0, 0, 1, 1)
@@ -204,8 +205,8 @@ class CustomDNSWidget(ToggleWidget):
     Handles everything from the toggle, to revealing and displaying the
     custom DNS IPs.
     """
-    LABEL = "Custom DNS servers"
-    DESCRIPTION = "Connect to Proton VPN using your own domain name servers (DNS)."
+    LABEL = C_("title", "Custom DNS servers")
+    DESCRIPTION = C_("message", "Connect to Proton VPN using your own domain name servers (DNS).")
     SETTING_NAME = "settings.custom_dns.enabled"
 
     def __init__(
@@ -287,8 +288,8 @@ class CustomDNSWidget(ToggleWidget):
         self._conflict_feature_settings = feature_settings
         dialog = ConfirmationDialog(
             message=self._build_dialog_content(),
-            title="Enable Netshield",
-            yes_text="_Enable", no_text="_Cancel"
+            title=C_("title", "Enable Netshield"),
+            yes_text=C_("button", "_Enable"), no_text=C_("button", "_Cancel")
         )
         #  pylint: disable=duplicate-code
         dialog.set_default_size(400, 200)
@@ -302,15 +303,19 @@ class CustomDNSWidget(ToggleWidget):
         container = self.gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         container.set_spacing(10)
 
-        question = self.gtk.Label(label="Enable Netshield ?")
+        question = self.gtk.Label(label=C_("title", "Enable Netshield ?"))
         question.set_halign(Gtk.Align.START)
 
-        clarification = self.gtk.Label(label="This will disable custom DNS.")
+        clarification = self.gtk.Label(label=C_("message", "This will disable custom DNS."))
         clarification.set_halign(Gtk.Align.START)
         clarification.add_css_class("dim-label")
 
         learn_more = self.gtk.Label(
-            label='<a href="https://protonvpn.com/support/custom-dns#netshield">Learn more</a>'
+            # Only 'Learn more' should be translated, URL stays intact.
+            label=C_(
+                "link",
+                '<a href="https://protonvpn.com/support/custom-dns#netshield">Learn more</a>'
+            )
         )
         learn_more.set_halign(Gtk.Align.START)
         learn_more.add_css_class("dim-label")

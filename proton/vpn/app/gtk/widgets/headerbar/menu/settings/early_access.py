@@ -27,6 +27,7 @@ import distro
 from gi.repository import Gtk, GLib, Pango
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.loading_widget import Spinner
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import ToggleWidget
@@ -97,7 +98,7 @@ class EarlyAccessDialog(Gtk.Dialog):
     """
     LOADING_VIEW = "loading"
     STATUS_VIEW = "status"
-    TITLE = "Beta Access"
+    TITLE = C_("title", "Beta Access")
 
     def __init__(self):
         super().__init__()
@@ -113,7 +114,7 @@ class EarlyAccessDialog(Gtk.Dialog):
         headerbar.set_decoration_layout("menu:")
         self.set_titlebar(headerbar)
 
-        self._confirmation_button = self.add_button("_Close", Gtk.ResponseType.CLOSE)
+        self._confirmation_button = self.add_button(C_("button", "_Close"), Gtk.ResponseType.CLOSE)
         self._spinner = Spinner(70)
         self._spinner.set_margin_top(20)
         self._active_view = None
@@ -160,10 +161,13 @@ class EarlyAccessWidget(ToggleWidget):
     uninstall and installing packages.
     """
     SUPPORTED_DISTRO_MANAGERS = [FEDORA_MANAGER, DEBIAN_MANAGER]
-    DISABLE_BETA_ACCESS_MESSAGE = "Disabling Beta access..."
-    ENABLE_BETA_ACCESS_MESSAGE = "Enabling Beta access..."
-    BETA_LABEL = "Beta access"
-    BETA_DESCRIPTION = "Get early access and help us test new versions of Proton VPN."
+    DISABLE_BETA_ACCESS_MESSAGE = C_("message", "Disabling Beta access...")
+    ENABLE_BETA_ACCESS_MESSAGE = C_("message", "Enabling Beta access...")
+    BETA_LABEL = C_("title", "Beta access")
+    BETA_DESCRIPTION = C_(
+        "message",
+        "Get early access and help us test new versions of Proton VPN."
+    )
 
     def __init__(
         self, controller: Controller,
@@ -308,8 +312,9 @@ class EarlyAccessWidget(ToggleWidget):
                 )
                 self._restore_switch_to_previous_state()
                 self._dialog.display_status_view(
-                    "It was not possible to "
-                    f"{'enable' if early_access_enabled else 'disable'} Beta access.\n"
+                    C_("message", "It was not possible to enable Beta access.\n")
+                    if early_access_enabled
+                    else C_("message", "It was not possible to disable Beta access.\n")
                 )
                 return
 
@@ -320,8 +325,17 @@ class EarlyAccessWidget(ToggleWidget):
                 event="run"
             )
             self._dialog.display_status_view(
-                f"Beta access has been {'enabled' if early_access_enabled else 'disabled'}.\n"
-                "Please restart the app for changes to take effect."
+                C_(
+                    "message",
+                    "Beta access has been enabled.\n"
+                    "Please restart the app for changes to take effect."
+                )
+                if early_access_enabled
+                else C_(
+                    "message",
+                    "Beta access has been disabled.\n"
+                    "Please restart the app for changes to take effect."
+                )
             )
 
         cmd = ["pkexec", "sh", "-c",

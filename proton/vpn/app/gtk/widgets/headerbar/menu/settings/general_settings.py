@@ -24,6 +24,7 @@ from gi.repository import Gtk, GLib, Gio
 from proton.vpn import logging
 from proton.vpn.connection import states
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, ToggleWidget, EntryWidget,
 )
@@ -39,10 +40,13 @@ logger = logging.getLogger(__name__)
 
 class TrayPinnedServersWidget(EntryWidget):
     """Custom widget that holds the pinned servers to tray setting."""
-    TRAY_PINNED_SERVERS_LABEL = "Pinned tray connections"
-    TRAY_PINNED_SERVERS_DESCRIPTION = "Access preferred connections from system tray."\
-        " Enter country or server codes, separated by commas, to quickly connect "\
+    TRAY_PINNED_SERVERS_LABEL = C_("title", "Pinned tray connections")
+    TRAY_PINNED_SERVERS_DESCRIPTION = C_(
+        "message",
+        "Access preferred connections from system tray."
+        " Enter country or server codes, separated by commas, to quickly connect "
         "(e.g.: NL#42, JP, US, IT#01)."
+    )
     SETTING_NAME = "app_configuration.tray_pinned_servers"
 
     def __init__(self, controller: Controller, tray_indicator: Optional["TrayIndicator"] = None):
@@ -106,8 +110,8 @@ def default_file_browser(packet_capture_widget: "PacketCaptureWidget"):
     def _on_browse_clicked(_button):
         # Guarded by the hasattr check in _build_ui; only reachable on GTK >= 4.10.
         dialog = Gtk.FileDialog.new()
-        dialog.set_title("Select packet capture directory")
-        dialog.set_accept_label("_Select")
+        dialog.set_title(C_("title", "Select packet capture directory"))
+        dialog.set_accept_label(C_("button", "_Select"))
         current_path = packet_capture_widget.entry.get_text().strip()
         if current_path:
             dialog.set_initial_folder(Gio.File.new_for_path(current_path))
@@ -118,8 +122,9 @@ def default_file_browser(packet_capture_widget: "PacketCaptureWidget"):
 
 class PacketCaptureWidget(EntryWidget):
     """Packet capture settings row: start/stop toggle, file path entry, and browse button."""
-    LABEL = "Create a troubleshooting file"
-    DESCRIPTION = (
+    LABEL = C_("title", "Create a troubleshooting file")
+    DESCRIPTION = C_(
+        "message",
         "Captures a specific issue you're facing when using Proton VPN "
         "to get help from our customer support team.\n\n"
         "Warning: This file is a recording of all your internet activity during "
@@ -150,7 +155,7 @@ class PacketCaptureWidget(EntryWidget):
         # Row 0: setting label + start/stop button (right-aligned, like other toggles)
         self.attach(self.label, 0, 0, 1, 1)
 
-        self._start_stop_button = Gtk.Button(label="Start")
+        self._start_stop_button = Gtk.Button(label=C_("button", "Start"))
         self._start_stop_button.set_sensitive(self._controller.is_connection_active)
         self._start_stop_button.connect("clicked", self._on_start_stop_clicked)
         self._start_stop_button.set_hexpand(True)
@@ -167,7 +172,7 @@ class PacketCaptureWidget(EntryWidget):
         file_row.append(self.entry)
 
         if self._on_browse_clicked is not None:
-            browse_button = Gtk.Button(label="Browse…")
+            browse_button = Gtk.Button(label=C_("button", "Browse…"))
             browse_button.connect("clicked", self._on_browse_clicked)
             file_row.append(browse_button)
 
@@ -207,7 +212,9 @@ class PacketCaptureWidget(EntryWidget):
     def _set_capturing(self, capturing: bool):
         self._capturing = capturing
 
-        self._start_stop_button.set_label("Stop" if capturing else "Start")
+        self._start_stop_button.set_label(
+            C_("button", "Stop") if capturing else C_("button", "Start")
+        )
         if capturing:
             self._start_stop_button.add_css_class("destructive-action")
         else:
@@ -221,19 +228,28 @@ class PacketCaptureWidget(EntryWidget):
 
 class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
     """General settings are grouped under this class."""
-    CATEGORY_NAME = "General"
-    CONNECT_AT_APP_STARTUP_LABEL = "Auto connect"
-    CONNECT_AT_APP_STARTUP_DESCRIPTION = "You will be connected to a server as "\
-        "soon as Proton VPN app starts. Replace it with a country ISO code "\
-        "(e.g.: US for United States), a server (e.g.: NL#42)"\
+    CATEGORY_NAME = C_("title", "General")
+    CONNECT_AT_APP_STARTUP_LABEL = C_("title", "Auto connect")
+    CONNECT_AT_APP_STARTUP_DESCRIPTION = C_(
+        "message",
+        "You will be connected to a server as "
+        "soon as Proton VPN app starts. Replace it with a country ISO code "
+        "(e.g.: US for United States), a server (e.g.: NL#42)"
         " or Fastest for quick connection. Default value: Off."
-    START_APP_MINIMIZED_LABEL = "Start app minimized"
-    START_APP_MINIMIZED_DESCRIPTION = "When enabled, the app starts minimized "\
+    )
+    START_APP_MINIMIZED_LABEL = C_("title", "Start app minimized")
+    START_APP_MINIMIZED_DESCRIPTION = C_(
+        "message",
+        "When enabled, the app starts minimized "
         "to the tray."
-    ANONYMOUS_CRASH_REPORTS_LABEL = "Share anonymous crash reports"
-    ANONYMOUS_CRASH_REPORTS_DESCRIPTION = "Crash reports help us fix bugs, detect firewalls, "\
-        "and avoid VPN blocks.\n\nThese statistics do not contain your IP address, and they "\
+    )
+    ANONYMOUS_CRASH_REPORTS_LABEL = C_("title", "Share anonymous crash reports")
+    ANONYMOUS_CRASH_REPORTS_DESCRIPTION = C_(
+        "message",
+        "Crash reports help us fix bugs, detect firewalls, "
+        "and avoid VPN blocks.\n\nThese statistics do not contain your IP address, and they "
         "cannot be used to identify you. We'll never share them with third parties."
+    )
 
     def __init__(
         self, controller: Controller,

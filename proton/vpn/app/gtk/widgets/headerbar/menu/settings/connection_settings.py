@@ -26,6 +26,7 @@ from gi.repository import Gtk
 from proton.vpn.app.gtk.conflicts import WIREGUARD_PROTOCOL
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, BetaTag, ToggleWidget, ConflictableComboboxWidget,
@@ -41,7 +42,7 @@ if TYPE_CHECKING:
 class ProtocolComboboxWidget(ConflictableComboboxWidget, ReactiveSetting):
     """Combobox widget for selecting the VPN protocol."""
 
-    PROTUN_CHECKBOX_LABEL = "Use Proton protocols"
+    PROTUN_CHECKBOX_LABEL = C_("label", "Use Proton protocols")
 
     PROTUN_PROTOCOL_GROUP = "protun"
     GENERIC_PROTOCOL_GROUP = "generic"
@@ -125,21 +126,33 @@ class ProtocolComboboxWidget(ConflictableComboboxWidget, ReactiveSetting):
 
 class ConnectionSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa: E501 # pylint: disable=line-too-long, too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
-    CATEGORY_NAME = "Connection"
-    PROTOCOL_LABEL = "Protocol"
-    PROTOCOL_DESCRIPTION = "Protocol can only be changed when VPN is disconnected."
-    VPN_ACCELERATOR_LABEL = "VPN Accelerator"
-    VPN_ACCELERATOR_DESCRIPTION = "Increase your connection speed by up to 400% "\
+    CATEGORY_NAME = C_("title", "Connection")
+    PROTOCOL_LABEL = C_("title", "Protocol")
+    PROTOCOL_DESCRIPTION = C_("message", "Protocol can only be changed when VPN is disconnected.")
+    VPN_ACCELERATOR_LABEL = C_("title", "VPN Accelerator")
+    VPN_ACCELERATOR_DESCRIPTION = C_(
+        "message",
+        "Increase your connection speed by up to 400% "
         "with performance enhancing technologies."
-    MODERATE_NAT_LABEL = "Moderate NAT"
-    MODERATE_NAT_DESCRIPTION = "Disables randomization of the local addresses mapping. "\
-        "This can slightly reduce connection security, but should allow direct "\
+    )
+    MODERATE_NAT_LABEL = C_("title", "Moderate NAT")
+    MODERATE_NAT_DESCRIPTION = C_(
+        "message",
+        "Disables randomization of the local addresses mapping. "
+        "This can slightly reduce connection security, but should allow direct "
         "connections for online gaming and similar purposes."
-    SWITCH_PROTOCOL_IF_CONNECTION_ACTIVE_DESCRIPTION = "Protocol selection "\
+    )
+    SWITCH_PROTOCOL_IF_CONNECTION_ACTIVE_DESCRIPTION = C_(
+        "message",
+        "Protocol selection "
         "is disabled while VPN is active. Disconnect to make changes."
+    )
     IPV6_LABEL = "IPv6"
-    IPV6_DESCRIPTION = "Tunnels IPv6 traffic through the VPN. "\
+    IPV6_DESCRIPTION = C_(
+        "message",
+        "Tunnels IPv6 traffic through the VPN. "
         "Can enhance compatibility with IPv6 networks."
+    )
 
     def __init__(self, controller: Controller, settings_window: "SettingsWindow"):
         super().__init__(self.CATEGORY_NAME)

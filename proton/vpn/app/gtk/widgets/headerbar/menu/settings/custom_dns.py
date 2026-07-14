@@ -207,6 +207,7 @@ class CustomDNSWidget(ToggleWidget):
     """
     LABEL = C_("title", "Custom DNS servers")
     DESCRIPTION = C_("message", "Connect to Proton VPN using your own domain name servers (DNS).")
+    LEARN_MORE_LABEL = C_("button", "Learn more")
     SETTING_NAME = "settings.custom_dns.enabled"
 
     def __init__(
@@ -311,11 +312,7 @@ class CustomDNSWidget(ToggleWidget):
         clarification.add_css_class("dim-label")
 
         learn_more = self.gtk.Label(
-            # Only 'Learn more' should be translated, URL stays intact.
-            label=C_(
-                "link",
-                '<a href="https://protonvpn.com/support/custom-dns#netshield">Learn more</a>'
-            )
+            label=f'<a href="https://protonvpn.com/support/custom-dns#netshield">{self.LEARN_MORE_LABEL}</a>'  # noqa: E501 # pylint: disable=line-too-long
         )
         learn_more.set_halign(Gtk.Align.START)
         learn_more.add_css_class("dim-label")

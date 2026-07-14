@@ -22,6 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from gi.repository import Gio
 from proton.vpn import logging
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, CustomButton
 )
@@ -31,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 class AccountSettings(BaseCategoryContainer):  # pylint: disable=too-many-instance-attributes
     """Account settings are grouped under this class."""
-    CATEGORY_NAME = "Account"
+    CATEGORY_NAME = C_("title", "Account")
     MANAGE_ACCOUNT_URL = "https://account.protonvpn.com/account"
 
     def __init__(self, controller: Controller):
@@ -43,8 +44,10 @@ class AccountSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         under this category."""
         self.append(CustomButton(
             title=self._controller.account_name,
-            description=f"VPN plan: {self._controller.account_data.plan_title or 'Free'}",
-            button_label="Manage Account",
+            description=C_("label", "VPN plan: {plan}").format(
+                plan=self._controller.account_data.plan_title or C_("label", "Free")
+            ),
+            button_label=C_("button", "Manage Account"),
             on_click_callback=self._on_click_manage_account_button,
             bold_title=True
         ))

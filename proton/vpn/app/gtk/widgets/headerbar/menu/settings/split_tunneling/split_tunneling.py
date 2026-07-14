@@ -24,6 +24,7 @@ from typing import Callable, Optional
 from gi.repository import Gtk
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
     ConflictableToggleWidget, ReactiveSetting
@@ -105,10 +106,16 @@ class SplitTunnelingSettings(Gtk.Box):
 class SplitTunnelingToggle(ConflictableToggleWidget, ReactiveSetting):
     """Contains the split tunneling widget.
     """
-    TITLE = "Split tunneling"
-    DESCRIPTION = "Customize your connection by deciding "\
+    TITLE = C_("title", "Split tunneling")
+    DESCRIPTION = C_(
+        "message",
+        "Customize your connection by deciding "
         "which apps are protected by VPN."
-    TOOLTIP_MESSAGE = "To change split tunneling settings, please disconnect the VPN first."
+    )
+    TOOLTIP_MESSAGE = C_(
+        "tooltip",
+        "To change split tunneling settings, please disconnect the VPN first."
+    )
 
     def __init__(
             self,

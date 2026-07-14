@@ -25,6 +25,7 @@ from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.core.settings import NetShield
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import (
     BaseCategoryContainer, ComboboxWidget, ToggleWidget,
@@ -41,16 +42,28 @@ if TYPE_CHECKING:
 
 class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa: E501 # pylint: disable=line-too-long, too-many-instance-attributes
     """Settings related to connection are all grouped under this class."""
-    CATEGORY_NAME = "Features"
-    NETSHIELD_LABEL = "NetShield"
-    NETSHIELD_DESCRIPTION = "Protect yourself from ads, malware, and trackers "\
+    CATEGORY_NAME = C_("title", "Features")
+    NETSHIELD_LABEL = C_("title", "NetShield")
+    LEARN_MORE_LABEL = C_("button", "Learn more")
+    NETSHIELD_DESCRIPTION = C_(
+        "message",
+        "Protect yourself from ads, malware, and trackers "
         "on websites and apps."
-    PORT_FORWARDING_LABEL = "Port forwarding"
-    PORT_FORWARDING_DESCRIPTION_LEARN_MORE = "Bypass firewalls to connect to P2P servers "\
-        "and devices on your local network. "\
-        "<a href=\"https://protonvpn.com/support/port-forwarding/#linux\">Learn more</a>"
-    SWITCH_KILLSWITCH_IF_CONNECTION_ACTIVE_DESCRIPTION = "Kill switch selection "\
+    )
+    PORT_FORWARDING_LABEL = C_("title", "Port forwarding")
+    PORT_FORWARDING_DESCRIPTION_LEARN_MORE = (
+        C_(
+            "message",
+            "Bypass firewalls to connect to P2P servers "
+            "and devices on your local network. "
+        )
+        + f'<a href="https://protonvpn.com/support/port-forwarding/#linux">{LEARN_MORE_LABEL}</a>'  # noqa: E501 # pylint: disable=line-too-long
+    )
+    SWITCH_KILLSWITCH_IF_CONNECTION_ACTIVE_DESCRIPTION = C_(
+        "message",
+        "Kill switch selection "
         "is disabled while VPN is active. Disconnect to make changes."
+    )
 
     def __init__(self, controller: Controller, settings_window: "SettingsWindow"):
         super().__init__(self.CATEGORY_NAME)
@@ -78,9 +91,12 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
         lower tier then required then an upgrade UI is displayed.
         """
         netshield_options = [
-            (str(NetShield.NO_BLOCK.value), "Off"),
-            (str(NetShield.BLOCK_MALICIOUS_URL.value), "Block Malware"),
-            (str(NetShield.BLOCK_ADS_AND_TRACKING.value), "Block ads, trackers and malware"),
+            (str(NetShield.NO_BLOCK.value), C_("label", "Off")),
+            (str(NetShield.BLOCK_MALICIOUS_URL.value), C_("label", "Block Malware")),
+            (
+                str(NetShield.BLOCK_ADS_AND_TRACKING.value),
+                C_("label", "Block ads, trackers and malware")
+            ),
         ]
         self.netshield = ComboboxWidget(
             controller=self._controller,
@@ -162,8 +178,8 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
 
         dialog = ConfirmationDialog(
             message=self._build_dialog_content(),
-            title="Enable Custom DNS",
-            yes_text="_Enable", no_text="_Cancel"
+            title=C_("title", "Enable Custom DNS"),
+            yes_text=C_("button", "_Enable"), no_text=C_("button", "_Cancel")
         )
         dialog.set_default_size(400, 200)
         safe_signal_connect(dialog, "response", self._on_dialog_button_click)
@@ -175,15 +191,17 @@ class FeatureSettings(BaseCategoryContainer, ReactiveSettingContainer):  # noqa:
         container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         container.set_spacing(10)
 
-        question = Gtk.Label(label="Enable Custom DNS ?")
+        question = Gtk.Label(label=C_("title", "Enable Custom DNS?"))
         question.set_halign(Gtk.Align.START)
 
-        clarification = Gtk.Label(label="This will disable Netshield.")
+        clarification = Gtk.Label(label=C_("message", "This will disable NetShield."))
         clarification.set_halign(Gtk.Align.START)
         clarification.add_css_class("dim-label")
 
         learn_more = Gtk.Label(
-            label='<a href="https://protonvpn.com/support/custom-dns#netshield">Learn more</a>'
+            label=(
+                f'<a href="https://protonvpn.com/support/custom-dns#netshield">{self.LEARN_MORE_LABEL}</a>'  # noqa: E501 # pylint: disable=line-too-long
+            )
         )
         learn_more.set_halign(Gtk.Align.START)
         learn_more.add_css_class("dim-label")

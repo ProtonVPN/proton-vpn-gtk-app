@@ -25,6 +25,7 @@ from gi.repository import Gtk, GObject
 
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data_structures \
     import AppRowWithCheckbox, AppData
@@ -96,7 +97,7 @@ class AppSelectionWindow(Gtk.Window):
                 )
             )
 
-        connect_button = Gtk.Button.new_with_label(label="Done")
+        connect_button = Gtk.Button.new_with_label(label=C_("button", "Done"))
         connect_button.set_name("split-tunneling-app-done-button")
         connect_button.add_css_class("primary")
         connect_button.set_halign(Gtk.Align.END)

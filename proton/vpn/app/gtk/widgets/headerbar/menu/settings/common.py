@@ -28,6 +28,7 @@ from proton.vpn.app.gtk.widgets.main.confirmation_dialog import \
     ConfirmationDialog,\
     show_confirmation_dialog
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn import logging
 
 if TYPE_CHECKING:
@@ -35,8 +36,11 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-RECONNECT_MESSAGE = "Please establish a new VPN connection for "\
-        "changes to take effect."
+RECONNECT_MESSAGE = C_(
+    "message",
+    "Please establish a new VPN connection for "
+    "changes to take effect."
+)
 
 
 class CategoryHeader(Gtk.Label):
@@ -96,7 +100,7 @@ class BaseCategoryContainer(Gtk.Box):
 
 class BetaTag(Gtk.Label):
     """A label styled with a purple border to indicate a beta feature."""
-    LABEL = "BETA"
+    LABEL = C_("label", "BETA")
 
     def __init__(self):
         super().__init__(label=self.LABEL)
@@ -112,7 +116,7 @@ class UpgradePlusTag(Gtk.Button):
 
     Source: https://lazka.github.io/pgi-docs/Gtk-3.0/classes/LinkButton.html
     """
-    LABEL = "VPN Plus"
+    LABEL = C_("label", "VPN Plus")
     URL = "https://protonvpn.com/pricing"
 
     def __init__(self):
@@ -383,8 +387,8 @@ class ConflictableToggleWidget(ToggleWidget):  # pylint: disable=too-many-instan
                 title="",
                 question=conflict.label,
                 clarification=conflict.description,
-                yes_text="_Yes",
-                no_text="_Cancel",
+                yes_text=C_("button", "_Yes"),
+                no_text=C_("button", "_Cancel"),
                 callback_result=self._confirm_change
             )
         else:
@@ -585,8 +589,8 @@ class ConflictableComboboxWidget(ComboboxWidget):
                 title="",
                 question=conflict.label,
                 clarification=conflict.description,
-                yes_text="_Yes",
-                no_text="_Cancel",
+                yes_text=C_("button", "_Yes"),
+                no_text=C_("button", "_Cancel"),
                 callback_result=self._confirm_change
             )
         else:
@@ -679,7 +683,7 @@ class EntryWidget(Gtk.Grid):
         entry = Gtk.Entry()
         value = self.get_setting()
         if value is None:
-            value = "Off"
+            value = C_("label", "Off")
 
         entry.set_text(str(value))
         if self._callback:

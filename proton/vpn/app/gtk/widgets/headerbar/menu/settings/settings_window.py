@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, Optional
 
 from gi.repository import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.account_settings import \
@@ -56,7 +57,7 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         super().__init__()
         self.set_name("settings-window")
         self.set_modal(True)
-        self.set_title("Settings")
+        self.set_title(C_("title", "Settings"))
         self.set_default_size(600, 500)
 
         self._controller = controller

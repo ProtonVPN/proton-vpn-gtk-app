@@ -24,6 +24,7 @@ from gi.repository import Gtk, GObject
 
 from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import \
     SettingName, SettingDescription
@@ -38,16 +39,22 @@ class ModeData:
 
 
 EXCLUDE_MODE = ModeData(
-    title="Exclude mode",
-    description="Allow selected apps to connect "
-    "without VPN protection.",
+    title=C_("title", "Exclude mode"),
+    description=C_(
+        "message",
+        "Allow selected apps to connect "
+        "without VPN protection."
+    ),
     mode=SplitTunnelingMode.EXCLUDE
 )
 
 INCLUDE_MODE = ModeData(
-    title="Include mode",
-    description="Only selected apps connect with "
-    "VPN protection. All other traffic is unprotected.",
+    title=C_("title", "Include mode"),
+    description=C_(
+        "message",
+        "Only selected apps connect with "
+        "VPN protection. All other traffic is unprotected."
+    ),
     mode=SplitTunnelingMode.INCLUDE,
 )
 

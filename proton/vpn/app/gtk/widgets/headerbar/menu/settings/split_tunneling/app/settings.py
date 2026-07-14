@@ -25,6 +25,7 @@ from gi.repository import Gtk
 from proton.vpn.core.settings.split_tunneling import SplitTunnelingMode
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import SettingName
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.selected_app_list \
@@ -38,8 +39,13 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.inst
 
 
 LABEL_CONVERSION = {
-    SplitTunnelingMode.INCLUDE: "Included apps ",
-    SplitTunnelingMode.EXCLUDE: "Excluded apps ",
+    SplitTunnelingMode.INCLUDE: C_("label", "Included apps "),
+    SplitTunnelingMode.EXCLUDE: C_("label", "Excluded apps "),
+}
+
+WINDOW_TITLE_CONVERSION = {
+    SplitTunnelingMode.INCLUDE: C_("title", "Add included apps"),
+    SplitTunnelingMode.EXCLUDE: C_("title", "Add excluded apps"),
 }
 
 
@@ -98,7 +104,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         )
 
     def _create_add_button(self) -> Gtk.Button:
-        button = self.gtk.Button.new_with_label("Add")
+        button = self.gtk.Button.new_with_label(C_("button", "Add"))
         button.set_name("split-tunneling-app-add-button")
         button.add_css_class("secondary")
         safe_signal_connect(button, "clicked", self._on_clicked_add)
@@ -128,7 +134,7 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
 
     @property
     def _window_title(self) -> str:
-        return f"Add {LABEL_CONVERSION[self._mode].lower()}"
+        return WINDOW_TITLE_CONVERSION[self._mode]
 
     def _on_app_selection_completed(
         self, _: AppSelectionWindow,

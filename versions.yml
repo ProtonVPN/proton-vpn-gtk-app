@@ -1,3 +1,10 @@
+version: 4.17.1rc15
+time: 2026/07/13 13:14
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "feat: Translate account and feature section in settings"
+---
 version: 4.17.1rc14
 time: 2026/07/13 09:27
 author: alangens

@@ -24,12 +24,13 @@ from pathlib import Path
 from gi.repository import Gdk, Gtk
 from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk import __version__
+from proton.vpn.app.gtk.translator import C_
 
 
 class AboutDialog(Gtk.AboutDialog):
     """This widget will display general information about this application"""
-    TITLE = "About"
-    PROGRAM_NAME = "Proton VPN Linux Client"
+    TITLE = C_("title", "About")
+    PROGRAM_NAME = C_("label", "Proton VPN Linux Client")
     VERSION = __version__
     COPYRIGHT = "Proton AG 2026"
     LICENSE = Gtk.License.GPL_3_0

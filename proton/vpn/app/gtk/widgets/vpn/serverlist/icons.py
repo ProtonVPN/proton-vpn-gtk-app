@@ -99,7 +99,7 @@ class TORIcon(Gtk.Image):
         pixbuf = icons.get(Path("servers/tor.svg"))
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_from_paintable(texture)
-        help_text = C_("tooltip", "TOR supported")
+        help_text = C_("tooltip", "Tor supported")
         self.set_tooltip_text(help_text)
         self.update_property([Gtk.AccessibleProperty.LABEL], [help_text])
 
@@ -130,7 +130,7 @@ class SecureCoreIcon(Gtk.Image):
             help_text = C_(
                 "tooltip",
                 # {exit_country} and {entry_country} are country names.
-                "Secure core server that "
+                "Secure Core server that "
                 "connects to {exit_country} through {entry_country}."
             ).format(exit_country=exit_country_name, entry_country=entry_country_name)
         else:

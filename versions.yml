@@ -1,23 +1,30 @@
+version: 4.17.1rc16
+time: 2026/07/14 12:45
+author: alangens
+email: axel.langenskiold@proton.ch
+description:
+- "feat: Translate menu and menu widgets."
+---
 version: 4.17.1rc15
 time: 2026/07/13 13:14
 author: alangens
 email: axel.langenskiold@proton.ch
 description:
-- "feat: Translate account and feature section in settings"
+- "feat: Translate account and feature section in settings."
 ---
 version: 4.17.1rc14
 time: 2026/07/13 09:27
 author: alangens
 email: axel.langenskiold@proton.ch
 description:
-- "feat: Translate connection and general section in settings"
+- "feat: Translate connection and general section in settings."
 ---
 version: 4.17.1rc13
 time: 2026/07/09 08:15
 author: alangens
 email: axel.langenskiold@proton.ch
 description:
-- "feat: add l10n to main VPN view"
+- "feat: add l10n to main VPN view."
 ---
 version: 4.17.1rc12
 time: 2026/07/09 07:48
@@ -31,7 +38,7 @@ time: 2026/07/08 12:00
 author: alangens
 email: axel.langenskiold@proton.ch
 description:
-- "feat: make .po compilation job fail if no .po-files exist"
+- "feat: make .po compilation job fail if no .po-files exist."
 ---
 version: 4.17.1rc10
 time: 2026/07/08 07:44

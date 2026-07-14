@@ -33,6 +33,7 @@ from gi.repository import Gtk, GLib
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.session.dataclasses import BugReportForm
 from proton.vpn.app.gtk import __version__
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn import logging
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
@@ -52,13 +53,19 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
     EMAIL_REGEX = re.compile(
         r'[^@\s]+@[^@\s]{2,}\.[^@\s\.-]{2,}'
     )
-    BUG_REPORT_SENDING_MESSAGE = "Reporting your issue..."
-    BUG_REPORT_SUCCESS_MESSAGE = "Your issue has been reported"
-    BUG_REPORT_NETWORK_ERROR_MESSAGE = "Proton services could not be reached.\n" \
-                                       "Please try again."
-    BUG_REPORT_UNEXPECTED_ERROR_MESSAGE = "Something went wrong. " \
-                                          "Please try submitting your report at:\n" \
-                                          "https://protonvpn.com/support-form"
+    BUG_REPORT_SENDING_MESSAGE = C_("message", "Reporting your issue...")
+    BUG_REPORT_SUCCESS_MESSAGE = C_("message", "Your issue has been reported")
+    BUG_REPORT_NETWORK_ERROR_MESSAGE = C_(
+        "error",
+        "Proton services could not be reached.\n"
+        "Please try again."
+    )
+    SUPPORT_FORM_URL = "https://protonvpn.com/support-form"
+    BUG_REPORT_UNEXPECTED_ERROR_MESSAGE = C_(
+        "error",
+        "Something went wrong. "
+        "Please try submitting your report at:\n"
+    ) + SUPPORT_FORM_URL
     BUG_REPORT_TITLE = "Report from Linux app"
     BUG_REPORT_CLIENT = "Linux GUI"
     BUG_REPORT_VERSION = __version__
@@ -78,11 +85,11 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
             self._controller.executor
         )
 
-        self.set_title("Report an Issue")
+        self.set_title(C_("title", "Report an Issue"))
         self.set_default_size(BugReportDialog.WIDTH, BugReportDialog.HEIGHT)
 
-        self.cancel_button = self.add_button("_Cancel", Gtk.ResponseType.CANCEL)
-        self.submit_button = self.add_button("_Submit", Gtk.ResponseType.OK)
+        self.cancel_button = self.add_button(C_("button", "_Cancel"), Gtk.ResponseType.CANCEL)
+        self.submit_button = self.add_button(C_("button", "_Submit"), Gtk.ResponseType.OK)
 
         self.cancel_button.add_css_class("danger")
         self.submit_button.add_css_class("primary")
@@ -231,7 +238,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         content.set_name("bug-report-content")
         layout.append(content)
 
-        username_label = Gtk.Label(label="Username")
+        username_label = Gtk.Label(label=C_("label", "Username"))
         username_label.set_halign(Gtk.Align.START)
 
         self.username_entry = Gtk.Entry()
@@ -241,7 +248,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         content.append(username_label)
         content.append(self.username_entry)
 
-        email_label = Gtk.Label(label="Email")
+        email_label = Gtk.Label(label=C_("label", "Email"))
         email_label.set_halign(Gtk.Align.START)
 
         self.email_entry = Gtk.Entry()
@@ -253,7 +260,11 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
 
         min_characters = BugReportDialog.BUG_REPORT_DESCRIPTION_MIN_CHARACTERS
         description_label = Gtk.Label(
-            label=f"Description (minimum {min_characters} characters)"
+            # Textfield with minimum character count. Count is always plural.
+            label=C_(
+                "label",
+                "Description (minimum {count} characters)"
+            ).format(count=min_characters)
         )
 
         description_label.set_halign(Gtk.Align.START)
@@ -273,7 +284,9 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         content.append(description_label)
         content.append(scrolled_window_textview)
 
-        self.send_logs_checkbox = Gtk.CheckButton.new_with_label("Send error logs")
+        self.send_logs_checkbox = Gtk.CheckButton.new_with_label(
+            C_("button", "Send error logs")
+        )
         self.send_logs_checkbox.set_active(True)
         self.send_logs_checkbox.set_name("send_logs")
         content.append(self.send_logs_checkbox)

@@ -30,6 +30,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.bug_report_dialog import BugRepor
 from proton.vpn.app.gtk.widgets.headerbar.menu.about_dialog import AboutDialog
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, DefaultLoadingWidget
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings import SettingsWindow
@@ -48,23 +49,41 @@ if TYPE_CHECKING:
 class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
     """App menu shown in the header bar."""
 
-    LOGOUT_LOADING_MESSAGE = "Signing out..."
-    UNABLE_TO_LOGOUT_MESSAGE = "Unable to sign out, please ensure you have internet access."
-    DISCONNECT_ON_LOGOUT_MESSAGE = "Signing out will cancel the current VPN connection.\n\n" \
-                                   "Do you want to continue?"
-    DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE = "Signing out "\
-        "will cancel the current VPN connection and disable the kill switch."\
+    LOGOUT_LOADING_MESSAGE = C_("message", "Signing out...")
+    UNABLE_TO_LOGOUT_MESSAGE = C_(
+        "error",
+        "Unable to sign out, please ensure you have internet access."
+    )
+    DISCONNECT_ON_LOGOUT_MESSAGE = C_(
+        "message",
+        "Signing out will cancel the current VPN connection.\n\n"
+        "Do you want to continue?"
+    )
+    DISCONNECT_ON_LOGOUT_WITH_KILL_SWITCH_ENABLED_MESSAGE = C_(
+        "message",
+        "Signing out "
+        "will cancel the current VPN connection and disable the kill switch."
         "\n\nDo you want to continue?"
-    LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE = "Signing out will "\
-        "disable the kill switch, potentially exposing your internet traffic. "\
+    )
+    LOGOUT_AND_KILL_SWITCH_ENABLED_MESSAGE = C_(
+        "message",
+        "Signing out will "
+        "disable the kill switch, potentially exposing your internet traffic. "
         "\n\nDo you want to continue?"
-    DISCONNECT_ON_QUIT_MESSAGE = "Quitting the application will cancel the current" \
-                                 " VPN connection.\n\nDo you want to continue?"
-    DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE = "Quitting the application "\
-        "will keep the kill switch active, but your current VPN connection will be terminated."\
+    )
+    DISCONNECT_ON_QUIT_MESSAGE = C_(
+        "message",
+        "Quitting the application will cancel the current"
+        " VPN connection.\n\nDo you want to continue?"
+    )
+    DISCONNECT_ON_QUIT_WITH_PERMANENT_KILL_SWITCH_ENABLED_MESSAGE = C_(
+        "message",
+        "Quitting the application "
+        "will keep the kill switch active, but your current VPN connection will be terminated."
         "\n\nDo you want to continue?"
-    DISCONNECT_TITLE = "Active connection found"
-    KILLSWITCH_ENABLED_TITLE = "Kill Switch enabled"
+    )
+    DISCONNECT_TITLE = C_("title", "Active connection found")
+    KILLSWITCH_ENABLED_TITLE = C_("title", "Kill Switch enabled")
 
     def __init__(
         self, controller: Controller,
@@ -82,12 +101,12 @@ class Menu(Gio.Menu):  # pylint: disable=too-many-instance-attributes
         self.logout_action = Gio.SimpleAction.new("logout", None)
         self.quit_action = Gio.SimpleAction.new("quit", None)
 
-        self.append_item(Gio.MenuItem.new("About", "win.about"))
-        self.append_item(Gio.MenuItem.new("Settings", "win.settings"))
-        self.append_item(Gio.MenuItem.new("Release notes", "win.release_notes"))
-        self.append_item(Gio.MenuItem.new("Report an issue", "win.report"))
-        self.append_item(Gio.MenuItem.new("Sign out", "win.logout"))
-        self.append_item(Gio.MenuItem.new("Quit", "win.quit"))
+        self.append_item(Gio.MenuItem.new(C_("menu", "About"), "win.about"))
+        self.append_item(Gio.MenuItem.new(C_("menu", "Settings"), "win.settings"))
+        self.append_item(Gio.MenuItem.new(C_("menu", "Release notes"), "win.release_notes"))
+        self.append_item(Gio.MenuItem.new(C_("menu", "Report an issue"), "win.report"))
+        self.append_item(Gio.MenuItem.new(C_("menu", "Sign out"), "win.logout"))
+        self.append_item(Gio.MenuItem.new(C_("menu", "Quit"), "win.quit"))
 
         self._settings_window = None
         self._bug_dialog = None

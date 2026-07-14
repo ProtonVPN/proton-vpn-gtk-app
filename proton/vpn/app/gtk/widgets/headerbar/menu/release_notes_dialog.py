@@ -25,6 +25,7 @@ from typing import List
 from gi.repository import Gtk
 
 from proton.vpn.app.gtk.assets import ASSETS_PATH
+from proton.vpn.app.gtk.translator import C_
 
 
 class ReleaseNotesDialog(Gtk.Dialog):
@@ -33,7 +34,7 @@ class ReleaseNotesDialog(Gtk.Dialog):
 
     WIDTH = 450
     HEIGHT = 500
-    TITLE = "Release notes"
+    TITLE = C_("title", "Release notes")
     RELEASE_NOTES = str(ASSETS_PATH / "release_notes.md")
 
     def __init__(self):

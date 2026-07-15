@@ -1,3 +1,10 @@
+version: 4.17.1rc17
+time: 2026/07/15 16:14
+author: Luke Titley
+email: luke.titley@proton.ch
+description:
+- "fix: proton-vpn-api-core needs to be at version 5.5.5"
+---
 version: 4.17.1rc16
 time: 2026/07/14 12:45
 author: alangens

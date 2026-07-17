@@ -26,15 +26,38 @@ a box that mimics the window's CSS name and classes — keeping the modal's
 styling while letting it sit in the gallery alongside everything else, with no
 floating or overlapping windows.
 """
-from typing import List, Tuple
+import os
+from dataclasses import dataclass
+from typing import List, Optional, Tuple
 
-from gi.repository import Gdk
+from gi.repository import Gdk, Graphene
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.demo import registry
 from proton.vpn.app.gtk.demo.sizing import NO_BASELINE, UNCONSTRAINED
 
 _MARGIN = 18
+
+# Minimum GTK version whose PyGObject binds GskRenderNode subclasses as
+# Python return values. Below this, snapshot.to_node() either raises TypeError
+# (Debian 12 / GTK 4.8) or — worse — corrupts state and segfaults the
+# interpreter during GC (Ubuntu 22.04 / GTK 4.6).
+# Gtk 4.14 (Ubuntu 24.04, Fedora, Arch, Debian 13)
+# is the floor we've confirmed works; older distros no-op the screenshot path.
+_MIN_SNAPSHOT_GTK = (4, 14)
+
+
+def _snapshot_supported() -> bool:
+    """True if PyGObject on this platform can marshal GskRenderNode subclasses.
+    """
+    return (Gtk.get_major_version(), Gtk.get_minor_version()) >= _MIN_SNAPSHOT_GTK
+
+
+@dataclass
+class DemoGallery:
+    """The gallery window and its content row, as built by build_window()."""
+    window: Gtk.Window
+    row: Gtk.Box
 
 
 # Loaded only in demo mode (see show()); never part of the app CSS.
@@ -68,6 +91,74 @@ def _load_demo_css() -> None:
     Gtk.StyleContext.add_provider_for_display(
         display, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER
     )
+
+
+def _take_screenshot(window: Gtk.Window, row: Gtk.Box, path: str) -> None:
+    """Render the full gallery content to PNG at its full natural size.
+
+    GTK allocates widgets to fit the on-screen window, which is capped by the
+    monitor. Force-allocating the row at its natural size before snapshotting
+    bypasses that, so a wide gallery is captured in full rather than clipped.
+
+    No-ops silently on platforms where _snapshot_supported() returns False.
+    """
+    if not _snapshot_supported():
+        return
+    # Full natural size, unconstrained by the on-screen viewport.
+    nat_width = row.measure(Gtk.Orientation.HORIZONTAL, UNCONSTRAINED)[1]
+    nat_height = row.measure(Gtk.Orientation.VERTICAL, nat_width)[1]
+
+    # Force the row and its subtree to lay out at the full size so the
+    # snapshot captures everything, not just what fits on screen.
+    row.allocate(nat_width, nat_height, NO_BASELINE, None)
+
+    # do_snapshot draws content at (0, 0) — it doesn't apply the row's own margins
+    # (that's normally done by the parent widget's snapshot machinery). To reproduce
+    # the margin whitespace we shift the capture viewport instead: a
+    # negative-origin rect tells the renderer to start capturing before the content,
+    # so the margin space appears on all four sides of the output image.
+    snapshot = Gtk.Snapshot.new()
+    Gtk.Widget.do_snapshot(row, snapshot)
+    node = snapshot.to_node()
+    if node is None:
+        return
+
+    # Use the Cairo software renderer:
+    # render_texture() via NGL/Vulkan produces corrupted output on some GPU/driver combinations
+    # (observed on Intel Mesa).
+    # Software rendering bypasses the GPU driver stack, so it is always consistent.
+    from gi.repository import Gsk  # pylint: disable=import-outside-toplevel
+    renderer = Gsk.CairoRenderer.new()
+    renderer.realize(window.get_surface())
+    rect = Graphene.Rect().init(
+        -row.get_margin_start(), -row.get_margin_top(), nat_width, nat_height
+    )
+    try:
+        texture = renderer.render_texture(node, rect)
+    finally:
+        renderer.unrealize()
+
+    parent = os.path.dirname(path)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+    texture.save_to_png(path)
+
+
+def _schedule_screenshot(window: Gtk.Window, row: Gtk.Box, path: str) -> None:
+    """On the first rendered frame, take a screenshot then destroy the window.
+
+    Called after present(), so the window is already realized and the frame
+    clock is available. The actual paint hasn't happened yet (it runs on the
+    next main-loop frame), so connecting to after-paint here catches it.
+    """
+    handler_id = None
+
+    def _after_paint(frame_clock):
+        frame_clock.disconnect(handler_id)
+        _take_screenshot(window, row, path)
+        window.destroy()
+
+    handler_id = window.get_frame_clock().connect("after-paint", _after_paint)
 
 
 def build_demo_widgets_for_screen(screen_name: str) -> List[Tuple[str, Gtk.Widget]]:
@@ -192,7 +283,7 @@ def _labelled_group(label: str, widget: Gtk.Widget) -> Gtk.Widget:
     return group
 
 
-def build_window(screen_name: str) -> Gtk.Window:
+def build_window(screen_name: str) -> DemoGallery:
     """Build (without presenting) the gallery window that shows the screen.
 
     Every entry — embeddable widget or reparented top-level — becomes a labelled
@@ -243,15 +334,24 @@ def build_window(screen_name: str) -> Gtk.Window:
     window = Gtk.Window()
     window.set_title(f"demo: {screen_name}")
     window.set_child(scrolled)
-    return window
+    return DemoGallery(window=window, row=row)
 
 
-def show(application: Gtk.Application, screen_name: str) -> Gtk.Window:
-    """Build the gallery window, attach it to the application and present it."""
+def show(
+    application: Gtk.Application,
+    screen_name: str,
+    screenshot_path: Optional[str] = None,
+) -> Gtk.Window:
+    """Build the gallery window, attach it to the application and present it.
+
+    If screenshot_path is given, save a PNG on the first painted frame and exit.
+    """
     Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
     _load_demo_css()
 
-    window = build_window(screen_name)
-    application.add_window(window)
-    window.present()
-    return window
+    gallery = build_window(screen_name)
+    application.add_window(gallery.window)
+    gallery.window.present()
+    if screenshot_path is not None:
+        _schedule_screenshot(gallery.window, gallery.row, screenshot_path)
+    return gallery.window

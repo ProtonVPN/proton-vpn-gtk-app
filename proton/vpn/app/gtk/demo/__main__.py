@@ -1,8 +1,8 @@
 """
-App entry point.
+Demo mode entry point. Run as `python -m proton.vpn.app.gtk.demo`.
 
 
-Copyright (c) 2023 Proton AG
+Copyright (c) 2026 Proton AG
 
 This file is part of Proton VPN.
 
@@ -22,17 +22,12 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
 
-from proton.vpn.app.gtk.app import App
-from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
-from proton.vpn.app.gtk.utils.executor import AsyncExecutor
+from proton.vpn.app.gtk.demo.demo_app import DemoApp
 
 
 def main():
-    """Runs the app."""
-    with AsyncExecutor() as executor, ExceptionHandler() as exception_handler:
-        controller = Controller.get(executor, exception_handler)
-        sys.exit(App(controller).run(sys.argv))
+    """Runs the demo app."""
+    sys.exit(DemoApp().run(sys.argv))
 
 
 if __name__ == "__main__":

@@ -54,6 +54,6 @@ def test_demo_factory_runs(entry):
 @pytest.mark.parametrize("screen_name", SCREENS)
 def test_demo_screen_builds_window(screen_name):
     """Every screen builds its gallery window without error."""
-    window = launcher.build_window(screen_name)
-    assert isinstance(window, Gtk.Window)
+    gallery = launcher.build_window(screen_name)
+    assert isinstance(gallery.window, Gtk.Window)
     process_gtk_events()

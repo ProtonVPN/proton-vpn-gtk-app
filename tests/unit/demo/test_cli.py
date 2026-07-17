@@ -17,88 +17,90 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 
-Tests for the demo command-line surface: detection, the --demo / --demo-list
-handlers, the not-available-in-build path, and demo-mode app flags.
+Tests for the demo command-line surface: DemoApp's --demo / --demo-list
+handlers, and do_handle_local_options — the GLib option-parsing glue that
+routes parsed CLI flags to those handlers.
 """
-import sys
-from unittest.mock import MagicMock, patch
-
 import pytest
-from gi.repository import Gio
+from gi.repository import Gio, GLib
 
-from proton.vpn.app.gtk import app as app_module
-from proton.vpn.app.gtk.app import App, demo_requested
+from proton.vpn.app.gtk.app import CONTINUE_STARTUP, EXIT_FAILURE, EXIT_SUCCESS
+from proton.vpn.app.gtk.demo.demo_app import DemoApp
 
 
 @pytest.fixture
 def demo_app():
-    """An App built in demo mode (which skips startup logging / version listing)."""
-    return App(controller=MagicMock(), is_demo=True)
+    """A DemoApp, ready to handle --demo / --demo-list."""
+    return DemoApp()
 
 
-@pytest.mark.parametrize("argv, expected", [
-    (["app"], False),
-    (["app", "--start-minimized"], False),
-    (["app", "--demonstrate"], False),       # must not false-positive
-    (["app", "--demo-list"], True),
-    (["app", "--demo", "login"], True),
-    (["app", "--demo=login"], True),
-])
-def test_demo_requested(argv, expected):
-    assert demo_requested(argv) is expected
+def _options(flags):
+    """A GLib.VariantDict populated the way GLib's own parser would from CLI flags."""
+    variant_dict = GLib.VariantDict.new()
+    for name, value in flags.items():
+        if isinstance(value, bool):
+            variant_dict.insert_value(name, GLib.Variant.new_boolean(value))
+        else:
+            variant_dict.insert_value(name, GLib.Variant.new_string(value))
+    return variant_dict
 
 
-def test_load_demo_returns_the_demo_modules():
-    loaded = App.load_demo()
-
-    assert loaded is not None
-    demo_registry, demo_launcher = loaded
-    assert hasattr(demo_registry, "all_demo_screen_names")
-    assert hasattr(demo_launcher, "build_window")
-
-
-def test_load_demo_handles_a_build_without_the_demo_package(capsys):
-    # In a shipped build the demo package is excluded; importing it must fail
-    # gracefully rather than crash. Patching sys.modules is the only way to
-    # simulate the package being absent.
-    with patch.dict(sys.modules, {"proton.vpn.app.gtk.demo": None}):
-        loaded = App.load_demo()
-
-    assert loaded is None
-    assert "not available" in capsys.readouterr().err
-
-
-def test_handle_demo_accepts_a_known_screen(demo_app):
+def test_handle_demo_accepts_a_known_screen(demo_app):  # pylint: disable=redefined-outer-name
     result = demo_app.handle_demo("login")
 
-    assert result == app_module.CONTINUE_STARTUP
+    assert result == CONTINUE_STARTUP
     assert demo_app.demo_screen == "login"
 
 
+# pylint: disable-next=redefined-outer-name
 def test_handle_demo_rejects_an_unknown_screen(demo_app, capsys):
     result = demo_app.handle_demo("does-not-exist")
 
-    assert result == app_module.EXIT_FAILURE
+    assert result == EXIT_FAILURE
     assert demo_app.demo_screen is None
     assert "Unknown demo screen" in capsys.readouterr().err
 
 
+# pylint: disable-next=redefined-outer-name
 def test_handle_demo_list_prints_every_screen(demo_app, capsys):
     result = demo_app.handle_demo_list()
 
-    assert result == app_module.EXIT_SUCCESS
+    assert result == EXIT_SUCCESS
     out = capsys.readouterr().out
     for name in ("nps-modal", "bug-report", "quick-connect", "login"):
         assert name in out
 
 
-def test_demo_mode_is_non_unique():
-    app = App(controller=MagicMock(), is_demo=True)
-
-    assert app.get_flags() & Gio.ApplicationFlags.NON_UNIQUE
+def test_demo_app_is_non_unique(demo_app):  # pylint: disable=redefined-outer-name
+    assert demo_app.get_flags() & Gio.ApplicationFlags.NON_UNIQUE
 
 
-def test_normal_mode_is_not_non_unique():
-    app = App(controller=MagicMock(), is_demo=False)
+@pytest.mark.parametrize("flags, expected_screen, expected_screenshot_path", [
+    ({"demo": "login", "screenshot": "/tmp/x.png"}, "login", "/tmp/x.png"),
+    ({"demo": "login"}, "login", None),
+    ({}, None, None),
+])
+def test_do_handle_local_options_sets_state_and_continues_startup(
+    # pylint: disable-next=redefined-outer-name
+    demo_app, flags, expected_screen, expected_screenshot_path
+):
+    result = demo_app.do_handle_local_options(_options(flags))
 
-    assert not (app.get_flags() & Gio.ApplicationFlags.NON_UNIQUE)
+    assert result == CONTINUE_STARTUP
+    assert demo_app.demo_screen == expected_screen
+    assert demo_app.screenshot_path == expected_screenshot_path
+
+
+# pylint: disable-next=redefined-outer-name
+def test_do_handle_local_options_propagates_an_unknown_screen_failure(demo_app, capsys):
+    result = demo_app.do_handle_local_options(_options({"demo": "does-not-exist"}))
+
+    assert result == EXIT_FAILURE
+    assert "Unknown demo screen" in capsys.readouterr().err
+
+
+# pylint: disable-next=redefined-outer-name
+def test_do_handle_local_options_routes_demo_list(demo_app, capsys):
+    result = demo_app.do_handle_local_options(_options({"demo-list": True}))
+
+    assert result == EXIT_SUCCESS

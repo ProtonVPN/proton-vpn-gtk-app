@@ -41,6 +41,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     DoubleFlagIcon,
     SecureCoreIcon,
 )
+from proton.vpn.app.gtk.utils.country import get_localized_country_name
 
 
 class SecureCoreRow(Gtk.Box):
@@ -73,7 +74,8 @@ class SecureCoreRow(Gtk.Box):
         self._user_tier = user_tier
         self._expandable_row.reset(keep_children=False)
         self._expandable_row.connect_toggle()
-        exit_country_name = secure_core_group.servers[0].exit_country_name
+        exit_country_name = get_localized_country_name(
+            secure_core_group.servers[0].exit_country)
         upgrade_required = user_tier == TierEnum.FREE and not secure_core_group.free
         connect_button_tooltip = (
             C_(
@@ -154,14 +156,15 @@ class SecureCoreRow(Gtk.Box):
         # pylint: disable=duplicate-code
         def display_server_row(server_row: RowContent, server: LogicalServer) -> None:
             upgrade_required = self._user_tier == TierEnum.FREE and not server.free
+            exit_country_name = get_localized_country_name(server.exit_country)
+            entry_country_name = get_localized_country_name(server.entry_country)
 
             def on_connect():
                 future = controller.connect_to_server(server.name)
                 future.add_done_callback(lambda f: GLib.idle_add(f.result))
 
             row_data = RowViewModel(
-                # {country} is the entry country name.
-                name=C_("label", "Via {country}").format(country=server.entry_country_name),
+                name=C_("label", "Via {country}").format(country=entry_country_name),
                 on_connect=on_connect,
                 free=server.free,
                 under_maintenance=server.under_maintenance and not upgrade_required,
@@ -178,10 +181,11 @@ class SecureCoreRow(Gtk.Box):
                     C_(
                         "tooltip",
                         # {exit_country} and {entry_country} are country names.
-                        "Upgrade to connect to {exit_country} via {entry_country}"
+                        "Upgrade to connect to {exit_country}"
+                        " via {entry_country}"
                     ).format(
-                        exit_country=server.exit_country_name,
-                        entry_country=server.entry_country_name
+                        exit_country=exit_country_name,
+                        entry_country=entry_country_name
                     )
                     if upgrade_required else
                     C_(
@@ -189,8 +193,8 @@ class SecureCoreRow(Gtk.Box):
                         # {exit_country} and {entry_country} are country names.
                         "Connect to {exit_country} via {entry_country}"
                     ).format(
-                        exit_country=server.exit_country_name,
-                        entry_country=server.entry_country_name
+                        exit_country=exit_country_name,
+                        entry_country=entry_country_name
                     )
                 ),
             )

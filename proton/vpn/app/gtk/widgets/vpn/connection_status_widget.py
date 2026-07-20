@@ -34,6 +34,7 @@ from proton.vpn.app.gtk.widgets.vpn.port_forward_widget import PortForwardReveal
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.split_tunneling import \
     SPLIT_TUNNELING_TOGGLE_SETTING_NAME
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
+from proton.vpn.app.gtk.utils.country import get_localized_country_name
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -274,14 +275,15 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
             self._connection_details_icon = new_connection_details_icon
             self._connection_details_box.attach(self._connection_details_icon, 0, 0, 1, 1)
 
-            self._connection_details_title.set_text(logical_server.exit_country_name)
+            self._connection_details_title.set_text(
+                get_localized_country_name(logical_server.exit_country))
             if is_secure_core:
                 self._connection_details_subtitle.set_label(
                     C_(
                         "label",
-                        # {country} is the entry country name.
+                        # {country} is a country name.
                         "Via {country}"
-                    ).format(country=logical_server.entry_country_name)
+                    ).format(country=get_localized_country_name(logical_server.entry_country))
                 )
             else:
                 self._connection_details_subtitle.set_label(

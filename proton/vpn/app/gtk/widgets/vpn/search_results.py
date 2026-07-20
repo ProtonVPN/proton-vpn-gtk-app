@@ -31,6 +31,7 @@ from proton.vpn.session.servers.logicals import (
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.country import get_localized_country_name
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -170,7 +171,7 @@ class SearchResults(Gtk.ScrolledWindow):
             for server in controller.server_list:
                 if not server.under_maintenance and \
                         self._search_input_exists(search_text, server, entry_country_name=True):
-                    result.add((server.entry_country_name, None))
+                    result.add((get_localized_country_name(server.entry_country), None))
 
             return result
 
@@ -234,7 +235,9 @@ class SearchResults(Gtk.ScrolledWindow):
         location_name: bool = False, server_name: bool = False
     ) -> bool:
         if entry_country_name:
-            return bool(search_text and (search_text in server.entry_country_name.lower()))
+            localized = get_localized_country_name(server.entry_country).lower()
+            english = server.entry_country_name.lower()
+            return bool(search_text and (search_text in localized or search_text in english))
 
         if location_name:
             return bool(search_text and (search_text in server.location.lower()))

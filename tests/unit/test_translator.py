@@ -1,5 +1,6 @@
 import gettext
 
+from proton.vpn.app.gtk import translator
 from proton.vpn.app.gtk.translator import C_, npgettext, localization_enabled
 
 
@@ -39,3 +40,16 @@ def test_npgettext_returns_plural_translation_when_count_is_more_than_one():
 
 def test_npgettext_returns_plural_source_when_disabled_and_count_is_more_than_one():
     assert npgettext("info", "server", "servers", 2, gettext.NullTranslations()) == "servers"
+
+
+def test_resolve_language_returns_locale_when_catalog_present(tmp_path):
+    domain = "proton-vpn-gtk-app"
+    mo = tmp_path / "fr_FR" / "LC_MESSAGES" / f"{domain}.mo"
+    mo.parent.mkdir(parents=True)
+    mo.write_bytes(b"")
+    assert translator._resolve_language(["fr_FR"], domain, str(tmp_path)) == "fr_FR"
+
+
+def test_resolve_language_is_none_when_catalog_absent(tmp_path):
+    assert translator._resolve_language(
+        ["fr_FR"], "proton-vpn-gtk-app", str(tmp_path)) is None

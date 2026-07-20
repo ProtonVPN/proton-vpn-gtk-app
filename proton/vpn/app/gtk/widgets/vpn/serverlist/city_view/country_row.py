@@ -37,6 +37,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils \
     import make_connect_callback, sync_rows_with_model_items
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.secure_core_row import SecureCoreRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
+from proton.vpn.app.gtk.utils.country import get_localized_country_name
 
 
 # pylint: disable=too-many-instance-attributes
@@ -46,6 +47,7 @@ class CountryRow(Gtk.Box):
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self._country: Optional[Country] = None
+        self._localized_country_name = None
         self._controller = None
         self._user_tier = None
         self._expanded_groups: set[str] = set()
@@ -87,9 +89,11 @@ class CountryRow(Gtk.Box):
         self._expanded_groups = expanded_groups
         self._expandable_row.connect_toggle()
         upgrade_required = user_tier == TierEnum.FREE and not country.free
+        localized_country_name = get_localized_country_name(country.code)
+        self._localized_country_name = localized_country_name
 
         row_data = RowViewModel(
-            name=country.name,
+            name=localized_country_name,
             on_connect=make_connect_callback(controller, country.servers, user_tier),
             free=country.free,
             under_maintenance=country.under_maintenance and not upgrade_required,
@@ -99,13 +103,21 @@ class CountryRow(Gtk.Box):
             upgrade_required=upgrade_required,
             icon_factory=lambda c=country: CountryFlagIcon(c.code),
             connect_button_tooltip=(
-                C_("tooltip", "Upgrade to connect to {name}").format(name=country.name)
+                C_("tooltip", "Upgrade to connect to {country_name}").format(
+                    country_name=localized_country_name
+                )
                 if upgrade_required else
-                C_("tooltip", "Connect to {name}").format(name=country.name)
+                C_("tooltip", "Connect to {country_name}").format(
+                    country_name=localized_country_name
+                )
             ),
             toggle_button_tooltips=(
-                C_("tooltip", "Show all locations from {name}").format(name=country.name),
-                C_("tooltip", "Hide all locations from {name}").format(name=country.name),
+                C_("tooltip", "Show all locations from {country_name}").format(
+                    country_name=localized_country_name
+                ),
+                C_("tooltip", "Hide all locations from {country_name}").format(
+                    country_name=localized_country_name
+                ),
             ),
         )
         self._expandable_row.row_content.display(row_data)
@@ -126,8 +138,8 @@ class CountryRow(Gtk.Box):
 
     @property
     def country_name(self):
-        """Returns this row's country name."""
-        return self._country.name
+        """Returns this row's localized country name (as shown on the row)."""
+        return self._localized_country_name
 
     @property
     def country_code(self):

@@ -1,4 +1,8 @@
-## What's new (4.16.5)
+## What's new (4.17.1)
+- Introduced Proton Protocols, a new VPN architecture designed for improved stability and censorship resistance
+- Introduced Proton Stealth, the Proton Protocols implementation of our unique Stealth anti-censorship technology
+
+## 4.16.5
 - Minor stability improvements and development dependency cleanup.
 
 ## 4.16.4

@@ -113,779 +113,779 @@ msgstr "_Ναι"
 
 msgctxt "country"
 msgid "Afghanistan"
-msgstr "Afghanistan"
+msgstr "Αφγανιστάν"
 
 msgctxt "country"
 msgid "Aland Islands"
-msgstr "Aland Islands"
+msgstr "Νησιά Άλαντ"
 
 msgctxt "country"
 msgid "Albania"
-msgstr "Albania"
+msgstr "Αλβανία"
 
 msgctxt "country"
 msgid "Algeria"
-msgstr "Algeria"
+msgstr "Αλγερία"
 
 msgctxt "country"
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "Αμερικανική Σαμόα"
 
 msgctxt "country"
 msgid "Andorra"
-msgstr "Andorra"
+msgstr "Ανδόρα"
 
 msgctxt "country"
 msgid "Angola"
-msgstr "Angola"
+msgstr "Αγκόλα"
 
 msgctxt "country"
 msgid "Anguilla"
-msgstr "Anguilla"
+msgstr "Ανγκουίλα"
 
 msgctxt "country"
 msgid "Antarctica"
-msgstr "Antarctica"
+msgstr "Ανταρκτική"
 
 msgctxt "country"
 msgid "Antigua and Barbuda"
-msgstr "Antigua and Barbuda"
+msgstr "Αντίγκουα και Μπαρμπούντα"
 
 msgctxt "country"
 msgid "Argentina"
-msgstr "Argentina"
+msgstr "Αργεντινή"
 
 msgctxt "country"
 msgid "Armenia"
-msgstr "Armenia"
+msgstr "Αρμενία"
 
 msgctxt "country"
 msgid "Aruba"
-msgstr "Aruba"
+msgstr "Αρούμπα"
 
 msgctxt "country"
 msgid "Australia"
-msgstr "Australia"
+msgstr "Αυστραλία"
 
 msgctxt "country"
 msgid "Austria"
-msgstr "Austria"
+msgstr "Αυστρία"
 
 msgctxt "country"
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr "Αζερμπαϊτζάν"
 
 msgctxt "country"
 msgid "Bahamas"
-msgstr "Bahamas"
+msgstr "Μπαχάμες"
 
 msgctxt "country"
 msgid "Bahrain"
-msgstr "Bahrain"
+msgstr "Μπαχρέιν"
 
 msgctxt "country"
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr "Μπαγκλαντές"
 
 msgctxt "country"
 msgid "Barbados"
-msgstr "Barbados"
+msgstr "Μπαρμπάντος"
 
 msgctxt "country"
 msgid "Belarus"
-msgstr "Belarus"
+msgstr "Λευκορωσία"
 
 msgctxt "country"
 msgid "Belgium"
-msgstr "Belgium"
+msgstr "Βέλγιο"
 
 msgctxt "country"
 msgid "Belize"
-msgstr "Belize"
+msgstr "Μπελίζ"
 
 msgctxt "country"
 msgid "Benin"
-msgstr "Benin"
+msgstr "Μπενίν"
 
 msgctxt "country"
 msgid "Bermuda"
-msgstr "Bermuda"
+msgstr "Βερμούδες"
 
 msgctxt "country"
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr "Μπουτάν"
 
 msgctxt "country"
 msgid "Bolivia"
-msgstr "Bolivia"
+msgstr "Βολιβία"
 
 msgctxt "country"
 msgid "Bonaire, Saint Eustatius and Saba "
-msgstr "Bonaire, Saint Eustatius and Saba "
+msgstr "Μπονέρ, Άγιος Ευστάθιος και Σάμπα "
 
 msgctxt "country"
 msgid "Bosnia and Herzegovina"
-msgstr "Bosnia and Herzegovina"
+msgstr "Βοσνία Ερζεγοβίνη"
 
 msgctxt "country"
 msgid "Botswana"
-msgstr "Botswana"
+msgstr "Μποτσουάνα"
 
 msgctxt "country"
 msgid "Bouvet Island"
-msgstr "Bouvet Island"
+msgstr "Νήσος Μπουβέ"
 
 msgctxt "country"
 msgid "Brazil"
-msgstr "Brazil"
+msgstr "Βραζιλία"
 
 msgctxt "country"
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "Βρετανικό Έδαφος Ινδικού Ωκεανού"
 
 msgctxt "country"
 msgid "British Virgin Islands"
-msgstr "British Virgin Islands"
+msgstr "Βρετανικές Παρθένοι Νήσοι"
 
 msgctxt "country"
 msgid "Brunei"
-msgstr "Brunei"
+msgstr "Μπρουνέι"
 
 msgctxt "country"
 msgid "Bulgaria"
-msgstr "Bulgaria"
+msgstr "Βουλγαρία"
 
 msgctxt "country"
 msgid "Burkina Faso"
-msgstr "Burkina Faso"
+msgstr "Μπουρκίνα Φάσο"
 
 msgctxt "country"
 msgid "Burundi"
-msgstr "Burundi"
+msgstr "Μπουρούντι"
 
 msgctxt "country"
 msgid "Cambodia"
-msgstr "Cambodia"
+msgstr "Καμπότζη"
 
 msgctxt "country"
 msgid "Cameroon"
-msgstr "Cameroon"
+msgstr "Καμερούν"
 
 msgctxt "country"
 msgid "Canada"
-msgstr "Canada"
+msgstr "Καναδάς"
 
 msgctxt "country"
 msgid "Cape Verde"
-msgstr "Cape Verde"
+msgstr "Πράσινο Ακρωτήριo"
 
 msgctxt "country"
 msgid "Cayman Islands"
-msgstr "Cayman Islands"
+msgstr "Νήσοι Κέιμαν"
 
 msgctxt "country"
 msgid "Central African Republic"
-msgstr "Central African Republic"
+msgstr "Κεντροαφρικανική Δημοκρατία"
 
 msgctxt "country"
 msgid "Chad"
-msgstr "Chad"
+msgstr "Τσαντ"
 
 msgctxt "country"
 msgid "Chile"
-msgstr "Chile"
+msgstr "Χιλή"
 
 msgctxt "country"
 msgid "China"
-msgstr "China"
+msgstr "Κίνα"
 
 msgctxt "country"
 msgid "Christmas Island"
-msgstr "Christmas Island"
+msgstr "Νήσος Χριστουγέννων"
 
 msgctxt "country"
 msgid "Cocos Islands"
-msgstr "Cocos Islands"
+msgstr "Νήσοι Κόκος"
 
 msgctxt "country"
 msgid "Colombia"
-msgstr "Colombia"
+msgstr "Κολομβία"
 
 msgctxt "country"
 msgid "Comoros"
-msgstr "Comoros"
+msgstr "Κομόρες"
 
 msgctxt "country"
 msgid "Cook Islands"
-msgstr "Cook Islands"
+msgstr "Νήσοι Κουκ"
 
 msgctxt "country"
 msgid "Costa Rica"
-msgstr "Costa Rica"
+msgstr "Κόστα Ρίκα"
 
 msgctxt "country"
 msgid "Croatia"
-msgstr "Croatia"
+msgstr "Κροατία"
 
 msgctxt "country"
 msgid "Cuba"
-msgstr "Cuba"
+msgstr "Κούβα"
 
 msgctxt "country"
 msgid "Curacao"
-msgstr "Curacao"
+msgstr "Κουρασάο"
 
 msgctxt "country"
 msgid "Cyprus"
-msgstr "Cyprus"
+msgstr "Κύπρος"
 
 msgctxt "country"
 msgid "Czech Republic"
-msgstr "Czech Republic"
+msgstr "Τσεχία"
 
 msgctxt "country"
 msgid "Democratic Republic of the Congo"
-msgstr "Democratic Republic of the Congo"
+msgstr "Λαϊκή Δημοκρατία του Κονγκό"
 
 msgctxt "country"
 msgid "Denmark"
-msgstr "Denmark"
+msgstr "Δανία"
 
 msgctxt "country"
 msgid "Djibouti"
-msgstr "Djibouti"
+msgstr "Τζιμπουτί"
 
 msgctxt "country"
 msgid "Dominica"
-msgstr "Dominica"
+msgstr "Δομινίκα"
 
 msgctxt "country"
 msgid "Dominican Republic"
-msgstr "Dominican Republic"
+msgstr "Δομινικανή Δημοκρατία"
 
 msgctxt "country"
 msgid "East Timor"
-msgstr "East Timor"
+msgstr "Ανατολικό Τιμόρ"
 
 msgctxt "country"
 msgid "Ecuador"
-msgstr "Ecuador"
+msgstr "Ισημερινός"
 
 msgctxt "country"
 msgid "Egypt"
-msgstr "Egypt"
+msgstr "Αίγυπτος"
 
 msgctxt "country"
 msgid "El Salvador"
-msgstr "El Salvador"
+msgstr "Ελ Σαλβαδόρ"
 
 msgctxt "country"
 msgid "Equatorial Guinea"
-msgstr "Equatorial Guinea"
+msgstr "Ισημερινή Γουινέα"
 
 msgctxt "country"
 msgid "Eritrea"
-msgstr "Eritrea"
+msgstr "Ερυθραία"
 
 msgctxt "country"
 msgid "Estonia"
-msgstr "Estonia"
+msgstr "Εσθονία"
 
 msgctxt "country"
 msgid "Ethiopia"
-msgstr "Ethiopia"
+msgstr "Αιθιοπία"
 
 msgctxt "country"
 msgid "Falkland Islands"
-msgstr "Falkland Islands"
+msgstr "Νήσοι Φόκλαντ"
 
 msgctxt "country"
 msgid "Faroe Islands"
-msgstr "Faroe Islands"
+msgstr "Νήσοι Φερόες"
 
 msgctxt "country"
 msgid "Fiji"
-msgstr "Fiji"
+msgstr "Φίτζι"
 
 msgctxt "country"
 msgid "Finland"
-msgstr "Finland"
+msgstr "Φινλανδία"
 
 msgctxt "country"
 msgid "France"
-msgstr "France"
+msgstr "Γαλλία"
 
 msgctxt "country"
 msgid "French Guiana"
-msgstr "French Guiana"
+msgstr "Γαλλική Γουιάνα"
 
 msgctxt "country"
 msgid "French Polynesia"
-msgstr "French Polynesia"
+msgstr "Γαλλική Πολυνησία"
 
 msgctxt "country"
 msgid "French Southern Territories"
-msgstr "French Southern Territories"
+msgstr "Νότια Γαλλικά Εδάφη"
 
 msgctxt "country"
 msgid "Gabon"
-msgstr "Gabon"
+msgstr "Γκαμπόν"
 
 msgctxt "country"
 msgid "Gambia"
-msgstr "Gambia"
+msgstr "Γκάμπια"
 
 msgctxt "country"
 msgid "Georgia"
-msgstr "Georgia"
+msgstr "Γεωργία"
 
 msgctxt "country"
 msgid "Germany"
-msgstr "Germany"
+msgstr "Γερμανία"
 
 msgctxt "country"
 msgid "Ghana"
-msgstr "Ghana"
+msgstr "Γκάνα"
 
 msgctxt "country"
 msgid "Gibraltar"
-msgstr "Gibraltar"
+msgstr "Γιβραλτάρ"
 
 msgctxt "country"
 msgid "Greece"
-msgstr "Greece"
+msgstr "Ελλάδα"
 
 msgctxt "country"
 msgid "Greenland"
-msgstr "Greenland"
+msgstr "Γροιλανδία"
 
 msgctxt "country"
 msgid "Grenada"
-msgstr "Grenada"
+msgstr "Γρενάδα"
 
 msgctxt "country"
 msgid "Guadeloupe"
-msgstr "Guadeloupe"
+msgstr "Γουαδελούπη"
 
 msgctxt "country"
 msgid "Guam"
-msgstr "Guam"
+msgstr "Γκουάμ"
 
 msgctxt "country"
 msgid "Guatemala"
-msgstr "Guatemala"
+msgstr "Γουατεμάλα"
 
 msgctxt "country"
 msgid "Guernsey"
-msgstr "Guernsey"
+msgstr "Γκέρνζι"
 
 msgctxt "country"
 msgid "Guinea"
-msgstr "Guinea"
+msgstr "Γουινέα"
 
 msgctxt "country"
 msgid "Guinea-Bissau"
-msgstr "Guinea-Bissau"
+msgstr "Γουινέα-Μπισάου"
 
 msgctxt "country"
 msgid "Guyana"
-msgstr "Guyana"
+msgstr "Γουιάνα"
 
 msgctxt "country"
 msgid "Haiti"
-msgstr "Haiti"
+msgstr "Αϊτή"
 
 msgctxt "country"
 msgid "Heard Island and McDonald Islands"
-msgstr "Heard Island and McDonald Islands"
+msgstr "Νήσοι Χερντ και Μακντόναλντ"
 
 msgctxt "country"
 msgid "Honduras"
-msgstr "Honduras"
+msgstr "Ονδούρα"
 
 msgctxt "country"
 msgid "Hong Kong"
-msgstr "Hong Kong"
+msgstr "Χονγκ Κονγκ"
 
 msgctxt "country"
 msgid "Hungary"
-msgstr "Hungary"
+msgstr "Ουγγαρία"
 
 msgctxt "country"
 msgid "Iceland"
-msgstr "Iceland"
+msgstr "Ισλανδία"
 
 msgctxt "country"
 msgid "India"
-msgstr "India"
+msgstr "Ινδία"
 
 msgctxt "country"
 msgid "Indonesia"
-msgstr "Indonesia"
+msgstr "Ινδονησία"
 
 msgctxt "country"
 msgid "Iran"
-msgstr "Iran"
+msgstr "Ιράν"
 
 msgctxt "country"
 msgid "Iraq"
-msgstr "Iraq"
+msgstr "Ιράκ"
 
 msgctxt "country"
 msgid "Ireland"
-msgstr "Ireland"
+msgstr "Ιρλανδία"
 
 msgctxt "country"
 msgid "Isle of Man"
-msgstr "Isle of Man"
+msgstr "Νήσος Μαν"
 
 msgctxt "country"
 msgid "Israel"
-msgstr "Israel"
+msgstr "Ισραήλ"
 
 msgctxt "country"
 msgid "Italy"
-msgstr "Italy"
+msgstr "Ιταλία"
 
 msgctxt "country"
 msgid "Ivory Coast"
-msgstr "Ivory Coast"
+msgstr "Ακτή Ελεφαντοστού"
 
 msgctxt "country"
 msgid "Jamaica"
-msgstr "Jamaica"
+msgstr "Τζαμάικα"
 
 msgctxt "country"
 msgid "Japan"
-msgstr "Japan"
+msgstr "Ιαπωνία"
 
 msgctxt "country"
 msgid "Jersey"
-msgstr "Jersey"
+msgstr "Τζέρσεϊ"
 
 msgctxt "country"
 msgid "Jordan"
-msgstr "Jordan"
+msgstr "Ιορδανία"
 
 msgctxt "country"
 msgid "Kazakhstan"
-msgstr "Kazakhstan"
+msgstr "Καζακστάν"
 
 msgctxt "country"
 msgid "Kenya"
-msgstr "Kenya"
+msgstr "Κένυα"
 
 msgctxt "country"
 msgid "Kiribati"
-msgstr "Kiribati"
+msgstr "Κιριμπάτι"
 
 msgctxt "country"
 msgid "Kosovo"
-msgstr "Kosovo"
+msgstr "Κόσοβο"
 
 msgctxt "country"
 msgid "Kuwait"
-msgstr "Kuwait"
+msgstr "Κουβέιτ"
 
 msgctxt "country"
 msgid "Kyrgyzstan"
-msgstr "Kyrgyzstan"
+msgstr "Κιργιστάν"
 
 msgctxt "country"
 msgid "Laos"
-msgstr "Laos"
+msgstr "Λάος"
 
 msgctxt "country"
 msgid "Latvia"
-msgstr "Latvia"
+msgstr "Λετονία"
 
 msgctxt "country"
 msgid "Lebanon"
-msgstr "Lebanon"
+msgstr "Λίβανος"
 
 msgctxt "country"
 msgid "Lesotho"
-msgstr "Lesotho"
+msgstr "Λεσότο"
 
 msgctxt "country"
 msgid "Liberia"
-msgstr "Liberia"
+msgstr "Λιβερία"
 
 msgctxt "country"
 msgid "Libya"
-msgstr "Libya"
+msgstr "Λιβύη"
 
 msgctxt "country"
 msgid "Liechtenstein"
-msgstr "Liechtenstein"
+msgstr "Λιχτενστάιν"
 
 msgctxt "country"
 msgid "Lithuania"
-msgstr "Lithuania"
+msgstr "Λιθουανία"
 
 msgctxt "country"
 msgid "Luxembourg"
-msgstr "Luxembourg"
+msgstr "Λουξεμβούργο"
 
 msgctxt "country"
 msgid "Macao"
-msgstr "Macao"
+msgstr "Μακάο"
 
 msgctxt "country"
 msgid "Macedonia"
-msgstr "Macedonia"
+msgstr "ΠΓΔ Μακεδονίας"
 
 msgctxt "country"
 msgid "Madagascar"
-msgstr "Madagascar"
+msgstr "Μαδαγασκάρη"
 
 msgctxt "country"
 msgid "Malawi"
-msgstr "Malawi"
+msgstr "Μαλάουι"
 
 msgctxt "country"
 msgid "Malaysia"
-msgstr "Malaysia"
+msgstr "Μαλαισία"
 
 msgctxt "country"
 msgid "Maldives"
-msgstr "Maldives"
+msgstr "Μαλδίβες"
 
 msgctxt "country"
 msgid "Mali"
-msgstr "Mali"
+msgstr "Μάλι"
 
 msgctxt "country"
 msgid "Malta"
-msgstr "Malta"
+msgstr "Μάλτα"
 
 msgctxt "country"
 msgid "Marshall Islands"
-msgstr "Marshall Islands"
+msgstr "Νήσοι Μάρσαλ"
 
 msgctxt "country"
 msgid "Martinique"
-msgstr "Martinique"
+msgstr "Μαρτινίκα"
 
 msgctxt "country"
 msgid "Mauritania"
-msgstr "Mauritania"
+msgstr "Μαυριτανία"
 
 msgctxt "country"
 msgid "Mauritius"
-msgstr "Mauritius"
+msgstr "Μαυρίκιος"
 
 msgctxt "country"
 msgid "Mayotte"
-msgstr "Mayotte"
+msgstr "Μαγιότ"
 
 msgctxt "country"
 msgid "Mexico"
-msgstr "Mexico"
+msgstr "Μεξικό"
 
 msgctxt "country"
 msgid "Micronesia"
-msgstr "Micronesia"
+msgstr "Μικρονησία"
 
 msgctxt "country"
 msgid "Moldova"
-msgstr "Moldova"
+msgstr "Μολδαβία"
 
 msgctxt "country"
 msgid "Monaco"
-msgstr "Monaco"
+msgstr "Μονακό"
 
 msgctxt "country"
 msgid "Mongolia"
-msgstr "Mongolia"
+msgstr "Μογγολία"
 
 msgctxt "country"
 msgid "Montenegro"
-msgstr "Montenegro"
+msgstr "Μαυροβούνιο"
 
 msgctxt "country"
 msgid "Montserrat"
-msgstr "Montserrat"
+msgstr "Μονσεράτ"
 
 msgctxt "country"
 msgid "Morocco"
-msgstr "Morocco"
+msgstr "Μαρόκο"
 
 msgctxt "country"
 msgid "Mozambique"
-msgstr "Mozambique"
+msgstr "Μοζαμβίκη"
 
 msgctxt "country"
 msgid "Myanmar"
-msgstr "Myanmar"
+msgstr "Μιανμάρ"
 
 msgctxt "country"
 msgid "Namibia"
-msgstr "Namibia"
+msgstr "Ναμίμπια"
 
 msgctxt "country"
 msgid "Nauru"
-msgstr "Nauru"
+msgstr "Ναούρου"
 
 msgctxt "country"
 msgid "Nepal"
-msgstr "Nepal"
+msgstr "Νεπάλ"
 
 msgctxt "country"
 msgid "Netherlands"
-msgstr "Netherlands"
+msgstr "Ολλανδία"
 
 msgctxt "country"
 msgid "New Caledonia"
-msgstr "New Caledonia"
+msgstr "Νέα Καληδονία"
 
 msgctxt "country"
 msgid "New Zealand"
-msgstr "New Zealand"
+msgstr "Νέα Ζηλανδία"
 
 msgctxt "country"
 msgid "Nicaragua"
-msgstr "Nicaragua"
+msgstr "Νικαράγουα"
 
 msgctxt "country"
 msgid "Niger"
-msgstr "Niger"
+msgstr "Νίγηρας"
 
 msgctxt "country"
 msgid "Nigeria"
-msgstr "Nigeria"
+msgstr "Νιγηρία"
 
 msgctxt "country"
 msgid "Niue"
-msgstr "Niue"
+msgstr "Νιούε"
 
 msgctxt "country"
 msgid "Norfolk Island"
-msgstr "Norfolk Island"
+msgstr "Νήσος Νόρφολκ"
 
 msgctxt "country"
 msgid "North Korea"
-msgstr "North Korea"
+msgstr "Βόρεια Κορέα"
 
 msgctxt "country"
 msgid "Northern Mariana Islands"
-msgstr "Northern Mariana Islands"
+msgstr "Βόρειες Μαριάνες Νήσοι"
 
 msgctxt "country"
 msgid "Norway"
-msgstr "Norway"
+msgstr "Νορβηγία"
 
 msgctxt "country"
 msgid "Oman"
-msgstr "Oman"
+msgstr "Ομάν"
 
 msgctxt "country"
 msgid "Pakistan"
-msgstr "Pakistan"
+msgstr "Πακιστάν"
 
 msgctxt "country"
 msgid "Palau"
-msgstr "Palau"
+msgstr "Παλάου"
 
 msgctxt "country"
 msgid "Palestinian Territory"
-msgstr "Palestinian Territory"
+msgstr "Παλαιστινιακά Εδάφη"
 
 msgctxt "country"
 msgid "Panama"
-msgstr "Panama"
+msgstr "Παναμάς"
 
 msgctxt "country"
 msgid "Papua New Guinea"
-msgstr "Papua New Guinea"
+msgstr "Παπούα Νέα Γουινέα"
 
 msgctxt "country"
 msgid "Paraguay"
-msgstr "Paraguay"
+msgstr "Παραγουάη"
 
 msgctxt "country"
 msgid "Peru"
-msgstr "Peru"
+msgstr "Περού"
 
 msgctxt "country"
 msgid "Philippines"
-msgstr "Philippines"
+msgstr "Φιλιππίνες"
 
 msgctxt "country"
 msgid "Pitcairn"
-msgstr "Pitcairn"
+msgstr "Πίτκερν"
 
 msgctxt "country"
 msgid "Poland"
-msgstr "Poland"
+msgstr "Πολωνία"
 
 msgctxt "country"
 msgid "Portugal"
-msgstr "Portugal"
+msgstr "Πορτογαλία"
 
 msgctxt "country"
 msgid "Puerto Rico"
-msgstr "Puerto Rico"
+msgstr "Πουέρτο Ρίκο"
 
 msgctxt "country"
 msgid "Qatar"
-msgstr "Qatar"
+msgstr "Κατάρ"
 
 msgctxt "country"
 msgid "Republic of the Congo"
-msgstr "Republic of the Congo"
+msgstr "Δημοκρατία του Κονγκό"
 
 msgctxt "country"
 msgid "Reunion"
-msgstr "Reunion"
+msgstr "Ρεϋνιόν"
 
 msgctxt "country"
 msgid "Romania"
-msgstr "Romania"
+msgstr "Ρουμανία"
 
 msgctxt "country"
 msgid "Russia"
-msgstr "Russia"
+msgstr "Ρωσία"
 
 msgctxt "country"
 msgid "Rwanda"
-msgstr "Rwanda"
+msgstr "Ρουάντα"
 
 msgctxt "country"
 msgid "Saint Barthelemy"
-msgstr "Saint Barthelemy"
+msgstr "Άγιος Βαρθολομαίος"
 
 msgctxt "country"
 msgid "Saint Helena"
-msgstr "Saint Helena"
+msgstr "Αγία Ελένη"
 
 msgctxt "country"
 msgid "Saint Kitts and Nevis"
-msgstr "Saint Kitts and Nevis"
+msgstr "Άγιος Χριστόφορος και Νέβις"
 
 msgctxt "country"
 msgid "Saint Lucia"
-msgstr "Saint Lucia"
+msgstr "Αγία Λουκία"
 
 msgctxt "country"
 msgid "Saint Martin"
-msgstr "Saint Martin"
+msgstr "Άγιος Μαρτίνος"
 
 msgctxt "country"
 msgid "Saint Pierre and Miquelon"
-msgstr "Saint Pierre and Miquelon"
+msgstr "Νήσοι Αγίου Πέτρου και Μιχαήλ"
 
 msgctxt "country"
 msgid "Saint Vincent and the Grenadines"
-msgstr "Saint Vincent and the Grenadines"
+msgstr "Άγιος Βινσέντος και Γρεναδίνες"
 
 msgctxt "country"
 msgid "Samoa"
-msgstr "Samoa"
+msgstr "Σαμόα"
 
 msgctxt "country"
 msgid "San Marino"
-msgstr "San Marino"
+msgstr "Άγιος Μαρίνος"
 
 msgctxt "country"
 msgid "Sao Tome and Principe"
@@ -893,223 +893,223 @@ msgstr "Sao Tome and Principe"
 
 msgctxt "country"
 msgid "Saudi Arabia"
-msgstr "Saudi Arabia"
+msgstr "Σαουδική Αραβία"
 
 msgctxt "country"
 msgid "Senegal"
-msgstr "Senegal"
+msgstr "Σενεγάλη"
 
 msgctxt "country"
 msgid "Serbia"
-msgstr "Serbia"
+msgstr "Σερβία"
 
 msgctxt "country"
 msgid "Seychelles"
-msgstr "Seychelles"
+msgstr "Σεϊχέλες"
 
 msgctxt "country"
 msgid "Sierra Leone"
-msgstr "Sierra Leone"
+msgstr "Σιέρα Λεόνε"
 
 msgctxt "country"
 msgid "Singapore"
-msgstr "Singapore"
+msgstr "Σιγκαπούρη"
 
 msgctxt "country"
 msgid "Sint Maarten"
-msgstr "Sint Maarten"
+msgstr "Άγιος Μαρτίνος"
 
 msgctxt "country"
 msgid "Slovakia"
-msgstr "Slovakia"
+msgstr "Σλοβακία"
 
 msgctxt "country"
 msgid "Slovenia"
-msgstr "Slovenia"
+msgstr "Σλοβενία"
 
 msgctxt "country"
 msgid "Solomon Islands"
-msgstr "Solomon Islands"
+msgstr "Νήσοι Σολομώντος"
 
 msgctxt "country"
 msgid "Somalia"
-msgstr "Somalia"
+msgstr "Σομαλία"
 
 msgctxt "country"
 msgid "South Africa"
-msgstr "South Africa"
+msgstr "Νότια Αφρική"
 
 msgctxt "country"
 msgid "South Georgia and the South Sandwich Islands"
-msgstr "South Georgia and the South Sandwich Islands"
+msgstr "Νήσοι Νότια Γεωργία και Νότιες Σάντουιτς"
 
 msgctxt "country"
 msgid "South Korea"
-msgstr "South Korea"
+msgstr "Νότια Κορέα"
 
 msgctxt "country"
 msgid "South Sudan"
-msgstr "South Sudan"
+msgstr "Νότιο Σουδάν"
 
 msgctxt "country"
 msgid "Spain"
-msgstr "Spain"
+msgstr "Ισπανία"
 
 msgctxt "country"
 msgid "Sri Lanka"
-msgstr "Sri Lanka"
+msgstr "Σρι Λάνκα"
 
 msgctxt "country"
 msgid "Sudan"
-msgstr "Sudan"
+msgstr "Σουδάν"
 
 msgctxt "country"
 msgid "Suriname"
-msgstr "Suriname"
+msgstr "Σουρινάμ"
 
 msgctxt "country"
 msgid "Svalbard and Jan Mayen"
-msgstr "Svalbard and Jan Mayen"
+msgstr "Σβάλμπαρντ και Γιαν Μάιεν"
 
 msgctxt "country"
 msgid "Swaziland"
-msgstr "Swaziland"
+msgstr "Σουαζιλάνδη"
 
 msgctxt "country"
 msgid "Sweden"
-msgstr "Sweden"
+msgstr "Σουηδία"
 
 msgctxt "country"
 msgid "Switzerland"
-msgstr "Switzerland"
+msgstr "Ελβετία"
 
 msgctxt "country"
 msgid "Syria"
-msgstr "Syria"
+msgstr "Συρία"
 
 msgctxt "country"
 msgid "Taiwan"
-msgstr "Taiwan"
+msgstr "Ταϊβάν"
 
 msgctxt "country"
 msgid "Tajikistan"
-msgstr "Tajikistan"
+msgstr "Τατζικιστάν"
 
 msgctxt "country"
 msgid "Tanzania"
-msgstr "Tanzania"
+msgstr "Τανζανία"
 
 msgctxt "country"
 msgid "Thailand"
-msgstr "Thailand"
+msgstr "Ταϊλάνδη"
 
 msgctxt "country"
 msgid "Togo"
-msgstr "Togo"
+msgstr "Τόγκο"
 
 msgctxt "country"
 msgid "Tokelau"
-msgstr "Tokelau"
+msgstr "Τοκελάου"
 
 msgctxt "country"
 msgid "Tonga"
-msgstr "Tonga"
+msgstr "Τόνγκα"
 
 msgctxt "country"
 msgid "Trinidad and Tobago"
-msgstr "Trinidad and Tobago"
+msgstr "Τρινιντάντ και Τομπάγκο"
 
 msgctxt "country"
 msgid "Tunisia"
-msgstr "Tunisia"
+msgstr "Τυνησία"
 
 msgctxt "country"
 msgid "Turkey"
-msgstr "Turkey"
+msgstr "Τουρκία"
 
 msgctxt "country"
 msgid "Turkmenistan"
-msgstr "Turkmenistan"
+msgstr "Τουρκμενιστάν"
 
 msgctxt "country"
 msgid "Turks and Caicos Islands"
-msgstr "Turks and Caicos Islands"
+msgstr "Νήσοι Τερκς και Κάικος"
 
 msgctxt "country"
 msgid "Tuvalu"
-msgstr "Tuvalu"
+msgstr "Τουβαλού"
 
 msgctxt "country"
 msgid "U.S. Virgin Islands"
-msgstr "U.S. Virgin Islands"
+msgstr "Αμερικανικές Παρθένοι Νήσοι"
 
 msgctxt "country"
 msgid "Uganda"
-msgstr "Uganda"
+msgstr "Ουγκάντα"
 
 msgctxt "country"
 msgid "Ukraine"
-msgstr "Ukraine"
+msgstr "Ουκρανία"
 
 msgctxt "country"
 msgid "United Arab Emirates"
-msgstr "United Arab Emirates"
+msgstr "Ηνωμένα Αραβικά Εμιράτα"
 
 msgctxt "country"
 msgid "United Kingdom"
-msgstr "United Kingdom"
+msgstr "Ηνωμένο Βασίλειο"
 
 msgctxt "country"
 msgid "United States"
-msgstr "United States"
+msgstr "Ηνωμένες Πολιτείες"
 
 msgctxt "country"
 msgid "United States Minor Outlying Islands"
-msgstr "United States Minor Outlying Islands"
+msgstr "Απομακρυσμένες Νησίδες των Ηνωμένων Πολιτειών"
 
 msgctxt "country"
 msgid "Uruguay"
-msgstr "Uruguay"
+msgstr "Ουρουγουάη"
 
 msgctxt "country"
 msgid "Uzbekistan"
-msgstr "Uzbekistan"
+msgstr "Ουζμπεκιστάν"
 
 msgctxt "country"
 msgid "Vanuatu"
-msgstr "Vanuatu"
+msgstr "Βανουάτου"
 
 msgctxt "country"
 msgid "Vatican"
-msgstr "Vatican"
+msgstr "Βατικάνο"
 
 msgctxt "country"
 msgid "Venezuela"
-msgstr "Venezuela"
+msgstr "Βενεζουέλα"
 
 msgctxt "country"
 msgid "Vietnam"
-msgstr "Vietnam"
+msgstr "Βιετνάμ"
 
 msgctxt "country"
 msgid "Wallis and Futuna"
-msgstr "Wallis and Futuna"
+msgstr "Ουαλίς και Φουτουνά"
 
 msgctxt "country"
 msgid "Western Sahara"
-msgstr "Western Sahara"
+msgstr "Δυτική Σαχάρα"
 
 msgctxt "country"
 msgid "Yemen"
-msgstr "Yemen"
+msgstr "Υεμένη"
 
 msgctxt "country"
 msgid "Zambia"
-msgstr "Zambia"
+msgstr "Ζάμπια"
 
 msgctxt "country"
 msgid "Zimbabwe"
-msgstr "Zimbabwe"
+msgstr "Ζιμπάμπουε"
 
 msgctxt "error"
 msgid "An unknown error occurred"
@@ -1886,7 +1886,7 @@ msgstr "Κλείσιμο"
 
 msgctxt "tooltip"
 msgid "Connect to {country_name}"
-msgstr "Connect to {country_name}"
+msgstr "Σύνδεση με {country_name}"
 
 msgctxt "tooltip"
 msgid "Connect to {country} via Secure Core"
@@ -1914,7 +1914,7 @@ msgstr ""
 
 msgctxt "tooltip"
 msgid "Hide all locations from {country_name}"
-msgstr "Hide all locations from {country_name}"
+msgstr "Απόκρυψη όλων των τοποθεσιών από {country_name}"
 
 msgctxt "tooltip"
 msgid "Hide all servers from {name}"
@@ -1949,7 +1949,7 @@ msgstr ""
 
 msgctxt "tooltip"
 msgid "Show all locations from {country_name}"
-msgstr "Show all locations from {country_name}"
+msgstr "Εμφάνιση όλων των τοποθεσιών από {country_name}"
 
 msgctxt "tooltip"
 msgid "Show all servers from {name}"
@@ -1975,7 +1975,7 @@ msgstr "Υποστηρίζεται Tor"
 
 msgctxt "tooltip"
 msgid "Upgrade to connect to {country_name}"
-msgstr "Upgrade to connect to {country_name}"
+msgstr "Αναβαθμίστε για να συνδεθείτε με {country_name}"
 
 msgctxt "tooltip"
 msgid "Upgrade to connect to {country} via Secure Core"

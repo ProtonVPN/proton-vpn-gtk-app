@@ -181,7 +181,7 @@ msgstr "Bahames"
 
 msgctxt "country"
 msgid "Bahrain"
-msgstr "Bahrein"
+msgstr "Bahrain"
 
 msgctxt "country"
 msgid "Bangladesh"
@@ -281,7 +281,7 @@ msgstr "Cap Verd"
 
 msgctxt "country"
 msgid "Cayman Islands"
-msgstr "Illes Caimà"
+msgstr "Illes Caiman"
 
 msgctxt "country"
 msgid "Central African Republic"
@@ -365,7 +365,7 @@ msgstr "República Dominicana"
 
 msgctxt "country"
 msgid "East Timor"
-msgstr "Timor oriental"
+msgstr "Timor Oriental"
 
 msgctxt "country"
 msgid "Ecuador"
@@ -489,7 +489,7 @@ msgstr "Guinea-Bissau"
 
 msgctxt "country"
 msgid "Guyana"
-msgstr "Guaiana"
+msgstr "Guyana"
 
 msgctxt "country"
 msgid "Haiti"
@@ -789,7 +789,7 @@ msgstr "Palau"
 
 msgctxt "country"
 msgid "Palestinian Territory"
-msgstr "Territori Palestí"
+msgstr "Palestina"
 
 msgctxt "country"
 msgid "Panama"
@@ -1029,7 +1029,7 @@ msgstr "Turquia"
 
 msgctxt "country"
 msgid "Turkmenistan"
-msgstr "Turcmenistan"
+msgstr "Turkmenistan"
 
 msgctxt "country"
 msgid "Turks and Caicos Islands"
@@ -1081,7 +1081,7 @@ msgstr "Vanuatu"
 
 msgctxt "country"
 msgid "Vatican"
-msgstr "El Vaticà"
+msgstr "Ciutat del Vaticà"
 
 msgctxt "country"
 msgid "Venezuela"
@@ -1884,7 +1884,7 @@ msgstr "Tancar-ho"
 
 msgctxt "tooltip"
 msgid "Connect to {country_name}"
-msgstr "Connecteu-vos a {country_name}"
+msgstr "Connectar-se a {country_name}"
 
 msgctxt "tooltip"
 msgid "Connect to {country} via Secure Core"
@@ -1912,7 +1912,7 @@ msgstr ""
 
 msgctxt "tooltip"
 msgid "Hide all locations from {country_name}"
-msgstr "Amagueu totes les ubicacions de {country_name}"
+msgstr "Amagar totes les ubicacions de {country_name}"
 
 msgctxt "tooltip"
 msgid "Hide all servers from {name}"

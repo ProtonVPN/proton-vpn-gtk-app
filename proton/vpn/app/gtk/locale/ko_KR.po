@@ -17,7 +17,7 @@ msgstr "인증"
 
 msgctxt "button"
 msgid "Browse"
-msgstr "Browse"
+msgstr "찾아보기"
 
 msgctxt "button"
 msgid "Cancel"
@@ -29,7 +29,7 @@ msgstr "Cancel Connection"
 
 msgctxt "button"
 msgid "Connect"
-msgstr "Connect"
+msgstr "연결"
 
 msgctxt "button"
 msgid "Create Account"
@@ -41,15 +41,15 @@ msgstr "비활성화"
 
 msgctxt "button"
 msgid "Disconnect"
-msgstr "Disconnect"
+msgstr "연결 끊기"
 
 msgctxt "button"
 msgid "Done"
-msgstr "Done"
+msgstr "완료"
 
 msgctxt "button"
 msgid "Learn more"
-msgstr "Learn more"
+msgstr "자세히 알아보기"
 
 msgctxt "button"
 msgid "Manage Account"
@@ -61,7 +61,7 @@ msgstr "도움이 필요하신가요?"
 
 msgctxt "button"
 msgid "Send error logs"
-msgstr "Send error logs"
+msgstr "오류 로그 보내기"
 
 msgctxt "button"
 msgid "Sign in"
@@ -69,7 +69,7 @@ msgstr "로그인"
 
 msgctxt "button"
 msgid "Start"
-msgstr "Start"
+msgstr "시작"
 
 msgctxt "button"
 msgid "Stop"
@@ -77,7 +77,7 @@ msgstr "Stop"
 
 msgctxt "button"
 msgid "Upgrade"
-msgstr "Upgrade"
+msgstr "업그레이드"
 
 msgctxt "button"
 msgid "Use 6-digit authentication code"
@@ -89,7 +89,7 @@ msgstr "복구 코드 사용"
 
 msgctxt "button"
 msgid "_Cancel"
-msgstr "_Cancel"
+msgstr "취소 (_C)"
 
 msgctxt "button"
 msgid "_Close"
@@ -113,111 +113,111 @@ msgstr "_Yes"
 
 msgctxt "country"
 msgid "Afghanistan"
-msgstr "Afghanistan"
+msgstr "아프가니스탄"
 
 msgctxt "country"
 msgid "Aland Islands"
-msgstr "Aland Islands"
+msgstr "올란드 제도"
 
 msgctxt "country"
 msgid "Albania"
-msgstr "Albania"
+msgstr "알바니아"
 
 msgctxt "country"
 msgid "Algeria"
-msgstr "Algeria"
+msgstr "알제리"
 
 msgctxt "country"
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "미국령 사모아"
 
 msgctxt "country"
 msgid "Andorra"
-msgstr "Andorra"
+msgstr "안도라"
 
 msgctxt "country"
 msgid "Angola"
-msgstr "Angola"
+msgstr "앙골라"
 
 msgctxt "country"
 msgid "Anguilla"
-msgstr "Anguilla"
+msgstr "앵귈라"
 
 msgctxt "country"
 msgid "Antarctica"
-msgstr "Antarctica"
+msgstr "남극"
 
 msgctxt "country"
 msgid "Antigua and Barbuda"
-msgstr "Antigua and Barbuda"
+msgstr "앤티가 바부다"
 
 msgctxt "country"
 msgid "Argentina"
-msgstr "Argentina"
+msgstr "아르헨티나"
 
 msgctxt "country"
 msgid "Armenia"
-msgstr "Armenia"
+msgstr "아르메니아"
 
 msgctxt "country"
 msgid "Aruba"
-msgstr "Aruba"
+msgstr "아루바"
 
 msgctxt "country"
 msgid "Australia"
-msgstr "Australia"
+msgstr "호주"
 
 msgctxt "country"
 msgid "Austria"
-msgstr "Austria"
+msgstr "오스트리아"
 
 msgctxt "country"
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr "아제르바이잔"
 
 msgctxt "country"
 msgid "Bahamas"
-msgstr "Bahamas"
+msgstr "바하마"
 
 msgctxt "country"
 msgid "Bahrain"
-msgstr "Bahrain"
+msgstr "바레인"
 
 msgctxt "country"
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr "방글라데시"
 
 msgctxt "country"
 msgid "Barbados"
-msgstr "Barbados"
+msgstr "바베이도스"
 
 msgctxt "country"
 msgid "Belarus"
-msgstr "Belarus"
+msgstr "벨라루스"
 
 msgctxt "country"
 msgid "Belgium"
-msgstr "Belgium"
+msgstr "벨기에"
 
 msgctxt "country"
 msgid "Belize"
-msgstr "Belize"
+msgstr "벨리즈"
 
 msgctxt "country"
 msgid "Benin"
-msgstr "Benin"
+msgstr "베냉"
 
 msgctxt "country"
 msgid "Bermuda"
-msgstr "Bermuda"
+msgstr "버뮤다"
 
 msgctxt "country"
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr "부탄"
 
 msgctxt "country"
 msgid "Bolivia"
-msgstr "Bolivia"
+msgstr "볼리비아"
 
 msgctxt "country"
 msgid "Bonaire, Saint Eustatius and Saba "
@@ -225,27 +225,27 @@ msgstr "Bonaire, Saint Eustatius and Saba "
 
 msgctxt "country"
 msgid "Bosnia and Herzegovina"
-msgstr "Bosnia and Herzegovina"
+msgstr "보스니아 헤르체고비나"
 
 msgctxt "country"
 msgid "Botswana"
-msgstr "Botswana"
+msgstr "보츠와나"
 
 msgctxt "country"
 msgid "Bouvet Island"
-msgstr "Bouvet Island"
+msgstr "부베 섬"
 
 msgctxt "country"
 msgid "Brazil"
-msgstr "Brazil"
+msgstr "브라질"
 
 msgctxt "country"
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "영국령 인도양 지역"
 
 msgctxt "country"
 msgid "British Virgin Islands"
-msgstr "British Virgin Islands"
+msgstr "영국령 버진 아일랜드"
 
 msgctxt "country"
 msgid "Brunei"
@@ -253,55 +253,55 @@ msgstr "Brunei"
 
 msgctxt "country"
 msgid "Bulgaria"
-msgstr "Bulgaria"
+msgstr "불가리아"
 
 msgctxt "country"
 msgid "Burkina Faso"
-msgstr "Burkina Faso"
+msgstr "부르키나파소"
 
 msgctxt "country"
 msgid "Burundi"
-msgstr "Burundi"
+msgstr "부룬디"
 
 msgctxt "country"
 msgid "Cambodia"
-msgstr "Cambodia"
+msgstr "캄보디아"
 
 msgctxt "country"
 msgid "Cameroon"
-msgstr "Cameroon"
+msgstr "카메룬"
 
 msgctxt "country"
 msgid "Canada"
-msgstr "Canada"
+msgstr "캐나다"
 
 msgctxt "country"
 msgid "Cape Verde"
-msgstr "Cape Verde"
+msgstr "카보베르데"
 
 msgctxt "country"
 msgid "Cayman Islands"
-msgstr "Cayman Islands"
+msgstr "케이맨 제도"
 
 msgctxt "country"
 msgid "Central African Republic"
-msgstr "Central African Republic"
+msgstr "중앙아프리카 공화국"
 
 msgctxt "country"
 msgid "Chad"
-msgstr "Chad"
+msgstr "차드"
 
 msgctxt "country"
 msgid "Chile"
-msgstr "Chile"
+msgstr "칠레"
 
 msgctxt "country"
 msgid "China"
-msgstr "China"
+msgstr "중국"
 
 msgctxt "country"
 msgid "Christmas Island"
-msgstr "Christmas Island"
+msgstr "크리스마스 섬"
 
 msgctxt "country"
 msgid "Cocos Islands"
@@ -309,27 +309,27 @@ msgstr "Cocos Islands"
 
 msgctxt "country"
 msgid "Colombia"
-msgstr "Colombia"
+msgstr "콜롬비아"
 
 msgctxt "country"
 msgid "Comoros"
-msgstr "Comoros"
+msgstr "코모로"
 
 msgctxt "country"
 msgid "Cook Islands"
-msgstr "Cook Islands"
+msgstr "쿡 제도"
 
 msgctxt "country"
 msgid "Costa Rica"
-msgstr "Costa Rica"
+msgstr "코스타리카"
 
 msgctxt "country"
 msgid "Croatia"
-msgstr "Croatia"
+msgstr "크로아티아"
 
 msgctxt "country"
 msgid "Cuba"
-msgstr "Cuba"
+msgstr "쿠바"
 
 msgctxt "country"
 msgid "Curacao"
@@ -337,11 +337,11 @@ msgstr "Curacao"
 
 msgctxt "country"
 msgid "Cyprus"
-msgstr "Cyprus"
+msgstr "키프로스"
 
 msgctxt "country"
 msgid "Czech Republic"
-msgstr "Czech Republic"
+msgstr "체코"
 
 msgctxt "country"
 msgid "Democratic Republic of the Congo"
@@ -349,203 +349,203 @@ msgstr "Democratic Republic of the Congo"
 
 msgctxt "country"
 msgid "Denmark"
-msgstr "Denmark"
+msgstr "덴마크"
 
 msgctxt "country"
 msgid "Djibouti"
-msgstr "Djibouti"
+msgstr "지부티"
 
 msgctxt "country"
 msgid "Dominica"
-msgstr "Dominica"
+msgstr "도미니카 연방"
 
 msgctxt "country"
 msgid "Dominican Republic"
-msgstr "Dominican Republic"
+msgstr "도미니카 공화국"
 
 msgctxt "country"
 msgid "East Timor"
-msgstr "East Timor"
+msgstr "동티모르"
 
 msgctxt "country"
 msgid "Ecuador"
-msgstr "Ecuador"
+msgstr "에콰도르"
 
 msgctxt "country"
 msgid "Egypt"
-msgstr "Egypt"
+msgstr "이집트"
 
 msgctxt "country"
 msgid "El Salvador"
-msgstr "El Salvador"
+msgstr "엘살바도르"
 
 msgctxt "country"
 msgid "Equatorial Guinea"
-msgstr "Equatorial Guinea"
+msgstr "적도 기니"
 
 msgctxt "country"
 msgid "Eritrea"
-msgstr "Eritrea"
+msgstr "에리트레아"
 
 msgctxt "country"
 msgid "Estonia"
-msgstr "Estonia"
+msgstr "에스토니아"
 
 msgctxt "country"
 msgid "Ethiopia"
-msgstr "Ethiopia"
+msgstr "에티오피아"
 
 msgctxt "country"
 msgid "Falkland Islands"
-msgstr "Falkland Islands"
+msgstr "포클랜드 제도"
 
 msgctxt "country"
 msgid "Faroe Islands"
-msgstr "Faroe Islands"
+msgstr "페로 제도"
 
 msgctxt "country"
 msgid "Fiji"
-msgstr "Fiji"
+msgstr "피지"
 
 msgctxt "country"
 msgid "Finland"
-msgstr "Finland"
+msgstr "핀란드"
 
 msgctxt "country"
 msgid "France"
-msgstr "France"
+msgstr "프랑스"
 
 msgctxt "country"
 msgid "French Guiana"
-msgstr "French Guiana"
+msgstr "프랑스령 기아나"
 
 msgctxt "country"
 msgid "French Polynesia"
-msgstr "French Polynesia"
+msgstr "프랑스령 폴리네시아"
 
 msgctxt "country"
 msgid "French Southern Territories"
-msgstr "French Southern Territories"
+msgstr "프랑스령 남방 지역"
 
 msgctxt "country"
 msgid "Gabon"
-msgstr "Gabon"
+msgstr "가봉"
 
 msgctxt "country"
 msgid "Gambia"
-msgstr "Gambia"
+msgstr "감비아"
 
 msgctxt "country"
 msgid "Georgia"
-msgstr "Georgia"
+msgstr "조지아"
 
 msgctxt "country"
 msgid "Germany"
-msgstr "Germany"
+msgstr "독일"
 
 msgctxt "country"
 msgid "Ghana"
-msgstr "Ghana"
+msgstr "가나"
 
 msgctxt "country"
 msgid "Gibraltar"
-msgstr "Gibraltar"
+msgstr "지브롤터"
 
 msgctxt "country"
 msgid "Greece"
-msgstr "Greece"
+msgstr "그리스"
 
 msgctxt "country"
 msgid "Greenland"
-msgstr "Greenland"
+msgstr "그린란드"
 
 msgctxt "country"
 msgid "Grenada"
-msgstr "Grenada"
+msgstr "그레나다"
 
 msgctxt "country"
 msgid "Guadeloupe"
-msgstr "Guadeloupe"
+msgstr "과들루프"
 
 msgctxt "country"
 msgid "Guam"
-msgstr "Guam"
+msgstr "괌"
 
 msgctxt "country"
 msgid "Guatemala"
-msgstr "Guatemala"
+msgstr "과테말라"
 
 msgctxt "country"
 msgid "Guernsey"
-msgstr "Guernsey"
+msgstr "건지 섬"
 
 msgctxt "country"
 msgid "Guinea"
-msgstr "Guinea"
+msgstr "기니"
 
 msgctxt "country"
 msgid "Guinea-Bissau"
-msgstr "Guinea-Bissau"
+msgstr "기니비사우"
 
 msgctxt "country"
 msgid "Guyana"
-msgstr "Guyana"
+msgstr "가이아나"
 
 msgctxt "country"
 msgid "Haiti"
-msgstr "Haiti"
+msgstr "아이티"
 
 msgctxt "country"
 msgid "Heard Island and McDonald Islands"
-msgstr "Heard Island and McDonald Islands"
+msgstr "허드 맥도널드 제도"
 
 msgctxt "country"
 msgid "Honduras"
-msgstr "Honduras"
+msgstr "온두라스"
 
 msgctxt "country"
 msgid "Hong Kong"
-msgstr "Hong Kong"
+msgstr "홍콩"
 
 msgctxt "country"
 msgid "Hungary"
-msgstr "Hungary"
+msgstr "헝가리"
 
 msgctxt "country"
 msgid "Iceland"
-msgstr "Iceland"
+msgstr "아이슬란드"
 
 msgctxt "country"
 msgid "India"
-msgstr "India"
+msgstr "인도"
 
 msgctxt "country"
 msgid "Indonesia"
-msgstr "Indonesia"
+msgstr "인도네시아"
 
 msgctxt "country"
 msgid "Iran"
-msgstr "Iran"
+msgstr "이란"
 
 msgctxt "country"
 msgid "Iraq"
-msgstr "Iraq"
+msgstr "이라크"
 
 msgctxt "country"
 msgid "Ireland"
-msgstr "Ireland"
+msgstr "아일랜드"
 
 msgctxt "country"
 msgid "Isle of Man"
-msgstr "Isle of Man"
+msgstr "맨섬"
 
 msgctxt "country"
 msgid "Israel"
-msgstr "Israel"
+msgstr "이스라엘"
 
 msgctxt "country"
 msgid "Italy"
-msgstr "Italy"
+msgstr "이탈리아"
 
 msgctxt "country"
 msgid "Ivory Coast"
@@ -553,239 +553,239 @@ msgstr "Ivory Coast"
 
 msgctxt "country"
 msgid "Jamaica"
-msgstr "Jamaica"
+msgstr "자메이카"
 
 msgctxt "country"
 msgid "Japan"
-msgstr "Japan"
+msgstr "일본"
 
 msgctxt "country"
 msgid "Jersey"
-msgstr "Jersey"
+msgstr "저지 섬"
 
 msgctxt "country"
 msgid "Jordan"
-msgstr "Jordan"
+msgstr "요르단"
 
 msgctxt "country"
 msgid "Kazakhstan"
-msgstr "Kazakhstan"
+msgstr "카자흐스탄"
 
 msgctxt "country"
 msgid "Kenya"
-msgstr "Kenya"
+msgstr "케냐"
 
 msgctxt "country"
 msgid "Kiribati"
-msgstr "Kiribati"
+msgstr "키리바시"
 
 msgctxt "country"
 msgid "Kosovo"
-msgstr "Kosovo"
+msgstr "코소보"
 
 msgctxt "country"
 msgid "Kuwait"
-msgstr "Kuwait"
+msgstr "쿠웨이트"
 
 msgctxt "country"
 msgid "Kyrgyzstan"
-msgstr "Kyrgyzstan"
+msgstr "키르기스스탄"
 
 msgctxt "country"
 msgid "Laos"
-msgstr "Laos"
+msgstr "라오스"
 
 msgctxt "country"
 msgid "Latvia"
-msgstr "Latvia"
+msgstr "라트비아"
 
 msgctxt "country"
 msgid "Lebanon"
-msgstr "Lebanon"
+msgstr "레바논"
 
 msgctxt "country"
 msgid "Lesotho"
-msgstr "Lesotho"
+msgstr "레소토"
 
 msgctxt "country"
 msgid "Liberia"
-msgstr "Liberia"
+msgstr "라이베리아"
 
 msgctxt "country"
 msgid "Libya"
-msgstr "Libya"
+msgstr "리비아"
 
 msgctxt "country"
 msgid "Liechtenstein"
-msgstr "Liechtenstein"
+msgstr "리히텐슈타인"
 
 msgctxt "country"
 msgid "Lithuania"
-msgstr "Lithuania"
+msgstr "리투아니아"
 
 msgctxt "country"
 msgid "Luxembourg"
-msgstr "Luxembourg"
+msgstr "룩셈부르크"
 
 msgctxt "country"
 msgid "Macao"
-msgstr "Macao"
+msgstr "마카오"
 
 msgctxt "country"
 msgid "Macedonia"
-msgstr "Macedonia"
+msgstr "마케도니아"
 
 msgctxt "country"
 msgid "Madagascar"
-msgstr "Madagascar"
+msgstr "마다가스카르"
 
 msgctxt "country"
 msgid "Malawi"
-msgstr "Malawi"
+msgstr "말라위"
 
 msgctxt "country"
 msgid "Malaysia"
-msgstr "Malaysia"
+msgstr "말레이시아"
 
 msgctxt "country"
 msgid "Maldives"
-msgstr "Maldives"
+msgstr "몰디브"
 
 msgctxt "country"
 msgid "Mali"
-msgstr "Mali"
+msgstr "말리"
 
 msgctxt "country"
 msgid "Malta"
-msgstr "Malta"
+msgstr "몰타"
 
 msgctxt "country"
 msgid "Marshall Islands"
-msgstr "Marshall Islands"
+msgstr "마셜 제도"
 
 msgctxt "country"
 msgid "Martinique"
-msgstr "Martinique"
+msgstr "마르티니크"
 
 msgctxt "country"
 msgid "Mauritania"
-msgstr "Mauritania"
+msgstr "모리타니"
 
 msgctxt "country"
 msgid "Mauritius"
-msgstr "Mauritius"
+msgstr "모리셔스"
 
 msgctxt "country"
 msgid "Mayotte"
-msgstr "Mayotte"
+msgstr "마요테"
 
 msgctxt "country"
 msgid "Mexico"
-msgstr "Mexico"
+msgstr "멕시코"
 
 msgctxt "country"
 msgid "Micronesia"
-msgstr "Micronesia"
+msgstr "미크로네시아"
 
 msgctxt "country"
 msgid "Moldova"
-msgstr "Moldova"
+msgstr "몰도바"
 
 msgctxt "country"
 msgid "Monaco"
-msgstr "Monaco"
+msgstr "모나코"
 
 msgctxt "country"
 msgid "Mongolia"
-msgstr "Mongolia"
+msgstr "몽골"
 
 msgctxt "country"
 msgid "Montenegro"
-msgstr "Montenegro"
+msgstr "몬테네그로"
 
 msgctxt "country"
 msgid "Montserrat"
-msgstr "Montserrat"
+msgstr "몬트세랫"
 
 msgctxt "country"
 msgid "Morocco"
-msgstr "Morocco"
+msgstr "모로코"
 
 msgctxt "country"
 msgid "Mozambique"
-msgstr "Mozambique"
+msgstr "모잠비크"
 
 msgctxt "country"
 msgid "Myanmar"
-msgstr "Myanmar"
+msgstr "미얀마"
 
 msgctxt "country"
 msgid "Namibia"
-msgstr "Namibia"
+msgstr "나미비아"
 
 msgctxt "country"
 msgid "Nauru"
-msgstr "Nauru"
+msgstr "나우루"
 
 msgctxt "country"
 msgid "Nepal"
-msgstr "Nepal"
+msgstr "네팔"
 
 msgctxt "country"
 msgid "Netherlands"
-msgstr "Netherlands"
+msgstr "네덜란드"
 
 msgctxt "country"
 msgid "New Caledonia"
-msgstr "New Caledonia"
+msgstr "누벨칼레도니"
 
 msgctxt "country"
 msgid "New Zealand"
-msgstr "New Zealand"
+msgstr "뉴질랜드"
 
 msgctxt "country"
 msgid "Nicaragua"
-msgstr "Nicaragua"
+msgstr "니카라과"
 
 msgctxt "country"
 msgid "Niger"
-msgstr "Niger"
+msgstr "니제르"
 
 msgctxt "country"
 msgid "Nigeria"
-msgstr "Nigeria"
+msgstr "나이지리아"
 
 msgctxt "country"
 msgid "Niue"
-msgstr "Niue"
+msgstr "니우에"
 
 msgctxt "country"
 msgid "Norfolk Island"
-msgstr "Norfolk Island"
+msgstr "노퍽섬"
 
 msgctxt "country"
 msgid "North Korea"
-msgstr "North Korea"
+msgstr "북한"
 
 msgctxt "country"
 msgid "Northern Mariana Islands"
-msgstr "Northern Mariana Islands"
+msgstr "북마리아나 제도"
 
 msgctxt "country"
 msgid "Norway"
-msgstr "Norway"
+msgstr "노르웨이"
 
 msgctxt "country"
 msgid "Oman"
-msgstr "Oman"
+msgstr "오만"
 
 msgctxt "country"
 msgid "Pakistan"
-msgstr "Pakistan"
+msgstr "파키스탄"
 
 msgctxt "country"
 msgid "Palau"
-msgstr "Palau"
+msgstr "팔라우"
 
 msgctxt "country"
 msgid "Palestinian Territory"
@@ -793,43 +793,43 @@ msgstr "Palestinian Territory"
 
 msgctxt "country"
 msgid "Panama"
-msgstr "Panama"
+msgstr "파나마"
 
 msgctxt "country"
 msgid "Papua New Guinea"
-msgstr "Papua New Guinea"
+msgstr "파푸아뉴기니"
 
 msgctxt "country"
 msgid "Paraguay"
-msgstr "Paraguay"
+msgstr "파라과이"
 
 msgctxt "country"
 msgid "Peru"
-msgstr "Peru"
+msgstr "페루"
 
 msgctxt "country"
 msgid "Philippines"
-msgstr "Philippines"
+msgstr "필리핀"
 
 msgctxt "country"
 msgid "Pitcairn"
-msgstr "Pitcairn"
+msgstr "피트케언"
 
 msgctxt "country"
 msgid "Poland"
-msgstr "Poland"
+msgstr "폴란드"
 
 msgctxt "country"
 msgid "Portugal"
-msgstr "Portugal"
+msgstr "포르투갈"
 
 msgctxt "country"
 msgid "Puerto Rico"
-msgstr "Puerto Rico"
+msgstr "미 자치령 푸에르토리코섬"
 
 msgctxt "country"
 msgid "Qatar"
-msgstr "Qatar"
+msgstr "카타르"
 
 msgctxt "country"
 msgid "Republic of the Congo"
@@ -837,19 +837,19 @@ msgstr "Republic of the Congo"
 
 msgctxt "country"
 msgid "Reunion"
-msgstr "Reunion"
+msgstr "리뉴니언"
 
 msgctxt "country"
 msgid "Romania"
-msgstr "Romania"
+msgstr "루마니아"
 
 msgctxt "country"
 msgid "Russia"
-msgstr "Russia"
+msgstr "러시아"
 
 msgctxt "country"
 msgid "Rwanda"
-msgstr "Rwanda"
+msgstr "르완다"
 
 msgctxt "country"
 msgid "Saint Barthelemy"
@@ -857,15 +857,15 @@ msgstr "Saint Barthelemy"
 
 msgctxt "country"
 msgid "Saint Helena"
-msgstr "Saint Helena"
+msgstr "세인트 헬레나"
 
 msgctxt "country"
 msgid "Saint Kitts and Nevis"
-msgstr "Saint Kitts and Nevis"
+msgstr "세인트키츠 네비스"
 
 msgctxt "country"
 msgid "Saint Lucia"
-msgstr "Saint Lucia"
+msgstr "세인트루시아"
 
 msgctxt "country"
 msgid "Saint Martin"
@@ -873,171 +873,171 @@ msgstr "Saint Martin"
 
 msgctxt "country"
 msgid "Saint Pierre and Miquelon"
-msgstr "Saint Pierre and Miquelon"
+msgstr "생 피에르와 미클롱"
 
 msgctxt "country"
 msgid "Saint Vincent and the Grenadines"
-msgstr "Saint Vincent and the Grenadines"
+msgstr "세인트빈센트 그레나딘"
 
 msgctxt "country"
 msgid "Samoa"
-msgstr "Samoa"
+msgstr "사모아 제도"
 
 msgctxt "country"
 msgid "San Marino"
-msgstr "San Marino"
+msgstr "샌 마리노"
 
 msgctxt "country"
 msgid "Sao Tome and Principe"
-msgstr "Sao Tome and Principe"
+msgstr "상투메 프린시페"
 
 msgctxt "country"
 msgid "Saudi Arabia"
-msgstr "Saudi Arabia"
+msgstr "사우디아라비아"
 
 msgctxt "country"
 msgid "Senegal"
-msgstr "Senegal"
+msgstr "세네갈"
 
 msgctxt "country"
 msgid "Serbia"
-msgstr "Serbia"
+msgstr "세르비아"
 
 msgctxt "country"
 msgid "Seychelles"
-msgstr "Seychelles"
+msgstr "세이셸"
 
 msgctxt "country"
 msgid "Sierra Leone"
-msgstr "Sierra Leone"
+msgstr "시에나 르오네"
 
 msgctxt "country"
 msgid "Singapore"
-msgstr "Singapore"
+msgstr "싱가포르"
 
 msgctxt "country"
 msgid "Sint Maarten"
-msgstr "Sint Maarten"
+msgstr "신트 마르텐"
 
 msgctxt "country"
 msgid "Slovakia"
-msgstr "Slovakia"
+msgstr "슬로바키아"
 
 msgctxt "country"
 msgid "Slovenia"
-msgstr "Slovenia"
+msgstr "슬로베니아"
 
 msgctxt "country"
 msgid "Solomon Islands"
-msgstr "Solomon Islands"
+msgstr "솔로몬 제도"
 
 msgctxt "country"
 msgid "Somalia"
-msgstr "Somalia"
+msgstr "소말리아"
 
 msgctxt "country"
 msgid "South Africa"
-msgstr "South Africa"
+msgstr "남아프리카 공화국"
 
 msgctxt "country"
 msgid "South Georgia and the South Sandwich Islands"
-msgstr "South Georgia and the South Sandwich Islands"
+msgstr "사우스조지아 사우스샌드위치 제도"
 
 msgctxt "country"
 msgid "South Korea"
-msgstr "South Korea"
+msgstr "대한민국"
 
 msgctxt "country"
 msgid "South Sudan"
-msgstr "South Sudan"
+msgstr "남수단"
 
 msgctxt "country"
 msgid "Spain"
-msgstr "Spain"
+msgstr "스페인"
 
 msgctxt "country"
 msgid "Sri Lanka"
-msgstr "Sri Lanka"
+msgstr "스리랑카"
 
 msgctxt "country"
 msgid "Sudan"
-msgstr "Sudan"
+msgstr "수단"
 
 msgctxt "country"
 msgid "Suriname"
-msgstr "Suriname"
+msgstr "수리남"
 
 msgctxt "country"
 msgid "Svalbard and Jan Mayen"
-msgstr "Svalbard and Jan Mayen"
+msgstr "스발바르와 얀마옌"
 
 msgctxt "country"
 msgid "Swaziland"
-msgstr "Swaziland"
+msgstr "스위스"
 
 msgctxt "country"
 msgid "Sweden"
-msgstr "Sweden"
+msgstr "스웨덴"
 
 msgctxt "country"
 msgid "Switzerland"
-msgstr "Switzerland"
+msgstr "스위스"
 
 msgctxt "country"
 msgid "Syria"
-msgstr "Syria"
+msgstr "시리아"
 
 msgctxt "country"
 msgid "Taiwan"
-msgstr "Taiwan"
+msgstr "타이완"
 
 msgctxt "country"
 msgid "Tajikistan"
-msgstr "Tajikistan"
+msgstr "타지키스탄"
 
 msgctxt "country"
 msgid "Tanzania"
-msgstr "Tanzania"
+msgstr "탄자니아"
 
 msgctxt "country"
 msgid "Thailand"
-msgstr "Thailand"
+msgstr "태국"
 
 msgctxt "country"
 msgid "Togo"
-msgstr "Togo"
+msgstr "토고"
 
 msgctxt "country"
 msgid "Tokelau"
-msgstr "Tokelau"
+msgstr "토켈라우"
 
 msgctxt "country"
 msgid "Tonga"
-msgstr "Tonga"
+msgstr "통가"
 
 msgctxt "country"
 msgid "Trinidad and Tobago"
-msgstr "Trinidad and Tobago"
+msgstr "트리니다드 토바고"
 
 msgctxt "country"
 msgid "Tunisia"
-msgstr "Tunisia"
+msgstr "튀니지"
 
 msgctxt "country"
 msgid "Turkey"
-msgstr "Turkey"
+msgstr "터키"
 
 msgctxt "country"
 msgid "Turkmenistan"
-msgstr "Turkmenistan"
+msgstr "투르크메니스탄"
 
 msgctxt "country"
 msgid "Turks and Caicos Islands"
-msgstr "Turks and Caicos Islands"
+msgstr "터크스 카이코스 군도"
 
 msgctxt "country"
 msgid "Tuvalu"
-msgstr "Tuvalu"
+msgstr "투발루"
 
 msgctxt "country"
 msgid "U.S. Virgin Islands"
@@ -1045,39 +1045,39 @@ msgstr "U.S. Virgin Islands"
 
 msgctxt "country"
 msgid "Uganda"
-msgstr "Uganda"
+msgstr "우간다"
 
 msgctxt "country"
 msgid "Ukraine"
-msgstr "Ukraine"
+msgstr "우크라이나"
 
 msgctxt "country"
 msgid "United Arab Emirates"
-msgstr "United Arab Emirates"
+msgstr "아랍에미리트"
 
 msgctxt "country"
 msgid "United Kingdom"
-msgstr "United Kingdom"
+msgstr "영국"
 
 msgctxt "country"
 msgid "United States"
-msgstr "United States"
+msgstr "미국"
 
 msgctxt "country"
 msgid "United States Minor Outlying Islands"
-msgstr "United States Minor Outlying Islands"
+msgstr "미국령 군소 제도"
 
 msgctxt "country"
 msgid "Uruguay"
-msgstr "Uruguay"
+msgstr "우루과이"
 
 msgctxt "country"
 msgid "Uzbekistan"
-msgstr "Uzbekistan"
+msgstr "우즈베키스탄"
 
 msgctxt "country"
 msgid "Vanuatu"
-msgstr "Vanuatu"
+msgstr "바누타우"
 
 msgctxt "country"
 msgid "Vatican"
@@ -1085,31 +1085,31 @@ msgstr "Vatican"
 
 msgctxt "country"
 msgid "Venezuela"
-msgstr "Venezuela"
+msgstr "베네수엘라"
 
 msgctxt "country"
 msgid "Vietnam"
-msgstr "Vietnam"
+msgstr "베트남"
 
 msgctxt "country"
 msgid "Wallis and Futuna"
-msgstr "Wallis and Futuna"
+msgstr "월리스 푸투나"
 
 msgctxt "country"
 msgid "Western Sahara"
-msgstr "Western Sahara"
+msgstr "서사하라"
 
 msgctxt "country"
 msgid "Yemen"
-msgstr "Yemen"
+msgstr "예멘"
 
 msgctxt "country"
 msgid "Zambia"
-msgstr "Zambia"
+msgstr "잠비아"
 
 msgctxt "country"
 msgid "Zimbabwe"
-msgstr "Zimbabwe"
+msgstr "짐바브웨"
 
 msgctxt "error"
 msgid "An unknown error occurred"
@@ -1125,7 +1125,7 @@ msgstr "Device disconnected"
 
 msgctxt "error"
 msgid "Enter a valid IPv4 or IPv6 address"
-msgstr "Enter a valid IPv4 or IPv6 address"
+msgstr "유효한 IPv4 또는 IPv6 주소를 입력하세요"
 
 msgctxt "error"
 msgid "Incorrect 2FA code."
@@ -1157,7 +1157,7 @@ msgstr "Something went wrong. Please try submitting your report at:\n"
 
 msgctxt "error"
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "시간 제한"
 
 msgctxt "error"
 msgid "Tunnel setup failed"
@@ -1195,9 +1195,7 @@ msgctxt "error"
 msgid ""
 "You've reached your maximum device limit. To reconnect to VPN, please "
 "disconnect from another device."
-msgstr ""
-"You've reached your maximum device limit. To reconnect to VPN, please "
-"disconnect from another device."
+msgstr "최대 기기 수 제한에 도달했습니다. VPN에 다시 연결하기 위해, 다른 기기에서 연결 해제해주세요."
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1205,7 +1203,7 @@ msgstr "6자리 인증 코드"
 
 msgctxt "label"
 msgid "Active port:"
-msgstr "Active port:"
+msgstr "활성 포트:"
 
 msgctxt "label"
 msgid "Add new server"
@@ -1213,7 +1211,7 @@ msgstr "Add new server"
 
 msgctxt "label"
 msgid "All countries ({count})"
-msgstr "All countries ({count})"
+msgstr "전체 국가 ({count})"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1221,7 +1219,7 @@ msgstr "Auto-selected from free locations"
 
 msgctxt "label"
 msgid "BETA"
-msgstr "BETA"
+msgstr "베타"
 
 msgctxt "label"
 msgid "Block Malware"
@@ -1229,7 +1227,7 @@ msgstr "Block Malware"
 
 msgctxt "label"
 msgid "Block ads, trackers and malware"
-msgstr "Block ads, trackers and malware"
+msgstr "광고와 트래커 및 멀웨어 차단"
 
 msgctxt "label"
 msgid "Description (minimum {count} characters)"
@@ -1237,23 +1235,23 @@ msgstr "Description (minimum {count} characters)"
 
 msgctxt "label"
 msgid "Email"
-msgstr "Email"
+msgstr "이메일"
 
 msgctxt "label"
 msgid "Excluded apps "
-msgstr "Excluded apps "
+msgstr "제외된 앱 "
 
 msgctxt "label"
 msgid "Free"
-msgstr "Free"
+msgstr "무료"
 
 msgctxt "label"
 msgid "Included apps "
-msgstr "Included apps "
+msgstr "포함된 앱 "
 
 msgctxt "label"
 msgid "Off"
-msgstr "Off"
+msgstr "끔"
 
 msgctxt "label"
 msgid "PIN code"
@@ -1269,7 +1267,7 @@ msgstr "복구 코드"
 
 msgctxt "label"
 msgid "Server load"
-msgstr "Server load"
+msgstr "서버 부하율"
 
 msgctxt "label"
 msgid "Use Proton protocols"
@@ -1277,7 +1275,7 @@ msgstr "Use Proton protocols"
 
 msgctxt "label"
 msgid "Username"
-msgstr "Username"
+msgstr "사용자 이름"
 
 msgctxt "label"
 msgid "VPN Plus"
@@ -1289,11 +1287,11 @@ msgstr "VPN plan: {plan}"
 
 msgctxt "label"
 msgid "Via Secure Core"
-msgstr "Via Secure Core"
+msgstr "(Secure Core 사용)"
 
 msgctxt "label"
 msgid "Via {country}"
-msgstr "Via {country}"
+msgstr "{country} 경유"
 
 msgctxt "link"
 msgid "Learn more"
@@ -1301,19 +1299,19 @@ msgstr "자세히 알아보기"
 
 msgctxt "menu"
 msgid "About"
-msgstr "About"
+msgstr "정보"
 
 msgctxt "menu"
 msgid "Quit"
-msgstr "Quit"
+msgstr "나가기"
 
 msgctxt "menu"
 msgid "Release notes"
-msgstr "Release notes"
+msgstr "릴리즈 노트"
 
 msgctxt "menu"
 msgid "Report an issue"
-msgstr "Report an issue"
+msgstr "문제 제보하기"
 
 msgctxt "menu"
 msgid "Settings"
@@ -1321,7 +1319,7 @@ msgstr "설정"
 
 msgctxt "menu"
 msgid "Sign out"
-msgstr "Sign out"
+msgstr "로그아웃"
 
 msgctxt "message"
 msgid ""
@@ -1337,7 +1335,7 @@ msgstr "Active port is {new_port}"
 
 msgctxt "message"
 msgid "Allow selected apps to connect without VPN protection."
-msgstr "Allow selected apps to connect without VPN protection."
+msgstr "선택된 앱이 VPN 보호 없이 연결할 수 있도록 허용합니다."
 
 msgctxt "message"
 msgid ""
@@ -1381,9 +1379,7 @@ msgctxt "message"
 msgid ""
 "Connect to a Tor server to access hidden services and onion sites using any "
 "browser."
-msgstr ""
-"Connect to a Tor server to access hidden services and onion sites using any "
-"browser."
+msgstr "Tor 서버에 접속하면 히든 서비스와 어니언 사이트에 어느 브라우저를 사용해도 접근할 수 있습니다."
 
 msgctxt "message"
 msgid ""
@@ -1395,7 +1391,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "Copied!"
-msgstr "Copied!"
+msgstr "복사됨!"
 
 msgctxt "message"
 msgid ""
@@ -1409,8 +1405,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "Customize your connection by deciding which apps are protected by VPN."
-msgstr ""
-"Customize your connection by deciding which apps are protected by VPN."
+msgstr "VPN이 보호할 앱과 IP 주소를 지정하여 연결을 사용자화할 수 있습니다."
 
 msgctxt "message"
 msgid ""
@@ -1436,7 +1431,7 @@ msgstr "Enabling Beta access..."
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."
-msgstr "Get early access and help us test new versions of Proton VPN."
+msgstr "얼리 액세스를 받아서 Proton VPN의 새 버전 테스트를 도와주세요."
 
 msgctxt "message"
 msgid "If your security key has a button or a gold disc, tap it now."
@@ -1446,9 +1441,7 @@ msgctxt "message"
 msgid ""
 "Increase your connection speed by up to 400% with performance enhancing "
 "technologies."
-msgstr ""
-"Increase your connection speed by up to 400% with performance enhancing "
-"technologies."
+msgstr "성능 강화 기술을 통해 연결 속도가 최대 400%까지 향상됩니다."
 
 msgctxt "message"
 msgid "Insert the U2F or FIDO key linked to your Proton Account. "
@@ -1482,9 +1475,7 @@ msgctxt "message"
 msgid ""
 "Only selected apps connect with VPN protection. All other traffic is "
 "unprotected."
-msgstr ""
-"Only selected apps connect with VPN protection. All other traffic is "
-"unprotected."
+msgstr "선택된 앱만 VPN을 통해 연결합니다. 다른 모든 트래픽은 보호되지 않습니다."
 
 msgctxt "message"
 msgid ""
@@ -1502,8 +1493,7 @@ msgstr "Please establish a new VPN connection for changes to take effect."
 
 msgctxt "message"
 msgid "Protect yourself from ads, malware, and trackers on websites and apps."
-msgstr ""
-"Protect yourself from ads, malware, and trackers on websites and apps."
+msgstr "웹사이트와 앱의 광고, 추적기, 악성코드로부터 자신을 보호하세요."
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1598,7 +1588,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "This will disable NetShield."
-msgstr "This will disable NetShield."
+msgstr "NetShield가 비활성화됩니다."
 
 msgctxt "message"
 msgid "This will disable custom DNS."
@@ -1608,9 +1598,7 @@ msgctxt "message"
 msgid ""
 "Tunnels IPv6 traffic through the VPN. Can enhance compatibility with IPv6 "
 "networks."
-msgstr ""
-"Tunnels IPv6 traffic through the VPN. Can enhance compatibility with IPv6 "
-"networks."
+msgstr "VPN을 통해 IPv6 트래픽을 터널링합니다. IPv6 네트워크와의 호환성을 향상시킬 수 있습니다."
 
 msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
@@ -1648,27 +1636,27 @@ msgstr "연결 중..."
 
 msgctxt "status"
 msgid "Connection error"
-msgstr "Connection error"
+msgstr "연결 오류"
 
 msgctxt "status"
 msgid "Disconnecting..."
-msgstr "Disconnecting..."
+msgstr "연결을 끊는 중..."
 
 msgctxt "status"
 msgid "Protected"
-msgstr "Protected"
+msgstr "보호됨"
 
 msgctxt "status"
 msgid "Unprotected"
-msgstr "Unprotected"
+msgstr "보호되지 않음"
 
 msgctxt "title"
 msgid "About"
-msgstr "About"
+msgstr "소개"
 
 msgctxt "title"
 msgid "Account"
-msgstr "Account"
+msgstr "계정"
 
 msgctxt "title"
 msgid "Active connection found"
@@ -1688,7 +1676,7 @@ msgstr "인증 앱"
 
 msgctxt "title"
 msgid "Auto connect"
-msgstr "Auto connect"
+msgstr "자동 연결"
 
 msgctxt "title"
 msgid "Beta Access"
@@ -1696,11 +1684,11 @@ msgstr "베타 액세스"
 
 msgctxt "title"
 msgid "Beta access"
-msgstr "Beta access"
+msgstr "베타 참여"
 
 msgctxt "title"
 msgid "Connection"
-msgstr "Connection"
+msgstr "연결"
 
 msgctxt "title"
 msgid "Connection error: session limit reached"
@@ -1708,7 +1696,7 @@ msgstr "Connection error: session limit reached"
 
 msgctxt "title"
 msgid "Countries"
-msgstr "Countries"
+msgstr "국가"
 
 msgctxt "title"
 msgid "Create a troubleshooting file"
@@ -1716,15 +1704,15 @@ msgstr "Create a troubleshooting file"
 
 msgctxt "title"
 msgid "Custom DNS servers"
-msgstr "Custom DNS servers"
+msgstr "커스텀 DNS 서버"
 
 msgctxt "title"
 msgid "Enable Custom DNS"
-msgstr "Enable Custom DNS"
+msgstr "커스텀 DNS를 활성화시겠습니까"
 
 msgctxt "title"
 msgid "Enable Custom DNS?"
-msgstr "Enable Custom DNS?"
+msgstr "커스텀 DNS를 활성화시겠습니까?"
 
 msgctxt "title"
 msgid "Enable Netshield"
@@ -1736,11 +1724,11 @@ msgstr "Enable Netshield ?"
 
 msgctxt "title"
 msgid "Exclude mode"
-msgstr "Exclude mode"
+msgstr "제외 모드"
 
 msgctxt "title"
 msgid "Fastest country"
-msgstr "Fastest country"
+msgstr "가장 빠른 국가"
 
 msgctxt "title"
 msgid "Fastest free server"
@@ -1748,15 +1736,15 @@ msgstr "가장 빠른 무료 서버"
 
 msgctxt "title"
 msgid "Features"
-msgstr "Features"
+msgstr "특징"
 
 msgctxt "title"
 msgid "General"
-msgstr "General"
+msgstr "일반"
 
 msgctxt "title"
 msgid "Include mode"
-msgstr "Include mode"
+msgstr "모드 포함"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -1772,7 +1760,7 @@ msgstr "Locations"
 
 msgctxt "title"
 msgid "Moderate NAT"
-msgstr "Moderate NAT"
+msgstr "일반형 NAT"
 
 msgctxt "title"
 msgid "NetShield"
@@ -1788,19 +1776,19 @@ msgstr "Pinned tray connections"
 
 msgctxt "title"
 msgid "Port forwarding"
-msgstr "Port forwarding"
+msgstr "포트 포워딩"
 
 msgctxt "title"
 msgid "Protocol"
-msgstr "Protocol"
+msgstr "프로토콜"
 
 msgctxt "title"
 msgid "Release notes"
-msgstr "Release notes"
+msgstr "릴리즈 노트"
 
 msgctxt "title"
 msgid "Report an Issue"
-msgstr "Report an Issue"
+msgstr "문제 제보하기"
 
 msgctxt "title"
 msgid "Secure Core"
@@ -1816,23 +1804,23 @@ msgstr "Select packet capture directory"
 
 msgctxt "title"
 msgid "Servers"
-msgstr "Servers"
+msgstr "서버"
 
 msgctxt "title"
 msgid "Settings"
-msgstr "Settings"
+msgstr "설정"
 
 msgctxt "title"
 msgid "Share anonymous crash reports"
-msgstr "Share anonymous crash reports"
+msgstr "익명으로 충돌 보고서 공유"
 
 msgctxt "title"
 msgid "Smart routing"
-msgstr "Smart routing"
+msgstr "Smart Routing"
 
 msgctxt "title"
 msgid "Split tunneling"
-msgstr "Split tunneling"
+msgstr "분할 터널링"
 
 msgctxt "title"
 msgid "Start app minimized"
@@ -1852,11 +1840,11 @@ msgstr "VPN Accelerator"
 
 msgctxt "tooltip"
 msgid "Close"
-msgstr "Close"
+msgstr "닫기"
 
 msgctxt "tooltip"
 msgid "Connect to {country_name}"
-msgstr "Connect to {country_name}"
+msgstr "{country_name}에 연결할까요"
 
 msgctxt "tooltip"
 msgid "Connect to {country} via Secure Core"
@@ -1868,11 +1856,11 @@ msgstr "Connect to {exit_country} via {entry_country}"
 
 msgctxt "tooltip"
 msgid "Connect to {name}"
-msgstr "Connect to {name}"
+msgstr "{name}에 연결할까요"
 
 msgctxt "tooltip"
 msgid "Copy port number"
-msgstr "Copy port number"
+msgstr "포트 번호 복사"
 
 msgctxt "tooltip"
 msgid ""
@@ -1884,7 +1872,7 @@ msgstr ""
 
 msgctxt "tooltip"
 msgid "Hide all locations from {country_name}"
-msgstr "Hide all locations from {country_name}"
+msgstr "{country_name}의 모든 위치 숨기기"
 
 msgctxt "tooltip"
 msgid "Hide all servers from {name}"

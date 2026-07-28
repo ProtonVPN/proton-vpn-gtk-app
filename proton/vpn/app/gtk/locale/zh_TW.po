@@ -41,7 +41,7 @@ msgstr "停用"
 
 msgctxt "button"
 msgid "Disconnect"
-msgstr "Disconnect"
+msgstr "斷線"
 
 msgctxt "button"
 msgid "Done"
@@ -61,7 +61,7 @@ msgstr "需要協助嗎？"
 
 msgctxt "button"
 msgid "Send error logs"
-msgstr "Send error logs"
+msgstr "傳送錯誤紀錄檔"
 
 msgctxt "button"
 msgid "Sign in"
@@ -77,7 +77,7 @@ msgstr "Stop"
 
 msgctxt "button"
 msgid "Upgrade"
-msgstr "Upgrade"
+msgstr "升級"
 
 msgctxt "button"
 msgid "Use 6-digit authentication code"
@@ -89,7 +89,7 @@ msgstr "使用復原代碼"
 
 msgctxt "button"
 msgid "_Cancel"
-msgstr "_Cancel"
+msgstr "取消"
 
 msgctxt "button"
 msgid "_Close"
@@ -113,111 +113,111 @@ msgstr "_Yes"
 
 msgctxt "country"
 msgid "Afghanistan"
-msgstr "Afghanistan"
+msgstr "阿富汗"
 
 msgctxt "country"
 msgid "Aland Islands"
-msgstr "Aland Islands"
+msgstr "奧蘭群島"
 
 msgctxt "country"
 msgid "Albania"
-msgstr "Albania"
+msgstr "阿爾巴尼亞"
 
 msgctxt "country"
 msgid "Algeria"
-msgstr "Algeria"
+msgstr "阿爾及利亞"
 
 msgctxt "country"
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "美屬薩摩亞"
 
 msgctxt "country"
 msgid "Andorra"
-msgstr "Andorra"
+msgstr "安道爾"
 
 msgctxt "country"
 msgid "Angola"
-msgstr "Angola"
+msgstr "安哥拉"
 
 msgctxt "country"
 msgid "Anguilla"
-msgstr "Anguilla"
+msgstr "安圭拉"
 
 msgctxt "country"
 msgid "Antarctica"
-msgstr "Antarctica"
+msgstr "南極洲"
 
 msgctxt "country"
 msgid "Antigua and Barbuda"
-msgstr "Antigua and Barbuda"
+msgstr "安地卡及巴布達"
 
 msgctxt "country"
 msgid "Argentina"
-msgstr "Argentina"
+msgstr "阿根廷"
 
 msgctxt "country"
 msgid "Armenia"
-msgstr "Armenia"
+msgstr "亞美尼亞"
 
 msgctxt "country"
 msgid "Aruba"
-msgstr "Aruba"
+msgstr "阿魯巴"
 
 msgctxt "country"
 msgid "Australia"
-msgstr "Australia"
+msgstr "澳洲"
 
 msgctxt "country"
 msgid "Austria"
-msgstr "Austria"
+msgstr "奧地利"
 
 msgctxt "country"
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr "亞塞拜然"
 
 msgctxt "country"
 msgid "Bahamas"
-msgstr "Bahamas"
+msgstr "巴哈馬"
 
 msgctxt "country"
 msgid "Bahrain"
-msgstr "Bahrain"
+msgstr "巴林"
 
 msgctxt "country"
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr "孟加拉"
 
 msgctxt "country"
 msgid "Barbados"
-msgstr "Barbados"
+msgstr "巴貝多"
 
 msgctxt "country"
 msgid "Belarus"
-msgstr "Belarus"
+msgstr "白俄羅斯"
 
 msgctxt "country"
 msgid "Belgium"
-msgstr "Belgium"
+msgstr "比利時"
 
 msgctxt "country"
 msgid "Belize"
-msgstr "Belize"
+msgstr "貝里斯"
 
 msgctxt "country"
 msgid "Benin"
-msgstr "Benin"
+msgstr "貝南"
 
 msgctxt "country"
 msgid "Bermuda"
-msgstr "Bermuda"
+msgstr "百慕達"
 
 msgctxt "country"
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr "不丹"
 
 msgctxt "country"
 msgid "Bolivia"
-msgstr "Bolivia"
+msgstr "玻利維亞"
 
 msgctxt "country"
 msgid "Bonaire, Saint Eustatius and Saba "
@@ -225,27 +225,27 @@ msgstr "Bonaire, Saint Eustatius and Saba "
 
 msgctxt "country"
 msgid "Bosnia and Herzegovina"
-msgstr "Bosnia and Herzegovina"
+msgstr "波士尼亞與赫塞哥維納"
 
 msgctxt "country"
 msgid "Botswana"
-msgstr "Botswana"
+msgstr "波札那"
 
 msgctxt "country"
 msgid "Bouvet Island"
-msgstr "Bouvet Island"
+msgstr "布威島"
 
 msgctxt "country"
 msgid "Brazil"
-msgstr "Brazil"
+msgstr "巴西"
 
 msgctxt "country"
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "英屬印度洋領地"
 
 msgctxt "country"
 msgid "British Virgin Islands"
-msgstr "British Virgin Islands"
+msgstr "英屬維京群島"
 
 msgctxt "country"
 msgid "Brunei"
@@ -253,55 +253,55 @@ msgstr "Brunei"
 
 msgctxt "country"
 msgid "Bulgaria"
-msgstr "Bulgaria"
+msgstr "保加利亞"
 
 msgctxt "country"
 msgid "Burkina Faso"
-msgstr "Burkina Faso"
+msgstr "布吉納法索"
 
 msgctxt "country"
 msgid "Burundi"
-msgstr "Burundi"
+msgstr "蒲隆地"
 
 msgctxt "country"
 msgid "Cambodia"
-msgstr "Cambodia"
+msgstr "柬埔寨"
 
 msgctxt "country"
 msgid "Cameroon"
-msgstr "Cameroon"
+msgstr "喀麥隆"
 
 msgctxt "country"
 msgid "Canada"
-msgstr "Canada"
+msgstr "加拿大"
 
 msgctxt "country"
 msgid "Cape Verde"
-msgstr "Cape Verde"
+msgstr "維德角"
 
 msgctxt "country"
 msgid "Cayman Islands"
-msgstr "Cayman Islands"
+msgstr "開曼群島"
 
 msgctxt "country"
 msgid "Central African Republic"
-msgstr "Central African Republic"
+msgstr "中非共和國"
 
 msgctxt "country"
 msgid "Chad"
-msgstr "Chad"
+msgstr "查德"
 
 msgctxt "country"
 msgid "Chile"
-msgstr "Chile"
+msgstr "智利"
 
 msgctxt "country"
 msgid "China"
-msgstr "China"
+msgstr "中國"
 
 msgctxt "country"
 msgid "Christmas Island"
-msgstr "Christmas Island"
+msgstr "聖誕島"
 
 msgctxt "country"
 msgid "Cocos Islands"
@@ -309,27 +309,27 @@ msgstr "Cocos Islands"
 
 msgctxt "country"
 msgid "Colombia"
-msgstr "Colombia"
+msgstr "哥倫比亞"
 
 msgctxt "country"
 msgid "Comoros"
-msgstr "Comoros"
+msgstr "葛摩"
 
 msgctxt "country"
 msgid "Cook Islands"
-msgstr "Cook Islands"
+msgstr "庫克群島"
 
 msgctxt "country"
 msgid "Costa Rica"
-msgstr "Costa Rica"
+msgstr "哥斯大黎加"
 
 msgctxt "country"
 msgid "Croatia"
-msgstr "Croatia"
+msgstr "克羅埃西亞"
 
 msgctxt "country"
 msgid "Cuba"
-msgstr "Cuba"
+msgstr "古巴"
 
 msgctxt "country"
 msgid "Curacao"
@@ -337,11 +337,11 @@ msgstr "Curacao"
 
 msgctxt "country"
 msgid "Cyprus"
-msgstr "Cyprus"
+msgstr "賽普勒斯"
 
 msgctxt "country"
 msgid "Czech Republic"
-msgstr "Czech Republic"
+msgstr "捷克"
 
 msgctxt "country"
 msgid "Democratic Republic of the Congo"
@@ -349,203 +349,203 @@ msgstr "Democratic Republic of the Congo"
 
 msgctxt "country"
 msgid "Denmark"
-msgstr "Denmark"
+msgstr "丹麥"
 
 msgctxt "country"
 msgid "Djibouti"
-msgstr "Djibouti"
+msgstr "吉布地"
 
 msgctxt "country"
 msgid "Dominica"
-msgstr "Dominica"
+msgstr "多米尼克"
 
 msgctxt "country"
 msgid "Dominican Republic"
-msgstr "Dominican Republic"
+msgstr "多明尼加"
 
 msgctxt "country"
 msgid "East Timor"
-msgstr "East Timor"
+msgstr "東帝汶"
 
 msgctxt "country"
 msgid "Ecuador"
-msgstr "Ecuador"
+msgstr "厄瓜多"
 
 msgctxt "country"
 msgid "Egypt"
-msgstr "Egypt"
+msgstr "埃及"
 
 msgctxt "country"
 msgid "El Salvador"
-msgstr "El Salvador"
+msgstr "薩爾瓦多"
 
 msgctxt "country"
 msgid "Equatorial Guinea"
-msgstr "Equatorial Guinea"
+msgstr "赤道幾內亞"
 
 msgctxt "country"
 msgid "Eritrea"
-msgstr "Eritrea"
+msgstr "厄利垂亞"
 
 msgctxt "country"
 msgid "Estonia"
-msgstr "Estonia"
+msgstr "愛沙尼亞"
 
 msgctxt "country"
 msgid "Ethiopia"
-msgstr "Ethiopia"
+msgstr "衣索比亞"
 
 msgctxt "country"
 msgid "Falkland Islands"
-msgstr "Falkland Islands"
+msgstr "福克蘭群島 (馬維納斯群島)"
 
 msgctxt "country"
 msgid "Faroe Islands"
-msgstr "Faroe Islands"
+msgstr "法羅群島"
 
 msgctxt "country"
 msgid "Fiji"
-msgstr "Fiji"
+msgstr "斐濟"
 
 msgctxt "country"
 msgid "Finland"
-msgstr "Finland"
+msgstr "芬蘭"
 
 msgctxt "country"
 msgid "France"
-msgstr "France"
+msgstr "法國"
 
 msgctxt "country"
 msgid "French Guiana"
-msgstr "French Guiana"
+msgstr "法屬圭亞那"
 
 msgctxt "country"
 msgid "French Polynesia"
-msgstr "French Polynesia"
+msgstr "法屬玻里尼西亞"
 
 msgctxt "country"
 msgid "French Southern Territories"
-msgstr "French Southern Territories"
+msgstr "法屬南部屬地"
 
 msgctxt "country"
 msgid "Gabon"
-msgstr "Gabon"
+msgstr "加彭"
 
 msgctxt "country"
 msgid "Gambia"
-msgstr "Gambia"
+msgstr "甘比亞"
 
 msgctxt "country"
 msgid "Georgia"
-msgstr "Georgia"
+msgstr "喬治亞"
 
 msgctxt "country"
 msgid "Germany"
-msgstr "Germany"
+msgstr "德國"
 
 msgctxt "country"
 msgid "Ghana"
-msgstr "Ghana"
+msgstr "迦納"
 
 msgctxt "country"
 msgid "Gibraltar"
-msgstr "Gibraltar"
+msgstr "直布羅陀"
 
 msgctxt "country"
 msgid "Greece"
-msgstr "Greece"
+msgstr "希臘"
 
 msgctxt "country"
 msgid "Greenland"
-msgstr "Greenland"
+msgstr "格陵蘭"
 
 msgctxt "country"
 msgid "Grenada"
-msgstr "Grenada"
+msgstr "格瑞那達"
 
 msgctxt "country"
 msgid "Guadeloupe"
-msgstr "Guadeloupe"
+msgstr "瓜地洛普"
 
 msgctxt "country"
 msgid "Guam"
-msgstr "Guam"
+msgstr "關島"
 
 msgctxt "country"
 msgid "Guatemala"
-msgstr "Guatemala"
+msgstr "瓜地馬拉"
 
 msgctxt "country"
 msgid "Guernsey"
-msgstr "Guernsey"
+msgstr "根息"
 
 msgctxt "country"
 msgid "Guinea"
-msgstr "Guinea"
+msgstr "幾內亞"
 
 msgctxt "country"
 msgid "Guinea-Bissau"
-msgstr "Guinea-Bissau"
+msgstr "幾內亞比索"
 
 msgctxt "country"
 msgid "Guyana"
-msgstr "Guyana"
+msgstr "蓋亞那"
 
 msgctxt "country"
 msgid "Haiti"
-msgstr "Haiti"
+msgstr "海地"
 
 msgctxt "country"
 msgid "Heard Island and McDonald Islands"
-msgstr "Heard Island and McDonald Islands"
+msgstr "赫德島及麥唐納群島"
 
 msgctxt "country"
 msgid "Honduras"
-msgstr "Honduras"
+msgstr "宏都拉斯"
 
 msgctxt "country"
 msgid "Hong Kong"
-msgstr "Hong Kong"
+msgstr "香港"
 
 msgctxt "country"
 msgid "Hungary"
-msgstr "Hungary"
+msgstr "匈牙利"
 
 msgctxt "country"
 msgid "Iceland"
-msgstr "Iceland"
+msgstr "冰島"
 
 msgctxt "country"
 msgid "India"
-msgstr "India"
+msgstr "印度"
 
 msgctxt "country"
 msgid "Indonesia"
-msgstr "Indonesia"
+msgstr "印尼"
 
 msgctxt "country"
 msgid "Iran"
-msgstr "Iran"
+msgstr "伊朗"
 
 msgctxt "country"
 msgid "Iraq"
-msgstr "Iraq"
+msgstr "伊拉克"
 
 msgctxt "country"
 msgid "Ireland"
-msgstr "Ireland"
+msgstr "愛爾蘭"
 
 msgctxt "country"
 msgid "Isle of Man"
-msgstr "Isle of Man"
+msgstr "曼島"
 
 msgctxt "country"
 msgid "Israel"
-msgstr "Israel"
+msgstr "以色列"
 
 msgctxt "country"
 msgid "Italy"
-msgstr "Italy"
+msgstr "義大利"
 
 msgctxt "country"
 msgid "Ivory Coast"
@@ -553,239 +553,239 @@ msgstr "Ivory Coast"
 
 msgctxt "country"
 msgid "Jamaica"
-msgstr "Jamaica"
+msgstr "牙買加"
 
 msgctxt "country"
 msgid "Japan"
-msgstr "Japan"
+msgstr "日本"
 
 msgctxt "country"
 msgid "Jersey"
-msgstr "Jersey"
+msgstr "澤西島"
 
 msgctxt "country"
 msgid "Jordan"
-msgstr "Jordan"
+msgstr "約旦"
 
 msgctxt "country"
 msgid "Kazakhstan"
-msgstr "Kazakhstan"
+msgstr "哈薩克"
 
 msgctxt "country"
 msgid "Kenya"
-msgstr "Kenya"
+msgstr "肯亞"
 
 msgctxt "country"
 msgid "Kiribati"
-msgstr "Kiribati"
+msgstr "吉里巴斯"
 
 msgctxt "country"
 msgid "Kosovo"
-msgstr "Kosovo"
+msgstr "科索沃"
 
 msgctxt "country"
 msgid "Kuwait"
-msgstr "Kuwait"
+msgstr "科威特"
 
 msgctxt "country"
 msgid "Kyrgyzstan"
-msgstr "Kyrgyzstan"
+msgstr "吉爾吉斯"
 
 msgctxt "country"
 msgid "Laos"
-msgstr "Laos"
+msgstr "寮國"
 
 msgctxt "country"
 msgid "Latvia"
-msgstr "Latvia"
+msgstr "拉脫維亞"
 
 msgctxt "country"
 msgid "Lebanon"
-msgstr "Lebanon"
+msgstr "黎巴嫩"
 
 msgctxt "country"
 msgid "Lesotho"
-msgstr "Lesotho"
+msgstr "賴索托"
 
 msgctxt "country"
 msgid "Liberia"
-msgstr "Liberia"
+msgstr "賴比瑞亞"
 
 msgctxt "country"
 msgid "Libya"
-msgstr "Libya"
+msgstr "利比亞"
 
 msgctxt "country"
 msgid "Liechtenstein"
-msgstr "Liechtenstein"
+msgstr "列支敦斯登"
 
 msgctxt "country"
 msgid "Lithuania"
-msgstr "Lithuania"
+msgstr "立陶宛"
 
 msgctxt "country"
 msgid "Luxembourg"
-msgstr "Luxembourg"
+msgstr "盧森堡"
 
 msgctxt "country"
 msgid "Macao"
-msgstr "Macao"
+msgstr "澳門"
 
 msgctxt "country"
 msgid "Macedonia"
-msgstr "Macedonia"
+msgstr "馬其頓"
 
 msgctxt "country"
 msgid "Madagascar"
-msgstr "Madagascar"
+msgstr "馬達加斯加"
 
 msgctxt "country"
 msgid "Malawi"
-msgstr "Malawi"
+msgstr "馬拉威"
 
 msgctxt "country"
 msgid "Malaysia"
-msgstr "Malaysia"
+msgstr "馬來西亞"
 
 msgctxt "country"
 msgid "Maldives"
-msgstr "Maldives"
+msgstr "馬爾地夫"
 
 msgctxt "country"
 msgid "Mali"
-msgstr "Mali"
+msgstr "馬利"
 
 msgctxt "country"
 msgid "Malta"
-msgstr "Malta"
+msgstr "馬爾他"
 
 msgctxt "country"
 msgid "Marshall Islands"
-msgstr "Marshall Islands"
+msgstr "馬紹爾群島"
 
 msgctxt "country"
 msgid "Martinique"
-msgstr "Martinique"
+msgstr "馬丁尼克"
 
 msgctxt "country"
 msgid "Mauritania"
-msgstr "Mauritania"
+msgstr "茅利塔尼亞"
 
 msgctxt "country"
 msgid "Mauritius"
-msgstr "Mauritius"
+msgstr "模里西斯"
 
 msgctxt "country"
 msgid "Mayotte"
-msgstr "Mayotte"
+msgstr "馬約特島"
 
 msgctxt "country"
 msgid "Mexico"
-msgstr "Mexico"
+msgstr "墨西哥"
 
 msgctxt "country"
 msgid "Micronesia"
-msgstr "Micronesia"
+msgstr "密克羅尼西亞"
 
 msgctxt "country"
 msgid "Moldova"
-msgstr "Moldova"
+msgstr "摩爾多瓦"
 
 msgctxt "country"
 msgid "Monaco"
-msgstr "Monaco"
+msgstr "摩納哥"
 
 msgctxt "country"
 msgid "Mongolia"
-msgstr "Mongolia"
+msgstr "蒙古"
 
 msgctxt "country"
 msgid "Montenegro"
-msgstr "Montenegro"
+msgstr "蒙特內哥羅"
 
 msgctxt "country"
 msgid "Montserrat"
-msgstr "Montserrat"
+msgstr "蒙哲臘"
 
 msgctxt "country"
 msgid "Morocco"
-msgstr "Morocco"
+msgstr "摩洛哥"
 
 msgctxt "country"
 msgid "Mozambique"
-msgstr "Mozambique"
+msgstr "莫三比克"
 
 msgctxt "country"
 msgid "Myanmar"
-msgstr "Myanmar"
+msgstr "緬甸"
 
 msgctxt "country"
 msgid "Namibia"
-msgstr "Namibia"
+msgstr "納米比亞"
 
 msgctxt "country"
 msgid "Nauru"
-msgstr "Nauru"
+msgstr "諾魯"
 
 msgctxt "country"
 msgid "Nepal"
-msgstr "Nepal"
+msgstr "尼泊爾"
 
 msgctxt "country"
 msgid "Netherlands"
-msgstr "Netherlands"
+msgstr "荷蘭"
 
 msgctxt "country"
 msgid "New Caledonia"
-msgstr "New Caledonia"
+msgstr "新喀里多尼亞"
 
 msgctxt "country"
 msgid "New Zealand"
-msgstr "New Zealand"
+msgstr "紐西蘭"
 
 msgctxt "country"
 msgid "Nicaragua"
-msgstr "Nicaragua"
+msgstr "尼加拉瓜"
 
 msgctxt "country"
 msgid "Niger"
-msgstr "Niger"
+msgstr "尼日"
 
 msgctxt "country"
 msgid "Nigeria"
-msgstr "Nigeria"
+msgstr "奈及利亞"
 
 msgctxt "country"
 msgid "Niue"
-msgstr "Niue"
+msgstr "紐威島"
 
 msgctxt "country"
 msgid "Norfolk Island"
-msgstr "Norfolk Island"
+msgstr "諾福克島"
 
 msgctxt "country"
 msgid "North Korea"
-msgstr "North Korea"
+msgstr "北韓"
 
 msgctxt "country"
 msgid "Northern Mariana Islands"
-msgstr "Northern Mariana Islands"
+msgstr "北馬利安納群島"
 
 msgctxt "country"
 msgid "Norway"
-msgstr "Norway"
+msgstr "挪威"
 
 msgctxt "country"
 msgid "Oman"
-msgstr "Oman"
+msgstr "阿曼"
 
 msgctxt "country"
 msgid "Pakistan"
-msgstr "Pakistan"
+msgstr "巴基斯坦"
 
 msgctxt "country"
 msgid "Palau"
-msgstr "Palau"
+msgstr "帛琉"
 
 msgctxt "country"
 msgid "Palestinian Territory"
@@ -793,43 +793,43 @@ msgstr "Palestinian Territory"
 
 msgctxt "country"
 msgid "Panama"
-msgstr "Panama"
+msgstr "巴拿馬"
 
 msgctxt "country"
 msgid "Papua New Guinea"
-msgstr "Papua New Guinea"
+msgstr "巴布亞紐幾內亞"
 
 msgctxt "country"
 msgid "Paraguay"
-msgstr "Paraguay"
+msgstr "巴拉圭"
 
 msgctxt "country"
 msgid "Peru"
-msgstr "Peru"
+msgstr "秘魯"
 
 msgctxt "country"
 msgid "Philippines"
-msgstr "Philippines"
+msgstr "菲律賓"
 
 msgctxt "country"
 msgid "Pitcairn"
-msgstr "Pitcairn"
+msgstr "皮特肯群島"
 
 msgctxt "country"
 msgid "Poland"
-msgstr "Poland"
+msgstr "波蘭"
 
 msgctxt "country"
 msgid "Portugal"
-msgstr "Portugal"
+msgstr "葡萄牙"
 
 msgctxt "country"
 msgid "Puerto Rico"
-msgstr "Puerto Rico"
+msgstr "波多黎各"
 
 msgctxt "country"
 msgid "Qatar"
-msgstr "Qatar"
+msgstr "卡達"
 
 msgctxt "country"
 msgid "Republic of the Congo"
@@ -837,19 +837,19 @@ msgstr "Republic of the Congo"
 
 msgctxt "country"
 msgid "Reunion"
-msgstr "Reunion"
+msgstr "留尼旺"
 
 msgctxt "country"
 msgid "Romania"
-msgstr "Romania"
+msgstr "羅馬尼亞"
 
 msgctxt "country"
 msgid "Russia"
-msgstr "Russia"
+msgstr "俄羅斯"
 
 msgctxt "country"
 msgid "Rwanda"
-msgstr "Rwanda"
+msgstr "盧安達"
 
 msgctxt "country"
 msgid "Saint Barthelemy"
@@ -857,15 +857,15 @@ msgstr "Saint Barthelemy"
 
 msgctxt "country"
 msgid "Saint Helena"
-msgstr "Saint Helena"
+msgstr "聖赫勒拿"
 
 msgctxt "country"
 msgid "Saint Kitts and Nevis"
-msgstr "Saint Kitts and Nevis"
+msgstr "聖克里斯多福及尼維斯"
 
 msgctxt "country"
 msgid "Saint Lucia"
-msgstr "Saint Lucia"
+msgstr "聖露西亞"
 
 msgctxt "country"
 msgid "Saint Martin"
@@ -873,171 +873,171 @@ msgstr "Saint Martin"
 
 msgctxt "country"
 msgid "Saint Pierre and Miquelon"
-msgstr "Saint Pierre and Miquelon"
+msgstr "聖皮埃與密克隆群島"
 
 msgctxt "country"
 msgid "Saint Vincent and the Grenadines"
-msgstr "Saint Vincent and the Grenadines"
+msgstr "聖文森及格瑞那丁"
 
 msgctxt "country"
 msgid "Samoa"
-msgstr "Samoa"
+msgstr "薩摩亞"
 
 msgctxt "country"
 msgid "San Marino"
-msgstr "San Marino"
+msgstr "聖馬利諾"
 
 msgctxt "country"
 msgid "Sao Tome and Principe"
-msgstr "Sao Tome and Principe"
+msgstr "聖多美普林西比"
 
 msgctxt "country"
 msgid "Saudi Arabia"
-msgstr "Saudi Arabia"
+msgstr "沙烏地阿拉伯"
 
 msgctxt "country"
 msgid "Senegal"
-msgstr "Senegal"
+msgstr "塞內加爾"
 
 msgctxt "country"
 msgid "Serbia"
-msgstr "Serbia"
+msgstr "塞爾維亞"
 
 msgctxt "country"
 msgid "Seychelles"
-msgstr "Seychelles"
+msgstr "塞席爾"
 
 msgctxt "country"
 msgid "Sierra Leone"
-msgstr "Sierra Leone"
+msgstr "獅子山"
 
 msgctxt "country"
 msgid "Singapore"
-msgstr "Singapore"
+msgstr "新加坡"
 
 msgctxt "country"
 msgid "Sint Maarten"
-msgstr "Sint Maarten"
+msgstr "荷屬聖馬丁"
 
 msgctxt "country"
 msgid "Slovakia"
-msgstr "Slovakia"
+msgstr "斯洛伐克"
 
 msgctxt "country"
 msgid "Slovenia"
-msgstr "Slovenia"
+msgstr "斯洛維尼亞"
 
 msgctxt "country"
 msgid "Solomon Islands"
-msgstr "Solomon Islands"
+msgstr "索羅門群島"
 
 msgctxt "country"
 msgid "Somalia"
-msgstr "Somalia"
+msgstr "索馬利亞"
 
 msgctxt "country"
 msgid "South Africa"
-msgstr "South Africa"
+msgstr "南非"
 
 msgctxt "country"
 msgid "South Georgia and the South Sandwich Islands"
-msgstr "South Georgia and the South Sandwich Islands"
+msgstr "南喬治亞與南三明治群島"
 
 msgctxt "country"
 msgid "South Korea"
-msgstr "South Korea"
+msgstr "南韓"
 
 msgctxt "country"
 msgid "South Sudan"
-msgstr "South Sudan"
+msgstr "南蘇丹"
 
 msgctxt "country"
 msgid "Spain"
-msgstr "Spain"
+msgstr "西班牙"
 
 msgctxt "country"
 msgid "Sri Lanka"
-msgstr "Sri Lanka"
+msgstr "斯里蘭卡"
 
 msgctxt "country"
 msgid "Sudan"
-msgstr "Sudan"
+msgstr "蘇丹"
 
 msgctxt "country"
 msgid "Suriname"
-msgstr "Suriname"
+msgstr "蘇利南"
 
 msgctxt "country"
 msgid "Svalbard and Jan Mayen"
-msgstr "Svalbard and Jan Mayen"
+msgstr "挪威屬斯瓦巴及尖棉"
 
 msgctxt "country"
 msgid "Swaziland"
-msgstr "Swaziland"
+msgstr "史瓦帝尼"
 
 msgctxt "country"
 msgid "Sweden"
-msgstr "Sweden"
+msgstr "瑞典"
 
 msgctxt "country"
 msgid "Switzerland"
-msgstr "Switzerland"
+msgstr "瑞士"
 
 msgctxt "country"
 msgid "Syria"
-msgstr "Syria"
+msgstr "敘利亞"
 
 msgctxt "country"
 msgid "Taiwan"
-msgstr "Taiwan"
+msgstr "臺灣"
 
 msgctxt "country"
 msgid "Tajikistan"
-msgstr "Tajikistan"
+msgstr "塔吉克"
 
 msgctxt "country"
 msgid "Tanzania"
-msgstr "Tanzania"
+msgstr "坦尚尼亞"
 
 msgctxt "country"
 msgid "Thailand"
-msgstr "Thailand"
+msgstr "泰國"
 
 msgctxt "country"
 msgid "Togo"
-msgstr "Togo"
+msgstr "多哥"
 
 msgctxt "country"
 msgid "Tokelau"
-msgstr "Tokelau"
+msgstr "托克勞群島"
 
 msgctxt "country"
 msgid "Tonga"
-msgstr "Tonga"
+msgstr "東加"
 
 msgctxt "country"
 msgid "Trinidad and Tobago"
-msgstr "Trinidad and Tobago"
+msgstr "千里達及托巴哥"
 
 msgctxt "country"
 msgid "Tunisia"
-msgstr "Tunisia"
+msgstr "突尼西亞"
 
 msgctxt "country"
 msgid "Turkey"
-msgstr "Turkey"
+msgstr "土耳其"
 
 msgctxt "country"
 msgid "Turkmenistan"
-msgstr "Turkmenistan"
+msgstr "土庫曼"
 
 msgctxt "country"
 msgid "Turks and Caicos Islands"
-msgstr "Turks and Caicos Islands"
+msgstr "土克斯及開科斯群島"
 
 msgctxt "country"
 msgid "Tuvalu"
-msgstr "Tuvalu"
+msgstr "吐瓦魯"
 
 msgctxt "country"
 msgid "U.S. Virgin Islands"
@@ -1045,39 +1045,39 @@ msgstr "U.S. Virgin Islands"
 
 msgctxt "country"
 msgid "Uganda"
-msgstr "Uganda"
+msgstr "烏干達"
 
 msgctxt "country"
 msgid "Ukraine"
-msgstr "Ukraine"
+msgstr "烏克蘭"
 
 msgctxt "country"
 msgid "United Arab Emirates"
-msgstr "United Arab Emirates"
+msgstr "阿拉伯聯合大公國"
 
 msgctxt "country"
 msgid "United Kingdom"
-msgstr "United Kingdom"
+msgstr "英國"
 
 msgctxt "country"
 msgid "United States"
-msgstr "United States"
+msgstr "美國"
 
 msgctxt "country"
 msgid "United States Minor Outlying Islands"
-msgstr "United States Minor Outlying Islands"
+msgstr "美國本土外小島嶼"
 
 msgctxt "country"
 msgid "Uruguay"
-msgstr "Uruguay"
+msgstr "烏拉圭"
 
 msgctxt "country"
 msgid "Uzbekistan"
-msgstr "Uzbekistan"
+msgstr "烏茲別克"
 
 msgctxt "country"
 msgid "Vanuatu"
-msgstr "Vanuatu"
+msgstr "萬那杜"
 
 msgctxt "country"
 msgid "Vatican"
@@ -1085,31 +1085,31 @@ msgstr "Vatican"
 
 msgctxt "country"
 msgid "Venezuela"
-msgstr "Venezuela"
+msgstr "委內瑞拉"
 
 msgctxt "country"
 msgid "Vietnam"
-msgstr "Vietnam"
+msgstr "越南"
 
 msgctxt "country"
 msgid "Wallis and Futuna"
-msgstr "Wallis and Futuna"
+msgstr "瓦利斯群島和富圖那群島"
 
 msgctxt "country"
 msgid "Western Sahara"
-msgstr "Western Sahara"
+msgstr "西撒哈拉"
 
 msgctxt "country"
 msgid "Yemen"
-msgstr "Yemen"
+msgstr "葉門"
 
 msgctxt "country"
 msgid "Zambia"
-msgstr "Zambia"
+msgstr "尚比亞"
 
 msgctxt "country"
 msgid "Zimbabwe"
-msgstr "Zimbabwe"
+msgstr "辛巴威"
 
 msgctxt "error"
 msgid "An unknown error occurred"
@@ -1205,7 +1205,7 @@ msgstr "6 位數驗證代碼"
 
 msgctxt "label"
 msgid "Active port:"
-msgstr "Active port:"
+msgstr "在用通訊埠:"
 
 msgctxt "label"
 msgid "Add new server"
@@ -1213,7 +1213,7 @@ msgstr "Add new server"
 
 msgctxt "label"
 msgid "All countries ({count})"
-msgstr "All countries ({count})"
+msgstr "全部國家 ({count})"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1221,7 +1221,7 @@ msgstr "Auto-selected from free locations"
 
 msgctxt "label"
 msgid "BETA"
-msgstr "BETA"
+msgstr "體驗版"
 
 msgctxt "label"
 msgid "Block Malware"
@@ -1229,7 +1229,7 @@ msgstr "Block Malware"
 
 msgctxt "label"
 msgid "Block ads, trackers and malware"
-msgstr "Block ads, trackers and malware"
+msgstr "攔截廣告、追蹤程式 和惡意軟體"
 
 msgctxt "label"
 msgid "Description (minimum {count} characters)"
@@ -1237,11 +1237,11 @@ msgstr "Description (minimum {count} characters)"
 
 msgctxt "label"
 msgid "Email"
-msgstr "Email"
+msgstr "電郵"
 
 msgctxt "label"
 msgid "Excluded apps "
-msgstr "Excluded apps "
+msgstr "排除所有應用程式 "
 
 msgctxt "label"
 msgid "Free"
@@ -1269,7 +1269,7 @@ msgstr "復原代碼"
 
 msgctxt "label"
 msgid "Server load"
-msgstr "Server load"
+msgstr "伺服器負載:"
 
 msgctxt "label"
 msgid "Use Proton protocols"
@@ -1277,7 +1277,7 @@ msgstr "Use Proton protocols"
 
 msgctxt "label"
 msgid "Username"
-msgstr "Username"
+msgstr "使用者名稱"
 
 msgctxt "label"
 msgid "VPN Plus"
@@ -1289,7 +1289,7 @@ msgstr "VPN plan: {plan}"
 
 msgctxt "label"
 msgid "Via Secure Core"
-msgstr "Via Secure Core"
+msgstr "經由 Secure Core"
 
 msgctxt "label"
 msgid "Via {country}"
@@ -1301,27 +1301,27 @@ msgstr "進一步瞭解"
 
 msgctxt "menu"
 msgid "About"
-msgstr "About"
+msgstr "關於"
 
 msgctxt "menu"
 msgid "Quit"
-msgstr "Quit"
+msgstr "退出"
 
 msgctxt "menu"
 msgid "Release notes"
-msgstr "Release notes"
+msgstr "版本資訊"
 
 msgctxt "menu"
 msgid "Report an issue"
-msgstr "Report an issue"
+msgstr "回報問題"
 
 msgctxt "menu"
 msgid "Settings"
-msgstr "Settings"
+msgstr "設定"
 
 msgctxt "menu"
 msgid "Sign out"
-msgstr "Sign out"
+msgstr "登出"
 
 msgctxt "message"
 msgid ""
@@ -1381,9 +1381,7 @@ msgctxt "message"
 msgid ""
 "Connect to a Tor server to access hidden services and onion sites using any "
 "browser."
-msgstr ""
-"Connect to a Tor server to access hidden services and onion sites using any "
-"browser."
+msgstr "使用任何瀏覽器連線到 Tor 伺服器訪問隱藏服務和隱蔽(Onion)網站。 "
 
 msgctxt "message"
 msgid ""
@@ -1395,7 +1393,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "Copied!"
-msgstr "Copied!"
+msgstr "已複製!"
 
 msgctxt "message"
 msgid ""
@@ -1409,8 +1407,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "Customize your connection by deciding which apps are protected by VPN."
-msgstr ""
-"Customize your connection by deciding which apps are protected by VPN."
+msgstr "決定哪些應用程式受 VPN 保護，以自訂您的連線。"
 
 msgctxt "message"
 msgid ""
@@ -1436,7 +1433,7 @@ msgstr "Enabling Beta access..."
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."
-msgstr "Get early access and help us test new versions of Proton VPN."
+msgstr "提前使用 Proton VPN 的新版本並提供測試回饋."
 
 msgctxt "message"
 msgid "If your security key has a button or a gold disc, tap it now."
@@ -1446,9 +1443,7 @@ msgctxt "message"
 msgid ""
 "Increase your connection speed by up to 400% with performance enhancing "
 "technologies."
-msgstr ""
-"Increase your connection speed by up to 400% with performance enhancing "
-"technologies."
+msgstr "透過高效能技術，將您的連線速度提升高達 400%。"
 
 msgctxt "message"
 msgid "Insert the U2F or FIDO key linked to your Proton Account. "
@@ -1499,8 +1494,7 @@ msgstr "Please establish a new VPN connection for changes to take effect."
 
 msgctxt "message"
 msgid "Protect yourself from ads, malware, and trackers on websites and apps."
-msgstr ""
-"Protect yourself from ads, malware, and trackers on websites and apps."
+msgstr "在網站和應用程式中阻擋廣告、惡意軟體和追蹤器，保護您的安全。"
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1583,8 +1577,7 @@ msgstr "Split tunneling enabled. Remember to restart affected apps."
 msgctxt "message"
 msgid ""
 "These servers give the best performance for BitTorrent and file sharing."
-msgstr ""
-"These servers give the best performance for BitTorrent and file sharing."
+msgstr "這些伺服器為 BitTorrent 與檔案分享提供最佳效能。"
 
 msgctxt "message"
 msgid ""
@@ -1646,23 +1639,23 @@ msgstr "正在連線..."
 
 msgctxt "status"
 msgid "Connection error"
-msgstr "Connection error"
+msgstr "連線錯誤"
 
 msgctxt "status"
 msgid "Disconnecting..."
-msgstr "Disconnecting..."
+msgstr "正在中斷連線..."
 
 msgctxt "status"
 msgid "Protected"
-msgstr "Protected"
+msgstr "受保護"
 
 msgctxt "status"
 msgid "Unprotected"
-msgstr "Unprotected"
+msgstr "未受保護"
 
 msgctxt "title"
 msgid "About"
-msgstr "About"
+msgstr "關於"
 
 msgctxt "title"
 msgid "Account"
@@ -1686,19 +1679,19 @@ msgstr "驗證器 app"
 
 msgctxt "title"
 msgid "Auto connect"
-msgstr "Auto connect"
+msgstr "自動連線"
 
 msgctxt "title"
 msgid "Beta Access"
-msgstr "Beta Access"
+msgstr "測試版體驗"
 
 msgctxt "title"
 msgid "Beta access"
-msgstr "Beta access"
+msgstr "測試版本存取"
 
 msgctxt "title"
 msgid "Connection"
-msgstr "Connection"
+msgstr "連接"
 
 msgctxt "title"
 msgid "Connection error: session limit reached"
@@ -1714,7 +1707,7 @@ msgstr "Create a troubleshooting file"
 
 msgctxt "title"
 msgid "Custom DNS servers"
-msgstr "Custom DNS servers"
+msgstr "自訂 DNS 伺服器"
 
 msgctxt "title"
 msgid "Enable Custom DNS"
@@ -1734,11 +1727,11 @@ msgstr "啟用 Netshield ?"
 
 msgctxt "title"
 msgid "Exclude mode"
-msgstr "Exclude mode"
+msgstr "排除模式"
 
 msgctxt "title"
 msgid "Fastest country"
-msgstr "Fastest country"
+msgstr "最快的國家"
 
 msgctxt "title"
 msgid "Fastest free server"
@@ -1786,19 +1779,19 @@ msgstr "Pinned tray connections"
 
 msgctxt "title"
 msgid "Port forwarding"
-msgstr "Port forwarding"
+msgstr "通訊埠轉送"
 
 msgctxt "title"
 msgid "Protocol"
-msgstr "Protocol"
+msgstr "協定"
 
 msgctxt "title"
 msgid "Release notes"
-msgstr "Release notes"
+msgstr "版本資訊"
 
 msgctxt "title"
 msgid "Report an Issue"
-msgstr "Report an Issue"
+msgstr "回報問題"
 
 msgctxt "title"
 msgid "Secure Core"
@@ -1822,15 +1815,15 @@ msgstr "設定"
 
 msgctxt "title"
 msgid "Share anonymous crash reports"
-msgstr "Share anonymous crash reports"
+msgstr "使用匿名分享當機錯誤報告"
 
 msgctxt "title"
 msgid "Smart routing"
-msgstr "Smart routing"
+msgstr "智慧路由"
 
 msgctxt "title"
 msgid "Split tunneling"
-msgstr "Split tunneling"
+msgstr "分隔通道"
 
 msgctxt "title"
 msgid "Start app minimized"
@@ -1838,7 +1831,7 @@ msgstr "Start app minimized"
 
 msgctxt "title"
 msgid "Tor"
-msgstr "Tor"
+msgstr "洋蔥路由器"
 
 msgctxt "title"
 msgid "Two-factor authentication"
@@ -1846,7 +1839,7 @@ msgstr "雙重身分驗證"
 
 msgctxt "title"
 msgid "VPN Accelerator"
-msgstr "VPN Accelerator"
+msgstr "VPN 加速器"
 
 msgctxt "tooltip"
 msgid "Close"
@@ -1854,7 +1847,7 @@ msgstr "關閉"
 
 msgctxt "tooltip"
 msgid "Connect to {country_name}"
-msgstr "Connect to {country_name}"
+msgstr "已連線到 {country_name}"
 
 msgctxt "tooltip"
 msgid "Connect to {country} via Secure Core"
@@ -1866,11 +1859,11 @@ msgstr "Connect to {exit_country} via {entry_country}"
 
 msgctxt "tooltip"
 msgid "Connect to {name}"
-msgstr "Connect to {name}"
+msgstr "已連線到 {name}"
 
 msgctxt "tooltip"
 msgid "Copy port number"
-msgstr "Copy port number"
+msgstr "複製通訊埠號碼"
 
 msgctxt "tooltip"
 msgid ""

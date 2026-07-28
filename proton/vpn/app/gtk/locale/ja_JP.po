@@ -9,7 +9,7 @@ msgstr ""
 
 msgctxt "button"
 msgid "Add"
-msgstr "Add"
+msgstr "追加"
 
 msgctxt "button"
 msgid "Authenticate"
@@ -17,7 +17,7 @@ msgstr "認証"
 
 msgctxt "button"
 msgid "Browse"
-msgstr "Browse"
+msgstr "ブラウズ"
 
 msgctxt "button"
 msgid "Cancel"
@@ -29,7 +29,7 @@ msgstr "Cancel Connection"
 
 msgctxt "button"
 msgid "Connect"
-msgstr "Connect"
+msgstr "接続"
 
 msgctxt "button"
 msgid "Create Account"
@@ -41,15 +41,15 @@ msgstr "無効化"
 
 msgctxt "button"
 msgid "Disconnect"
-msgstr "Disconnect"
+msgstr "切断"
 
 msgctxt "button"
 msgid "Done"
-msgstr "Done"
+msgstr "完了"
 
 msgctxt "button"
 msgid "Learn more"
-msgstr "Learn more"
+msgstr "もっと詳しく知る"
 
 msgctxt "button"
 msgid "Manage Account"
@@ -61,7 +61,7 @@ msgstr "お困りですか？"
 
 msgctxt "button"
 msgid "Send error logs"
-msgstr "Send error logs"
+msgstr "エラーログを送信"
 
 msgctxt "button"
 msgid "Sign in"
@@ -69,7 +69,7 @@ msgstr "サインイン"
 
 msgctxt "button"
 msgid "Start"
-msgstr "Start"
+msgstr "開始"
 
 msgctxt "button"
 msgid "Stop"
@@ -77,7 +77,7 @@ msgstr "Stop"
 
 msgctxt "button"
 msgid "Upgrade"
-msgstr "Upgrade"
+msgstr "アップグレード"
 
 msgctxt "button"
 msgid "Use 6-digit authentication code"
@@ -89,7 +89,7 @@ msgstr "回復用コードを使用"
 
 msgctxt "button"
 msgid "_Cancel"
-msgstr "_Cancel"
+msgstr "キャンセル"
 
 msgctxt "button"
 msgid "_Close"
@@ -113,111 +113,111 @@ msgstr "_Yes"
 
 msgctxt "country"
 msgid "Afghanistan"
-msgstr "Afghanistan"
+msgstr "アフガニスタン"
 
 msgctxt "country"
 msgid "Aland Islands"
-msgstr "Aland Islands"
+msgstr "オーランド諸島"
 
 msgctxt "country"
 msgid "Albania"
-msgstr "Albania"
+msgstr "アルバニア"
 
 msgctxt "country"
 msgid "Algeria"
-msgstr "Algeria"
+msgstr "アルジェリア"
 
 msgctxt "country"
 msgid "American Samoa"
-msgstr "American Samoa"
+msgstr "アメリカ領サモア"
 
 msgctxt "country"
 msgid "Andorra"
-msgstr "Andorra"
+msgstr "アンドラ"
 
 msgctxt "country"
 msgid "Angola"
-msgstr "Angola"
+msgstr "アンゴラ"
 
 msgctxt "country"
 msgid "Anguilla"
-msgstr "Anguilla"
+msgstr "アンギラ"
 
 msgctxt "country"
 msgid "Antarctica"
-msgstr "Antarctica"
+msgstr "南極大陸"
 
 msgctxt "country"
 msgid "Antigua and Barbuda"
-msgstr "Antigua and Barbuda"
+msgstr "アンティグア・バーブーダ"
 
 msgctxt "country"
 msgid "Argentina"
-msgstr "Argentina"
+msgstr "アルゼンチン"
 
 msgctxt "country"
 msgid "Armenia"
-msgstr "Armenia"
+msgstr "アルメニア"
 
 msgctxt "country"
 msgid "Aruba"
-msgstr "Aruba"
+msgstr "アルバ"
 
 msgctxt "country"
 msgid "Australia"
-msgstr "Australia"
+msgstr "オーストラリア"
 
 msgctxt "country"
 msgid "Austria"
-msgstr "Austria"
+msgstr "オーストリア"
 
 msgctxt "country"
 msgid "Azerbaijan"
-msgstr "Azerbaijan"
+msgstr "アゼルバイジャン"
 
 msgctxt "country"
 msgid "Bahamas"
-msgstr "Bahamas"
+msgstr "バハマ"
 
 msgctxt "country"
 msgid "Bahrain"
-msgstr "Bahrain"
+msgstr "バーレーン"
 
 msgctxt "country"
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr "バングラデシュ"
 
 msgctxt "country"
 msgid "Barbados"
-msgstr "Barbados"
+msgstr "バルバドス"
 
 msgctxt "country"
 msgid "Belarus"
-msgstr "Belarus"
+msgstr "ベラルーシ"
 
 msgctxt "country"
 msgid "Belgium"
-msgstr "Belgium"
+msgstr "ベルギー"
 
 msgctxt "country"
 msgid "Belize"
-msgstr "Belize"
+msgstr "ベリーズ"
 
 msgctxt "country"
 msgid "Benin"
-msgstr "Benin"
+msgstr "ベナン"
 
 msgctxt "country"
 msgid "Bermuda"
-msgstr "Bermuda"
+msgstr "バミューダ"
 
 msgctxt "country"
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr "ブータン"
 
 msgctxt "country"
 msgid "Bolivia"
-msgstr "Bolivia"
+msgstr "ボリビア"
 
 msgctxt "country"
 msgid "Bonaire, Saint Eustatius and Saba "
@@ -225,27 +225,27 @@ msgstr "Bonaire, Saint Eustatius and Saba "
 
 msgctxt "country"
 msgid "Bosnia and Herzegovina"
-msgstr "Bosnia and Herzegovina"
+msgstr "ボスニア・ヘルツェゴビナ"
 
 msgctxt "country"
 msgid "Botswana"
-msgstr "Botswana"
+msgstr "ボツワナ"
 
 msgctxt "country"
 msgid "Bouvet Island"
-msgstr "Bouvet Island"
+msgstr "ブーベ島"
 
 msgctxt "country"
 msgid "Brazil"
-msgstr "Brazil"
+msgstr "ブラジル"
 
 msgctxt "country"
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "イギリス領インド洋地域"
 
 msgctxt "country"
 msgid "British Virgin Islands"
-msgstr "British Virgin Islands"
+msgstr "イギリス領バージン諸島"
 
 msgctxt "country"
 msgid "Brunei"
@@ -253,55 +253,55 @@ msgstr "Brunei"
 
 msgctxt "country"
 msgid "Bulgaria"
-msgstr "Bulgaria"
+msgstr "ブルガリア"
 
 msgctxt "country"
 msgid "Burkina Faso"
-msgstr "Burkina Faso"
+msgstr "ブルキナファソ"
 
 msgctxt "country"
 msgid "Burundi"
-msgstr "Burundi"
+msgstr "ブルンジ"
 
 msgctxt "country"
 msgid "Cambodia"
-msgstr "Cambodia"
+msgstr "カンボジア"
 
 msgctxt "country"
 msgid "Cameroon"
-msgstr "Cameroon"
+msgstr "カメルーン"
 
 msgctxt "country"
 msgid "Canada"
-msgstr "Canada"
+msgstr "カナダ"
 
 msgctxt "country"
 msgid "Cape Verde"
-msgstr "Cape Verde"
+msgstr "カーボベルデ"
 
 msgctxt "country"
 msgid "Cayman Islands"
-msgstr "Cayman Islands"
+msgstr "ケイマン諸島"
 
 msgctxt "country"
 msgid "Central African Republic"
-msgstr "Central African Republic"
+msgstr "中央アフリカ共和国"
 
 msgctxt "country"
 msgid "Chad"
-msgstr "Chad"
+msgstr "チャド"
 
 msgctxt "country"
 msgid "Chile"
-msgstr "Chile"
+msgstr "チリ"
 
 msgctxt "country"
 msgid "China"
-msgstr "China"
+msgstr "中国"
 
 msgctxt "country"
 msgid "Christmas Island"
-msgstr "Christmas Island"
+msgstr "クリスマス島"
 
 msgctxt "country"
 msgid "Cocos Islands"
@@ -309,27 +309,27 @@ msgstr "Cocos Islands"
 
 msgctxt "country"
 msgid "Colombia"
-msgstr "Colombia"
+msgstr "コロンビア"
 
 msgctxt "country"
 msgid "Comoros"
-msgstr "Comoros"
+msgstr "コモロ"
 
 msgctxt "country"
 msgid "Cook Islands"
-msgstr "Cook Islands"
+msgstr "クック諸島"
 
 msgctxt "country"
 msgid "Costa Rica"
-msgstr "Costa Rica"
+msgstr "コスタリカ"
 
 msgctxt "country"
 msgid "Croatia"
-msgstr "Croatia"
+msgstr "クロアチア"
 
 msgctxt "country"
 msgid "Cuba"
-msgstr "Cuba"
+msgstr "キューバ"
 
 msgctxt "country"
 msgid "Curacao"
@@ -337,11 +337,11 @@ msgstr "Curacao"
 
 msgctxt "country"
 msgid "Cyprus"
-msgstr "Cyprus"
+msgstr "キプロス"
 
 msgctxt "country"
 msgid "Czech Republic"
-msgstr "Czech Republic"
+msgstr "チェコ共和国"
 
 msgctxt "country"
 msgid "Democratic Republic of the Congo"
@@ -349,203 +349,203 @@ msgstr "Democratic Republic of the Congo"
 
 msgctxt "country"
 msgid "Denmark"
-msgstr "Denmark"
+msgstr "デンマーク"
 
 msgctxt "country"
 msgid "Djibouti"
-msgstr "Djibouti"
+msgstr "ジブチ"
 
 msgctxt "country"
 msgid "Dominica"
-msgstr "Dominica"
+msgstr "ドミニカ"
 
 msgctxt "country"
 msgid "Dominican Republic"
-msgstr "Dominican Republic"
+msgstr "ドミニカ共和国"
 
 msgctxt "country"
 msgid "East Timor"
-msgstr "East Timor"
+msgstr "東ティモール"
 
 msgctxt "country"
 msgid "Ecuador"
-msgstr "Ecuador"
+msgstr "エクアドル"
 
 msgctxt "country"
 msgid "Egypt"
-msgstr "Egypt"
+msgstr "エジプト"
 
 msgctxt "country"
 msgid "El Salvador"
-msgstr "El Salvador"
+msgstr "エルサルバドル"
 
 msgctxt "country"
 msgid "Equatorial Guinea"
-msgstr "Equatorial Guinea"
+msgstr "赤道ギニア"
 
 msgctxt "country"
 msgid "Eritrea"
-msgstr "Eritrea"
+msgstr "エリトリア"
 
 msgctxt "country"
 msgid "Estonia"
-msgstr "Estonia"
+msgstr "エストニア"
 
 msgctxt "country"
 msgid "Ethiopia"
-msgstr "Ethiopia"
+msgstr "エチオピア"
 
 msgctxt "country"
 msgid "Falkland Islands"
-msgstr "Falkland Islands"
+msgstr "フォークランド諸島"
 
 msgctxt "country"
 msgid "Faroe Islands"
-msgstr "Faroe Islands"
+msgstr "フェロー諸島"
 
 msgctxt "country"
 msgid "Fiji"
-msgstr "Fiji"
+msgstr "フィジー"
 
 msgctxt "country"
 msgid "Finland"
-msgstr "Finland"
+msgstr "フィンランド"
 
 msgctxt "country"
 msgid "France"
-msgstr "France"
+msgstr "フランス"
 
 msgctxt "country"
 msgid "French Guiana"
-msgstr "French Guiana"
+msgstr "フランス領ギアナ"
 
 msgctxt "country"
 msgid "French Polynesia"
-msgstr "French Polynesia"
+msgstr "フランス領ポリネシア"
 
 msgctxt "country"
 msgid "French Southern Territories"
-msgstr "French Southern Territories"
+msgstr "フランス領南方・南極地域"
 
 msgctxt "country"
 msgid "Gabon"
-msgstr "Gabon"
+msgstr "ガボン"
 
 msgctxt "country"
 msgid "Gambia"
-msgstr "Gambia"
+msgstr "ガンビア"
 
 msgctxt "country"
 msgid "Georgia"
-msgstr "Georgia"
+msgstr "ジョージア"
 
 msgctxt "country"
 msgid "Germany"
-msgstr "Germany"
+msgstr "ドイツ"
 
 msgctxt "country"
 msgid "Ghana"
-msgstr "Ghana"
+msgstr "ガーナ"
 
 msgctxt "country"
 msgid "Gibraltar"
-msgstr "Gibraltar"
+msgstr "ジブラルタル"
 
 msgctxt "country"
 msgid "Greece"
-msgstr "Greece"
+msgstr "ギリシャ"
 
 msgctxt "country"
 msgid "Greenland"
-msgstr "Greenland"
+msgstr "グリーンランド"
 
 msgctxt "country"
 msgid "Grenada"
-msgstr "Grenada"
+msgstr "グレナダ"
 
 msgctxt "country"
 msgid "Guadeloupe"
-msgstr "Guadeloupe"
+msgstr "グアドループ"
 
 msgctxt "country"
 msgid "Guam"
-msgstr "Guam"
+msgstr "グアム"
 
 msgctxt "country"
 msgid "Guatemala"
-msgstr "Guatemala"
+msgstr "グアテマラ"
 
 msgctxt "country"
 msgid "Guernsey"
-msgstr "Guernsey"
+msgstr "ガーンジー島"
 
 msgctxt "country"
 msgid "Guinea"
-msgstr "Guinea"
+msgstr "ギニア"
 
 msgctxt "country"
 msgid "Guinea-Bissau"
-msgstr "Guinea-Bissau"
+msgstr "ギニアビサウ"
 
 msgctxt "country"
 msgid "Guyana"
-msgstr "Guyana"
+msgstr "ガイアナ"
 
 msgctxt "country"
 msgid "Haiti"
-msgstr "Haiti"
+msgstr "ハイチ"
 
 msgctxt "country"
 msgid "Heard Island and McDonald Islands"
-msgstr "Heard Island and McDonald Islands"
+msgstr "ハード島とマクドナルド諸島"
 
 msgctxt "country"
 msgid "Honduras"
-msgstr "Honduras"
+msgstr "ホンジュラス"
 
 msgctxt "country"
 msgid "Hong Kong"
-msgstr "Hong Kong"
+msgstr "香港"
 
 msgctxt "country"
 msgid "Hungary"
-msgstr "Hungary"
+msgstr "ハンガリー"
 
 msgctxt "country"
 msgid "Iceland"
-msgstr "Iceland"
+msgstr "アイスランド"
 
 msgctxt "country"
 msgid "India"
-msgstr "India"
+msgstr "インド"
 
 msgctxt "country"
 msgid "Indonesia"
-msgstr "Indonesia"
+msgstr "インドネシア"
 
 msgctxt "country"
 msgid "Iran"
-msgstr "Iran"
+msgstr "イラン"
 
 msgctxt "country"
 msgid "Iraq"
-msgstr "Iraq"
+msgstr "イラク"
 
 msgctxt "country"
 msgid "Ireland"
-msgstr "Ireland"
+msgstr "アイルランド"
 
 msgctxt "country"
 msgid "Isle of Man"
-msgstr "Isle of Man"
+msgstr "マン島"
 
 msgctxt "country"
 msgid "Israel"
-msgstr "Israel"
+msgstr "イスラエル"
 
 msgctxt "country"
 msgid "Italy"
-msgstr "Italy"
+msgstr "イタリア"
 
 msgctxt "country"
 msgid "Ivory Coast"
@@ -553,239 +553,239 @@ msgstr "Ivory Coast"
 
 msgctxt "country"
 msgid "Jamaica"
-msgstr "Jamaica"
+msgstr "ジャマイカ"
 
 msgctxt "country"
 msgid "Japan"
-msgstr "Japan"
+msgstr "日本"
 
 msgctxt "country"
 msgid "Jersey"
-msgstr "Jersey"
+msgstr "ジャージー"
 
 msgctxt "country"
 msgid "Jordan"
-msgstr "Jordan"
+msgstr "ヨルダン"
 
 msgctxt "country"
 msgid "Kazakhstan"
-msgstr "Kazakhstan"
+msgstr "カザフスタン"
 
 msgctxt "country"
 msgid "Kenya"
-msgstr "Kenya"
+msgstr "ケニア"
 
 msgctxt "country"
 msgid "Kiribati"
-msgstr "Kiribati"
+msgstr "キリバス"
 
 msgctxt "country"
 msgid "Kosovo"
-msgstr "Kosovo"
+msgstr "コソボ"
 
 msgctxt "country"
 msgid "Kuwait"
-msgstr "Kuwait"
+msgstr "クウェート"
 
 msgctxt "country"
 msgid "Kyrgyzstan"
-msgstr "Kyrgyzstan"
+msgstr "キルギス"
 
 msgctxt "country"
 msgid "Laos"
-msgstr "Laos"
+msgstr "ラオス"
 
 msgctxt "country"
 msgid "Latvia"
-msgstr "Latvia"
+msgstr "ラトビア"
 
 msgctxt "country"
 msgid "Lebanon"
-msgstr "Lebanon"
+msgstr "レバノン"
 
 msgctxt "country"
 msgid "Lesotho"
-msgstr "Lesotho"
+msgstr "レソト"
 
 msgctxt "country"
 msgid "Liberia"
-msgstr "Liberia"
+msgstr "リベリア"
 
 msgctxt "country"
 msgid "Libya"
-msgstr "Libya"
+msgstr "リビア"
 
 msgctxt "country"
 msgid "Liechtenstein"
-msgstr "Liechtenstein"
+msgstr "リヒテンシュタイン"
 
 msgctxt "country"
 msgid "Lithuania"
-msgstr "Lithuania"
+msgstr "リトアニア"
 
 msgctxt "country"
 msgid "Luxembourg"
-msgstr "Luxembourg"
+msgstr "ルクセンブルク"
 
 msgctxt "country"
 msgid "Macao"
-msgstr "Macao"
+msgstr "マカオ"
 
 msgctxt "country"
 msgid "Macedonia"
-msgstr "Macedonia"
+msgstr "マケドニア"
 
 msgctxt "country"
 msgid "Madagascar"
-msgstr "Madagascar"
+msgstr "マダカスカル"
 
 msgctxt "country"
 msgid "Malawi"
-msgstr "Malawi"
+msgstr "マラウイ"
 
 msgctxt "country"
 msgid "Malaysia"
-msgstr "Malaysia"
+msgstr "マレーシア"
 
 msgctxt "country"
 msgid "Maldives"
-msgstr "Maldives"
+msgstr "モルディブ"
 
 msgctxt "country"
 msgid "Mali"
-msgstr "Mali"
+msgstr "マリ"
 
 msgctxt "country"
 msgid "Malta"
-msgstr "Malta"
+msgstr "マルタ"
 
 msgctxt "country"
 msgid "Marshall Islands"
-msgstr "Marshall Islands"
+msgstr "マーシャル諸島"
 
 msgctxt "country"
 msgid "Martinique"
-msgstr "Martinique"
+msgstr "マルティニーク"
 
 msgctxt "country"
 msgid "Mauritania"
-msgstr "Mauritania"
+msgstr "モーリタニア"
 
 msgctxt "country"
 msgid "Mauritius"
-msgstr "Mauritius"
+msgstr "モーリシャス"
 
 msgctxt "country"
 msgid "Mayotte"
-msgstr "Mayotte"
+msgstr "マヨット"
 
 msgctxt "country"
 msgid "Mexico"
-msgstr "Mexico"
+msgstr "メキシコ"
 
 msgctxt "country"
 msgid "Micronesia"
-msgstr "Micronesia"
+msgstr "ミクロネシア"
 
 msgctxt "country"
 msgid "Moldova"
-msgstr "Moldova"
+msgstr "モルドバ"
 
 msgctxt "country"
 msgid "Monaco"
-msgstr "Monaco"
+msgstr "モナコ"
 
 msgctxt "country"
 msgid "Mongolia"
-msgstr "Mongolia"
+msgstr "モンゴル"
 
 msgctxt "country"
 msgid "Montenegro"
-msgstr "Montenegro"
+msgstr "モンテネグロ"
 
 msgctxt "country"
 msgid "Montserrat"
-msgstr "Montserrat"
+msgstr "モントセラト"
 
 msgctxt "country"
 msgid "Morocco"
-msgstr "Morocco"
+msgstr "モロッコ"
 
 msgctxt "country"
 msgid "Mozambique"
-msgstr "Mozambique"
+msgstr "モザンビーク"
 
 msgctxt "country"
 msgid "Myanmar"
-msgstr "Myanmar"
+msgstr "ミャンマー"
 
 msgctxt "country"
 msgid "Namibia"
-msgstr "Namibia"
+msgstr "ナミビア"
 
 msgctxt "country"
 msgid "Nauru"
-msgstr "Nauru"
+msgstr "ナウル"
 
 msgctxt "country"
 msgid "Nepal"
-msgstr "Nepal"
+msgstr "ネパール"
 
 msgctxt "country"
 msgid "Netherlands"
-msgstr "Netherlands"
+msgstr "オランダ"
 
 msgctxt "country"
 msgid "New Caledonia"
-msgstr "New Caledonia"
+msgstr "ニューカレドニア"
 
 msgctxt "country"
 msgid "New Zealand"
-msgstr "New Zealand"
+msgstr "ニュージーランド"
 
 msgctxt "country"
 msgid "Nicaragua"
-msgstr "Nicaragua"
+msgstr "ニカラグア"
 
 msgctxt "country"
 msgid "Niger"
-msgstr "Niger"
+msgstr "ニジェール"
 
 msgctxt "country"
 msgid "Nigeria"
-msgstr "Nigeria"
+msgstr "ナイジェリア"
 
 msgctxt "country"
 msgid "Niue"
-msgstr "Niue"
+msgstr "ニウエ"
 
 msgctxt "country"
 msgid "Norfolk Island"
-msgstr "Norfolk Island"
+msgstr "ノーフォーク島"
 
 msgctxt "country"
 msgid "North Korea"
-msgstr "North Korea"
+msgstr "北朝鮮"
 
 msgctxt "country"
 msgid "Northern Mariana Islands"
-msgstr "Northern Mariana Islands"
+msgstr "北マリアナ諸島"
 
 msgctxt "country"
 msgid "Norway"
-msgstr "Norway"
+msgstr "ノルウェー"
 
 msgctxt "country"
 msgid "Oman"
-msgstr "Oman"
+msgstr "オマーン"
 
 msgctxt "country"
 msgid "Pakistan"
-msgstr "Pakistan"
+msgstr "パキスタン"
 
 msgctxt "country"
 msgid "Palau"
-msgstr "Palau"
+msgstr "パラオ"
 
 msgctxt "country"
 msgid "Palestinian Territory"
@@ -793,43 +793,43 @@ msgstr "Palestinian Territory"
 
 msgctxt "country"
 msgid "Panama"
-msgstr "Panama"
+msgstr "パナマ"
 
 msgctxt "country"
 msgid "Papua New Guinea"
-msgstr "Papua New Guinea"
+msgstr "パプアニューギニア"
 
 msgctxt "country"
 msgid "Paraguay"
-msgstr "Paraguay"
+msgstr "パラグアイ"
 
 msgctxt "country"
 msgid "Peru"
-msgstr "Peru"
+msgstr "ペルー"
 
 msgctxt "country"
 msgid "Philippines"
-msgstr "Philippines"
+msgstr "フィリピン"
 
 msgctxt "country"
 msgid "Pitcairn"
-msgstr "Pitcairn"
+msgstr "ピトケアン諸島"
 
 msgctxt "country"
 msgid "Poland"
-msgstr "Poland"
+msgstr "ポーランド"
 
 msgctxt "country"
 msgid "Portugal"
-msgstr "Portugal"
+msgstr "ポルトガル"
 
 msgctxt "country"
 msgid "Puerto Rico"
-msgstr "Puerto Rico"
+msgstr "プエルトリコ"
 
 msgctxt "country"
 msgid "Qatar"
-msgstr "Qatar"
+msgstr "カタール"
 
 msgctxt "country"
 msgid "Republic of the Congo"
@@ -837,19 +837,19 @@ msgstr "Republic of the Congo"
 
 msgctxt "country"
 msgid "Reunion"
-msgstr "Reunion"
+msgstr "レユニオン"
 
 msgctxt "country"
 msgid "Romania"
-msgstr "Romania"
+msgstr "ルーマニア"
 
 msgctxt "country"
 msgid "Russia"
-msgstr "Russia"
+msgstr "ロシア"
 
 msgctxt "country"
 msgid "Rwanda"
-msgstr "Rwanda"
+msgstr "ルワンダ"
 
 msgctxt "country"
 msgid "Saint Barthelemy"
@@ -857,15 +857,15 @@ msgstr "Saint Barthelemy"
 
 msgctxt "country"
 msgid "Saint Helena"
-msgstr "Saint Helena"
+msgstr "セントヘレナ島"
 
 msgctxt "country"
 msgid "Saint Kitts and Nevis"
-msgstr "Saint Kitts and Nevis"
+msgstr "セントクリストファー・ネービス"
 
 msgctxt "country"
 msgid "Saint Lucia"
-msgstr "Saint Lucia"
+msgstr "セントルシア"
 
 msgctxt "country"
 msgid "Saint Martin"
@@ -873,171 +873,171 @@ msgstr "Saint Martin"
 
 msgctxt "country"
 msgid "Saint Pierre and Miquelon"
-msgstr "Saint Pierre and Miquelon"
+msgstr "サンピエール島・ミクロン島"
 
 msgctxt "country"
 msgid "Saint Vincent and the Grenadines"
-msgstr "Saint Vincent and the Grenadines"
+msgstr "セントビンセント及びグレナディーン諸島"
 
 msgctxt "country"
 msgid "Samoa"
-msgstr "Samoa"
+msgstr "サモア"
 
 msgctxt "country"
 msgid "San Marino"
-msgstr "San Marino"
+msgstr "サンマリノ"
 
 msgctxt "country"
 msgid "Sao Tome and Principe"
-msgstr "Sao Tome and Principe"
+msgstr "サントメ・プリンシペ"
 
 msgctxt "country"
 msgid "Saudi Arabia"
-msgstr "Saudi Arabia"
+msgstr "サウジアラビア"
 
 msgctxt "country"
 msgid "Senegal"
-msgstr "Senegal"
+msgstr "セネガル"
 
 msgctxt "country"
 msgid "Serbia"
-msgstr "Serbia"
+msgstr "セルビア"
 
 msgctxt "country"
 msgid "Seychelles"
-msgstr "Seychelles"
+msgstr "セーシェル"
 
 msgctxt "country"
 msgid "Sierra Leone"
-msgstr "Sierra Leone"
+msgstr "シエラレオネ"
 
 msgctxt "country"
 msgid "Singapore"
-msgstr "Singapore"
+msgstr "シンガポール"
 
 msgctxt "country"
 msgid "Sint Maarten"
-msgstr "Sint Maarten"
+msgstr "セント・マーチン島"
 
 msgctxt "country"
 msgid "Slovakia"
-msgstr "Slovakia"
+msgstr "スロバキア"
 
 msgctxt "country"
 msgid "Slovenia"
-msgstr "Slovenia"
+msgstr "スロベニア"
 
 msgctxt "country"
 msgid "Solomon Islands"
-msgstr "Solomon Islands"
+msgstr "ソロモン諸島"
 
 msgctxt "country"
 msgid "Somalia"
-msgstr "Somalia"
+msgstr "ソマリア"
 
 msgctxt "country"
 msgid "South Africa"
-msgstr "South Africa"
+msgstr "南アフリカ"
 
 msgctxt "country"
 msgid "South Georgia and the South Sandwich Islands"
-msgstr "South Georgia and the South Sandwich Islands"
+msgstr "サウスジョージア島と南サンドイッチ諸島"
 
 msgctxt "country"
 msgid "South Korea"
-msgstr "South Korea"
+msgstr "韓国"
 
 msgctxt "country"
 msgid "South Sudan"
-msgstr "South Sudan"
+msgstr "南スーダン"
 
 msgctxt "country"
 msgid "Spain"
-msgstr "Spain"
+msgstr "スペイン"
 
 msgctxt "country"
 msgid "Sri Lanka"
-msgstr "Sri Lanka"
+msgstr "スリランカ"
 
 msgctxt "country"
 msgid "Sudan"
-msgstr "Sudan"
+msgstr "スーダン"
 
 msgctxt "country"
 msgid "Suriname"
-msgstr "Suriname"
+msgstr "スリナム"
 
 msgctxt "country"
 msgid "Svalbard and Jan Mayen"
-msgstr "Svalbard and Jan Mayen"
+msgstr "スヴァールバル諸島およびヤンマイエン島"
 
 msgctxt "country"
 msgid "Swaziland"
-msgstr "Swaziland"
+msgstr "スワジランド"
 
 msgctxt "country"
 msgid "Sweden"
-msgstr "Sweden"
+msgstr "スウェーデン"
 
 msgctxt "country"
 msgid "Switzerland"
-msgstr "Switzerland"
+msgstr "スイス"
 
 msgctxt "country"
 msgid "Syria"
-msgstr "Syria"
+msgstr "シリア"
 
 msgctxt "country"
 msgid "Taiwan"
-msgstr "Taiwan"
+msgstr "台湾"
 
 msgctxt "country"
 msgid "Tajikistan"
-msgstr "Tajikistan"
+msgstr "タジキスタン"
 
 msgctxt "country"
 msgid "Tanzania"
-msgstr "Tanzania"
+msgstr "タンザニア"
 
 msgctxt "country"
 msgid "Thailand"
-msgstr "Thailand"
+msgstr "タイ"
 
 msgctxt "country"
 msgid "Togo"
-msgstr "Togo"
+msgstr "トーゴ"
 
 msgctxt "country"
 msgid "Tokelau"
-msgstr "Tokelau"
+msgstr "トケラウ"
 
 msgctxt "country"
 msgid "Tonga"
-msgstr "Tonga"
+msgstr "トンガ"
 
 msgctxt "country"
 msgid "Trinidad and Tobago"
-msgstr "Trinidad and Tobago"
+msgstr "トリニダード・ドバゴ"
 
 msgctxt "country"
 msgid "Tunisia"
-msgstr "Tunisia"
+msgstr "チュニジア"
 
 msgctxt "country"
 msgid "Turkey"
-msgstr "Turkey"
+msgstr "トルコ"
 
 msgctxt "country"
 msgid "Turkmenistan"
-msgstr "Turkmenistan"
+msgstr "トルクメニスタン"
 
 msgctxt "country"
 msgid "Turks and Caicos Islands"
-msgstr "Turks and Caicos Islands"
+msgstr "タークス・カイコス諸島"
 
 msgctxt "country"
 msgid "Tuvalu"
-msgstr "Tuvalu"
+msgstr "ツバル"
 
 msgctxt "country"
 msgid "U.S. Virgin Islands"
@@ -1045,39 +1045,39 @@ msgstr "U.S. Virgin Islands"
 
 msgctxt "country"
 msgid "Uganda"
-msgstr "Uganda"
+msgstr "ウガンダ"
 
 msgctxt "country"
 msgid "Ukraine"
-msgstr "Ukraine"
+msgstr "ウクライナ"
 
 msgctxt "country"
 msgid "United Arab Emirates"
-msgstr "United Arab Emirates"
+msgstr "アラブ首長国連邦"
 
 msgctxt "country"
 msgid "United Kingdom"
-msgstr "United Kingdom"
+msgstr "イギリス"
 
 msgctxt "country"
 msgid "United States"
-msgstr "United States"
+msgstr "アメリカ"
 
 msgctxt "country"
 msgid "United States Minor Outlying Islands"
-msgstr "United States Minor Outlying Islands"
+msgstr "合衆国領有小離島"
 
 msgctxt "country"
 msgid "Uruguay"
-msgstr "Uruguay"
+msgstr "ウルグアイ"
 
 msgctxt "country"
 msgid "Uzbekistan"
-msgstr "Uzbekistan"
+msgstr "ウズベキスタン"
 
 msgctxt "country"
 msgid "Vanuatu"
-msgstr "Vanuatu"
+msgstr "バヌアツ"
 
 msgctxt "country"
 msgid "Vatican"
@@ -1085,31 +1085,31 @@ msgstr "Vatican"
 
 msgctxt "country"
 msgid "Venezuela"
-msgstr "Venezuela"
+msgstr "ベネズエラ"
 
 msgctxt "country"
 msgid "Vietnam"
-msgstr "Vietnam"
+msgstr "ベトナム"
 
 msgctxt "country"
 msgid "Wallis and Futuna"
-msgstr "Wallis and Futuna"
+msgstr "ウォリス・フツナ"
 
 msgctxt "country"
 msgid "Western Sahara"
-msgstr "Western Sahara"
+msgstr "西サハラ"
 
 msgctxt "country"
 msgid "Yemen"
-msgstr "Yemen"
+msgstr "イエメン"
 
 msgctxt "country"
 msgid "Zambia"
-msgstr "Zambia"
+msgstr "ザンビア"
 
 msgctxt "country"
 msgid "Zimbabwe"
-msgstr "Zimbabwe"
+msgstr "ジンバブエ"
 
 msgctxt "error"
 msgid "An unknown error occurred"
@@ -1125,7 +1125,7 @@ msgstr "Device disconnected"
 
 msgctxt "error"
 msgid "Enter a valid IPv4 or IPv6 address"
-msgstr "Enter a valid IPv4 or IPv6 address"
+msgstr "有効なIPv4またはIPv6アドレスを入力してください。"
 
 msgctxt "error"
 msgid "Incorrect 2FA code."
@@ -1157,7 +1157,7 @@ msgstr "Something went wrong. Please try submitting your report at:\n"
 
 msgctxt "error"
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "タイムアウト"
 
 msgctxt "error"
 msgid "Tunnel setup failed"
@@ -1195,9 +1195,7 @@ msgctxt "error"
 msgid ""
 "You've reached your maximum device limit. To reconnect to VPN, please "
 "disconnect from another device."
-msgstr ""
-"You've reached your maximum device limit. To reconnect to VPN, please "
-"disconnect from another device."
+msgstr "最大のデバイス数に達しました。VPNに再接続するには、他のデバイスで切断してください。"
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1205,7 +1203,7 @@ msgstr "6桁の認証コード"
 
 msgctxt "label"
 msgid "Active port:"
-msgstr "Active port:"
+msgstr "有効なポート:"
 
 msgctxt "label"
 msgid "Add new server"
@@ -1213,7 +1211,7 @@ msgstr "Add new server"
 
 msgctxt "label"
 msgid "All countries ({count})"
-msgstr "All countries ({count})"
+msgstr "すべての国 ({count})"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1221,7 +1219,7 @@ msgstr "Auto-selected from free locations"
 
 msgctxt "label"
 msgid "BETA"
-msgstr "BETA"
+msgstr "ベータ"
 
 msgctxt "label"
 msgid "Block Malware"
@@ -1229,7 +1227,7 @@ msgstr "Block Malware"
 
 msgctxt "label"
 msgid "Block ads, trackers and malware"
-msgstr "Block ads, trackers and malware"
+msgstr "広告、トラッカー、マルウェアをブロック"
 
 msgctxt "label"
 msgid "Description (minimum {count} characters)"
@@ -1237,23 +1235,23 @@ msgstr "Description (minimum {count} characters)"
 
 msgctxt "label"
 msgid "Email"
-msgstr "Email"
+msgstr "メール"
 
 msgctxt "label"
 msgid "Excluded apps "
-msgstr "Excluded apps "
+msgstr "除外するアプリ "
 
 msgctxt "label"
 msgid "Free"
-msgstr "Free"
+msgstr "無料"
 
 msgctxt "label"
 msgid "Included apps "
-msgstr "Included apps "
+msgstr "含まれるアプリ "
 
 msgctxt "label"
 msgid "Off"
-msgstr "Off"
+msgstr "オフ"
 
 msgctxt "label"
 msgid "PIN code"
@@ -1269,7 +1267,7 @@ msgstr "回復用コード"
 
 msgctxt "label"
 msgid "Server load"
-msgstr "Server load"
+msgstr "サーバー負荷"
 
 msgctxt "label"
 msgid "Use Proton protocols"
@@ -1277,7 +1275,7 @@ msgstr "Use Proton protocols"
 
 msgctxt "label"
 msgid "Username"
-msgstr "Username"
+msgstr "ユーザー名"
 
 msgctxt "label"
 msgid "VPN Plus"
@@ -1289,11 +1287,11 @@ msgstr "VPN plan: {plan}"
 
 msgctxt "label"
 msgid "Via Secure Core"
-msgstr "Via Secure Core"
+msgstr "Secure Coreを経由"
 
 msgctxt "label"
 msgid "Via {country}"
-msgstr "Via {country}"
+msgstr "{country} 経由"
 
 msgctxt "link"
 msgid "Learn more"
@@ -1301,27 +1299,27 @@ msgstr "詳細"
 
 msgctxt "menu"
 msgid "About"
-msgstr "About"
+msgstr "アプリについて"
 
 msgctxt "menu"
 msgid "Quit"
-msgstr "Quit"
+msgstr "終了"
 
 msgctxt "menu"
 msgid "Release notes"
-msgstr "Release notes"
+msgstr "更新情報"
 
 msgctxt "menu"
 msgid "Report an issue"
-msgstr "Report an issue"
+msgstr "問題を報告"
 
 msgctxt "menu"
 msgid "Settings"
-msgstr "Settings"
+msgstr "設定"
 
 msgctxt "menu"
 msgid "Sign out"
-msgstr "Sign out"
+msgstr "サインアウト"
 
 msgctxt "message"
 msgid ""
@@ -1337,7 +1335,7 @@ msgstr "Active port is {new_port}"
 
 msgctxt "message"
 msgid "Allow selected apps to connect without VPN protection."
-msgstr "Allow selected apps to connect without VPN protection."
+msgstr "選択したアプリが VPN 保護なしで接続できるようにします。"
 
 msgctxt "message"
 msgid ""
@@ -1381,9 +1379,7 @@ msgctxt "message"
 msgid ""
 "Connect to a Tor server to access hidden services and onion sites using any "
 "browser."
-msgstr ""
-"Connect to a Tor server to access hidden services and onion sites using any "
-"browser."
+msgstr "Tor サーバーに接続し、任意のブラウザを使用して隠しサービスやオニオン サイトにアクセスします。"
 
 msgctxt "message"
 msgid ""
@@ -1395,7 +1391,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "Copied!"
-msgstr "Copied!"
+msgstr "コピーしました!"
 
 msgctxt "message"
 msgid ""
@@ -1409,8 +1405,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "Customize your connection by deciding which apps are protected by VPN."
-msgstr ""
-"Customize your connection by deciding which apps are protected by VPN."
+msgstr "各アプリをVPNで保護するかどうかをカスタマイズできます。"
 
 msgctxt "message"
 msgid ""
@@ -1436,7 +1431,7 @@ msgstr "Enabling Beta access..."
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."
-msgstr "Get early access and help us test new versions of Proton VPN."
+msgstr "早期アクセスを取得して、Proton VPN の新しいバージョンのテストにご協力ください。"
 
 msgctxt "message"
 msgid "If your security key has a button or a gold disc, tap it now."
@@ -1446,9 +1441,7 @@ msgctxt "message"
 msgid ""
 "Increase your connection speed by up to 400% with performance enhancing "
 "technologies."
-msgstr ""
-"Increase your connection speed by up to 400% with performance enhancing "
-"technologies."
+msgstr "パフォーマンス強化テクノロジーにより、接続速度が最大 400% 向上します。"
 
 msgctxt "message"
 msgid "Insert the U2F or FIDO key linked to your Proton Account. "
@@ -1482,9 +1475,7 @@ msgctxt "message"
 msgid ""
 "Only selected apps connect with VPN protection. All other traffic is "
 "unprotected."
-msgstr ""
-"Only selected apps connect with VPN protection. All other traffic is "
-"unprotected."
+msgstr "選択されたアプリのみがVPN保護を使用して接続します。その他のトラフィックは保護されません。"
 
 msgctxt "message"
 msgid ""
@@ -1502,8 +1493,7 @@ msgstr "Please establish a new VPN connection for changes to take effect."
 
 msgctxt "message"
 msgid "Protect yourself from ads, malware, and trackers on websites and apps."
-msgstr ""
-"Protect yourself from ads, malware, and trackers on websites and apps."
+msgstr "ウェブサイトやアプリの使用中に、広告やマルウェア、追跡から保護"
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1586,8 +1576,7 @@ msgstr "Split tunneling enabled. Remember to restart affected apps."
 msgctxt "message"
 msgid ""
 "These servers give the best performance for BitTorrent and file sharing."
-msgstr ""
-"These servers give the best performance for BitTorrent and file sharing."
+msgstr "これらのサーバーは BitTorrent とファイル共有のための最適なパフォーマンスを提供します。"
 
 msgctxt "message"
 msgid ""
@@ -1599,7 +1588,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "This will disable NetShield."
-msgstr "This will disable NetShield."
+msgstr "これにより NetShield が無効化されます。"
 
 msgctxt "message"
 msgid "This will disable custom DNS."
@@ -1609,9 +1598,7 @@ msgctxt "message"
 msgid ""
 "Tunnels IPv6 traffic through the VPN. Can enhance compatibility with IPv6 "
 "networks."
-msgstr ""
-"Tunnels IPv6 traffic through the VPN. Can enhance compatibility with IPv6 "
-"networks."
+msgstr "IPv6トラフィックをVPN経由にします。 IPv6ネットワークとのより良い互換性が期待できます。"
 
 msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
@@ -1645,31 +1632,31 @@ msgstr "ユーザー名"
 
 msgctxt "status"
 msgid "Connecting..."
-msgstr "Connecting..."
+msgstr "接続中..."
 
 msgctxt "status"
 msgid "Connection error"
-msgstr "Connection error"
+msgstr "接続エラー"
 
 msgctxt "status"
 msgid "Disconnecting..."
-msgstr "Disconnecting..."
+msgstr "切断中..."
 
 msgctxt "status"
 msgid "Protected"
-msgstr "Protected"
+msgstr "保護されています"
 
 msgctxt "status"
 msgid "Unprotected"
-msgstr "Unprotected"
+msgstr "保護されていません"
 
 msgctxt "title"
 msgid "About"
-msgstr "About"
+msgstr "アプリについて"
 
 msgctxt "title"
 msgid "Account"
-msgstr "Account"
+msgstr "アカウント"
 
 msgctxt "title"
 msgid "Active connection found"
@@ -1689,19 +1676,19 @@ msgstr "認証アプリ"
 
 msgctxt "title"
 msgid "Auto connect"
-msgstr "Auto connect"
+msgstr "自動接続"
 
 msgctxt "title"
 msgid "Beta Access"
-msgstr "Beta Access"
+msgstr "ベータ版アクセス"
 
 msgctxt "title"
 msgid "Beta access"
-msgstr "Beta access"
+msgstr "ベータ版アクセス"
 
 msgctxt "title"
 msgid "Connection"
-msgstr "Connection"
+msgstr "接続"
 
 msgctxt "title"
 msgid "Connection error: session limit reached"
@@ -1709,7 +1696,7 @@ msgstr "Connection error: session limit reached"
 
 msgctxt "title"
 msgid "Countries"
-msgstr "Countries"
+msgstr "国"
 
 msgctxt "title"
 msgid "Create a troubleshooting file"
@@ -1717,7 +1704,7 @@ msgstr "Create a troubleshooting file"
 
 msgctxt "title"
 msgid "Custom DNS servers"
-msgstr "Custom DNS servers"
+msgstr "カスタムDNSサーバー"
 
 msgctxt "title"
 msgid "Enable Custom DNS"
@@ -1725,7 +1712,7 @@ msgstr "Enable Custom DNS"
 
 msgctxt "title"
 msgid "Enable Custom DNS?"
-msgstr "Enable Custom DNS?"
+msgstr "カスタム DNS を有効にしますか？"
 
 msgctxt "title"
 msgid "Enable Netshield"
@@ -1737,27 +1724,27 @@ msgstr "Enable Netshield ?"
 
 msgctxt "title"
 msgid "Exclude mode"
-msgstr "Exclude mode"
+msgstr "除外モード"
 
 msgctxt "title"
 msgid "Fastest country"
-msgstr "Fastest country"
+msgstr "最速の国"
 
 msgctxt "title"
 msgid "Fastest free server"
-msgstr "Fastest free server"
+msgstr "最速の無料サーバー"
 
 msgctxt "title"
 msgid "Features"
-msgstr "Features"
+msgstr "機能"
 
 msgctxt "title"
 msgid "General"
-msgstr "General"
+msgstr "一般"
 
 msgctxt "title"
 msgid "Include mode"
-msgstr "Include mode"
+msgstr "含めるモード"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -1773,7 +1760,7 @@ msgstr "Locations"
 
 msgctxt "title"
 msgid "Moderate NAT"
-msgstr "Moderate NAT"
+msgstr "モデレート NAT"
 
 msgctxt "title"
 msgid "NetShield"
@@ -1789,19 +1776,19 @@ msgstr "Pinned tray connections"
 
 msgctxt "title"
 msgid "Port forwarding"
-msgstr "Port forwarding"
+msgstr "ポート転送"
 
 msgctxt "title"
 msgid "Protocol"
-msgstr "Protocol"
+msgstr "プロトコル"
 
 msgctxt "title"
 msgid "Release notes"
-msgstr "Release notes"
+msgstr "更新情報"
 
 msgctxt "title"
 msgid "Report an Issue"
-msgstr "Report an Issue"
+msgstr "問題を報告"
 
 msgctxt "title"
 msgid "Secure Core"
@@ -1817,23 +1804,23 @@ msgstr "Select packet capture directory"
 
 msgctxt "title"
 msgid "Servers"
-msgstr "Servers"
+msgstr "サーバー"
 
 msgctxt "title"
 msgid "Settings"
-msgstr "Settings"
+msgstr "設定"
 
 msgctxt "title"
 msgid "Share anonymous crash reports"
-msgstr "Share anonymous crash reports"
+msgstr "匿名のクラッシュレポートを共有"
 
 msgctxt "title"
 msgid "Smart routing"
-msgstr "Smart routing"
+msgstr "スマートルーティング"
 
 msgctxt "title"
 msgid "Split tunneling"
-msgstr "Split tunneling"
+msgstr "スプリットトンネル"
 
 msgctxt "title"
 msgid "Start app minimized"
@@ -1849,15 +1836,15 @@ msgstr "2 要素認証"
 
 msgctxt "title"
 msgid "VPN Accelerator"
-msgstr "VPN Accelerator"
+msgstr "VPN アクセラレーター"
 
 msgctxt "tooltip"
 msgid "Close"
-msgstr "Close"
+msgstr "閉じる"
 
 msgctxt "tooltip"
 msgid "Connect to {country_name}"
-msgstr "Connect to {country_name}"
+msgstr "{country_name} に接続"
 
 msgctxt "tooltip"
 msgid "Connect to {country} via Secure Core"
@@ -1869,11 +1856,11 @@ msgstr "Connect to {exit_country} via {entry_country}"
 
 msgctxt "tooltip"
 msgid "Connect to {name}"
-msgstr "Connect to {name}"
+msgstr "{name} に接続"
 
 msgctxt "tooltip"
 msgid "Copy port number"
-msgstr "Copy port number"
+msgstr "ポート番号をコピー"
 
 msgctxt "tooltip"
 msgid ""

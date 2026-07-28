@@ -16,10 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from proton.vpn.app.gtk.utils.search import normalize
+from proton.vpn.app.gtk.utils.search import normalize, fold
 
 
 def test_normalize():
     input_string = "CH-PT#1 "
     normalized_string = normalize(input_string)
     assert normalized_string == "ch-pt#1"
+
+
+def test_fold_is_case_and_accent_insensitive():
+    assert fold("Zürich") == fold("ZURICH") == "zurich"

@@ -24,6 +24,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
+
 DOMAIN = "proton-vpn-gtk-app"
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), "locale", "binaries")
 ENV_VAR = "PROTON_VPN_LOCALIZATION_ENABLED"
@@ -47,8 +48,9 @@ def active_language() -> Optional[str]:
 
 
 def localization_enabled(environ=None) -> bool:
-    """Whether localization is enabled. Returns False at runtime if no catalog
-    exists, or env var is disabled."""
+    """Whether localization is enabled: requires both the env flag set to '1'
+    and a compiled catalog (.mo) for the active language. Returns False if
+    either is missing."""
     environ = os.environ if environ is None else environ
     if environ.get(ENV_VAR) != "1":
         return False

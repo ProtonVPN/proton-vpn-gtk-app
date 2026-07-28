@@ -17,8 +17,15 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>."""
+import unicodedata
 
 
 def normalize(search_string: str):
     """Returns the normalized version of the input search string."""
     return search_string.lower().replace(" ", "")
+
+
+def fold(text: str) -> str:
+    """Case and accent-insensitive search key ('Zürich' -> 'zurich')."""
+    return "".join(c for c in unicodedata.normalize("NFKD", text.casefold())
+                   if not unicodedata.combining(c))

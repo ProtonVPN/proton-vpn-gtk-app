@@ -30,6 +30,7 @@ from proton.vpn.session.servers.logicals import (
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.translator import C_
+from proton.vpn.app.gtk.utils.search import fold
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.utils.country import get_localized_country_name
 from proton.vpn import logging
@@ -234,16 +235,18 @@ class SearchResults(Gtk.ScrolledWindow):
         self, search_text: Optional[str], server, entry_country_name: bool = False,
         location_name: bool = False, server_name: bool = False
     ) -> bool:
+        if not search_text:
+            return False
+
+        needle = fold(search_text)
         if entry_country_name:
-            localized = get_localized_country_name(server.entry_country).lower()
-            english = server.entry_country_name.lower()
-            return bool(search_text and (search_text in localized or search_text in english))
+            return needle in fold(get_localized_country_name(server.entry_country))
 
         if location_name:
-            return bool(search_text and (search_text in server.location.lower()))
+            return needle in fold(server.location)
 
         if server_name:
-            return bool(search_text and (search_text in server.name.lower()))
+            return needle in fold(server.name)
 
         return False
 
@@ -253,7 +256,7 @@ class SearchResults(Gtk.ScrolledWindow):
 
     def on_search_changed(self, search_widget: Gtk.SearchEntry):
         """Callback when search entry has changed."""
-        search_text = search_widget.get_text().lower()
+        search_text = search_widget.get_text()
 
         self._filtered_country_list.update(search_text)
         if self._revealer:

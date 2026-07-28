@@ -22,7 +22,6 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import annotations
 
-from itertools import chain
 from typing import List, Optional
 
 from proton.vpn.session.servers import Country, Location, TierEnum
@@ -229,10 +228,13 @@ class CountryRow(Gtk.Box):
         expanded_locations = expanded_locations or set()
         runtime_assert(self._country is not None, "Country is not set")
 
-        locations = self._country.locations
+        # location.name is already localized to the active locale by the API.
         if self._user_tier == TierEnum.FREE and self._country.free:
             # If the current user has a free account, display first the free locations
-            locations = list(chain(self._country.free_locations, self._country.paid_locations))
+            locations = sorted(self._country.free_locations, key=lambda loc: loc.name) \
+                + sorted(self._country.paid_locations, key=lambda loc: loc.name)
+        else:
+            locations = sorted(self._country.locations, key=lambda loc: loc.name)
 
         def display_location_row(location_row, location):
             location_expanded = location.name.lower() in expanded_locations

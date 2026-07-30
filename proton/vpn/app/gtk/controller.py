@@ -610,6 +610,20 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         future = self.executor.submit(self._api.refresher.set_server_loads_updated_callback, None)
         future.add_done_callback(lambda f: GLib.idle_add(f.result))
 
+    def set_location_names_updated_callback(self, callback: Callable[[], None]):
+        """Sets the callback that is called when the location names are updated."""
+        future = self.executor.submit(
+            self._api.refresher.set_location_names_updated_callback,
+            lambda: GLib.idle_add(callback)
+        )
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
+    def unset_location_names_updated_callback(self):
+        """Unsets the callback that is called when the location names are updated."""
+        future = self.executor.submit(
+            self._api.refresher.set_location_names_updated_callback, None)
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+
     @property
     def split_tunneling_available(self) -> bool:
         """Returns if split tunneling is available.

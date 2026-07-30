@@ -91,6 +91,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._populate_countries(server_list)
         self._controller.set_server_list_updated_callback(self._on_server_list_update)
         self._controller.set_server_loads_updated_callback(self._on_server_loads_update)
+        self._controller.set_location_names_updated_callback(self._on_location_names_update)
         self.emit("ui-updated")
 
     def focus_on_entry(self, _widget, name_to_search: str) -> None:
@@ -200,10 +201,20 @@ class ServerListWidget(Gtk.ScrolledWindow):
             f"{time.time() - start:.2f} seconds."
         )
 
+    def _on_location_names_update(self):
+        """Whenever refreshed location (city/state) names arrive the UI should be updated."""
+        start = time.time()
+        self.display(self._user_tier, self._controller.server_list)
+        logger.info(
+            "Location names widget update completed in "
+            f"{time.time() - start:.2f} seconds."
+        )
+
     def unload(self):
         """Unloads the server list widget and its resources."""
         self._controller.unset_server_list_updated_callback()
         self._controller.unset_server_loads_updated_callback()
+        self._controller.unset_location_names_updated_callback()
         self._remove_country_rows()
 
 

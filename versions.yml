@@ -1,3 +1,10 @@
+version: 4.17.2rc3
+time: 2026/07/29 09:42
+author: Axel Langenskiold
+email: axel.langenskiold@proton.ch
+description:
+- "feat: Add location names refresher."
+---
 version: 4.17.2rc2
 time: 2026/07/28 09:18
 author: L10n bot

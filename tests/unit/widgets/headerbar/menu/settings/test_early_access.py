@@ -175,3 +175,64 @@ class TestEarlyAccessWidget:
             callback(None, False, None)
 
             mock_distro_manager.build_update_command.assert_called_once_with(mock_distro_manager.beta_package_name, mock_distro_manager.stable_package_name)
+
+    def test_command_failed_returns_true_when_result_is_none(self):
+        """A None subprocess result should be treated as a failure instead of
+        raising AttributeError."""
+        with patch.object(ToggleWidget, '__init__', return_value=None):
+            widget = EarlyAccessWidget(Mock(), Mock(), Mock())
+            assert widget._command_failed(None) is True
+
+    def test_command_failed_delegates_to_returncode_when_result_is_not_none(self):
+        """A subprocess result with a non-zero return code is a failure."""
+        with patch.object(ToggleWidget, '__init__', return_value=None):
+            widget = EarlyAccessWidget(Mock(), Mock(), Mock())
+            result = Mock()
+            result.returncode = 1
+            assert widget._command_failed(result) is True
+
+            result.returncode = 0
+            assert widget._command_failed(result) is False
+
+    @patch.object(EarlyAccessWidget, "distro_manager")
+    def test_find_installed_repo_packages_does_not_crash_on_none_result(
+        self, mock_distro_manager
+    ):
+        """The package listing subprocess returning None (e.g. a mocked
+        controller) must not crash the settings widget."""
+        mock_controller = Mock()
+        mock_future = Mock()
+        mock_future.result.return_value = None
+        mock_controller.run_subprocess.return_value = mock_future
+
+        with patch.object(ToggleWidget, '__init__', return_value=None):
+            widget = EarlyAccessWidget(mock_controller, Mock(), Mock())
+
+        installed, _ = widget._find_installed_repo_packages()
+        assert installed is False
+
+    @patch.object(EarlyAccessWidget, "distro_manager")
+    def test_find_installed_repo_packages_detects_beta_package(
+        self, mock_distro_manager
+    ):
+        """A successful subprocess listing that contains the beta package
+        name is detected."""
+        mock_distro_manager.beta_package_name = "protonvpn-beta-release"
+        mock_distro_manager.stable_package_name = "protonvpn-stable-release"
+        mock_distro_manager.list_installed_packages_command = "rpm -qa"
+
+        mock_result = Mock()
+        mock_result.returncode = 0
+        mock_result.stdout = b"protonvpn-beta-release\nprotonvpn-gtk-app\n"
+        mock_result.stderr = b""
+
+        mock_controller = Mock()
+        mock_future = Mock()
+        mock_future.result.return_value = mock_result
+        mock_controller.run_subprocess.return_value = mock_future
+
+        with patch.object(ToggleWidget, '__init__', return_value=None):
+            widget = EarlyAccessWidget(mock_controller, Mock(), Mock())
+
+        _, beta_installed = widget._find_installed_repo_packages()
+        assert beta_installed is True

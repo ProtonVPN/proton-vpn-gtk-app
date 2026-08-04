@@ -24,6 +24,7 @@ from typing import Union, Callable, Optional
 from gi.repository import Pango
 from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
 logger = logging.getLogger(__name__)
@@ -43,8 +44,10 @@ class ConfirmationDialog(Gtk.Dialog):
         self.set_title(title)
         self.set_default_size(self.WIDTH, self.HEIGHT)
 
-        yes_button = self.add_button("_Yes" if not yes_text else yes_text, Gtk.ResponseType.YES)
-        no_button = self.add_button("_No" if not no_text else no_text, Gtk.ResponseType.NO)
+        yes_button = self.add_button(
+            C_("button", "_Yes") if not yes_text else yes_text, Gtk.ResponseType.YES)
+        no_button = self.add_button(
+            C_("button", "_No") if not no_text else no_text, Gtk.ResponseType.NO)
 
         no_button.add_css_class("primary")
         yes_button.add_css_class("danger")

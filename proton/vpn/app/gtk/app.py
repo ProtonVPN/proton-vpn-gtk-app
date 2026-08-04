@@ -26,6 +26,7 @@ from gi.repository import GObject, Gtk, Gdk, GLib, Gio
 from proton.vpn import logging
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.assets.style import load_app_css
 from proton.vpn.app.gtk.util import APPLICATION_ID, log_proton_package_versions
@@ -144,7 +145,7 @@ class App(Gtk.Application):
             0,
             GLib.OptionFlags(0),
             GLib.OptionArg.NONE,
-            "Start minimized in the system tray"
+            C_("cli", "Start minimized in the system tray")
         )
 
         self.add_main_option(
@@ -152,7 +153,7 @@ class App(Gtk.Application):
             ord('v'),
             GLib.OptionFlags(0),
             GLib.OptionArg.NONE,
-            "Display the application's version"
+            C_("cli", "Display the application's version")
         )
 
     @property

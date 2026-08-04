@@ -1,3 +1,10 @@
+version: 4.17.2rc5
+time: 2026/08/04 14:42
+author: Axel Langenskiold
+email: axel.langenskiold@proton.ch
+description:
+- "fix: Translate missing strings."
+---
 version: 4.17.2rc4
 time: 2026/08/04 13:44
 author: Axel Langenskiold

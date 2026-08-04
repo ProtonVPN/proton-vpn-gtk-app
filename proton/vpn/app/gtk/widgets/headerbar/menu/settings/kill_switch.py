@@ -22,6 +22,7 @@ from typing import Callable, Optional
 from gi.repository import Gtk
 
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.connection.enum import KillSwitchSetting\
     as KillSwitchSettingEnum
@@ -38,15 +39,24 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
     Since the kill switch can have multiple modes, we need to have a proper
     widget that handles of all of these cases and is easy to test.
     """
-    KILLSWITCH_LABEL = "Kill switch"
-    KILLSWITCH_DESCRIPTION = "Protects your IP address by disconnecting you from the " \
-        "internet if you lose your VPN connection. "\
-        "<a href=\"https://protonvpn.com/support/what-is-kill-switch/\">Learn more</a> \n\n" \
-        "Kill switch can only be changed when VPN is disconnected."
-    KILLSWITCH_STANDARD_DESCRIPTION = "Automatically disconnect from the internet if "\
-        "VPN connection is lost."
-    KILLSWITCH_ADVANCED_DESCRIPTION = "Only allow internet access when connected to Proton VPN. " \
-        "Advanced kill switch will remain active even when you restart your device."
+    KILLSWITCH_URL = "https://protonvpn.com/support/what-is-kill-switch/"
+    LEARN_MORE_LABEL = C_("button", "Learn more")
+    KILLSWITCH_LABEL = C_("title", "Kill switch")
+    KILLSWITCH_DESCRIPTION = (
+        C_(
+            "message",
+            # {learn_more} is a link labelled "Learn more".
+            "Protects your IP address by disconnecting you from the "
+            "internet if you lose your VPN connection. {learn_more}"
+        ).format(learn_more=f'<a href="{KILLSWITCH_URL}">{LEARN_MORE_LABEL}</a>')
+        + " \n\n"
+        + C_("message", "Kill switch can only be changed when VPN is disconnected.")
+    )
+    KILLSWITCH_STANDARD_DESCRIPTION = C_("message", "Automatically disconnect from the internet if "
+                                                    "VPN connection is lost.")
+    KILLSWITCH_ADVANCED_DESCRIPTION = C_("message", "Only allow internet access when connected to "
+                                                    "Proton VPN. Advanced kill switch will remain "
+                                                    "active even when you restart your device.")
     SETTING_NAME = "settings.killswitch"
 
     def __init__(self, controller: Controller, gtk: Optional[ModuleType] = None,
@@ -103,7 +113,7 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
         self.standard_radio_button.set_active(self.get_setting() == KillSwitchSettingEnum.ON)
 
         main_standard_container.attach(self.standard_radio_button, 0, 0, 1, 1)
-        main_standard_container.attach(SettingName("Standard"), 1, 0, 1, 1)
+        main_standard_container.attach(SettingName(C_("label", "Standard")), 1, 0, 1, 1)
         main_standard_container.attach(
             SettingDescription(self.KILLSWITCH_STANDARD_DESCRIPTION),
             1, 1, 1, 1
@@ -126,7 +136,7 @@ class KillSwitchWidget(ConflictableToggleWidget, ReactiveSetting):  # noqa pylin
         self.advanced_radio_button.set_active(self.get_setting() == KillSwitchSettingEnum.PERMANENT)
 
         main_advanced_container.attach(self.advanced_radio_button, 0, 0, 1, 1)
-        main_advanced_container.attach(SettingName("Advanced"), 1, 0, 1, 1)
+        main_advanced_container.attach(SettingName(C_("label", "Advanced")), 1, 0, 1, 1)
         main_advanced_container.attach(
             SettingDescription(self.KILLSWITCH_ADVANCED_DESCRIPTION),
             1, 1, 1, 1

@@ -21,6 +21,7 @@ from typing import Union, Any, Optional
 from dataclasses import dataclass
 
 from proton.vpn.app.gtk.config import AppConfig
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.core.settings import Settings
 from proton.vpn import logging
 
@@ -29,16 +30,18 @@ logger = logging.getLogger(__name__)
 WIREGUARD_PROTOCOL = "wireguard"
 PROTUN_PROTOCOL_PREFIX = "protun-"
 
-SPLIT_TUNNEL_CONFLICT_LABEL = "Enable split tunneling?"
-SPLIT_TUNNEL_PROTOCOL_CONFLICT = "•  This will automatically set your "\
-                                 "protocol to WireGuard."
-SPLIT_TUNNEL_KILLSWITCH_CONFLICT = "•  This will disable kill switch."
+_BULLET = "•  "
 
-KILLSWITCH_CONFLICT_LABEL = "Enable kill switch?"
-KILLSWITCH_CONFLICT = "•  This will disable split tunneling."
+SPLIT_TUNNEL_CONFLICT_LABEL = C_("title", "Enable split tunneling?")
+SPLIT_TUNNEL_PROTOCOL_CONFLICT = _BULLET + C_("message", "This will automatically set your "
+                                                         "protocol to WireGuard.")
+SPLIT_TUNNEL_KILLSWITCH_CONFLICT = _BULLET + C_("message", "This will disable kill switch.")
 
-PROTOCOL_CONFLICT_LABEL = "Disable WireGuard?"
-PROTOCOL_CONFLICT = "•  This will disable split tunneling."
+KILLSWITCH_CONFLICT_LABEL = C_("title", "Enable kill switch?")
+KILLSWITCH_CONFLICT = _BULLET + C_("message", "This will disable split tunneling.")
+
+PROTOCOL_CONFLICT_LABEL = C_("title", "Disable WireGuard?")
+PROTOCOL_CONFLICT = _BULLET + C_("message", "This will disable split tunneling.")
 
 
 def _supports_split_tunneling(protocol: str):

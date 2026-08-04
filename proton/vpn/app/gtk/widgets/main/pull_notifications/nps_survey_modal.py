@@ -27,6 +27,7 @@ from gi.repository import Gtk, Gdk
 
 from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.session.dataclasses import NPSSurveyResponse
 
@@ -139,15 +140,15 @@ NPSDismissHandler = Callable[[], None]
 # pylint: disable=too-many-instance-attributes
 class NPSSurveyModal(Gtk.Window):
     """NPS Survey modal window."""
-    TITLE_SURVEY = "How likely are you to recommend Proton VPN to a friend?"
+    TITLE_SURVEY = C_("title", "How likely are you to recommend Proton VPN to a friend?")
     MAX_SCORE = 10
-    SCORE_LOWER_DESCRIPTION = "0 is very unlikely"
-    SCORE_UPPER_DESCRIPTION = "10 is very likely"
-    FEEDBACK_PROMPT = "Please let us know why you gave that rating"
-    FEEDBACK_OPTIONAL = "Optional"
-    SUBMIT_BUTTON_TITLE = "Share anonymously"
-    SUBMITTED_TITLE = "Thanks for your feedback"
-    SUBMITTED_SUBTITLE = "Your feedback helps us improve Proton VPN."
+    SCORE_LOWER_DESCRIPTION = C_("label", "0 is very unlikely")
+    SCORE_UPPER_DESCRIPTION = C_("label", "10 is very likely")
+    FEEDBACK_PROMPT = C_("label", "Please let us know why you gave that rating")
+    FEEDBACK_OPTIONAL = C_("label", "Optional")
+    SUBMIT_BUTTON_TITLE = C_("button", "Share anonymously")
+    SUBMITTED_TITLE = C_("title", "Thanks for your feedback")
+    SUBMITTED_SUBTITLE = C_("message", "Your feedback helps us improve Proton VPN.")
 
     class State(Enum):
         """Represents the NPS Popover's configured state"""

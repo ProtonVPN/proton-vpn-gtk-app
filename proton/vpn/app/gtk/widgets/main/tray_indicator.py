@@ -26,6 +26,7 @@ from proton.vpn import logging
 from proton.vpn.connection import states
 from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.widgets.main.tray_icon import TrayIcon, SNW_BUS_NAME
@@ -212,24 +213,25 @@ class TrayIndicator:
     def _setup_connection_handler_entries(self):
         if self.display_connect_entry:
             self._tray.add_menu_item(
-                "Connect",
+                C_("button", "Connect"),
                 self._on_connect_entry_clicked,
                 self.enable_connect_entry,
             )
         if self.display_disconnect_entry:
             self._tray.add_menu_item(
-                "Disconnect",
+                C_("button", "Disconnect"),
                 self._on_disconnect_entry_clicked,
                 self.enable_disconnect_entry,
             )
 
     def _setup_main_window_visibility_toggle_entry(self):
-        toggle_label = "Show" if not self._main_window.get_visible() else "Hide"
+        toggle_label = C_("button", "Show") if not self._main_window.get_visible() \
+            else C_("button", "Hide")
         self._tray.add_menu_item(toggle_label,
                                  self._on_toggle_app_visibility_menu_entry_clicked)
 
     def _setup_quit_entry(self):
-        self._tray.add_menu_item("Quit", self._on_exit_app_menu_entry_clicked)
+        self._tray.add_menu_item(C_("menu", "Quit"), self._on_exit_app_menu_entry_clicked)
 
     def _update(self):
         self._build_menu()

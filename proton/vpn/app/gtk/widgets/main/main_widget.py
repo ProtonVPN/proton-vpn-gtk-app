@@ -24,6 +24,7 @@ from typing import Union, TYPE_CHECKING, Optional
 
 from proton.vpn.connection import states
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.login.login_widget import LoginWidget
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 from proton.vpn.app.gtk.widgets.vpn import VPNWidget
@@ -43,10 +44,10 @@ class MainWidget(Gtk.Overlay):
     Main Proton VPN widget. It switches between the LoginWidget and the
     VPNWidget, depending on whether the user is logged in or not.
     """
-    ERROR_DIALOG_PRIMARY_TEXT = "Something went wrong"
-    SESSION_EXPIRED_ERROR_MESSAGE = "Your session has expired. "\
-        "Please sign in again."
-    SESSION_EXPIRED_ERROR_TITLE = "Invalid Session"
+    ERROR_DIALOG_PRIMARY_TEXT = C_("title", "Something went wrong")
+    SESSION_EXPIRED_ERROR_MESSAGE = C_("message", "Your session has expired. "
+                                                  "Please sign in again.")
+    SESSION_EXPIRED_ERROR_TITLE = C_("title", "Invalid Session")
 
     def __init__(
         self, controller: "Controller", main_window: "MainWindow",
@@ -220,7 +221,7 @@ class MainWidget(Gtk.Overlay):
         self._main_window.header_bar.menu.logout_enabled = True
         self._main_window.header_bar.menu.settings_enabled = True
         self._overlay_widget.show(
-            DefaultLoadingWidget("Loading app...")
+            DefaultLoadingWidget(C_("message", "Loading app..."))
         )
         self.active_widget = self.vpn_widget
         self.vpn_widget.load()

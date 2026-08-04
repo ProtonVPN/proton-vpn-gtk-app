@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING, Optional
 import gi
 
 from proton.vpn.app.gtk.widgets.main.notifications import DialogButton
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.connection.exceptions import AuthenticationError, \
     HardJailedTwoFAError, NotYetValidCertificateError
 from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError, \
@@ -46,30 +47,44 @@ logger = logging.getLogger(__name__)
 
 class ExceptionHandler:
     """Handles generic exceptions before they bubble all the way up."""
-    GENERIC_ERROR_TITLE = "Something went wrong"
-    GENERIC_ERROR_MESSAGE = "We're sorry, an unexpected error occurred." \
-                            "Please try again."
-    SERVER_NOT_FOUND_TITLE = "Unable to find server"
-    PROTON_API_NOT_REACHABLE_MESSAGE = "Our servers are not reachable. " \
-                                       "Please check your internet connection."
-    VPN_AUTHENTICATION_ERROR_TITLE = "VPN connection error"
-    VPN_AUTHENTICATION_ERROR_MESSAGE = (
+    GENERIC_ERROR_TITLE = C_("title", "Something went wrong")
+    GENERIC_ERROR_MESSAGE = C_(
+        "error",
+        "We're sorry, an unexpected error occurred. Please try again."
+    )
+    SERVER_NOT_FOUND_TITLE = C_("title", "Unable to find server")
+    PROTON_API_NOT_REACHABLE_MESSAGE = C_(
+        "error",
+        "Our servers are not reachable. "
+        "Please check your internet connection."
+    )
+    VPN_AUTHENTICATION_ERROR_TITLE = C_("title", "VPN connection error")
+    VPN_AUTHENTICATION_ERROR_MESSAGE = C_(
+        "error",
         "Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP."
         "\n\nClick \"Cancel Connection\" to restore your Internet connection. "
         "If the issue persists please try to sign out and in."
     )
-    VPN_HARD_JAILED_2FA_ERROR_TITLE = "2FA Required"
-    VPN_HARD_JAILED_2FA_ERROR_MESSAGE = (
+    VPN_HARD_JAILED_2FA_ERROR_TITLE = C_("title", "2FA Required")
+    VPN_HARD_JAILED_2FA_ERROR_MESSAGE = C_(
+        "error",
         "You are connected to the VPN, but all traffic is blocked.\nYou need to"
         " go to the authentication page provided by security and authenticate"
         " with your hardware key.\nAfter that, the traffic will be enabled."
     )
-    TIME_OUT_OF_SYNC_ERROR_TITLE = "Update system clock"
-    TIME_OUT_OF_SYNC_ERROR_MESSAGE = (
+    TIME_OUT_OF_SYNC_ERROR_TITLE = C_("title", "Update system clock")
+    TIME_OUT_OF_SYNC_ERROR_MESSAGE = C_(
+        "error",
         "Looks like your system clock is out of sync.\n"
         "This may cause issues when connecting to VPN.\n"
         "Update your system time and try to connect again."
     )
+    NO_SPACE_LEFT_ON_DEVICE_TITLE = C_("title", "No space left on device")
+    NO_SPACE_LEFT_ON_DEVICE_MESSAGE = C_(
+        "error",
+        "There is not enough space left on your device."
+    )
+    SIGN_IN_AGAIN_BUTTON_LABEL = C_("button", "Sign in again")
 
     def __init__(
         self, main_widget: Optional["MainWidget"] = None, controller: Optional["Controller"] = None
@@ -207,7 +222,10 @@ class ExceptionHandler:
                     DialogButton(label=action["Name"], response_type=Gtk.ResponseType.OK)
                 )
         buttons.append(
-            DialogButton(label="Sign in again", response_type=Gtk.ResponseType.CLOSE)
+            DialogButton(
+                label=self.SIGN_IN_AGAIN_BUTTON_LABEL,
+                response_type=Gtk.ResponseType.CLOSE
+            )
         )
 
         self.main_widget.notifications.show_error_dialog(
@@ -287,8 +305,8 @@ class ExceptionHandler:
         )
         if self.main_widget:
             self.main_widget.notifications.show_error_dialog(
-                title="No space left on device",
-                message="There is not enough space left on your device."
+                title=self.NO_SPACE_LEFT_ON_DEVICE_TITLE,
+                message=self.NO_SPACE_LEFT_ON_DEVICE_MESSAGE
             )
 
     def _on_exception(self, exc_type, exc_value, exc_traceback):

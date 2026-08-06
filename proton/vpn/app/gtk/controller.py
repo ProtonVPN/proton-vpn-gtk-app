@@ -166,6 +166,12 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """
         return self.executor.submit(self._api.logout)
 
+    def passes_startup_checks(self) -> bool:
+        """
+        Returns True if there are any compatible VPN backends and False otherwise.
+        """
+        return self._api.validate_connection_availability()
+
     @property
     def user_logged_in(self) -> bool:
         """

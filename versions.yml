@@ -1,3 +1,10 @@
+version: 4.17.3rc1
+time: 2026/08/05 11:16
+author: Elena Švilpė
+email: elena.svilpe@proton.ch
+description:
+- "feat: add startup compatibility check"
+---
 version: 4.17.2
 time: 2026/08/04 14:42
 author: Axel Langenskiold

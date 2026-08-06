@@ -162,3 +162,22 @@ def test_run_start_actions_when_user_is_logged_in_and_start_the_app_with_vpn_wid
     main_widget.vpn_widget.emit("vpn-widget-ready")
 
     controller_mock.run_startup_actions.assert_called_once()
+
+def test_main_widget_shows_error_modal_when_startup_compatibility_check_returns_false():
+    controller_mock = Mock()
+    controller_mock.passes_startup_checks.return_value = False
+    notifications_mock = Mock()
+    notifications_mock.notification_bar = NotificationBar()
+    main_widget = MainWidget(
+        controller=controller_mock,
+        main_window=Mock(),
+        overlay_widget=OverlayWidget(),
+        notifications=notifications_mock
+    )
+    main_widget.initialize_visible_widget()
+
+    notifications_mock.show_error_dialog.assert_called_once_with(
+        MainWidget.INCOMPATIBILITY_ERROR_MESSAGE,
+        None
+    )
+

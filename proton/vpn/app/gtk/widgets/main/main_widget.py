@@ -48,6 +48,22 @@ class MainWidget(Gtk.Overlay):
     SESSION_EXPIRED_ERROR_MESSAGE = C_("message", "Your session has expired. "
                                                   "Please sign in again.")
     SESSION_EXPIRED_ERROR_TITLE = C_("title", "Invalid Session")
+    LEARN_MORE_URL = "https://protonvpn.com/support/linux-gui-setup"
+    LEARN_MORE_LABEL = C_("button", "Learn more")
+
+    INCOMPATIBILITY_ERROR_MESSAGE = (
+        C_(
+            "message",
+            "Some required components were not detected on your system. "
+            "The app may not work as expected."
+        )
+        + "\n"
+        + C_(
+            "message",
+            # {learn_more} is a link labelled "Learn more".
+            "{learn_more} about requirements and alternative installation methods."
+        ).format(learn_more=f'<a href="{LEARN_MORE_URL}">{LEARN_MORE_LABEL}</a>')
+    )
 
     def __init__(
         self, controller: "Controller", main_window: "MainWindow",
@@ -148,6 +164,8 @@ class MainWidget(Gtk.Overlay):
             )
         else:
             self._display_login_widget()
+        if not self._controller.passes_startup_checks():
+            self.show_error_message(self.INCOMPATIBILITY_ERROR_MESSAGE, blocking=True)
 
     def show_error_message(
         self, error_message: str, blocking: bool = False,

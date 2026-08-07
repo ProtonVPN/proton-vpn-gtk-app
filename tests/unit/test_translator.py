@@ -1,7 +1,9 @@
 import gettext
 
+from proton.vpn.session.feature_flags_fetcher import FeatureFlags
+
 from proton.vpn.app.gtk import translator
-from proton.vpn.app.gtk.translator import C_, npgettext, localization_enabled
+from proton.vpn.app.gtk.translator import C_, npgettext
 
 
 class FrenchCatalog(gettext.NullTranslations):
@@ -14,8 +16,20 @@ class FrenchCatalog(gettext.NullTranslations):
         return "serveur" if n == 1 else "serveurs"
 
 
-def test_localization_off_by_default():
-    assert localization_enabled({}) is False
+KILL_SWITCH_ON = FeatureFlags(
+    {"toggles": [{"name": "LocalizationKillSwitch", "enabled": True}]})
+
+
+def test_localization_enabled_by_default_when_catalog_present():
+    assert translator._localization_enabled(FeatureFlags.default(), language="fr_FR") is True
+
+
+def test_localization_disabled_when_kill_switch_on():
+    assert translator._localization_enabled(KILL_SWITCH_ON, language="fr_FR") is False
+
+
+def test_localization_disabled_when_catalog_absent():
+    assert translator._localization_enabled(FeatureFlags.default(), language=None) is False
 
 
 def test_pgettext_returns_translation_when_enabled():

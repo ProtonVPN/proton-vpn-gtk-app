@@ -24,10 +24,11 @@ import os
 from pathlib import Path
 from typing import Optional
 
+from proton.vpn.session.feature_flags_fetcher import FeatureFlags, FeatureFlagsFetcher
 
 DOMAIN = "proton-vpn-gtk-app"
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), "locale", "binaries")
-ENV_VAR = "PROTON_VPN_LOCALIZATION_ENABLED"
+LOCALIZATION_KILL_SWITCH = "LocalizationKillSwitch"
 
 
 def _resolve_language(languages, domain, localedir) -> Optional[str]:
@@ -47,14 +48,14 @@ def active_language() -> Optional[str]:
     return _resolve_language(None, DOMAIN, LOCALE_DIR)
 
 
-def localization_enabled(environ=None) -> bool:
-    """Whether localization is enabled: requires both the env flag set to '1'
-    and a compiled catalog (.mo) for the active language. Returns False if
-    either is missing."""
-    environ = os.environ if environ is None else environ
-    if environ.get(ENV_VAR) != "1":
-        return False
-    return active_language() is not None
+def _localization_enabled(feature_flags: FeatureFlags, language: Optional[str]) -> bool:
+    """Whether localization is on or not. On by default, gated on compiled
+    catalog (.mo), and turned off by the remote `LocalizationKillSwitch`.
+
+    :param feature_flags: the resolved feature flags.
+    :param language: the active language (e.g. "fr_FR"), or None when no catalog exists.
+    """
+    return not feature_flags.get(LOCALIZATION_KILL_SWITCH) and language is not None
 
 
 def _load(enabled: bool, locale_dir: str = LOCALE_DIR) -> gettext.NullTranslations:
@@ -64,7 +65,11 @@ def _load(enabled: bool, locale_dir: str = LOCALE_DIR) -> gettext.NullTranslatio
     return gettext.translation(DOMAIN, locale_dir, fallback=True)
 
 
-_translation = _load(localization_enabled())
+LOCALIZATION_ENABLED = _localization_enabled(
+    FeatureFlagsFetcher(session=None).load_from_cache(),
+    active_language()
+)
+_translation = _load(LOCALIZATION_ENABLED)
 
 
 # pgettext's conventional name is `C_`

@@ -1,3 +1,10 @@
+version: 4.17.3rc3
+time: 2026/08/07 12:39
+author: Axel Langenskiold
+email: axel.langenskiold@proton.ch
+description:
+- "feat: Add enabled-by-default Kill Switch for localization."
+---
 version: 4.17.3rc2
 time: 2026/08/07 07:14
 author: L10n bot

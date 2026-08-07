@@ -31,7 +31,7 @@ from gi.repository import GLib, GObject
 from proton.vpn import logging as proton_logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.translator import localization_enabled
+from proton.vpn.app.gtk.translator import LOCALIZATION_ENABLED
 from proton.vpn.app.gtk.utils.country import get_localized_country_name
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.session.servers import ServerList, TierEnum
@@ -143,7 +143,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
             include_free_servers=free_user
         )
 
-        if localization_enabled():
+        if LOCALIZATION_ENABLED:
             # Sort by the localized name so the order matches what's displayed.
             # Free users get their free countries listed first.
             countries.sort(key=lambda country: (

@@ -49,7 +49,7 @@ from proton.vpn.app.gtk.services.reconnector.network_monitor import NetworkMonit
 from proton.vpn.app.gtk.services.reconnector.session_monitor import SessionMonitor
 from proton.vpn.app.gtk.services.reconnector.vpn_monitor import VPNMonitor
 from proton.vpn.app.gtk.settings_watchers import SettingsWatchers
-from proton.vpn.app.gtk.translator import active_language, localization_enabled
+from proton.vpn.app.gtk.translator import active_language, LOCALIZATION_ENABLED
 from proton.vpn.app.gtk.utils import glib
 from proton.vpn.app.gtk.utils.exception_handler import ExceptionHandler
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
@@ -94,7 +94,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
 
         self._api = api or ProtonVPNAPI(
             client_type_metadata,
-            locale=active_language() if localization_enabled() else None
+            locale=active_language() if LOCALIZATION_ENABLED else None
         )
         self._connector = vpn_connector
         self.reconnector = vpn_reconnector

@@ -48,6 +48,10 @@ msgid "Done"
 msgstr "Ολοκληρώθηκε"
 
 msgctxt "button"
+msgid "Hide"
+msgstr "Απόκρυψη"
+
+msgctxt "button"
 msgid "Learn more"
 msgstr "Μάθετε περισσότερα"
 
@@ -60,12 +64,28 @@ msgid "Need Help?"
 msgstr "Χρειάζεστε Βοήθεια;"
 
 msgctxt "button"
+msgid "OK"
+msgstr "ΟΚ"
+
+msgctxt "button"
 msgid "Send error logs"
 msgstr "Αποστολή καταχωρήσεων σφαλμάτων"
 
 msgctxt "button"
+msgid "Share anonymously"
+msgstr "Μοιραστείτε ανώνυμα"
+
+msgctxt "button"
+msgid "Show"
+msgstr "Εμφάνιση"
+
+msgctxt "button"
 msgid "Sign in"
 msgstr "Σύνδεση"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "Συνδεθείτε ξανά"
 
 msgctxt "button"
 msgid "Start"
@@ -100,6 +120,10 @@ msgid "_Enable"
 msgstr "_Ενεργοποίηση"
 
 msgctxt "button"
+msgid "_No"
+msgstr "_Οχι"
+
+msgctxt "button"
 msgid "_Select"
 msgstr "_Επιλογή"
 
@@ -110,6 +134,14 @@ msgstr "_Υποβολή"
 msgctxt "button"
 msgid "_Yes"
 msgstr "_Ναι"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "Εμφάνιση της έκδοσης της εφαρμογής"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "Έναρξη ελαχιστοποιημένης στην περιοχή ειδοποιήσεων"
 
 msgctxt "country"
 msgid "Afghanistan"
@@ -888,10 +920,6 @@ msgid "San Marino"
 msgstr "Άγιος Μαρίνος"
 
 msgctxt "country"
-msgid "Sao Tome and Principe"
-msgstr "Sao Tome and Principe"
-
-msgctxt "country"
 msgid "Saudi Arabia"
 msgstr "Σαουδική Αραβία"
 
@@ -1141,6 +1169,32 @@ msgstr "Μη έγκυρο όνομα χρήστη."
 
 msgctxt "error"
 msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"Φαίνεται ότι το ρολόι του συστήματός σας δεν είναι συγχρονισμένο.\n"
+"Αυτό μπορεί να προκαλέσει προβλήματα κατά τη σύνδεση σε VPN.\n"
+"Ενημερώστε την ώρα του συστήματός σας και προσπαθήστε να συνδεθείτε ξανά."
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr ""
+"Οι διακομιστές μας δεν είναι προσβάσιμοι. Παρακαλούμε ελέγξτε τη σύνδεσή σας"
+" στο διαδίκτυο."
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Το Proton VPN δεν μπόρεσε να συνδεθεί στο VPN και απέκλεισε την πρόσβαση στο Διαδίκτυο για την προστασία της IP σας.\n"
+"\n"
+"Κάντε κλικ στην επιλογή \"Ακύρωση σύνδεσης\" για να επαναφέρετε τη σύνδεσή σας στο Διαδίκτυο. Εάν το πρόβλημα επιμένει, παρακαλούμε δοκιμάστε να αποσυνδεθείτε και να συνδεθείτε."
+
+msgctxt "error"
+msgid ""
 "Proton services could not be reached.\n"
 "Please try again."
 msgstr ""
@@ -1155,6 +1209,10 @@ msgctxt "error"
 msgid "Something went wrong. Please try submitting your report at:\n"
 msgstr ""
 "Κάτι πήγε στραβά. Παρακαλούμε δοκιμάστε να υποβάλετε την αναφορά σας στο:\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "Δεν υπάρχει αρκετός χώρος στη συσκευή σας."
 
 msgctxt "error"
 msgid "Timeout"
@@ -1202,12 +1260,36 @@ msgstr ""
 "στο διαδίκτυο."
 
 msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr ""
+"Λυπούμαστε, παρουσιάστηκε ένα μη αναμενόμενο σφάλμα. Παρακαλούμε προσπαθήστε"
+" ξανά."
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"Είστε συνδεδεμένοι στο VPN, αλλά όλη η κίνηση είναι αποκλεισμένη.\n"
+"Πρέπει να μεταβείτε στη σελίδα ελέγχου ταυτότητας που παρέχεται από την ασφάλεια και να πραγματοποιήσετε έλεγχο ταυτότητας με το κλειδί υλικού σας.\n"
+"Μετά από αυτό, η κίνηση θα ενεργοποιηθεί."
+
+msgctxt "error"
 msgid ""
 "You've reached your maximum device limit. To reconnect to VPN, please "
 "disconnect from another device."
 msgstr ""
 "Έχετε συμπληρώσει το μέγιστο όριο συσκευών. Για να συνδεθείτε ξανά στο VPN, "
 "παρακαλούμε αποσυνδεθείτε από την άλλη συσκευή."
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 είναι το πλέον απίθανο"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 είναι το πιθανότερο"
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1222,16 +1304,16 @@ msgid "Add new server"
 msgstr "Προσθήκη νέου διακομιστή"
 
 msgctxt "label"
+msgid "Advanced"
+msgstr "Προχωρημένα"
+
+msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Όλες οι χώρες ({count})"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "Επιλέχθηκε αυτόματα από δωρεάν τοποθεσίες"
-
-msgctxt "label"
-msgid "BETA"
-msgstr "BETA"
 
 msgctxt "label"
 msgid "Block Malware"
@@ -1246,16 +1328,8 @@ msgid "Description (minimum {count} characters)"
 msgstr "Περιγραφή (ελάχιστος αριθμός χαρακτήρων {count})"
 
 msgctxt "label"
-msgid "Email"
-msgstr "Email"
-
-msgctxt "label"
 msgid "Excluded apps "
 msgstr "Εξαιρούμενες εφαρμογές "
-
-msgctxt "label"
-msgid "Free"
-msgstr "Free"
 
 msgctxt "label"
 msgid "Included apps "
@@ -1266,8 +1340,16 @@ msgid "Off"
 msgstr "Ανενεργό"
 
 msgctxt "label"
+msgid "Optional"
+msgstr "Προαιρετικό"
+
+msgctxt "label"
 msgid "PIN code"
 msgstr "Κωδικός PIN"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "Παρακαλούμε αιτιολογήστε τη βαθμολογία σας."
 
 msgctxt "label"
 msgid "Proton VPN Linux Client"
@@ -1282,16 +1364,16 @@ msgid "Server load"
 msgstr "Φορτίο διακομιστή"
 
 msgctxt "label"
+msgid "Standard"
+msgstr "Τυπικό"
+
+msgctxt "label"
 msgid "Use Proton protocols"
 msgstr "Χρησιμοποιήστε πρωτόκολλα Proton"
 
 msgctxt "label"
 msgid "Username"
 msgstr "Όνομα Χρήστη"
-
-msgctxt "label"
-msgid "VPN Plus"
-msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1349,6 +1431,10 @@ msgstr "Η ενεργή θύρα είναι {new_port}"
 msgctxt "message"
 msgid "Allow selected apps to connect without VPN protection."
 msgstr "Επιτρέψτε σε επιλεγμένες εφαρμογές να συνδέονται χωρίς προστασία VPN."
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr "Αυτόματη αποσύνδεση από το διαδίκτυο εάν χαθεί η σύνδεση VPN."
 
 msgctxt "message"
 msgid ""
@@ -1483,6 +1569,11 @@ msgid "It was not possible to enable Beta access.\n"
 msgstr "Δεν ήταν δυνατή η ενεργοποίηση της πρόσβασης σε έκδοση Beta.\n"
 
 msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr ""
+"Το Kill switch μπορεί να αλλάξει μόνο όταν το VPN είναι αποσυνδεδεμένο."
+
+msgctxt "message"
 msgid "Kill switch is blocking any outgoing connections."
 msgstr "Η λειτουργία kill switch αποκλείει τυχόν εξερχόμενες συνδέσεις."
 
@@ -1495,8 +1586,21 @@ msgstr ""
 "Αποσυνδεθείτε για να κάνετε αλλαγές."
 
 msgctxt "message"
+msgid "Loading app..."
+msgstr "Φόρτωση εφαρμογής..."
+
+msgctxt "message"
 msgid "Multiple security keys were found. Tap one to select it."
 msgstr "Βρέθηκαν πολλά κλειδιά ασφαλείας. Πατήστε ένα για να το επιλέξετε."
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"Επιτρέψτε την πρόσβαση στο διαδίκτυο μόνο όταν είστε συνδεδεμένοι στο Proton"
+" VPN. Η προηγμένη λειτουργία kill switch θα παραμείνει ενεργή ακόμα και όταν"
+" επανεκκινήσετε τη συσκευή σας."
 
 msgctxt "message"
 msgid ""
@@ -1526,6 +1630,14 @@ msgid "Protect yourself from ads, malware, and trackers on websites and apps."
 msgstr ""
 "Προστατευτείτε από διαφημίσεις, κακόβουλο λογισμικό και ιχνηλάτες σε "
 "ιστότοπους και εφαρμογές."
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"Προστατεύει τη διεύθυνση IP σας αποσυνδέοντάς σας από το διαδίκτυο εάν "
+"χάσετε τη σύνδεσή σας VPN. {learn_more}"
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1624,12 +1736,24 @@ msgstr ""
 " ασφάλεια σε χώρες με δύσκολη πρόσβαση."
 
 msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "Αυτό θα ορίσει αυτόματα το πρωτόκολλό σας σε WireGuard."
+
+msgctxt "message"
 msgid "This will disable NetShield."
 msgstr "Αυτό θα απενεργοποιήσει το NetShield."
 
 msgctxt "message"
 msgid "This will disable custom DNS."
 msgstr "Αυτό θα απενεργοποιήσει το προσαρμοσμένο DNS."
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "Αυτό θα απενεργοποιήσει το kill switch."
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "Αυτό θα απενεργοποιήσει τη διαίρεση σήραγγας."
 
 msgctxt "message"
 msgid ""
@@ -1657,8 +1781,16 @@ msgstr ""
 "σύνδεση. Προεπιλεγμένη τιμή: Απενεργοποίηση."
 
 msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "Τα σχόλιά σας μας βοηθούν να βελτιώσουμε το Proton VPN."
+
+msgctxt "message"
 msgid "Your issue has been reported"
 msgstr "Το πρόβλημά σας έχει αναφερθεί"
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "Η συνεδρία σας έχει λήξει. Παρακαλούμε εισέλθετε ξανά."
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1691,6 +1823,10 @@ msgstr "Προστατευμένο"
 msgctxt "status"
 msgid "Unprotected"
 msgstr "Χωρίς προστασία"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "Η ταυτοποίηση δύο παραγόντων (2FA) απαιτείται"
 
 msgctxt "title"
 msgid "About"
@@ -1749,6 +1885,10 @@ msgid "Custom DNS servers"
 msgstr "Προσαρμοσμένοι διακομιστές DNS"
 
 msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "Απενεργοποίηση WireGuard;"
+
+msgctxt "title"
 msgid "Enable Custom DNS"
 msgstr "Ενεργοποίηση Προσαρμοσμένου DNS"
 
@@ -1763,6 +1903,14 @@ msgstr "Ενεργοποίηση Netshield"
 msgctxt "title"
 msgid "Enable Netshield ?"
 msgstr "Ενεργοποίηση Netshield;"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "Ενεργοποίηση kill switch;"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "Ενεργοποίηση διαίρεσης σήραγγας;"
 
 msgctxt "title"
 msgid "Exclude mode"
@@ -1785,8 +1933,16 @@ msgid "General"
 msgstr "Γενικά"
 
 msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "Πόσο πιθανό είναι να προτείνετε το Proton VPN σε έναν φίλο;"
+
+msgctxt "title"
 msgid "Include mode"
 msgstr "Λειτουργία συμπερίληψης"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "Μη έγκυρη Συνεδρία"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -1805,12 +1961,8 @@ msgid "Moderate NAT"
 msgstr "Παραμετροποιήστε το NAT"
 
 msgctxt "title"
-msgid "NetShield"
-msgstr "NetShield"
-
-msgctxt "title"
-msgid "P2P/BitTorrent"
-msgstr "P2P/BitTorrent"
+msgid "No space left on device"
+msgstr "Δεν υπάρχει ελεύθερος χώρος στη συσκευή"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1833,10 +1985,6 @@ msgid "Report an Issue"
 msgstr "Αναφορά προβλήματος"
 
 msgctxt "title"
-msgid "Secure Core"
-msgstr "Secure Core"
-
-msgctxt "title"
 msgid "Security key"
 msgstr "Κλειδί ασφαλείας"
 
@@ -1857,8 +2005,8 @@ msgid "Share anonymous crash reports"
 msgstr "Κοινοποιήστε ανώνυμες αναφορές σφαλμάτων"
 
 msgctxt "title"
-msgid "Smart routing"
-msgstr "Smart routing"
+msgid "Something went wrong"
+msgstr "Κάτι πήγε στραβά"
 
 msgctxt "title"
 msgid "Split tunneling"
@@ -1869,16 +2017,24 @@ msgid "Start app minimized"
 msgstr "Έναρξη εφαρμογής ελαχιστοποιημένη"
 
 msgctxt "title"
-msgid "Tor"
-msgstr "Tor"
+msgid "Thanks for your feedback"
+msgstr "Ευχαριστούμε για τα σχόλιά σας"
 
 msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "Ταυτοποίηση δύο παραγόντων (2FA)"
 
 msgctxt "title"
-msgid "VPN Accelerator"
-msgstr "VPN Accelerator"
+msgid "Unable to find server"
+msgstr "Δεν είναι δυνατή η εύρεση διακομιστή"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "Ενημερώστε την ώρα συστήματός σας."
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "Σφάλμα σύνδεσης VPN"
 
 msgctxt "tooltip"
 msgid "Close"

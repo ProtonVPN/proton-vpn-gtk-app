@@ -48,6 +48,10 @@ msgid "Done"
 msgstr "Fatto"
 
 msgctxt "button"
+msgid "Hide"
+msgstr "Nascondi"
+
+msgctxt "button"
 msgid "Learn more"
 msgstr "Scopri di più"
 
@@ -64,8 +68,20 @@ msgid "Send error logs"
 msgstr "Invia i log degli errori"
 
 msgctxt "button"
+msgid "Share anonymously"
+msgstr "Condividi in modo anonimo"
+
+msgctxt "button"
+msgid "Show"
+msgstr "Mostra"
+
+msgctxt "button"
 msgid "Sign in"
 msgstr "Accedi"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "Accedi di nuovo"
 
 msgctxt "button"
 msgid "Start"
@@ -111,37 +127,21 @@ msgctxt "button"
 msgid "_Yes"
 msgstr "_Sí"
 
-msgctxt "country"
-msgid "Afghanistan"
-msgstr "Afghanistan"
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "Mostra la versione dell'applicazione"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "Avvia ridotto a icona nell'area di notifica"
 
 msgctxt "country"
 msgid "Aland Islands"
 msgstr "Isole Åland"
 
 msgctxt "country"
-msgid "Albania"
-msgstr "Albania"
-
-msgctxt "country"
-msgid "Algeria"
-msgstr "Algeria"
-
-msgctxt "country"
 msgid "American Samoa"
 msgstr "Samoa Americane"
-
-msgctxt "country"
-msgid "Andorra"
-msgstr "Andorra"
-
-msgctxt "country"
-msgid "Angola"
-msgstr "Angola"
-
-msgctxt "country"
-msgid "Anguilla"
-msgstr "Anguilla"
 
 msgctxt "country"
 msgid "Antarctica"
@@ -152,44 +152,12 @@ msgid "Antigua and Barbuda"
 msgstr "Antigua e Barbuda"
 
 msgctxt "country"
-msgid "Argentina"
-msgstr "Argentina"
-
-msgctxt "country"
-msgid "Armenia"
-msgstr "Armenia"
-
-msgctxt "country"
-msgid "Aruba"
-msgstr "Aruba"
-
-msgctxt "country"
-msgid "Australia"
-msgstr "Australia"
-
-msgctxt "country"
-msgid "Austria"
-msgstr "Austria"
-
-msgctxt "country"
 msgid "Azerbaijan"
 msgstr "Azerbaigian"
 
 msgctxt "country"
-msgid "Bahamas"
-msgstr "Bahamas"
-
-msgctxt "country"
 msgid "Bahrain"
 msgstr "Bahrein"
-
-msgctxt "country"
-msgid "Bangladesh"
-msgstr "Bangladesh"
-
-msgctxt "country"
-msgid "Barbados"
-msgstr "Barbados"
 
 msgctxt "country"
 msgid "Belarus"
@@ -200,36 +168,12 @@ msgid "Belgium"
 msgstr "Belgio"
 
 msgctxt "country"
-msgid "Belize"
-msgstr "Belize"
-
-msgctxt "country"
-msgid "Benin"
-msgstr "Benin"
-
-msgctxt "country"
-msgid "Bermuda"
-msgstr "Bermuda"
-
-msgctxt "country"
-msgid "Bhutan"
-msgstr "Bhutan"
-
-msgctxt "country"
-msgid "Bolivia"
-msgstr "Bolivia"
-
-msgctxt "country"
 msgid "Bonaire, Saint Eustatius and Saba "
 msgstr "Bonaire, Sant'Eustachio e Saba "
 
 msgctxt "country"
 msgid "Bosnia and Herzegovina"
 msgstr "Bosnia ed Erzegovina"
-
-msgctxt "country"
-msgid "Botswana"
-msgstr "Botswana"
 
 msgctxt "country"
 msgid "Bouvet Island"
@@ -248,32 +192,12 @@ msgid "British Virgin Islands"
 msgstr "Isole Vergini Britanniche"
 
 msgctxt "country"
-msgid "Brunei"
-msgstr "Brunei"
-
-msgctxt "country"
-msgid "Bulgaria"
-msgstr "Bulgaria"
-
-msgctxt "country"
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-
-msgctxt "country"
-msgid "Burundi"
-msgstr "Burundi"
-
-msgctxt "country"
 msgid "Cambodia"
 msgstr "Cambogia"
 
 msgctxt "country"
 msgid "Cameroon"
 msgstr "Camerun"
-
-msgctxt "country"
-msgid "Canada"
-msgstr "Canada"
 
 msgctxt "country"
 msgid "Cape Verde"
@@ -308,10 +232,6 @@ msgid "Cocos Islands"
 msgstr "Isole Cocos"
 
 msgctxt "country"
-msgid "Colombia"
-msgstr "Colombia"
-
-msgctxt "country"
 msgid "Comoros"
 msgstr "Comore"
 
@@ -320,16 +240,8 @@ msgid "Cook Islands"
 msgstr "Isole Cook"
 
 msgctxt "country"
-msgid "Costa Rica"
-msgstr "Costa Rica"
-
-msgctxt "country"
 msgid "Croatia"
 msgstr "Croazia"
-
-msgctxt "country"
-msgid "Cuba"
-msgstr "Cuba"
 
 msgctxt "country"
 msgid "Curacao"
@@ -356,10 +268,6 @@ msgid "Djibouti"
 msgstr "Gibuti"
 
 msgctxt "country"
-msgid "Dominica"
-msgstr "Dominica"
-
-msgctxt "country"
 msgid "Dominican Republic"
 msgstr "Repubblica Dominicana"
 
@@ -368,28 +276,12 @@ msgid "East Timor"
 msgstr "Timor Est"
 
 msgctxt "country"
-msgid "Ecuador"
-msgstr "Ecuador"
-
-msgctxt "country"
 msgid "Egypt"
 msgstr "Egitto"
 
 msgctxt "country"
-msgid "El Salvador"
-msgstr "El Salvador"
-
-msgctxt "country"
 msgid "Equatorial Guinea"
 msgstr "Guinea Equatoriale"
-
-msgctxt "country"
-msgid "Eritrea"
-msgstr "Eritrea"
-
-msgctxt "country"
-msgid "Estonia"
-msgstr "Estonia"
 
 msgctxt "country"
 msgid "Ethiopia"
@@ -402,10 +294,6 @@ msgstr "Isole Falkland"
 msgctxt "country"
 msgid "Faroe Islands"
 msgstr "Isole Faroe"
-
-msgctxt "country"
-msgid "Fiji"
-msgstr "Fiji"
 
 msgctxt "country"
 msgid "Finland"
@@ -428,24 +316,8 @@ msgid "French Southern Territories"
 msgstr "Terre Australi e Antartiche Francesi"
 
 msgctxt "country"
-msgid "Gabon"
-msgstr "Gabon"
-
-msgctxt "country"
-msgid "Gambia"
-msgstr "Gambia"
-
-msgctxt "country"
-msgid "Georgia"
-msgstr "Georgia"
-
-msgctxt "country"
 msgid "Germany"
 msgstr "Germania"
-
-msgctxt "country"
-msgid "Ghana"
-msgstr "Ghana"
 
 msgctxt "country"
 msgid "Gibraltar"
@@ -460,52 +332,12 @@ msgid "Greenland"
 msgstr "Groenlandia"
 
 msgctxt "country"
-msgid "Grenada"
-msgstr "Grenada"
-
-msgctxt "country"
 msgid "Guadeloupe"
 msgstr "Guadalupa"
 
 msgctxt "country"
-msgid "Guam"
-msgstr "Guam"
-
-msgctxt "country"
-msgid "Guatemala"
-msgstr "Guatemala"
-
-msgctxt "country"
-msgid "Guernsey"
-msgstr "Guernsey"
-
-msgctxt "country"
-msgid "Guinea"
-msgstr "Guinea"
-
-msgctxt "country"
-msgid "Guinea-Bissau"
-msgstr "Guinea-Bissau"
-
-msgctxt "country"
-msgid "Guyana"
-msgstr "Guyana"
-
-msgctxt "country"
-msgid "Haiti"
-msgstr "Haiti"
-
-msgctxt "country"
 msgid "Heard Island and McDonald Islands"
 msgstr "Isola Heard e Isole McDonald"
-
-msgctxt "country"
-msgid "Honduras"
-msgstr "Honduras"
-
-msgctxt "country"
-msgid "Hong Kong"
-msgstr "Hong Kong"
 
 msgctxt "country"
 msgid "Hungary"
@@ -514,22 +346,6 @@ msgstr "Ungheria"
 msgctxt "country"
 msgid "Iceland"
 msgstr "Islanda"
-
-msgctxt "country"
-msgid "India"
-msgstr "India"
-
-msgctxt "country"
-msgid "Indonesia"
-msgstr "Indonesia"
-
-msgctxt "country"
-msgid "Iran"
-msgstr "Iran"
-
-msgctxt "country"
-msgid "Iraq"
-msgstr "Iraq"
 
 msgctxt "country"
 msgid "Ireland"
@@ -560,10 +376,6 @@ msgid "Japan"
 msgstr "Giappone"
 
 msgctxt "country"
-msgid "Jersey"
-msgstr "Jersey"
-
-msgctxt "country"
 msgid "Jordan"
 msgstr "Giordania"
 
@@ -572,28 +384,8 @@ msgid "Kazakhstan"
 msgstr "Kazakistan"
 
 msgctxt "country"
-msgid "Kenya"
-msgstr "Kenya"
-
-msgctxt "country"
-msgid "Kiribati"
-msgstr "Kiribati"
-
-msgctxt "country"
-msgid "Kosovo"
-msgstr "Kosovo"
-
-msgctxt "country"
-msgid "Kuwait"
-msgstr "Kuwait"
-
-msgctxt "country"
 msgid "Kyrgyzstan"
 msgstr "Kirghizistan"
-
-msgctxt "country"
-msgid "Laos"
-msgstr "Laos"
 
 msgctxt "country"
 msgid "Latvia"
@@ -608,16 +400,8 @@ msgid "Lesotho"
 msgstr "Lesoto"
 
 msgctxt "country"
-msgid "Liberia"
-msgstr "Liberia"
-
-msgctxt "country"
 msgid "Libya"
 msgstr "Libia"
-
-msgctxt "country"
-msgid "Liechtenstein"
-msgstr "Liechtenstein"
 
 msgctxt "country"
 msgid "Lithuania"
@@ -628,36 +412,12 @@ msgid "Luxembourg"
 msgstr "Lussemburgo"
 
 msgctxt "country"
-msgid "Macao"
-msgstr "Macao"
-
-msgctxt "country"
-msgid "Macedonia"
-msgstr "Macedonia"
-
-msgctxt "country"
-msgid "Madagascar"
-msgstr "Madagascar"
-
-msgctxt "country"
-msgid "Malawi"
-msgstr "Malawi"
-
-msgctxt "country"
 msgid "Malaysia"
 msgstr "Malesia"
 
 msgctxt "country"
 msgid "Maldives"
 msgstr "Maldive"
-
-msgctxt "country"
-msgid "Mali"
-msgstr "Mali"
-
-msgctxt "country"
-msgid "Malta"
-msgstr "Malta"
 
 msgctxt "country"
 msgid "Marshall Islands"
@@ -668,44 +428,12 @@ msgid "Martinique"
 msgstr "Martinica"
 
 msgctxt "country"
-msgid "Mauritania"
-msgstr "Mauritania"
-
-msgctxt "country"
-msgid "Mauritius"
-msgstr "Mauritius"
-
-msgctxt "country"
-msgid "Mayotte"
-msgstr "Mayotte"
-
-msgctxt "country"
 msgid "Mexico"
 msgstr "Messico"
 
 msgctxt "country"
-msgid "Micronesia"
-msgstr "Micronesia"
-
-msgctxt "country"
 msgid "Moldova"
 msgstr "Moldavia"
-
-msgctxt "country"
-msgid "Monaco"
-msgstr "Monaco"
-
-msgctxt "country"
-msgid "Mongolia"
-msgstr "Mongolia"
-
-msgctxt "country"
-msgid "Montenegro"
-msgstr "Montenegro"
-
-msgctxt "country"
-msgid "Montserrat"
-msgstr "Montserrat"
 
 msgctxt "country"
 msgid "Morocco"
@@ -714,22 +442,6 @@ msgstr "Marocco"
 msgctxt "country"
 msgid "Mozambique"
 msgstr "Mozambico"
-
-msgctxt "country"
-msgid "Myanmar"
-msgstr "Myanmar"
-
-msgctxt "country"
-msgid "Namibia"
-msgstr "Namibia"
-
-msgctxt "country"
-msgid "Nauru"
-msgstr "Nauru"
-
-msgctxt "country"
-msgid "Nepal"
-msgstr "Nepal"
 
 msgctxt "country"
 msgid "Netherlands"
@@ -742,22 +454,6 @@ msgstr "Nuova Caledonia"
 msgctxt "country"
 msgid "New Zealand"
 msgstr "Nuova Zelanda"
-
-msgctxt "country"
-msgid "Nicaragua"
-msgstr "Nicaragua"
-
-msgctxt "country"
-msgid "Niger"
-msgstr "Niger"
-
-msgctxt "country"
-msgid "Nigeria"
-msgstr "Nigeria"
-
-msgctxt "country"
-msgid "Niue"
-msgstr "Niue"
 
 msgctxt "country"
 msgid "Norfolk Island"
@@ -776,24 +472,8 @@ msgid "Norway"
 msgstr "Norvegia"
 
 msgctxt "country"
-msgid "Oman"
-msgstr "Oman"
-
-msgctxt "country"
-msgid "Pakistan"
-msgstr "Pakistan"
-
-msgctxt "country"
-msgid "Palau"
-msgstr "Palau"
-
-msgctxt "country"
 msgid "Palestinian Territory"
 msgstr "Territori palestinesi"
-
-msgctxt "country"
-msgid "Panama"
-msgstr "Panama"
 
 msgctxt "country"
 msgid "Papua New Guinea"
@@ -828,24 +508,12 @@ msgid "Puerto Rico"
 msgstr "Porto Rico"
 
 msgctxt "country"
-msgid "Qatar"
-msgstr "Qatar"
-
-msgctxt "country"
 msgid "Republic of the Congo"
 msgstr "Repubblica del Congo"
 
 msgctxt "country"
 msgid "Reunion"
 msgstr "Riunione"
-
-msgctxt "country"
-msgid "Romania"
-msgstr "Romania"
-
-msgctxt "country"
-msgid "Russia"
-msgstr "Russia"
 
 msgctxt "country"
 msgid "Rwanda"
@@ -868,24 +536,12 @@ msgid "Saint Lucia"
 msgstr "Santa Lucia"
 
 msgctxt "country"
-msgid "Saint Martin"
-msgstr "Saint Martin"
-
-msgctxt "country"
 msgid "Saint Pierre and Miquelon"
 msgstr "Saint Pierre e Miquelon"
 
 msgctxt "country"
 msgid "Saint Vincent and the Grenadines"
 msgstr "Saint Vincent e Grenadines"
-
-msgctxt "country"
-msgid "Samoa"
-msgstr "Samoa"
-
-msgctxt "country"
-msgid "San Marino"
-msgstr "San Marino"
 
 msgctxt "country"
 msgid "Sao Tome and Principe"
@@ -896,44 +552,12 @@ msgid "Saudi Arabia"
 msgstr "Arabia Saudita"
 
 msgctxt "country"
-msgid "Senegal"
-msgstr "Senegal"
-
-msgctxt "country"
-msgid "Serbia"
-msgstr "Serbia"
-
-msgctxt "country"
-msgid "Seychelles"
-msgstr "Seychelles"
-
-msgctxt "country"
-msgid "Sierra Leone"
-msgstr "Sierra Leone"
-
-msgctxt "country"
-msgid "Singapore"
-msgstr "Singapore"
-
-msgctxt "country"
-msgid "Sint Maarten"
-msgstr "Sint Maarten"
-
-msgctxt "country"
 msgid "Slovakia"
 msgstr "Slovacchia"
 
 msgctxt "country"
-msgid "Slovenia"
-msgstr "Slovenia"
-
-msgctxt "country"
 msgid "Solomon Islands"
 msgstr "Isole Salomone"
-
-msgctxt "country"
-msgid "Somalia"
-msgstr "Somalia"
 
 msgctxt "country"
 msgid "South Africa"
@@ -956,18 +580,6 @@ msgid "Spain"
 msgstr "Spagna"
 
 msgctxt "country"
-msgid "Sri Lanka"
-msgstr "Sri Lanka"
-
-msgctxt "country"
-msgid "Sudan"
-msgstr "Sudan"
-
-msgctxt "country"
-msgid "Suriname"
-msgstr "Suriname"
-
-msgctxt "country"
 msgid "Svalbard and Jan Mayen"
 msgstr "Svalbard e Jan Mayen"
 
@@ -988,64 +600,28 @@ msgid "Syria"
 msgstr "Siria"
 
 msgctxt "country"
-msgid "Taiwan"
-msgstr "Taiwan"
-
-msgctxt "country"
 msgid "Tajikistan"
 msgstr "Tagikistan"
-
-msgctxt "country"
-msgid "Tanzania"
-msgstr "Tanzania"
 
 msgctxt "country"
 msgid "Thailand"
 msgstr "Thailandia"
 
 msgctxt "country"
-msgid "Togo"
-msgstr "Togo"
-
-msgctxt "country"
-msgid "Tokelau"
-msgstr "Tokelau"
-
-msgctxt "country"
-msgid "Tonga"
-msgstr "Tonga"
-
-msgctxt "country"
 msgid "Trinidad and Tobago"
 msgstr "Trinidad e Tobago"
-
-msgctxt "country"
-msgid "Tunisia"
-msgstr "Tunisia"
 
 msgctxt "country"
 msgid "Turkey"
 msgstr "Turchia"
 
 msgctxt "country"
-msgid "Turkmenistan"
-msgstr "Turkmenistan"
-
-msgctxt "country"
 msgid "Turks and Caicos Islands"
 msgstr "Isole Turks e Caicos"
 
 msgctxt "country"
-msgid "Tuvalu"
-msgstr "Tuvalu"
-
-msgctxt "country"
 msgid "U.S. Virgin Islands"
 msgstr "Isole Vergini americane"
-
-msgctxt "country"
-msgid "Uganda"
-msgstr "Uganda"
 
 msgctxt "country"
 msgid "Ukraine"
@@ -1068,28 +644,8 @@ msgid "United States Minor Outlying Islands"
 msgstr "Isole minori esterne degli Stati Uniti d'America"
 
 msgctxt "country"
-msgid "Uruguay"
-msgstr "Uruguay"
-
-msgctxt "country"
-msgid "Uzbekistan"
-msgstr "Uzbekistan"
-
-msgctxt "country"
-msgid "Vanuatu"
-msgstr "Vanuatu"
-
-msgctxt "country"
 msgid "Vatican"
 msgstr "Vaticano"
-
-msgctxt "country"
-msgid "Venezuela"
-msgstr "Venezuela"
-
-msgctxt "country"
-msgid "Vietnam"
-msgstr "Vietnam"
 
 msgctxt "country"
 msgid "Wallis and Futuna"
@@ -1098,18 +654,6 @@ msgstr "Wallis e Futuna"
 msgctxt "country"
 msgid "Western Sahara"
 msgstr "Sahara Occidentale"
-
-msgctxt "country"
-msgid "Yemen"
-msgstr "Yemen"
-
-msgctxt "country"
-msgid "Zambia"
-msgstr "Zambia"
-
-msgctxt "country"
-msgid "Zimbabwe"
-msgstr "Zimbabwe"
 
 msgctxt "error"
 msgid "An unknown error occurred"
@@ -1141,6 +685,32 @@ msgstr "Nome utente errato."
 
 msgctxt "error"
 msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"Sembra che l'orologio del tuo sistema non sia sincronizzato.\n"
+"Ciò potrebbe causare problemi durante la connessione alla VPN.\n"
+"Aggiorna l'ora del sistema e prova a connetterti di nuovo."
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr ""
+"I nostri server non sono raggiungibili. Controlla la tua connessione "
+"Internet."
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN non è riuscito a connettersi alla VPN e ha bloccato l'accesso a Internet per proteggere il tuo IP.\n"
+"\n"
+"Fai clic su \"Annulla connessione\" per ripristinare la tua connessione Internet. Se il problema persiste, prova a uscire e ad accedere di nuovo."
+
+msgctxt "error"
+msgid ""
 "Proton services could not be reached.\n"
 "Please try again."
 msgstr ""
@@ -1158,8 +728,8 @@ msgstr ""
 "all'indirizzo:\n"
 
 msgctxt "error"
-msgid "Timeout"
-msgstr "Timeout"
+msgid "There is not enough space left on your device."
+msgstr "Non c'è abbastanza spazio sul tuo dispositivo."
 
 msgctxt "error"
 msgid "Tunnel setup failed"
@@ -1203,12 +773,34 @@ msgstr ""
 "Impossibile disconnettersi. Verifica di avere una connessione a Internet."
 
 msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "Siamo spiacenti, si è verificato un errore imprevisto. Riprova."
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"Sei connesso alla VPN, ma tutto il traffico è bloccato.\n"
+"Devi andare sulla pagina di autenticazione fornita dalla sicurezza e autenticarti con la tua chiave hardware.\n"
+"Dopodiché, il traffico verrà attivato."
+
+msgctxt "error"
 msgid ""
 "You've reached your maximum device limit. To reconnect to VPN, please "
 "disconnect from another device."
 msgstr ""
 "Hai raggiunto il limite massimo di dispositivi. Per riconnetterti alla VPN, "
 "disconnettiti da un altro dispositivo."
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 è molto improbabile"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 è molto probabile"
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1223,16 +815,16 @@ msgid "Add new server"
 msgstr "Aggiungi un nuovo server"
 
 msgctxt "label"
+msgid "Advanced"
+msgstr "Avanzato"
+
+msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Tutti i paesi ({count})"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "Selezionati automaticamente tra le località disponibili gratuitamente"
-
-msgctxt "label"
-msgid "BETA"
-msgstr "BETA"
 
 msgctxt "label"
 msgid "Block Malware"
@@ -1245,10 +837,6 @@ msgstr "Blocca pubblicità, tracker e malware"
 msgctxt "label"
 msgid "Description (minimum {count} characters)"
 msgstr "Descrizione (minimo {count} caratteri)"
-
-msgctxt "label"
-msgid "Email"
-msgstr "Email"
 
 msgctxt "label"
 msgid "Excluded apps "
@@ -1267,8 +855,16 @@ msgid "Off"
 msgstr "Non attivo"
 
 msgctxt "label"
+msgid "Optional"
+msgstr "Opzionale"
+
+msgctxt "label"
 msgid "PIN code"
 msgstr "Codice PIN"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "Facci sapere perché hai dato questa valutazione"
 
 msgctxt "label"
 msgid "Proton VPN Linux Client"
@@ -1289,10 +885,6 @@ msgstr "Utilizza i protocolli Proton"
 msgctxt "label"
 msgid "Username"
 msgstr "Nome utente"
-
-msgctxt "label"
-msgid "VPN Plus"
-msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1350,6 +942,11 @@ msgstr "La porta attiva è {new_port}"
 msgctxt "message"
 msgid "Allow selected apps to connect without VPN protection."
 msgstr "Consenti alle app selezionate di connettersi senza protezione VPN."
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr ""
+"Disconnettiti automaticamente da Internet se viene persa la connessione VPN."
 
 msgctxt "message"
 msgid ""
@@ -1479,6 +1076,11 @@ msgid "It was not possible to enable Beta access.\n"
 msgstr "Non è stato possibile abilitare l'accesso alla versione beta.\n"
 
 msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr ""
+"Il kill switch può essere modificato solo quando la VPN è disconnessa."
+
+msgctxt "message"
 msgid "Kill switch is blocking any outgoing connections."
 msgstr "Kill Switch sta bloccando tutte le connessioni in uscita."
 
@@ -1491,9 +1093,22 @@ msgstr ""
 "Disconnettiti per apportare modifiche."
 
 msgctxt "message"
+msgid "Loading app..."
+msgstr "Caricamento dell'app..."
+
+msgctxt "message"
 msgid "Multiple security keys were found. Tap one to select it."
 msgstr ""
 "Sono state trovate più chiavi di sicurezza. Toccane una per selezionarla."
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"Consenti l'accesso a Internet solamente quando la connessione a Proton VPN è"
+" attiva. Il kill switch avanzato rimarrà attivo anche se il dispositivo "
+"viene riavviato."
 
 msgctxt "message"
 msgid ""
@@ -1522,6 +1137,14 @@ msgstr ""
 msgctxt "message"
 msgid "Protect yourself from ads, malware, and trackers on websites and apps."
 msgstr "Proteggiti da pubblicità, malware e tracker su siti web e app."
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"Protegge il tuo indirizzo IP disconnettendoti da Internet se perdi la "
+"connessione VPN. {learn_more}"
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1619,12 +1242,24 @@ msgstr ""
 "sicurezza nei paesi difficili da raggiungere."
 
 msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "Questo imposterà automaticamente il tuo protocollo su WireGuard."
+
+msgctxt "message"
 msgid "This will disable NetShield."
 msgstr "In questo modo si disattiverà NetShield."
 
 msgctxt "message"
 msgid "This will disable custom DNS."
 msgstr "In questo modo si disattiverà il DNS personalizzato."
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "Questo disabiliterà kill switch."
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "Questo disabiliterà lo split tunneling."
 
 msgctxt "message"
 msgid ""
@@ -1651,12 +1286,16 @@ msgstr ""
 "Valore predefinito: Disattivato."
 
 msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "Il tuo feedback ci aiuta a migliorare Proton VPN."
+
+msgctxt "message"
 msgid "Your issue has been reported"
 msgstr "Il tuo problema è stato segnalato"
 
-msgctxt "placeholder"
-msgid "Password"
-msgstr "Password"
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "La tua sessione è scaduta. Per favore riprova l'accesso."
 
 msgctxt "placeholder"
 msgid "Press Ctrl+F to search"
@@ -1687,12 +1326,12 @@ msgid "Unprotected"
 msgstr "Non protetto"
 
 msgctxt "title"
-msgid "About"
-msgstr "Informazioni"
+msgid "2FA Required"
+msgstr "2FA richiesta"
 
 msgctxt "title"
-msgid "Account"
-msgstr "Account"
+msgid "About"
+msgstr "Informazioni"
 
 msgctxt "title"
 msgid "Active connection found"
@@ -1743,6 +1382,10 @@ msgid "Custom DNS servers"
 msgstr "Server DNS personalizzati"
 
 msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "Disattivare WireGuard?"
+
+msgctxt "title"
 msgid "Enable Custom DNS"
 msgstr "Abilita DNS personalizzato"
 
@@ -1757,6 +1400,14 @@ msgstr "Abilita Netshield"
 msgctxt "title"
 msgid "Enable Netshield ?"
 msgstr "Attivare Netshield?"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "Vuoi abilitare kill switch?"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "Vuoi abilitare split tunneling?"
 
 msgctxt "title"
 msgid "Exclude mode"
@@ -1779,8 +1430,16 @@ msgid "General"
 msgstr "Generale"
 
 msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "Con quale probabilità consiglieresti Proton VPN a un amico?"
+
+msgctxt "title"
 msgid "Include mode"
 msgstr "Modalità Includi"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "Sessione non valida"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -1799,20 +1458,12 @@ msgid "Moderate NAT"
 msgstr "NAT moderato"
 
 msgctxt "title"
-msgid "NetShield"
-msgstr "NetShield"
-
-msgctxt "title"
-msgid "P2P/BitTorrent"
-msgstr "P2P/BitTorrent"
+msgid "No space left on device"
+msgstr "Spazio insufficiente sul dispositivo"
 
 msgctxt "title"
 msgid "Pinned tray connections"
 msgstr "Collegamenti con vassoio fissato"
-
-msgctxt "title"
-msgid "Port forwarding"
-msgstr "Port forwarding"
 
 msgctxt "title"
 msgid "Protocol"
@@ -1825,10 +1476,6 @@ msgstr "Note di rilascio"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "Segnala un problema"
-
-msgctxt "title"
-msgid "Secure Core"
-msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -1851,8 +1498,8 @@ msgid "Share anonymous crash reports"
 msgstr "Condividi report anonimi sugli arresti anomali"
 
 msgctxt "title"
-msgid "Smart routing"
-msgstr "Smart routing"
+msgid "Something went wrong"
+msgstr "Si è verificato un errore."
 
 msgctxt "title"
 msgid "Split tunneling"
@@ -1863,16 +1510,28 @@ msgid "Start app minimized"
 msgstr "Avvia l'app in modalità minimizzata"
 
 msgctxt "title"
-msgid "Tor"
-msgstr "Tor"
+msgid "Thanks for your feedback"
+msgstr "Grazie per la tua opinione"
 
 msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "Autenticazione a due fattori"
 
 msgctxt "title"
+msgid "Unable to find server"
+msgstr "Impossibile trovare il server"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "Aggiorna l'orologio di sistema"
+
+msgctxt "title"
 msgid "VPN Accelerator"
 msgstr "Acceleratore VPN"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "Errore di connessione VPN"
 
 msgctxt "tooltip"
 msgid "Close"

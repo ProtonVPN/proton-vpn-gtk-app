@@ -48,6 +48,10 @@ msgid "Done"
 msgstr "Гатова"
 
 msgctxt "button"
+msgid "Hide"
+msgstr "Схаваць"
+
+msgctxt "button"
 msgid "Learn more"
 msgstr "Даведацца больш"
 
@@ -64,8 +68,20 @@ msgid "Send error logs"
 msgstr "Адправіць журналы з памылкамі"
 
 msgctxt "button"
+msgid "Share anonymously"
+msgstr "Абагуліць ананімна"
+
+msgctxt "button"
+msgid "Show"
+msgstr "Паказаць"
+
+msgctxt "button"
 msgid "Sign in"
 msgstr "Увайсці"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "Увайсці яшчэ раз"
 
 msgctxt "button"
 msgid "Start"
@@ -100,6 +116,10 @@ msgid "_Enable"
 msgstr "_Уключыць"
 
 msgctxt "button"
+msgid "_No"
+msgstr "_Не"
+
+msgctxt "button"
 msgid "_Select"
 msgstr "_Выбраць"
 
@@ -110,6 +130,14 @@ msgstr "_Адправіць"
 msgctxt "button"
 msgid "_Yes"
 msgstr "_Так"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "Паказаць версію праграмы"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "Запускаць згорнутым у сістэмны трэй"
 
 msgctxt "country"
 msgid "Afghanistan"
@@ -1141,6 +1169,30 @@ msgstr "Памылковае імя карыстальніка."
 
 msgctxt "error"
 msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"Здаецца, ваш сістэмны гадзіннік не сінхранізаваны.\n"
+"Гэта можа выклікаць праблемы пры падключэнні да VPN.\n"
+"Абнавіце сістэмны час і паспрабуйце падключыцца зноў."
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr "Нашы серверы недасягальныя. Праверце падключэнне да інтэрнэту."
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN не змог падключыцца да VPN і заблакаваў доступ да інтэрнэту, каб абараніць ваш IP.\n"
+"\n"
+"Націсніце «Скасаваць падключэнне», каб аднавіць падключэнне да інтэрнэту. Калі праблема не знікне, паспрабуйце выйсці і ўвайсці зноў."
+
+msgctxt "error"
+msgid ""
 "Proton services could not be reached.\n"
 "Please try again."
 msgstr ""
@@ -1154,6 +1206,10 @@ msgstr "Дасягнута абмежаванне па колькасці сеа
 msgctxt "error"
 msgid "Something went wrong. Please try submitting your report at:\n"
 msgstr "Нешта пайшло не так. Паспрабуйце адправіць сваю справаздачу:\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "На вашай прыладзе недастаткова месца."
 
 msgctxt "error"
 msgid "Timeout"
@@ -1197,12 +1253,34 @@ msgid "Unable to sign out, please ensure you have internet access."
 msgstr "Немагчыма выйсці. Пераканайце, што вы падключаны да інтэрнэту."
 
 msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "На жаль, адбылася нечаканая памылка. Паспрабуйце яшчэ раз."
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"Вы падключаны да VPN, але ўвесь трафік заблакаваны.\n"
+"Вам трэба перайсці на старонку аўтэнтыфікацыі, прадастаўленую службай бяспекі, і прайсці аўтэнтыфікацыю з дапамогай апаратнага ключа.\n"
+"Пасля гэтага трафік будзе ўключаны."
+
+msgctxt "error"
 msgid ""
 "You've reached your maximum device limit. To reconnect to VPN, please "
 "disconnect from another device."
 msgstr ""
 "Дасягнута абмежаванне па максімальнай колькасці прылад. Адключыце якую-"
 "небудзь прыладу, каб перападключыцца да VPN."
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 - гэта вельмі малаверагодна"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 - гэта вельмі верагодна"
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1215,6 +1293,10 @@ msgstr "Актыўны порт:"
 msgctxt "label"
 msgid "Add new server"
 msgstr "Дадаць новы сервер"
+
+msgctxt "label"
+msgid "Advanced"
+msgstr "Пашыраны"
 
 msgctxt "label"
 msgid "All countries ({count})"
@@ -1261,8 +1343,16 @@ msgid "Off"
 msgstr "Выключана"
 
 msgctxt "label"
+msgid "Optional"
+msgstr "Неабавязкова"
+
+msgctxt "label"
 msgid "PIN code"
 msgstr "PIN-код"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "Растлумачце, чаму вы так нас ацанілі"
 
 msgctxt "label"
 msgid "Proton VPN Linux Client"
@@ -1277,16 +1367,16 @@ msgid "Server load"
 msgstr "Загружанасць сервера"
 
 msgctxt "label"
+msgid "Standard"
+msgstr "Стандартны"
+
+msgctxt "label"
 msgid "Use Proton protocols"
 msgstr "Выкарыстоўваць пратаколы Proton"
 
 msgctxt "label"
 msgid "Username"
 msgstr "Імя карыстальніка"
-
-msgctxt "label"
-msgid "VPN Plus"
-msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1344,6 +1434,10 @@ msgstr "Актыўны порт: {new_port}"
 msgctxt "message"
 msgid "Allow selected apps to connect without VPN protection."
 msgstr "Дазваляе выбраным праграмам падключацца без абароны па VPN."
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr "Аўтаматычна адключацца ад інтэрнэту, калі падключэнне з VPN страчана."
 
 msgctxt "message"
 msgid ""
@@ -1474,6 +1568,10 @@ msgid "It was not possible to enable Beta access.\n"
 msgstr "Не ўдалося ўключыць доступ да бэта-версіі.\n"
 
 msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr "Kill Switch можна змяніць толькі пры адключаным VPN."
+
+msgctxt "message"
 msgid "Kill switch is blocking any outgoing connections."
 msgstr "Kill Switch блакіруе ўсе выходныя падключэнні."
 
@@ -1486,10 +1584,22 @@ msgstr ""
 "каб зрабіць змены."
 
 msgctxt "message"
+msgid "Loading app..."
+msgstr "Загрузка праграмы..."
+
+msgctxt "message"
 msgid "Multiple security keys were found. Tap one to select it."
 msgstr ""
 "Было знойдзена некалькі ключоў бяспекі. Націсніце на адзін з іх, каб выбраць"
 " яго."
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"Дазваляць доступ да інтэрнэту толькі, калі Proton VPN падключаны. Пашыраны "
+"Kill Switch застанецца актыўным нават, калі вы перазапусціце прыладу."
 
 msgctxt "message"
 msgid ""
@@ -1518,6 +1628,14 @@ msgid "Protect yourself from ads, malware, and trackers on websites and apps."
 msgstr ""
 "Абараніце сябе ад рэкламы, шкодных праграм, праграм сачэння на вэб-сайтах і "
 "ў праграмах."
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"Абараняе ваш IP-адрас, адключаючы вас ад інтэрнэту пры страце падключэння да"
+" VPN. {learn_more}"
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1594,6 +1712,14 @@ msgid "Signing out..."
 msgstr "Адбываецца выхад..."
 
 msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"Некаторыя неабходныя кампаненты не былі выяўлены ў вашай сістэме. Праграма "
+"можа працаваць неналежным чынам."
+
+msgctxt "message"
 msgid "Split tunneling enabled. Remember to restart affected apps."
 msgstr ""
 "Split Tunneling уключаны. Не забудзьце перазапусціць праграму, каб прымяніць"
@@ -1615,12 +1741,24 @@ msgstr ""
 "бяспеку ў цяжкадаступных краінах."
 
 msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "Гэта аўтаматычна ўсталюе ваш пратакол на WireGuard."
+
+msgctxt "message"
 msgid "This will disable NetShield."
 msgstr "Гэта дзеянне прывядзе да адключэння NetShield."
 
 msgctxt "message"
 msgid "This will disable custom DNS."
 msgstr "Гэта прывядзе да адключэння карыстальніцкага DNS."
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "Гэта дзеянне прывядзе да адключэння Kill Switch."
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "Гэта прывядзе да адключэння Split Tunneling."
 
 msgctxt "message"
 msgid ""
@@ -1646,8 +1784,20 @@ msgstr ""
 "Прадвызначанае значэнне: выключана."
 
 msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "Ваш водгук дапамагае нам удасканальваць Proton VPN."
+
+msgctxt "message"
 msgid "Your issue has been reported"
 msgstr "Аб вашай праблеме было паведамлена"
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "Ваш сеанс пратэрмінаваны. Увайдзіце яшчэ раз."
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr "{learn_more} аб патрабаваннях і альтэрнатыўных спосабах усталявання."
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1680,6 +1830,10 @@ msgstr "Абаронена"
 msgctxt "status"
 msgid "Unprotected"
 msgstr "Неабаронена"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "Патрабуецца 2ФА"
 
 msgctxt "title"
 msgid "About"
@@ -1738,6 +1892,10 @@ msgid "Custom DNS servers"
 msgstr "Карыстальніцкія серверы DNS"
 
 msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "Адключыць WireGuard?"
+
+msgctxt "title"
 msgid "Enable Custom DNS"
 msgstr "Уключыць карыстальніцкі DNS"
 
@@ -1752,6 +1910,14 @@ msgstr "Уключыць NetShield"
 msgctxt "title"
 msgid "Enable Netshield ?"
 msgstr "Уключыць NetShield ?"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "Уключыць Kill Switch?"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "Уключыць Split Tunelling?"
 
 msgctxt "title"
 msgid "Exclude mode"
@@ -1774,8 +1940,16 @@ msgid "General"
 msgstr "Агульныя"
 
 msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "З якой верагоднасцю вы парэкамендуеце Proton VPN сябру?"
+
+msgctxt "title"
 msgid "Include mode"
 msgstr "Рэжым уключэння"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "Несапраўдны сеанс"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -1786,6 +1960,10 @@ msgid "Kill Switch enabled"
 msgstr "Kill Switch уключаны"
 
 msgctxt "title"
+msgid "Kill switch"
+msgstr "Kill Switch"
+
+msgctxt "title"
 msgid "Locations"
 msgstr "Месцазнаходжанні"
 
@@ -1794,12 +1972,8 @@ msgid "Moderate NAT"
 msgstr "Умераны NAT"
 
 msgctxt "title"
-msgid "NetShield"
-msgstr "NetShield"
-
-msgctxt "title"
-msgid "P2P/BitTorrent"
-msgstr "P2P/BitTorrent"
+msgid "No space left on device"
+msgstr "На прыладзе не засталося вольнага месца"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1820,10 +1994,6 @@ msgstr "Нататкі да выпуску"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "Паведаміць аб праблеме"
-
-msgctxt "title"
-msgid "Secure Core"
-msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -1850,6 +2020,10 @@ msgid "Smart routing"
 msgstr "Smart Routing"
 
 msgctxt "title"
+msgid "Something went wrong"
+msgstr "Нешта пайшло не так"
+
+msgctxt "title"
 msgid "Split tunneling"
 msgstr "Split Tunneling"
 
@@ -1858,16 +2032,24 @@ msgid "Start app minimized"
 msgstr "Згарнуць праграму пры запуску"
 
 msgctxt "title"
-msgid "Tor"
-msgstr "Tor"
+msgid "Thanks for your feedback"
+msgstr "Дзякуй за ваш водгук"
 
 msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "Двухфактарная аўтэнтыфікацыя"
 
 msgctxt "title"
-msgid "VPN Accelerator"
-msgstr "VPN Accelerator"
+msgid "Unable to find server"
+msgstr "Не ўдалося знайсці сервер"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "Абнавіце сістэмны гадзіннік"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "Памылка падключэння VPN"
 
 msgctxt "tooltip"
 msgid "Close"

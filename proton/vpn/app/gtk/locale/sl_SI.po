@@ -48,6 +48,10 @@ msgid "Done"
 msgstr "Končano"
 
 msgctxt "button"
+msgid "Hide"
+msgstr "Skrij"
+
+msgctxt "button"
 msgid "Learn more"
 msgstr "Več informacij"
 
@@ -60,12 +64,28 @@ msgid "Need Help?"
 msgstr "Potrebujete pomoč?"
 
 msgctxt "button"
+msgid "OK"
+msgstr "V redu"
+
+msgctxt "button"
 msgid "Send error logs"
 msgstr "Pošlji dnevnik z napakami"
 
 msgctxt "button"
+msgid "Share anonymously"
+msgstr "Deli anonimno"
+
+msgctxt "button"
+msgid "Show"
+msgstr "Prikaži"
+
+msgctxt "button"
 msgid "Sign in"
 msgstr "Prijava"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "Ponovno se prijavite"
 
 msgctxt "button"
 msgid "Start"
@@ -100,6 +120,10 @@ msgid "_Enable"
 msgstr "_Omogoči"
 
 msgctxt "button"
+msgid "_No"
+msgstr "_Ne"
+
+msgctxt "button"
 msgid "_Select"
 msgstr "_Izberi"
 
@@ -110,6 +134,14 @@ msgstr "_Pošlji"
 msgctxt "button"
 msgid "_Yes"
 msgstr "_Da"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "Prikaži različico aplikacije"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "Zaženi strnjeno v sistemski vrstici"
 
 msgctxt "country"
 msgid "Afghanistan"
@@ -136,10 +168,6 @@ msgid "Andorra"
 msgstr "Andora"
 
 msgctxt "country"
-msgid "Angola"
-msgstr "Angola"
-
-msgctxt "country"
 msgid "Anguilla"
 msgstr "Angvila"
 
@@ -152,16 +180,8 @@ msgid "Antigua and Barbuda"
 msgstr "Antigva in Barbuda"
 
 msgctxt "country"
-msgid "Argentina"
-msgstr "Argentina"
-
-msgctxt "country"
 msgid "Armenia"
 msgstr "Armenija"
-
-msgctxt "country"
-msgid "Aruba"
-msgstr "Aruba"
 
 msgctxt "country"
 msgid "Australia"
@@ -188,24 +208,12 @@ msgid "Bangladesh"
 msgstr "Bangladeš"
 
 msgctxt "country"
-msgid "Barbados"
-msgstr "Barbados"
-
-msgctxt "country"
 msgid "Belarus"
 msgstr "Belorusija"
 
 msgctxt "country"
 msgid "Belgium"
 msgstr "Belgija"
-
-msgctxt "country"
-msgid "Belize"
-msgstr "Belize"
-
-msgctxt "country"
-msgid "Benin"
-msgstr "Benin"
 
 msgctxt "country"
 msgid "Bermuda"
@@ -254,14 +262,6 @@ msgstr "Brunej"
 msgctxt "country"
 msgid "Bulgaria"
 msgstr "Bolgarija"
-
-msgctxt "country"
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-
-msgctxt "country"
-msgid "Burundi"
-msgstr "Burundi"
 
 msgctxt "country"
 msgid "Cambodia"
@@ -428,10 +428,6 @@ msgid "French Southern Territories"
 msgstr "Francoska južna ozemlja"
 
 msgctxt "country"
-msgid "Gabon"
-msgstr "Gabon"
-
-msgctxt "country"
 msgid "Gambia"
 msgstr "Gambija"
 
@@ -448,20 +444,12 @@ msgid "Ghana"
 msgstr "Gana"
 
 msgctxt "country"
-msgid "Gibraltar"
-msgstr "Gibraltar"
-
-msgctxt "country"
 msgid "Greece"
 msgstr "Grčija"
 
 msgctxt "country"
 msgid "Greenland"
 msgstr "Grenlandija"
-
-msgctxt "country"
-msgid "Grenada"
-msgstr "Grenada"
 
 msgctxt "country"
 msgid "Guadeloupe"
@@ -476,10 +464,6 @@ msgid "Guatemala"
 msgstr "Gvatemala"
 
 msgctxt "country"
-msgid "Guernsey"
-msgstr "Guernsey"
-
-msgctxt "country"
 msgid "Guinea"
 msgstr "Gvineja"
 
@@ -492,16 +476,8 @@ msgid "Guyana"
 msgstr "Gvajana"
 
 msgctxt "country"
-msgid "Haiti"
-msgstr "Haiti"
-
-msgctxt "country"
 msgid "Heard Island and McDonald Islands"
 msgstr "Heardov otok in McDonaldovi otoki"
-
-msgctxt "country"
-msgid "Honduras"
-msgstr "Honduras"
 
 msgctxt "country"
 msgid "Hong Kong"
@@ -522,10 +498,6 @@ msgstr "Indija"
 msgctxt "country"
 msgid "Indonesia"
 msgstr "Indonezija"
-
-msgctxt "country"
-msgid "Iran"
-msgstr "Iran"
 
 msgctxt "country"
 msgid "Iraq"
@@ -560,10 +532,6 @@ msgid "Japan"
 msgstr "Japonska"
 
 msgctxt "country"
-msgid "Jersey"
-msgstr "Jersey"
-
-msgctxt "country"
 msgid "Jordan"
 msgstr "Jordanija"
 
@@ -576,24 +544,12 @@ msgid "Kenya"
 msgstr "Kenija"
 
 msgctxt "country"
-msgid "Kiribati"
-msgstr "Kiribati"
-
-msgctxt "country"
-msgid "Kosovo"
-msgstr "Kosovo"
-
-msgctxt "country"
 msgid "Kuwait"
 msgstr "Kuvajt"
 
 msgctxt "country"
 msgid "Kyrgyzstan"
 msgstr "Kirgizistan"
-
-msgctxt "country"
-msgid "Laos"
-msgstr "Laos"
 
 msgctxt "country"
 msgid "Latvia"
@@ -652,14 +608,6 @@ msgid "Maldives"
 msgstr "Maldivi"
 
 msgctxt "country"
-msgid "Mali"
-msgstr "Mali"
-
-msgctxt "country"
-msgid "Malta"
-msgstr "Malta"
-
-msgctxt "country"
 msgid "Marshall Islands"
 msgstr "Marshallovi otoki"
 
@@ -674,10 +622,6 @@ msgstr "Mavretanija"
 msgctxt "country"
 msgid "Mauritius"
 msgstr "Mavricij"
-
-msgctxt "country"
-msgid "Mayotte"
-msgstr "Mayotte"
 
 msgctxt "country"
 msgid "Mexico"
@@ -724,14 +668,6 @@ msgid "Namibia"
 msgstr "Namibija"
 
 msgctxt "country"
-msgid "Nauru"
-msgstr "Nauru"
-
-msgctxt "country"
-msgid "Nepal"
-msgstr "Nepal"
-
-msgctxt "country"
 msgid "Netherlands"
 msgstr "Nizozemska"
 
@@ -748,16 +684,8 @@ msgid "Nicaragua"
 msgstr "Nikaragva"
 
 msgctxt "country"
-msgid "Niger"
-msgstr "Niger"
-
-msgctxt "country"
 msgid "Nigeria"
 msgstr "Nigerija"
-
-msgctxt "country"
-msgid "Niue"
-msgstr "Niue"
 
 msgctxt "country"
 msgid "Norfolk Island"
@@ -776,24 +704,12 @@ msgid "Norway"
 msgstr "Norveška"
 
 msgctxt "country"
-msgid "Oman"
-msgstr "Oman"
-
-msgctxt "country"
-msgid "Pakistan"
-msgstr "Pakistan"
-
-msgctxt "country"
 msgid "Palau"
 msgstr "Palav"
 
 msgctxt "country"
 msgid "Palestinian Territory"
 msgstr "Palestinsko ozemlje"
-
-msgctxt "country"
-msgid "Panama"
-msgstr "Panama"
 
 msgctxt "country"
 msgid "Papua New Guinea"
@@ -804,16 +720,8 @@ msgid "Paraguay"
 msgstr "Paragvaj"
 
 msgctxt "country"
-msgid "Peru"
-msgstr "Peru"
-
-msgctxt "country"
 msgid "Philippines"
 msgstr "Filipini"
-
-msgctxt "country"
-msgid "Pitcairn"
-msgstr "Pitcairn"
 
 msgctxt "country"
 msgid "Poland"
@@ -880,14 +788,6 @@ msgid "Saint Vincent and the Grenadines"
 msgstr "Sveti Vincencij in Grenadine"
 
 msgctxt "country"
-msgid "Samoa"
-msgstr "Samoa"
-
-msgctxt "country"
-msgid "San Marino"
-msgstr "San Marino"
-
-msgctxt "country"
 msgid "Sao Tome and Principe"
 msgstr "Sveti Tomaž in Princ"
 
@@ -896,20 +796,12 @@ msgid "Saudi Arabia"
 msgstr "Saudova Arabija"
 
 msgctxt "country"
-msgid "Senegal"
-msgstr "Senegal"
-
-msgctxt "country"
 msgid "Serbia"
 msgstr "Srbija"
 
 msgctxt "country"
 msgid "Seychelles"
 msgstr "Sejšeli"
-
-msgctxt "country"
-msgid "Sierra Leone"
-msgstr "Sierra Leone"
 
 msgctxt "country"
 msgid "Singapore"
@@ -960,10 +852,6 @@ msgid "Sri Lanka"
 msgstr "Šrilanka"
 
 msgctxt "country"
-msgid "Sudan"
-msgstr "Sudan"
-
-msgctxt "country"
 msgid "Suriname"
 msgstr "Surinam"
 
@@ -1004,16 +892,8 @@ msgid "Thailand"
 msgstr "Tajska"
 
 msgctxt "country"
-msgid "Togo"
-msgstr "Togo"
-
-msgctxt "country"
 msgid "Tokelau"
 msgstr "Tokelav"
-
-msgctxt "country"
-msgid "Tonga"
-msgstr "Tonga"
 
 msgctxt "country"
 msgid "Trinidad and Tobago"
@@ -1028,24 +908,12 @@ msgid "Turkey"
 msgstr "Turčija"
 
 msgctxt "country"
-msgid "Turkmenistan"
-msgstr "Turkmenistan"
-
-msgctxt "country"
 msgid "Turks and Caicos Islands"
 msgstr "Otoki Turks in Caicos"
 
 msgctxt "country"
-msgid "Tuvalu"
-msgstr "Tuvalu"
-
-msgctxt "country"
 msgid "U.S. Virgin Islands"
 msgstr "Deviški otoki Združenih držav"
-
-msgctxt "country"
-msgid "Uganda"
-msgstr "Uganda"
 
 msgctxt "country"
 msgid "Ukraine"
@@ -1072,24 +940,8 @@ msgid "Uruguay"
 msgstr "Urugvaj"
 
 msgctxt "country"
-msgid "Uzbekistan"
-msgstr "Uzbekistan"
-
-msgctxt "country"
-msgid "Vanuatu"
-msgstr "Vanuatu"
-
-msgctxt "country"
 msgid "Vatican"
 msgstr "Vatikan"
-
-msgctxt "country"
-msgid "Venezuela"
-msgstr "Venezuela"
-
-msgctxt "country"
-msgid "Vietnam"
-msgstr "Vietnam"
 
 msgctxt "country"
 msgid "Wallis and Futuna"
@@ -1141,6 +993,30 @@ msgstr "Neveljavno uporabniško ime."
 
 msgctxt "error"
 msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"Videti je, da sistemska ura ni sinhronizirana.\n"
+"To lahko povzroči težave pri povezovanju z VPN.\n"
+"Posodobite sistemski čas in se poskusite znova povezati."
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr "Naši strežniki niso dosegljivi. Preverite internetno povezavo."
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN se ni mogel povezati z VPN in je blokiral dostop do interneta, da bi zaščitil vaš IP.\n"
+"\n"
+"Kliknite \"Prekliči povezavo\", da obnovite svojo internetno povezavo. Če se težava še naprej pojavlja, se poskusite izpisati in znova vpisati."
+
+msgctxt "error"
+msgid ""
 "Proton services could not be reached.\n"
 "Please try again."
 msgstr ""
@@ -1154,6 +1030,10 @@ msgstr "Dosežena omejitev seje"
 msgctxt "error"
 msgid "Something went wrong. Please try submitting your report at:\n"
 msgstr "Nekaj je šlo narobe. Poskusite poslati poročilo na naslov:\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "Na vaši napravi ni dovolj prostora."
 
 msgctxt "error"
 msgid "Timeout"
@@ -1200,12 +1080,34 @@ msgid "Unable to sign out, please ensure you have internet access."
 msgstr "Odjava ni mogoča. Preverite, ali imate dostop do interneta."
 
 msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "Žal je prišlo do nepričakovane napake. Poskusite znova."
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"Povezani ste z VPN, vendar je ves promet blokiran.\n"
+"Morate iti na stran za preverjanje pristnosti, ki jo zagotavlja varnostna služba, in potrditi svojo pristnost s svojim strojnim ključem.\n"
+"Po tem bo promet omogočen."
+
+msgctxt "error"
 msgid ""
 "You've reached your maximum device limit. To reconnect to VPN, please "
 "disconnect from another device."
 msgstr ""
 "Dosegli ste največje število naprav. Če se želite znova povezati z VPN, "
 "prekinite povezavo z drugo napravo."
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 je zelo malo verjetno"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 je zelo verjetno"
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1220,16 +1122,16 @@ msgid "Add new server"
 msgstr "Dodaj nov strežnik"
 
 msgctxt "label"
+msgid "Advanced"
+msgstr "Napredno"
+
+msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Vse države ({count})"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "Samodejno izbrano izmed prostih lokacij"
-
-msgctxt "label"
-msgid "BETA"
-msgstr "BETA"
 
 msgctxt "label"
 msgid "Block Malware"
@@ -1264,8 +1166,16 @@ msgid "Off"
 msgstr "Izključeno"
 
 msgctxt "label"
+msgid "Optional"
+msgstr "Neobvezno"
+
+msgctxt "label"
 msgid "PIN code"
 msgstr "PIN koda"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "Sporočite nam, zakaj ste podali to oceno."
 
 msgctxt "label"
 msgid "Proton VPN Linux Client"
@@ -1280,16 +1190,16 @@ msgid "Server load"
 msgstr "Obremenitev strežnika"
 
 msgctxt "label"
+msgid "Standard"
+msgstr "Standardni"
+
+msgctxt "label"
 msgid "Use Proton protocols"
 msgstr "Uporabi Proton protokole"
 
 msgctxt "label"
 msgid "Username"
 msgstr "Uporabniško ime"
-
-msgctxt "label"
-msgid "VPN Plus"
-msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1347,6 +1257,11 @@ msgstr "Aktivna vrata {new_port}"
 msgctxt "message"
 msgid "Allow selected apps to connect without VPN protection."
 msgstr "Dovoli izbranim aplikacijam povezavo brez zaščite VPN."
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr ""
+"Samodejno prekini povezavo z internetom, če je povezava VPN izgubljena."
 
 msgctxt "message"
 msgid ""
@@ -1475,6 +1390,11 @@ msgid "It was not possible to enable Beta access.\n"
 msgstr "Dostopa do beta različice ni bilo mogoče omogočiti.\n"
 
 msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr ""
+"Odklopno stikalo je mogoče spremeniti le, ko je povezava VPN prekinjena."
+
+msgctxt "message"
 msgid "Kill switch is blocking any outgoing connections."
 msgstr "Stikalo za izklop blokira vse odhodne povezave."
 
@@ -1487,9 +1407,21 @@ msgstr ""
 "spremembo nastavitev najprej prekinite povezavo."
 
 msgctxt "message"
+msgid "Loading app..."
+msgstr "Nalaganje aplikacije ..."
+
+msgctxt "message"
 msgid "Multiple security keys were found. Tap one to select it."
 msgstr ""
 "Najdenih je bilo več varnostnih ključev. Dotaknite se enega, da ga izberete."
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"Dovolite dostop do interneta samo, ko ste povezani s Proton VPN. Napredno "
+"odklopno stikalo bo ostalo aktivno tudi, ko znova zaženete napravo."
 
 msgctxt "message"
 msgid ""
@@ -1518,6 +1450,14 @@ msgid "Protect yourself from ads, malware, and trackers on websites and apps."
 msgstr ""
 "Zaščitite se pred oglasi, zlonamerno programsko opremo in sledilniki na "
 "spletnih straneh in v aplikacijah."
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"Ščiti vaš naslov IP tako, da prekine povezavo z internetom, če izgubite "
+"povezavo VPN. {learn_more}"
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1616,12 +1556,24 @@ msgstr ""
 "državah, kjer je storitev otežena."
 
 msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "To bo samodejno nastavilo vaš protokol na WireGuard."
+
+msgctxt "message"
 msgid "This will disable NetShield."
 msgstr "To bo onemogočilo NetShield."
 
 msgctxt "message"
 msgid "This will disable custom DNS."
 msgstr "To bo onemogočilo DNS po meri."
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "To bo onemogočilo odklopno stikalo."
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "To bo onemogočilo deljeno tuneliranje."
 
 msgctxt "message"
 msgid ""
@@ -1649,8 +1601,16 @@ msgstr ""
 "hitro povezavo. Privzeta vrednost: Izklopljeno."
 
 msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "Vaše povratne informacije nam pomagajo izboljšati Proton VPN"
+
+msgctxt "message"
 msgid "Your issue has been reported"
 msgstr "Vaša težava je bila prijavljena"
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "Vaša seja se je iztekla. Ponovno se prijavite."
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1683,6 +1643,10 @@ msgstr "Zaščiteno"
 msgctxt "status"
 msgid "Unprotected"
 msgstr "Nezaščiteno"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "Zahtevan je 2FA"
 
 msgctxt "title"
 msgid "About"
@@ -1741,6 +1705,10 @@ msgid "Custom DNS servers"
 msgstr "Strežniki DNS po meri"
 
 msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "Onemogoči WireGuard?"
+
+msgctxt "title"
 msgid "Enable Custom DNS"
 msgstr "Omogoči DNS po meri"
 
@@ -1755,6 +1723,14 @@ msgstr "Omogočiti NetShield"
 msgctxt "title"
 msgid "Enable Netshield ?"
 msgstr "Omogočim NetShield?"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "Omogoči odklopno stikalo?"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "Omogočiti razdeljeno tuneliranje?"
 
 msgctxt "title"
 msgid "Exclude mode"
@@ -1777,8 +1753,16 @@ msgid "General"
 msgstr "Splošno"
 
 msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "Kako verjetno je, da boste prijatelju priporočili Proton VPN?"
+
+msgctxt "title"
 msgid "Include mode"
 msgstr "Način vključitve"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "Neveljavna seja"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -1789,6 +1773,10 @@ msgid "Kill Switch enabled"
 msgstr "Odklopno stikalo je omogočeno"
 
 msgctxt "title"
+msgid "Kill switch"
+msgstr "Odklopno stikalo"
+
+msgctxt "title"
 msgid "Locations"
 msgstr "Lokacije"
 
@@ -1797,12 +1785,8 @@ msgid "Moderate NAT"
 msgstr "Upravljajte NAT"
 
 msgctxt "title"
-msgid "NetShield"
-msgstr "NetShield"
-
-msgctxt "title"
-msgid "P2P/BitTorrent"
-msgstr "P2P/BitTorrent"
+msgid "No space left on device"
+msgstr "V napravi ni več prostora"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1823,10 +1807,6 @@ msgstr "Opombe k izdaji"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "Prijavite težavo"
-
-msgctxt "title"
-msgid "Secure Core"
-msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -1853,6 +1833,10 @@ msgid "Smart routing"
 msgstr "Pametno usmerjanje"
 
 msgctxt "title"
+msgid "Something went wrong"
+msgstr "Nekaj je šlo narobe"
+
+msgctxt "title"
 msgid "Split tunneling"
 msgstr "Razdeljeno tuneliranje"
 
@@ -1861,16 +1845,28 @@ msgid "Start app minimized"
 msgstr "Zaženi aplikacijo pomanjšano"
 
 msgctxt "title"
-msgid "Tor"
-msgstr "Tor"
+msgid "Thanks for your feedback"
+msgstr "Hvala za vaše povratne informacije."
 
 msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "Dvojno preverjanje pristnosti"
 
 msgctxt "title"
+msgid "Unable to find server"
+msgstr "Ni mogoče najti strežnika"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "Posodobi sistemsko uro"
+
+msgctxt "title"
 msgid "VPN Accelerator"
 msgstr "VPN pospeševalnik"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "Napaka povezave VPN"
 
 msgctxt "tooltip"
 msgid "Close"

@@ -48,6 +48,10 @@ msgid "Done"
 msgstr "完成"
 
 msgctxt "button"
+msgid "Hide"
+msgstr "隐藏"
+
+msgctxt "button"
 msgid "Learn more"
 msgstr "了解详情"
 
@@ -60,12 +64,28 @@ msgid "Need Help?"
 msgstr "需要帮助？"
 
 msgctxt "button"
+msgid "OK"
+msgstr "好的"
+
+msgctxt "button"
 msgid "Send error logs"
 msgstr "发送错误日志"
 
 msgctxt "button"
+msgid "Share anonymously"
+msgstr "匿名分享"
+
+msgctxt "button"
+msgid "Show"
+msgstr "显示"
+
+msgctxt "button"
 msgid "Sign in"
 msgstr "登录"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "重新登录"
 
 msgctxt "button"
 msgid "Start"
@@ -100,6 +120,10 @@ msgid "_Enable"
 msgstr "启用(_E)"
 
 msgctxt "button"
+msgid "_No"
+msgstr "否(_N)"
+
+msgctxt "button"
 msgid "_Select"
 msgstr "选择(_S)"
 
@@ -110,6 +134,14 @@ msgstr "提交(_S)"
 msgctxt "button"
 msgid "_Yes"
 msgstr "是(_Y)"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "显示应用程序版本"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "启动时最小化到系统托盘"
 
 msgctxt "country"
 msgid "Afghanistan"
@@ -1141,6 +1173,30 @@ msgstr "无效用户名！"
 
 msgctxt "error"
 msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"看起来您的系统时钟不同步。\n"
+"这可能会导致连接 VPN 时出现问题。\n"
+"请更新您的系统时间并尝试重新连接。"
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr "无法连接到我们的服务器。请检查您的互联网连接。"
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN 无法连接至 VPN，并已阻止访问互联网以保护您的 IP。\n"
+"\n"
+"点击“取消连接”以恢复您的互联网连接。如果问题仍然存在，请尝试登出并重新登录。"
+
+msgctxt "error"
+msgid ""
 "Proton services could not be reached.\n"
 "Please try again."
 msgstr ""
@@ -1154,6 +1210,10 @@ msgstr "已达到会话限制"
 msgctxt "error"
 msgid "Something went wrong. Please try submitting your report at:\n"
 msgstr "出错了，请尝试在以下位置提交报告：\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "您的设备上空间不足。"
 
 msgctxt "error"
 msgid "Timeout"
@@ -1192,10 +1252,32 @@ msgid "Unable to sign out, please ensure you have internet access."
 msgstr "无法登出，请确保您已连接互联网。"
 
 msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "抱歉，发生意外错误。请重试。"
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"您已连接至 VPN，但所有流量都已被阻止。\n"
+"您需要前往安全防护提供的身份验证页面，并使用您的硬件密钥进行身份验证。\n"
+"在此之后，流量将被启用。"
+
+msgctxt "error"
 msgid ""
 "You've reached your maximum device limit. To reconnect to VPN, please "
 "disconnect from another device."
 msgstr "您已达到设备数量上限。要重新连接 VPN，请先断开其他设备。"
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 代表不推荐"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 代表非常推荐"
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1208,6 +1290,10 @@ msgstr "活动端口："
 msgctxt "label"
 msgid "Add new server"
 msgstr "添加新服务器"
+
+msgctxt "label"
+msgid "Advanced"
+msgstr "高级"
 
 msgctxt "label"
 msgid "All countries ({count})"
@@ -1254,8 +1340,16 @@ msgid "Off"
 msgstr "关闭"
 
 msgctxt "label"
+msgid "Optional"
+msgstr "选填"
+
+msgctxt "label"
 msgid "PIN code"
 msgstr "PIN 码"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "请告诉我们您为何给予这样的评价"
 
 msgctxt "label"
 msgid "Proton VPN Linux Client"
@@ -1270,16 +1364,16 @@ msgid "Server load"
 msgstr "服务器负载"
 
 msgctxt "label"
+msgid "Standard"
+msgstr "常规"
+
+msgctxt "label"
 msgid "Use Proton protocols"
 msgstr "使用 Proton 协议"
 
 msgctxt "label"
 msgid "Username"
 msgstr "用户名"
-
-msgctxt "label"
-msgid "VPN Plus"
-msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1334,6 +1428,10 @@ msgstr "活动端口为 {new_port}"
 msgctxt "message"
 msgid "Allow selected apps to connect without VPN protection."
 msgstr "允许选中的应用在无 VPN 保护的情况下连接。"
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr "如果 VPN 连接丢失，会自动断开与互联网的连接。"
 
 msgctxt "message"
 msgid ""
@@ -1447,6 +1545,10 @@ msgid "It was not possible to enable Beta access.\n"
 msgstr "无法启用测试版功能！\n"
 
 msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr "仅当 VPN 断开连接时，才能更改终止开关。"
+
+msgctxt "message"
 msgid "Kill switch is blocking any outgoing connections."
 msgstr "终止开关正在阻止所有传出连接！"
 
@@ -1457,8 +1559,18 @@ msgid ""
 msgstr "VPN 激活时终止开关选择已禁用，请断开连接以进行更改。"
 
 msgctxt "message"
+msgid "Loading app..."
+msgstr "正在加载应用..."
+
+msgctxt "message"
 msgid "Multiple security keys were found. Tap one to select it."
 msgstr "检测到多个安全密钥，请点击其中一个以进行选择。"
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr "仅允许在连接到 Proton VPN 时访问互联网。即使重启设备，高级终止开关仍将保持启用状态。"
 
 msgctxt "message"
 msgid ""
@@ -1483,6 +1595,12 @@ msgstr "请建立新的 VPN 连接以使更改生效。"
 msgctxt "message"
 msgid "Protect yourself from ads, malware, and trackers on websites and apps."
 msgstr "保护您免受网站和应用中的广告、恶意软件及跟踪器的侵扰。"
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr "如果 VPN 连接中断，通过断开互联网连接来保护您的 IP 地址。{learn_more}"
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1572,12 +1690,24 @@ msgid ""
 msgstr "这项技术让 Proton VPN 在难以服务的地域更快更安全。"
 
 msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "这将自动将您的协议设置为 WireGuard。"
+
+msgctxt "message"
 msgid "This will disable NetShield."
 msgstr "这将禁用 NetShield！"
 
 msgctxt "message"
 msgid "This will disable custom DNS."
 msgstr "这将禁用自定义 DNS。"
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "此操作将禁用终止开关！"
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "这将禁用拆分隧道。"
 
 msgctxt "message"
 msgid ""
@@ -1599,8 +1729,16 @@ msgstr ""
 "Fastest 以实现快速连接。默认值：关闭。"
 
 msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "您的反馈有助于我们改进 Proton VPN。"
+
+msgctxt "message"
 msgid "Your issue has been reported"
 msgstr "您的问题已报告"
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "您的会话已过期。请重新登录。"
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1633,6 +1771,10 @@ msgstr "受到保护"
 msgctxt "status"
 msgid "Unprotected"
 msgstr "未受保护"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "需要双重验证"
 
 msgctxt "title"
 msgid "About"
@@ -1691,6 +1833,10 @@ msgid "Custom DNS servers"
 msgstr "自定义 DNS 服务器"
 
 msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "停用 WireGuard？"
+
+msgctxt "title"
 msgid "Enable Custom DNS"
 msgstr "启用自定义 DNS"
 
@@ -1705,6 +1851,14 @@ msgstr "启用 NetShield"
 msgctxt "title"
 msgid "Enable Netshield ?"
 msgstr "启用 NetShield？"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "启用终止开关？"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "启用拆分隧道？"
 
 msgctxt "title"
 msgid "Exclude mode"
@@ -1727,8 +1881,16 @@ msgid "General"
 msgstr "常规​​​​​"
 
 msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "您向朋友推荐 Proton VPN 的可能性有多大？"
+
+msgctxt "title"
 msgid "Include mode"
 msgstr "包含模式"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "无效会话"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -1739,6 +1901,10 @@ msgid "Kill Switch enabled"
 msgstr "终止开关已启用"
 
 msgctxt "title"
+msgid "Kill switch"
+msgstr "终止开关"
+
+msgctxt "title"
 msgid "Locations"
 msgstr "位置"
 
@@ -1747,12 +1913,8 @@ msgid "Moderate NAT"
 msgstr "中等 NAT"
 
 msgctxt "title"
-msgid "NetShield"
-msgstr "NetShield"
-
-msgctxt "title"
-msgid "P2P/BitTorrent"
-msgstr "P2P/BitTorrent"
+msgid "No space left on device"
+msgstr "设备上无可用空间"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1773,10 +1935,6 @@ msgstr "版本说明"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "报告问题"
-
-msgctxt "title"
-msgid "Secure Core"
-msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -1803,6 +1961,10 @@ msgid "Smart routing"
 msgstr "智能路由"
 
 msgctxt "title"
+msgid "Something went wrong"
+msgstr "出错了"
+
+msgctxt "title"
 msgid "Split tunneling"
 msgstr "拆分隧道"
 
@@ -1811,16 +1973,24 @@ msgid "Start app minimized"
 msgstr "启动时最小化应用"
 
 msgctxt "title"
-msgid "Tor"
-msgstr "Tor"
+msgid "Thanks for your feedback"
+msgstr "感谢您的反馈"
 
 msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "双因素身份验证 (2FA)"
 
 msgctxt "title"
-msgid "VPN Accelerator"
-msgstr "VPN Accelerator"
+msgid "Unable to find server"
+msgstr "找不到服务器"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "更新系统时钟"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "VPN 连接错误"
 
 msgctxt "tooltip"
 msgid "Close"

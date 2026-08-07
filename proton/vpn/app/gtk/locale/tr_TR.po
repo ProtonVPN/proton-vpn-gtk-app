@@ -48,6 +48,10 @@ msgid "Done"
 msgstr "Tamam"
 
 msgctxt "button"
+msgid "Hide"
+msgstr "Gizle"
+
+msgctxt "button"
 msgid "Learn more"
 msgstr "Ayrıntılı bilgi alın"
 
@@ -60,12 +64,28 @@ msgid "Need Help?"
 msgstr "Yardım gerekiyor mu?"
 
 msgctxt "button"
+msgid "OK"
+msgstr "Tamam"
+
+msgctxt "button"
 msgid "Send error logs"
 msgstr "Hata günlükleri gönderilsin"
 
 msgctxt "button"
+msgid "Share anonymously"
+msgstr "Anonim olarak paylaş"
+
+msgctxt "button"
+msgid "Show"
+msgstr "Görüntüle"
+
+msgctxt "button"
 msgid "Sign in"
 msgstr "Oturum aç"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "Yeniden oturum açın"
 
 msgctxt "button"
 msgid "Start"
@@ -100,6 +120,10 @@ msgid "_Enable"
 msgstr "_Aç"
 
 msgctxt "button"
+msgid "_No"
+msgstr "_Hayır"
+
+msgctxt "button"
 msgid "_Select"
 msgstr "_Seç"
 
@@ -110,6 +134,14 @@ msgstr "_Gönder"
 msgctxt "button"
 msgid "_Yes"
 msgstr "_Evet"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "Uygulamanın sürümünü görüntüle"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "Sistem tepsisinde küçültülmüş olarak başlat"
 
 msgctxt "country"
 msgid "Afghanistan"
@@ -132,18 +164,6 @@ msgid "American Samoa"
 msgstr "Amerikan Samoası"
 
 msgctxt "country"
-msgid "Andorra"
-msgstr "Andorra"
-
-msgctxt "country"
-msgid "Angola"
-msgstr "Angola"
-
-msgctxt "country"
-msgid "Anguilla"
-msgstr "Anguilla"
-
-msgctxt "country"
 msgid "Antarctica"
 msgstr "Antarktika"
 
@@ -158,10 +178,6 @@ msgstr "Arjantin"
 msgctxt "country"
 msgid "Armenia"
 msgstr "Ermenistan"
-
-msgctxt "country"
-msgid "Aruba"
-msgstr "Aruba"
 
 msgctxt "country"
 msgid "Australia"
@@ -188,28 +204,8 @@ msgid "Bangladesh"
 msgstr "Bangladeş"
 
 msgctxt "country"
-msgid "Barbados"
-msgstr "Barbados"
-
-msgctxt "country"
-msgid "Belarus"
-msgstr "Belarus"
-
-msgctxt "country"
 msgid "Belgium"
 msgstr "Belçika"
-
-msgctxt "country"
-msgid "Belize"
-msgstr "Belize"
-
-msgctxt "country"
-msgid "Benin"
-msgstr "Benin"
-
-msgctxt "country"
-msgid "Bermuda"
-msgstr "Bermuda"
 
 msgctxt "country"
 msgid "Bhutan"
@@ -248,20 +244,8 @@ msgid "British Virgin Islands"
 msgstr "Britanya Virjin Adaları"
 
 msgctxt "country"
-msgid "Brunei"
-msgstr "Brunei"
-
-msgctxt "country"
 msgid "Bulgaria"
 msgstr "Bulgaristan"
-
-msgctxt "country"
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-
-msgctxt "country"
-msgid "Burundi"
-msgstr "Burundi"
 
 msgctxt "country"
 msgid "Cambodia"
@@ -376,10 +360,6 @@ msgid "Egypt"
 msgstr "Mısır"
 
 msgctxt "country"
-msgid "El Salvador"
-msgstr "El Salvador"
-
-msgctxt "country"
 msgid "Equatorial Guinea"
 msgstr "Ekvator Ginesi"
 
@@ -404,10 +384,6 @@ msgid "Faroe Islands"
 msgstr "Faroe Adaları"
 
 msgctxt "country"
-msgid "Fiji"
-msgstr "Fiji"
-
-msgctxt "country"
 msgid "Finland"
 msgstr "Finlandiya"
 
@@ -426,10 +402,6 @@ msgstr "Fransız Polinezyası"
 msgctxt "country"
 msgid "French Southern Territories"
 msgstr "Fransız Güney Toprakları"
-
-msgctxt "country"
-msgid "Gabon"
-msgstr "Gabon"
 
 msgctxt "country"
 msgid "Gambia"
@@ -460,26 +432,6 @@ msgid "Greenland"
 msgstr "Grönland"
 
 msgctxt "country"
-msgid "Grenada"
-msgstr "Grenada"
-
-msgctxt "country"
-msgid "Guadeloupe"
-msgstr "Guadeloupe"
-
-msgctxt "country"
-msgid "Guam"
-msgstr "Guam"
-
-msgctxt "country"
-msgid "Guatemala"
-msgstr "Guatemala"
-
-msgctxt "country"
-msgid "Guernsey"
-msgstr "Guernsey"
-
-msgctxt "country"
 msgid "Guinea"
 msgstr "Gine"
 
@@ -488,24 +440,8 @@ msgid "Guinea-Bissau"
 msgstr "Gine-Bissau"
 
 msgctxt "country"
-msgid "Guyana"
-msgstr "Guyana"
-
-msgctxt "country"
-msgid "Haiti"
-msgstr "Haiti"
-
-msgctxt "country"
 msgid "Heard Island and McDonald Islands"
 msgstr "Heard Adası ve McDonald Adaları"
-
-msgctxt "country"
-msgid "Honduras"
-msgstr "Honduras"
-
-msgctxt "country"
-msgid "Hong Kong"
-msgstr "Hong Kong"
 
 msgctxt "country"
 msgid "Hungary"
@@ -560,24 +496,12 @@ msgid "Japan"
 msgstr "Japonya"
 
 msgctxt "country"
-msgid "Jersey"
-msgstr "Jersey"
-
-msgctxt "country"
 msgid "Jordan"
 msgstr "Ürdün"
 
 msgctxt "country"
 msgid "Kazakhstan"
 msgstr "Kazakistan"
-
-msgctxt "country"
-msgid "Kenya"
-msgstr "Kenya"
-
-msgctxt "country"
-msgid "Kiribati"
-msgstr "Kiribati"
 
 msgctxt "country"
 msgid "Kosovo"
@@ -590,10 +514,6 @@ msgstr "Kuveyt"
 msgctxt "country"
 msgid "Kyrgyzstan"
 msgstr "Kırgızistan"
-
-msgctxt "country"
-msgid "Laos"
-msgstr "Laos"
 
 msgctxt "country"
 msgid "Latvia"
@@ -610,10 +530,6 @@ msgstr "Lesoto Krallığı"
 msgctxt "country"
 msgid "Liberia"
 msgstr "Liberya"
-
-msgctxt "country"
-msgid "Libya"
-msgstr "Libya"
 
 msgctxt "country"
 msgid "Liechtenstein"
@@ -652,14 +568,6 @@ msgid "Maldives"
 msgstr "Maldivler"
 
 msgctxt "country"
-msgid "Mali"
-msgstr "Mali"
-
-msgctxt "country"
-msgid "Malta"
-msgstr "Malta"
-
-msgctxt "country"
 msgid "Marshall Islands"
 msgstr "Marshall Adaları"
 
@@ -672,24 +580,12 @@ msgid "Mauritania"
 msgstr "Moritanya"
 
 msgctxt "country"
-msgid "Mauritius"
-msgstr "Mauritius"
-
-msgctxt "country"
-msgid "Mayotte"
-msgstr "Mayotte"
-
-msgctxt "country"
 msgid "Mexico"
 msgstr "Meksika"
 
 msgctxt "country"
 msgid "Micronesia"
 msgstr "Mikronezya"
-
-msgctxt "country"
-msgid "Moldova"
-msgstr "Moldova"
 
 msgctxt "country"
 msgid "Monaco"
@@ -716,20 +612,8 @@ msgid "Mozambique"
 msgstr "Mozambik"
 
 msgctxt "country"
-msgid "Myanmar"
-msgstr "Myanmar"
-
-msgctxt "country"
 msgid "Namibia"
 msgstr "Namibya"
-
-msgctxt "country"
-msgid "Nauru"
-msgstr "Nauru"
-
-msgctxt "country"
-msgid "Nepal"
-msgstr "Nepal"
 
 msgctxt "country"
 msgid "Netherlands"
@@ -756,10 +640,6 @@ msgid "Nigeria"
 msgstr "Nijerya"
 
 msgctxt "country"
-msgid "Niue"
-msgstr "Niue"
-
-msgctxt "country"
 msgid "Norfolk Island"
 msgstr "Norfolk Adası"
 
@@ -780,40 +660,16 @@ msgid "Oman"
 msgstr "Umman"
 
 msgctxt "country"
-msgid "Pakistan"
-msgstr "Pakistan"
-
-msgctxt "country"
-msgid "Palau"
-msgstr "Palau"
-
-msgctxt "country"
 msgid "Palestinian Territory"
 msgstr "Filistin Toprakları"
-
-msgctxt "country"
-msgid "Panama"
-msgstr "Panama"
 
 msgctxt "country"
 msgid "Papua New Guinea"
 msgstr "Papua Yeni Gine"
 
 msgctxt "country"
-msgid "Paraguay"
-msgstr "Paraguay"
-
-msgctxt "country"
-msgid "Peru"
-msgstr "Peru"
-
-msgctxt "country"
 msgid "Philippines"
 msgstr "Filipinler"
-
-msgctxt "country"
-msgid "Pitcairn"
-msgstr "Pitcairn"
 
 msgctxt "country"
 msgid "Poland"
@@ -856,20 +712,8 @@ msgid "Saint Barthelemy"
 msgstr "Saint Barthélemy"
 
 msgctxt "country"
-msgid "Saint Helena"
-msgstr "Saint Helena"
-
-msgctxt "country"
 msgid "Saint Kitts and Nevis"
 msgstr "Saint Kitts ve Nevis"
-
-msgctxt "country"
-msgid "Saint Lucia"
-msgstr "Saint Lucia"
-
-msgctxt "country"
-msgid "Saint Martin"
-msgstr "Saint Martin"
 
 msgctxt "country"
 msgid "Saint Pierre and Miquelon"
@@ -880,24 +724,12 @@ msgid "Saint Vincent and the Grenadines"
 msgstr "Saint Vincent ve Grenadinler"
 
 msgctxt "country"
-msgid "Samoa"
-msgstr "Samoa"
-
-msgctxt "country"
-msgid "San Marino"
-msgstr "San Marino"
-
-msgctxt "country"
 msgid "Sao Tome and Principe"
 msgstr "Sao Tome ve Principe"
 
 msgctxt "country"
 msgid "Saudi Arabia"
 msgstr "Suudi Arabistan"
-
-msgctxt "country"
-msgid "Senegal"
-msgstr "Senegal"
 
 msgctxt "country"
 msgid "Serbia"
@@ -908,16 +740,8 @@ msgid "Seychelles"
 msgstr "Seyşeller"
 
 msgctxt "country"
-msgid "Sierra Leone"
-msgstr "Sierra Leone"
-
-msgctxt "country"
 msgid "Singapore"
 msgstr "Singapur"
-
-msgctxt "country"
-msgid "Sint Maarten"
-msgstr "Sint Maarten"
 
 msgctxt "country"
 msgid "Slovakia"
@@ -954,14 +778,6 @@ msgstr "Güney Sudan"
 msgctxt "country"
 msgid "Spain"
 msgstr "İspanya"
-
-msgctxt "country"
-msgid "Sri Lanka"
-msgstr "Sri Lanka"
-
-msgctxt "country"
-msgid "Sudan"
-msgstr "Sudan"
 
 msgctxt "country"
 msgid "Suriname"
@@ -1004,18 +820,6 @@ msgid "Thailand"
 msgstr "Tayland"
 
 msgctxt "country"
-msgid "Togo"
-msgstr "Togo"
-
-msgctxt "country"
-msgid "Tokelau"
-msgstr "Tokelau"
-
-msgctxt "country"
-msgid "Tonga"
-msgstr "Tonga"
-
-msgctxt "country"
 msgid "Trinidad and Tobago"
 msgstr "Trinidad ve Tobago"
 
@@ -1036,16 +840,8 @@ msgid "Turks and Caicos Islands"
 msgstr "Turks ve Caicos Adaları"
 
 msgctxt "country"
-msgid "Tuvalu"
-msgstr "Tuvalu"
-
-msgctxt "country"
 msgid "U.S. Virgin Islands"
 msgstr "Birleşik Devletler Virgin Adaları"
-
-msgctxt "country"
-msgid "Uganda"
-msgstr "Uganda"
 
 msgctxt "country"
 msgid "Ukraine"
@@ -1068,28 +864,12 @@ msgid "United States Minor Outlying Islands"
 msgstr "Birleşik Devletler Küçük Dış Adaları"
 
 msgctxt "country"
-msgid "Uruguay"
-msgstr "Uruguay"
-
-msgctxt "country"
 msgid "Uzbekistan"
 msgstr "Özbekistan"
 
 msgctxt "country"
-msgid "Vanuatu"
-msgstr "Vanuatu"
-
-msgctxt "country"
 msgid "Vatican"
 msgstr "Vatikan"
-
-msgctxt "country"
-msgid "Venezuela"
-msgstr "Venezuela"
-
-msgctxt "country"
-msgid "Vietnam"
-msgstr "Vietnam"
 
 msgctxt "country"
 msgid "Wallis and Futuna"
@@ -1098,10 +878,6 @@ msgstr "Wallis ve Futuna"
 msgctxt "country"
 msgid "Western Sahara"
 msgstr "Batı Sahra"
-
-msgctxt "country"
-msgid "Yemen"
-msgstr "Yemen"
 
 msgctxt "country"
 msgid "Zambia"
@@ -1141,6 +917,30 @@ msgstr "Kullanıcı adı geçersiz."
 
 msgctxt "error"
 msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"Sistem saatiniz eşitlenmemiş gibi görünüyor.\n"
+"Bu durum, VPN bağlantısı kurarken sorun çıkarabilir.\n"
+"Sistem saatinizi güncelleyin ve yeniden bağlanmayı deneyin."
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr "Sunucularımıza erişilemiyor. Lütfen internet bağlantınızı denetleyin."
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN, VPN bağlantısı kuramadı ve IP adresinizi korumak için internet erişimini engelledi.\n"
+"\n"
+"İnternet bağlantınızı açmak için \"Bağlantıyı iptal et\" üzerine tıklayın. Sorun sürerse lütfen oturumunuzu kapatıp yeniden oturum açmayı deneyin."
+
+msgctxt "error"
+msgid ""
 "Proton services could not be reached.\n"
 "Please try again."
 msgstr ""
@@ -1154,6 +954,10 @@ msgstr "Oturum sayısı sınırına ulaşıldı"
 msgctxt "error"
 msgid "Something went wrong. Please try submitting your report at:\n"
 msgstr "Bir sorun çıktı. Lütfen bildiriminizi şuraya göndermeyi deneyin:\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "Aygıtınızda yeterli alan kalmadı."
 
 msgctxt "error"
 msgid "Timeout"
@@ -1198,12 +1002,36 @@ msgid "Unable to sign out, please ensure you have internet access."
 msgstr "Oturumu kapatılamadı. Lütfen internet bağlantınızı denetleyin."
 
 msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "Ne yazık ki, beklenmeyen bir sorun çıktı. Lütfen yeniden deneyin."
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"VPN bağlantınız var, ancak tüm trafik engelleniyor.\n"
+"\n"
+"Güvenlik tarafından sağlanan kimlik doğrulama sayfasına gitmeniz ve donanım anahtarınızla kimlik doğrulaması yapmanız gerekir.\n"
+"\n"
+"Bundan sonra trafik akışı açılacak."
+
+msgctxt "error"
 msgid ""
 "You've reached your maximum device limit. To reconnect to VPN, please "
 "disconnect from another device."
 msgstr ""
 "En fazla aygıt sayısı sınırınıza ulaştınız. Yeniden VPN bağlantısı kurmak "
 "için lütfen başka bir aygıtın bağlantısını kesin."
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 hiç önermem"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 çok öneririm"
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1218,16 +1046,16 @@ msgid "Add new server"
 msgstr "Yeni sunucu ekle"
 
 msgctxt "label"
+msgid "Advanced"
+msgstr "Gelişmiş"
+
+msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Tüm ülkeler ({count})"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "Ücretsiz konumlardan otomatik olarak seçildi"
-
-msgctxt "label"
-msgid "BETA"
-msgstr "BETA"
 
 msgctxt "label"
 msgid "Block Malware"
@@ -1262,8 +1090,16 @@ msgid "Off"
 msgstr "Kapalı"
 
 msgctxt "label"
+msgid "Optional"
+msgstr "İsteğe bağlı"
+
+msgctxt "label"
 msgid "PIN code"
 msgstr "PIN kodu"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "Lütfen neden bu puanı verdiğinizi bize anlatın"
 
 msgctxt "label"
 msgid "Proton VPN Linux Client"
@@ -1278,16 +1114,16 @@ msgid "Server load"
 msgstr "Sunucu yükü"
 
 msgctxt "label"
+msgid "Standard"
+msgstr "Standart"
+
+msgctxt "label"
 msgid "Use Proton protocols"
 msgstr "Proton iletişim kuralları kullanılsın"
 
 msgctxt "label"
 msgid "Username"
 msgstr "Kullanıcı adı"
-
-msgctxt "label"
-msgid "VPN Plus"
-msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1346,6 +1182,10 @@ msgctxt "message"
 msgid "Allow selected apps to connect without VPN protection."
 msgstr ""
 "Seçilmiş uygulamaların VPN koruması olmadan bağlantı kurmasını sağlayın."
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr "VPN bağlantısı kesilirse internet bağlantısını otomatik olarak keser."
 
 msgctxt "message"
 msgid ""
@@ -1476,6 +1316,11 @@ msgid "It was not possible to enable Beta access.\n"
 msgstr "Beta erişimi açılamadı.\n"
 
 msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr ""
+"Bağlantı kesici yalnızca VPN bağlantısı kesildiğinde değiştirilebilir."
+
+msgctxt "message"
 msgid "Kill switch is blocking any outgoing connections."
 msgstr "Bağlantı kesici özelliği dışarı giden tüm bağlantıları engelliyor."
 
@@ -1488,8 +1333,21 @@ msgstr ""
 "bağlantıyı kesin."
 
 msgctxt "message"
+msgid "Loading app..."
+msgstr "Uygulama yükleniyor..."
+
+msgctxt "message"
 msgid "Multiple security keys were found. Tap one to select it."
 msgstr "Birden fazla güvenlik anahtarı bulundu. Seçmek için birine dokunun."
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"Yalnızca Proton VPN bağlantısı kurulduğunda internet erişimine izin verilir."
+" Gelişmiş bağlantı kesici özelliği, aygıtınızı yeniden başlattığınızda bile "
+"etkin kalır."
 
 msgctxt "message"
 msgid ""
@@ -1519,6 +1377,14 @@ msgid "Protect yourself from ads, malware, and trackers on websites and apps."
 msgstr ""
 "Kendinizi siteler ve uygulamalardaki reklamlardan, kötü amaçlı yazılımlardan"
 " ve izleyicilerden koruyun."
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"VPN bağlantınız kesilirse internet bağlantınızı keserek IP adresinizin açığa"
+" çıkmasını engeller. {learn_more}"
 
 msgctxt "message"
 msgid "Protocol can only be changed when VPN is disconnected."
@@ -1596,6 +1462,14 @@ msgid "Signing out..."
 msgstr "Oturum kapatılıyor..."
 
 msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"Gerekli bazı bileşenler sisteminizde bulunamadı. Uygulama beklendiği gibi "
+"çalışmayabilir."
+
+msgctxt "message"
 msgid "Split tunneling enabled. Remember to restart affected apps."
 msgstr ""
 "Ayrılmış tünelleme özelliği açıldı. Etkilenen uygulamaları yeniden "
@@ -1616,12 +1490,24 @@ msgstr ""
 "güvenlik sağlar."
 
 msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "Bu işlem, iletişim kuralınızı otomatik olarak WireGuard yapacak."
+
+msgctxt "message"
 msgid "This will disable NetShield."
 msgstr "Bu işlem, NetShield özelliğini kapatacak."
 
 msgctxt "message"
 msgid "This will disable custom DNS."
 msgstr "Bu işlem özel DNS kullanımını kapatır."
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "Bu işlem bağlantı kesiciyi kapatacak."
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "Bu işlem ayrılmış tünellemeyi kapatır."
 
 msgctxt "message"
 msgid ""
@@ -1647,8 +1533,22 @@ msgstr ""
 "değiştirin. Varsayılan değer: Kapalı."
 
 msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr ""
+"Geri bildiriminiz Proton VPN uygulamasını geliştirmemize yardımcı olur."
+
+msgctxt "message"
 msgid "Your issue has been reported"
 msgstr "Sorununuz bildirildi"
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "Oturumunuzun geçerlilik süresi dolmuş. Lütfen yeniden oturum açın."
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr ""
+"Gereksinimler ve alternatif kurulum yöntemleri ile ilgili {learn_more}."
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1681,6 +1581,10 @@ msgstr "Korunuyor"
 msgctxt "status"
 msgid "Unprotected"
 msgstr "Korunmuyor"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "İki adımlı doğrulama gerekli"
 
 msgctxt "title"
 msgid "About"
@@ -1739,6 +1643,10 @@ msgid "Custom DNS servers"
 msgstr "Özel DNS sunucuları"
 
 msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "WireGuard etkisizleştirilsin mi?"
+
+msgctxt "title"
 msgid "Enable Custom DNS"
 msgstr "Özel DNS kullanılsın"
 
@@ -1753,6 +1661,14 @@ msgstr "Netshield özelliğini aç"
 msgctxt "title"
 msgid "Enable Netshield ?"
 msgstr "NetShield açılsın mı?"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "Bağlantı kesici açılsın mı?"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "Ayrılmış tünelleme açılsın mı?"
 
 msgctxt "title"
 msgid "Exclude mode"
@@ -1775,8 +1691,16 @@ msgid "General"
 msgstr "Genel"
 
 msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "Proton VPN hizmetini bir arkadaşınıza önerme olasılığınız nedir?"
+
+msgctxt "title"
 msgid "Include mode"
 msgstr "Katma kipi"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "Oturum geçersiz"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -1787,6 +1711,10 @@ msgid "Kill Switch enabled"
 msgstr "Bağlantı kesici açık"
 
 msgctxt "title"
+msgid "Kill switch"
+msgstr "Bağlantı kesici"
+
+msgctxt "title"
 msgid "Locations"
 msgstr "Konumlar"
 
@@ -1795,12 +1723,8 @@ msgid "Moderate NAT"
 msgstr "Ilımlı NAT"
 
 msgctxt "title"
-msgid "NetShield"
-msgstr "NetShield"
-
-msgctxt "title"
-msgid "P2P/BitTorrent"
-msgstr "P2P/BitTorrent"
+msgid "No space left on device"
+msgstr "Aygıt üzerinde boş alan kalmadı"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1821,10 +1745,6 @@ msgstr "Sürüm notları"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "Sorun bildireceğim"
-
-msgctxt "title"
-msgid "Secure Core"
-msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -1851,6 +1771,10 @@ msgid "Smart routing"
 msgstr "Akıllı yönlendirme"
 
 msgctxt "title"
+msgid "Something went wrong"
+msgstr "Bir sorun çıktı"
+
+msgctxt "title"
 msgid "Split tunneling"
 msgstr "Ayrılmış tünelleme"
 
@@ -1859,16 +1783,24 @@ msgid "Start app minimized"
 msgstr "Uygulama simge durumuna küçültülmüş olarak başlatılsın"
 
 msgctxt "title"
-msgid "Tor"
-msgstr "Tor"
+msgid "Thanks for your feedback"
+msgstr "Geri bildiriminiz için teşekkürler"
 
 msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "İki adımlı doğrulama"
 
 msgctxt "title"
-msgid "VPN Accelerator"
-msgstr "VPN Accelerator"
+msgid "Unable to find server"
+msgstr "Sunucu bulunamadı"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "Sistem saatini güncelle"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "VPN bağlantı sorunu"
 
 msgctxt "tooltip"
 msgid "Close"

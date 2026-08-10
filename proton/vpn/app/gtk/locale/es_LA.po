@@ -840,8 +840,7 @@ msgstr ""
 msgctxt "error"
 msgid "Our servers are not reachable. Please check your internet connection."
 msgstr ""
-"No se puede acceder a nuestros servidores. Por favor, verifique su conexión "
-"a internet."
+"No se puede acceder a nuestros servidores. Verifique su conexión a internet."
 
 msgctxt "error"
 msgid ""
@@ -851,7 +850,7 @@ msgid ""
 msgstr ""
 "Proton VPN no pudo conectarse a la VPN y bloqueó el acceso a internet para proteger su IP.\n"
 "\n"
-"Haga clic en \"Cancelar conexión\" para restaurar su conexión a internet. Si el problema persiste, intente cerrar sesión y volver a iniciarla."
+"Haga clic en «Cancelar conexión» para restaurar su conexión a internet. Si el problema persiste, intente cerrar sesión y volver a iniciarla."
 
 msgctxt "error"
 msgid ""
@@ -919,7 +918,7 @@ msgstr "No se puede cerrar la sesión, asegúrese de tener conexión a internet.
 
 msgctxt "error"
 msgid "We're sorry, an unexpected error occurred. Please try again."
-msgstr "Lo sentimos, ocurrió un error inesperado. Inténtelo de nuevo."
+msgstr "Ocurrió un error inesperado. Intente de nuevo."
 
 msgctxt "error"
 msgid ""
@@ -1374,6 +1373,14 @@ msgid "Signing out..."
 msgstr "Cerrando sesión..."
 
 msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"No se detectaron algunos componentes necesarios en su sistema. Es posible "
+"que la aplicación no funcione como se espera."
+
+msgctxt "message"
 msgid "Split tunneling enabled. Remember to restart affected apps."
 msgstr "Túnel dividido activado. Recuerde reiniciar para que surta efecto."
 
@@ -1447,6 +1454,11 @@ msgstr "Su problema fue reportado"
 msgctxt "message"
 msgid "Your session has expired. Please sign in again."
 msgstr "La sesión ha expirado. Inicie sesión de nuevo."
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr ""
+"{learn_more} sobre los requisitos y los métodos de instalación alternativos."
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1594,7 +1606,7 @@ msgstr "Modo de inclusión"
 
 msgctxt "title"
 msgid "Invalid Session"
-msgstr "Sesión no válida"
+msgstr "Sesión inválida"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"

@@ -137,7 +137,7 @@ msgstr "Показать версию приложения"
 
 msgctxt "cli"
 msgid "Start minimized in the system tray"
-msgstr "Запускать в свернутом виде в системном трее"
+msgstr "Запускать свёрнутым в области уведомлений"
 
 msgctxt "country"
 msgid "Afghanistan"
@@ -249,7 +249,7 @@ msgstr "Боливия"
 
 msgctxt "country"
 msgid "Bonaire, Saint Eustatius and Saba "
-msgstr "Бонэйр, Синт-Эстатиус и Саба "
+msgstr "Бонайре, Синт-Эстатиус и Саба "
 
 msgctxt "country"
 msgid "Bosnia and Herzegovina"
@@ -309,7 +309,7 @@ msgstr "Кабо-Верде"
 
 msgctxt "country"
 msgid "Cayman Islands"
-msgstr "Острова Кайман"
+msgstr "Каймановы Острова"
 
 msgctxt "country"
 msgid "Central African Republic"
@@ -341,7 +341,7 @@ msgstr "Колумбия"
 
 msgctxt "country"
 msgid "Comoros"
-msgstr "Коморские острова"
+msgstr "Коморские Острова"
 
 msgctxt "country"
 msgid "Cook Islands"
@@ -617,7 +617,7 @@ msgstr "Кувейт"
 
 msgctxt "country"
 msgid "Kyrgyzstan"
-msgstr "Киргизия"
+msgstr "Кыргызстан"
 
 msgctxt "country"
 msgid "Laos"
@@ -817,7 +817,7 @@ msgstr "Палау"
 
 msgctxt "country"
 msgid "Palestinian Territory"
-msgstr "Палестинская территория"
+msgstr "Палестинские территории"
 
 msgctxt "country"
 msgid "Panama"
@@ -933,7 +933,7 @@ msgstr "Сербия"
 
 msgctxt "country"
 msgid "Seychelles"
-msgstr "Сейшелы"
+msgstr "Сейшельские Острова"
 
 msgctxt "country"
 msgid "Sierra Leone"
@@ -965,7 +965,7 @@ msgstr "Сомали"
 
 msgctxt "country"
 msgid "South Africa"
-msgstr "ЮАР"
+msgstr "Южная Африка"
 
 msgctxt "country"
 msgid "South Georgia and the South Sandwich Islands"
@@ -1281,11 +1281,11 @@ msgstr ""
 
 msgctxt "label"
 msgid "0 is very unlikely"
-msgstr "0 очень маловероятно"
+msgstr "0 крайне маловероятно"
 
 msgctxt "label"
 msgid "10 is very likely"
-msgstr "10 довольно вероятно"
+msgstr "10 очень вероятно"
 
 msgctxt "label"
 msgid "6-digit authentication code"
@@ -1570,7 +1570,7 @@ msgstr "Не удалось включить бета-доступ.\n"
 
 msgctxt "message"
 msgid "Kill switch can only be changed when VPN is disconnected."
-msgstr "Kill switch можно изменить только при отключенном VPN."
+msgstr "Kill switch можно изменить только при отключённом VPN."
 
 msgctxt "message"
 msgid "Kill switch is blocking any outgoing connections."
@@ -2033,7 +2033,7 @@ msgstr "Не удалось найти сервер"
 
 msgctxt "title"
 msgid "Update system clock"
-msgstr "Обновить системные часы"
+msgstr "Обновить системное время"
 
 msgctxt "title"
 msgid "VPN connection error"

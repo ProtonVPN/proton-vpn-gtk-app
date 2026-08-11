@@ -1,3 +1,10 @@
+version: 4.17.3rc5
+time: 2026/08/11 07:37
+author: Axel Langenskiold
+email: axel.langenskiold@proton.ch
+description:
+- "chore: Add logging of resolved language and locale."
+---
 version: 4.17.3rc4
 time: 2026/08/10 05:03
 author: L10n bot

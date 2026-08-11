@@ -20,11 +20,16 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 import functools
 import gettext
+
 import os
 from pathlib import Path
 from typing import Optional
 
+from proton.vpn import logging
+
 from proton.vpn.session.feature_flags_fetcher import FeatureFlags, FeatureFlagsFetcher
+
+logger = logging.getLogger(__name__)
 
 DOMAIN = "proton-vpn-gtk-app"
 LOCALE_DIR = os.path.join(os.path.dirname(__file__), "locale", "binaries")
@@ -36,9 +41,12 @@ def _resolve_language(languages, domain, localedir) -> Optional[str]:
     `languages`, e.g. "fr_FR".
     """
     mo_path = gettext.find(domain, localedir, languages=languages)
-    if mo_path is None:
-        return None
-    return Path(mo_path).parent.parent.name
+    catalog = Path(mo_path).parent.parent.name if mo_path else None
+    # gettext reads the first of these that is set and non-empty, in this order.
+    env = {var: os.environ[var] for var in ("LANGUAGE", "LC_ALL", "LC_MESSAGES", "LANG")
+           if os.environ.get(var)}
+    logger.info("Using catalog %s for %s.", catalog, languages if languages is not None else env)
+    return catalog
 
 
 @functools.cache
@@ -55,7 +63,9 @@ def _localization_enabled(feature_flags: FeatureFlags, language: Optional[str]) 
     :param feature_flags: the resolved feature flags.
     :param language: the active language (e.g. "fr_FR"), or None when no catalog exists.
     """
-    return not feature_flags.get(LOCALIZATION_KILL_SWITCH) and language is not None
+    enabled = not feature_flags.get(LOCALIZATION_KILL_SWITCH) and language is not None
+    logger.info("Localization enabled: %s.", enabled)
+    return enabled
 
 
 def _load(enabled: bool, locale_dir: str = LOCALE_DIR) -> gettext.NullTranslations:

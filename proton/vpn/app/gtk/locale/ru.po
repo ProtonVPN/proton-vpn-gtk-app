@@ -1357,7 +1357,7 @@ msgstr "Дайте нам знать, почему вы поставили та�
 
 msgctxt "label"
 msgid "Proton VPN Linux Client"
-msgstr "Linux-клиент Proton VPN"
+msgstr "Клиент Proton VPN для Linux"
 
 msgctxt "label"
 msgid "Recovery code"
@@ -1889,7 +1889,7 @@ msgstr "Включить пользовательскую DNS"
 
 msgctxt "title"
 msgid "Enable Custom DNS?"
-msgstr "Включить пользовательскую DNS?"
+msgstr "Включить пользовательский DNS?"
 
 msgctxt "title"
 msgid "Enable Netshield"
@@ -1961,7 +1961,7 @@ msgstr "Умеренный NAT"
 
 msgctxt "title"
 msgid "No space left on device"
-msgstr "На устройстве не осталось места"
+msgstr "На устройстве не осталось свободного места"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -2017,7 +2017,7 @@ msgstr "Раздельное туннелирование"
 
 msgctxt "title"
 msgid "Start app minimized"
-msgstr "Запускать приложение в свернутом виде"
+msgstr "Запускать приложение свёрнутым"
 
 msgctxt "title"
 msgid "Thanks for your feedback"

@@ -1,3 +1,10 @@
+version: 4.17.3rc6
+time: 2026/08/12 14:27
+author: L10n bot
+email: service_account_73c4205ebb9a547d11aa5c7b26226660@noreply.gitlab.protontech.ch
+description:
+- "i18n(weekly-mr): Upgrade translations from crowdin (4cbece7f)."
+---
 version: 4.17.3rc5
 time: 2026/08/11 07:37
 author: Axel Langenskiold

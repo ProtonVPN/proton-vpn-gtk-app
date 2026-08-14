@@ -1,44 +1,14 @@
-version: 4.17.3rc6
+version: 4.18.0
 time: 2026/08/12 14:27
-author: L10n bot
-email: service_account_73c4205ebb9a547d11aa5c7b26226660@noreply.gitlab.protontech.ch
-description:
-- "i18n(weekly-mr): Upgrade translations from crowdin (4cbece7f)."
----
-version: 4.17.3rc5
-time: 2026/08/11 07:37
 author: Axel Langenskiold
 email: axel.langenskiold@proton.ch
 description:
-- "chore: Add logging of resolved language and locale."
----
-version: 4.17.3rc4
-time: 2026/08/10 05:03
-author: L10n bot
-email: service_account_73c4205ebb9a547d11aa5c7b26226660@noreply.gitlab.protontech.ch
-description:
-- "i18n(weekly-mr): Upgrade translations from crowdin (57973777)."
----
-version: 4.17.3rc3
-time: 2026/08/07 12:39
-author: Axel Langenskiold
-email: axel.langenskiold@proton.ch
-description:
-- "feat: Add enabled-by-default Kill Switch for localization."
----
-version: 4.17.3rc2
-time: 2026/08/07 07:14
-author: L10n bot
-email: service_account_73c4205ebb9a547d11aa5c7b26226660@noreply.gitlab.protontech.ch
-description:
-- "i18n(weekly-mr): Upgrade translations from crowdin (8afcb566)."
----
-version: 4.17.3rc1
-time: 2026/08/05 11:16
-author: Elena Švilpė
-email: elena.svilpe@proton.ch
-description:
-- "feat: add startup compatibility check"
+- "i18n(weekly-mr): Upgrade translations from crowdin (4cbece7f). (L10n bot)"
+- "chore: Add logging of resolved language and locale. (Axel Langenskiold)"
+- "i18n(weekly-mr): Upgrade translations from crowdin (57973777). (L10n bot)"
+- "feat: Add enabled-by-default Kill Switch for localization. (Axel Langenskiold)"
+- "i18n(weekly-mr): Upgrade translations from crowdin (8afcb566). (L10n bot)"
+- "feat: add startup compatibility check (Elena Švilpė)"
 ---
 version: 4.17.2
 time: 2026/08/04 14:42

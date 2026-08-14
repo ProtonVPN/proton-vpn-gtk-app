@@ -1,4 +1,8 @@
-## What's new (4.17.2)
+## What's new (4.17.3)
+- Improved accessibility. The app now automatically uses a supported language that is configured in your OS.
+- Introduced a notification if dependencies are missing when the app starts.
+
+## 4.17.2
 - Minor UI improvements and bug fixes.
 
 ## 4.17.1

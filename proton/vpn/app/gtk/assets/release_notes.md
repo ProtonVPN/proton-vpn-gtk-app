@@ -1,4 +1,4 @@
-## What's new (4.17.3)
+## What's new (4.18.0)
 - Improved accessibility. The app now automatically uses a supported language that is configured in your OS.
 - Introduced a notification if dependencies are missing when the app starts.
 

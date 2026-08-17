@@ -3,6 +3,7 @@ time: 2026/08/12 14:27
 author: Axel Langenskiold
 email: axel.langenskiold@proton.ch
 description:
+- "chore: Align release notes version with versions.yml. (Axel Langenskiold)" 
 - "i18n(weekly-mr): Upgrade translations from crowdin (4cbece7f). (L10n bot)"
 - "chore: Add logging of resolved language and locale. (Axel Langenskiold)"
 - "i18n(weekly-mr): Upgrade translations from crowdin (57973777). (L10n bot)"

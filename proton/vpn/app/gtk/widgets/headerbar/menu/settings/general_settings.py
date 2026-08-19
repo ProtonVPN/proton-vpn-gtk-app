@@ -172,7 +172,7 @@ class PacketCaptureWidget(EntryWidget):
         file_row.append(self.entry)
 
         if self._on_browse_clicked is not None:
-            browse_button = Gtk.Button(label=C_("button", "Browse…"))
+            browse_button = Gtk.Button(label=C_("button", "Browse..."))
             browse_button.connect("clicked", self._on_browse_clicked)
             file_row.append(browse_button)
 

@@ -28,14 +28,14 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.session.dataclasses.servers import SecureCoreGroup
-from proton.vpn.session.servers import LogicalServer, TierEnum
+from proton.vpn.session.servers import LogicalServer
 
 from proton.vpn.app.gtk.utils.assertions import runtime_assert
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
-    make_connect_callback, sync_rows_with_model_items
+    upgrade_required_for_row, make_connect_callback, sync_rows_with_model_items
 )
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     DoubleFlagIcon,
@@ -76,7 +76,7 @@ class SecureCoreRow(Gtk.Box):
         self._expandable_row.connect_toggle()
         exit_country_name = get_localized_country_name(
             secure_core_group.servers[0].exit_country)
-        upgrade_required = user_tier == TierEnum.FREE and not secure_core_group.free
+        upgrade_required = upgrade_required_for_row(controller, user_tier, secure_core_group)
         connect_button_tooltip = (
             C_(
                 "tooltip",
@@ -155,7 +155,7 @@ class SecureCoreRow(Gtk.Box):
 
         # pylint: disable=duplicate-code
         def display_server_row(server_row: RowContent, server: LogicalServer) -> None:
-            upgrade_required = self._user_tier == TierEnum.FREE and not server.free
+            upgrade_required = upgrade_required_for_row(controller, self._user_tier, server)
             exit_country_name = get_localized_country_name(server.exit_country)
             entry_country_name = get_localized_country_name(server.entry_country)
 

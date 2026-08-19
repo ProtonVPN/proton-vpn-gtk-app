@@ -137,3 +137,55 @@ def test_display_shows_the_row_in_expanded_state_when_specified(plus_and_free_se
 
     assert location_row.expanded, "Location row should remain expanded after refresh"
     assert len(location_row.server_rows) == 2, "Servers should still be visible"
+
+
+@pytest.fixture
+def free_server():
+    api_response = {
+        "LogicalServers": [
+            {
+                "ID": 1,
+                "Name": "JP-FREE#1",
+                "Status": 1,
+                "Load": 50,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "JP",
+                "City": "Tokyo",
+                "Tier": TierEnum.FREE,
+            },
+        ]
+    }
+    return [LogicalServer(server) for server in api_response["LogicalServers"]]
+
+
+def test_free_location_is_connectable_for_free_user_when_free_rescope_flag_disabled(
+    free_server
+):
+    """Current behavior: a free-tier user can connect to a location/server that's free."""
+    location = Location(name="Tokyo", servers=free_server)
+    location_row = LocationRow()
+    mock_controller = Mock(spec=Controller)
+    mock_controller.feature_flags.get.return_value = False
+
+    location_row.display(mock_controller, location, TierEnum.FREE, expanded=True)
+    process_gtk_events()
+
+    assert location_row.row_content.label_sensitive is True
+    assert location_row.server_rows[0].label_sensitive is True
+
+
+def test_free_location_requires_upgrade_for_free_user_when_free_rescope_flag_enabled(
+    free_server
+):
+    """New behavior: only country rows are connectable for free-tier users, regardless
+    of whether the location/server is itself free."""
+    location = Location(name="Tokyo", servers=free_server)
+    location_row = LocationRow()
+    mock_controller = Mock(spec=Controller)
+    mock_controller.feature_flags.get.return_value = True
+
+    location_row.display(mock_controller, location, TierEnum.FREE, expanded=True)
+    process_gtk_events()
+
+    assert location_row.row_content.label_sensitive is False
+    assert location_row.server_rows[0].label_sensitive is False

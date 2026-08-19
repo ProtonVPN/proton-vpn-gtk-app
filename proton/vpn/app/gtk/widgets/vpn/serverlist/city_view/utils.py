@@ -20,15 +20,19 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
-from typing import Any, Callable, List, Type, TypeVar
+from typing import Any, Callable, List, Type, TypeVar, Union
 
 from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.session.servers import ServerList
+from proton.vpn.session.servers import (
+    Country, Location, LogicalServer, SecureCoreGroup, ServerList, TierEnum
+)
 
 GtkWidget = TypeVar("GtkWidget", bound=Gtk.Widget)
+
+FREE_RESCOPE_FLAG = "FreeRescope"
 
 
 def make_connect_callback(
@@ -42,6 +46,41 @@ def make_connect_callback(
         future = controller.connect_to_server(fastest.name)
         future.add_done_callback(lambda f: GLib.idle_add(f.result))
     return on_connect
+
+
+ServerListRow = Union[Country, Location, SecureCoreGroup, LogicalServer]
+
+
+def upgrade_required_when_row_not_free(
+    user_tier: TierEnum,
+    row_is_free: bool
+) -> bool:
+    """Current behavior: upgrade required only when the row itself isn't free.
+    Applies uniformly to any row — location, secure-core group, individual
+    server, or country."""
+    return user_tier == TierEnum.FREE and not row_is_free
+
+
+def upgrade_required_unless_free_country_row(user_tier: TierEnum, row: ServerListRow) -> bool:
+    """New behavior: only country rows are directly connectable for free-tier
+    users. Every location, secure-core group, or individual server requires
+    upgrade regardless of whether it's free — country rows are the sole
+    exception and keep using the standard per-row-free formula."""
+    if isinstance(row, Country):
+        return upgrade_required_when_row_not_free(user_tier, row.free)
+    return user_tier == TierEnum.FREE
+
+
+def upgrade_required_for_row(
+    controller: Controller,
+    user_tier: TierEnum,
+    row: ServerListRow
+) -> bool:
+    """Decides whether a server-list row requires upgrade for the given user
+    tier, picking the behavior based on the FreeRescope feature flag."""
+    if controller.feature_flags.get(FREE_RESCOPE_FLAG):
+        return upgrade_required_unless_free_country_row(user_tier, row)
+    return upgrade_required_when_row_not_free(user_tier, row.free)
 
 
 def sync_rows_with_model_items(

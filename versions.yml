@@ -1,3 +1,10 @@
+version: 4.18.1rc1
+time: 2026/08/19 13:57
+author: Richard Paterson
+email: richard.paterson@proton.ch
+description:
+- "feat: Only free countries are connectable for free tier users (behind feature flag)"
+---
 version: 4.18.0
 time: 2026/08/12 14:27
 author: Axel Langenskiold

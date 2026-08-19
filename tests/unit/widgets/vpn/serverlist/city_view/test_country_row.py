@@ -108,3 +108,71 @@ def test_display_shows_the_row_in_expanded_state_when_specified(free_and_plus_se
 
     assert country_row.expanded, "Country should remain expanded after refresh"
     assert all(city_row.expanded for city_row in country_row.location_rows), "All cities should be expanded"
+
+
+@pytest.fixture
+def free_server():
+    api_response = {
+        "LogicalServers": [
+            {
+                "ID": 1,
+                "Name": "JP-FREE#1",
+                "Status": 1,
+                "Load": 50,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "JP",
+                "City": "Tokyo",
+                "Tier": TierEnum.FREE,
+            },
+        ]
+    }
+    return [LogicalServer(server) for server in api_response["LogicalServers"]]
+
+
+@pytest.fixture
+def paid_server():
+    api_response = {
+        "LogicalServers": [
+            {
+                "ID": 1,
+                "Name": "JP#1",
+                "Status": 1,
+                "Load": 50,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "JP",
+                "City": "Tokyo",
+                "Tier": TierEnum.PLUS,
+            },
+        ]
+    }
+    return [LogicalServer(server) for server in api_response["LogicalServers"]]
+
+
+def test_paid_country_requires_upgrade_for_free_user(paid_server):
+    """A paid country requires upgrade for a free-tier user."""
+    country = Country(code="jp", servers=paid_server, group_by_location=True)
+    country_row = CountryRow()
+    mock_controller = Mock(spec=Controller)
+    mock_controller.feature_flags.get.return_value = False
+
+    country_row.display(mock_controller, country, TierEnum.FREE)
+    process_gtk_events()
+
+    assert country_row.row_content.label_sensitive is False
+
+
+@pytest.mark.parametrize("free_rescope_enabled", [False, True])
+def test_free_country_connectability_is_invariant_to_free_rescope_flag(
+    free_server, free_rescope_enabled
+):
+    """A free country stays connectable for a free-tier user regardless of the
+    FreeRescope flag"""
+    country = Country(code="jp", servers=free_server, group_by_location=True)
+    country_row = CountryRow()
+    mock_controller = Mock(spec=Controller)
+    mock_controller.feature_flags.get.return_value = free_rescope_enabled
+
+    country_row.display(mock_controller, country, TierEnum.FREE)
+    process_gtk_events()
+
+    assert country_row.row_content.label_sensitive is True

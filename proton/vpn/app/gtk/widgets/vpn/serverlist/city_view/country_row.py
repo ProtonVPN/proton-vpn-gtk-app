@@ -30,10 +30,11 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.location_row import LocationRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 from proton.vpn.app.gtk.utils.assertions import runtime_assert
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils \
-    import make_connect_callback, sync_rows_with_model_items
+    import make_connect_callback, sync_rows_with_model_items, upgrade_required_for_row
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.secure_core_row import SecureCoreRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
 from proton.vpn.app.gtk.utils.country import get_localized_country_name
@@ -87,7 +88,7 @@ class CountryRow(Gtk.Box):
         self._user_tier = user_tier
         self._expanded_groups = expanded_groups
         self._expandable_row.connect_toggle()
-        upgrade_required = user_tier == TierEnum.FREE and not country.free
+        upgrade_required = upgrade_required_for_row(controller, user_tier, country)
         localized_country_name = get_localized_country_name(country.code)
         self._localized_country_name = localized_country_name
 
@@ -144,6 +145,11 @@ class CountryRow(Gtk.Box):
     def country_code(self):
         """Returns this row's country code"""
         return self._country.code
+
+    @property
+    def row_content(self) -> RowContent:
+        """Returns the header row content widget."""
+        return self._expandable_row.row_content
 
     @property
     def expanded(self):

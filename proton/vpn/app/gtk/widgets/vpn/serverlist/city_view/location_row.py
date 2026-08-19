@@ -35,7 +35,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import E
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
-    make_connect_callback, sync_rows_with_model_items
+    upgrade_required_for_row, make_connect_callback, sync_rows_with_model_items
 )
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import LocationIcon
 
@@ -74,7 +74,7 @@ class LocationRow(Gtk.Box):
         self._location = location
         self._user_tier = user_tier
         self._expandable_row.connect_toggle()
-        upgrade_required = user_tier == TierEnum.FREE and not location.free
+        upgrade_required = upgrade_required_for_row(controller, user_tier, location)
 
         row_data = RowViewModel(
             name=location.name,
@@ -108,6 +108,11 @@ class LocationRow(Gtk.Box):
     def label(self) -> str:
         """Returns the location label."""
         return self._expandable_row.row_content.label
+
+    @property
+    def row_content(self) -> RowContent:
+        """Returns the header row content widget."""
+        return self._expandable_row.row_content
 
     @property
     def server_rows(self) -> List[RowContent]:
@@ -145,7 +150,7 @@ class LocationRow(Gtk.Box):
 
         # pylint: disable=duplicate-code
         def display_server_row(server_row, server):
-            upgrade_required = self._user_tier == TierEnum.FREE and not server.free
+            upgrade_required = upgrade_required_for_row(controller, self._user_tier, server)
 
             def on_connect():
                 future = controller.connect_to_server(server.name)

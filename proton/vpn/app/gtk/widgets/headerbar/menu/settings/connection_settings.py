@@ -52,8 +52,9 @@ class ProtocolComboboxWidget(ConflictableComboboxWidget, ReactiveSetting):
         When settings are changed, we need to check if the protocol is
         still valid and update the combobox accordingly.
         """
-        if self.combobox.get_active_text() != settings.protocol:
-            self.combobox.set_active_id(settings.protocol)
+        with self.pause_callback():
+            if self.combobox.get_active_text() != settings.protocol:
+                self.combobox.set_active_id(settings.protocol)
 
     def get_protun_protocols(self) -> list[str]:
         """

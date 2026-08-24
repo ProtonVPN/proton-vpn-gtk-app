@@ -2,6 +2,9 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   GIT_SUBMODULE_DEPTH: 1
   L10N_ENABLED: "true"
+  SRC_DIR: proton
+  PO_DIR: proton/vpn/app/gtk/locale
+  POT: po/proton-vpn-gtk-app.pot
 
 include:
  - project: 'ProtonVPN/Linux/integration/ci-libraries'

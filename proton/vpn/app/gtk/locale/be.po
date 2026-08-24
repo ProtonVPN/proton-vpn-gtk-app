@@ -16,8 +16,8 @@ msgid "Authenticate"
 msgstr "Аўтэнтыфікаваць"
 
 msgctxt "button"
-msgid "Browse"
-msgstr "Агляд"
+msgid "Browse..."
+msgstr "Агляд..."
 
 msgctxt "button"
 msgid "Cancel"
@@ -64,6 +64,10 @@ msgid "Need Help?"
 msgstr "Неабходна дапамога?"
 
 msgctxt "button"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "button"
 msgid "Send error logs"
 msgstr "Адправіць журналы з памылкамі"
 
@@ -81,7 +85,7 @@ msgstr "Увайсці"
 
 msgctxt "button"
 msgid "Sign in again"
-msgstr "Увайсці яшчэ раз"
+msgstr "Увайсці паўторна"
 
 msgctxt "button"
 msgid "Start"
@@ -137,7 +141,7 @@ msgstr "Паказаць версію праграмы"
 
 msgctxt "cli"
 msgid "Start minimized in the system tray"
-msgstr "Запускаць згорнутым у сістэмны трэй"
+msgstr "Запускаць згорнутым у сістэмны латок"
 
 msgctxt "country"
 msgid "Afghanistan"
@@ -1187,9 +1191,9 @@ msgid ""
 "\n"
 "Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
 msgstr ""
-"Proton VPN не змог падключыцца да VPN і заблакаваў доступ да інтэрнэту, каб абараніць ваш IP.\n"
+"Proton VPN не змог падключыцца да VPN і заблакіраваў доступ да інтэрнэту, каб абараніць ваш IP.\n"
 "\n"
-"Націсніце «Скасаваць падключэнне», каб аднавіць падключэнне да інтэрнэту. Калі праблема не знікне, паспрабуйце выйсці і ўвайсці зноў."
+"Націсніце «Скасаваць падключэнне», каб аднавіць падключэнне да інтэрнэту. Паспрабуйце выйсці і ўвайсці зноў, калі праблема застанецца."
 
 msgctxt "error"
 msgid ""
@@ -1377,6 +1381,10 @@ msgstr "Выкарыстоўваць пратаколы Proton"
 msgctxt "label"
 msgid "Username"
 msgstr "Імя карыстальніка"
+
+msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1909,7 +1917,7 @@ msgstr "Уключыць NetShield"
 
 msgctxt "title"
 msgid "Enable Netshield ?"
-msgstr "Уключыць NetShield ?"
+msgstr "Уключыць NetShield?"
 
 msgctxt "title"
 msgid "Enable kill switch?"
@@ -1972,8 +1980,16 @@ msgid "Moderate NAT"
 msgstr "Умераны NAT"
 
 msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
 msgid "No space left on device"
 msgstr "На прыладзе не засталося вольнага месца"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1994,6 +2010,10 @@ msgstr "Нататкі да выпуску"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "Паведаміць аб праблеме"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -2036,6 +2056,10 @@ msgid "Thanks for your feedback"
 msgstr "Дзякуй за ваш водгук"
 
 msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "Двухфактарная аўтэнтыфікацыя"
 
@@ -2046,6 +2070,10 @@ msgstr "Не ўдалося знайсці сервер"
 msgctxt "title"
 msgid "Update system clock"
 msgstr "Абнавіце сістэмны гадзіннік"
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
 
 msgctxt "title"
 msgid "VPN connection error"

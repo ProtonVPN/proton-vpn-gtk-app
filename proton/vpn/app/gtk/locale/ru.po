@@ -16,10 +16,6 @@ msgid "Authenticate"
 msgstr "Аутентификация"
 
 msgctxt "button"
-msgid "Browse"
-msgstr "Просмотреть"
-
-msgctxt "button"
 msgid "Cancel"
 msgstr "Отменить"
 
@@ -53,7 +49,7 @@ msgstr "Скрыть"
 
 msgctxt "button"
 msgid "Learn more"
-msgstr "Узнать больше"
+msgstr "Подробнее"
 
 msgctxt "button"
 msgid "Manage Account"
@@ -62,6 +58,10 @@ msgstr "Управление аккаунтом"
 msgctxt "button"
 msgid "Need Help?"
 msgstr "Нужна помощь?"
+
+msgctxt "button"
+msgid "OK"
+msgstr "OK"
 
 msgctxt "button"
 msgid "Send error logs"
@@ -945,7 +945,7 @@ msgstr "Сингапур"
 
 msgctxt "country"
 msgid "Sint Maarten"
-msgstr "Сен-Мартен"
+msgstr "Синт-Мартен"
 
 msgctxt "country"
 msgid "Slovakia"
@@ -1336,6 +1336,10 @@ msgid "Excluded apps "
 msgstr "Исключенные приложения "
 
 msgctxt "label"
+msgid "Free"
+msgstr "Free"
+
+msgctxt "label"
 msgid "Included apps "
 msgstr "Добавленные приложения "
 
@@ -1378,6 +1382,10 @@ msgstr "Использовать протоколы Proton"
 msgctxt "label"
 msgid "Username"
 msgstr "Имя пользователя"
+
+msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1960,8 +1968,16 @@ msgid "Moderate NAT"
 msgstr "Умеренный NAT"
 
 msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
 msgid "No space left on device"
 msgstr "На устройстве не осталось свободного места"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1982,6 +1998,10 @@ msgstr "Примечания к выпуску"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "Сообщить о проблеме"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -2024,6 +2044,10 @@ msgid "Thanks for your feedback"
 msgstr "Благодарим за отзыв"
 
 msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "Двухфакторная аутентификация"
 
@@ -2034,6 +2058,10 @@ msgstr "Не удалось найти сервер"
 msgctxt "title"
 msgid "Update system clock"
 msgstr "Обновить системное время"
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
 
 msgctxt "title"
 msgid "VPN connection error"

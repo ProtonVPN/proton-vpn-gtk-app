@@ -16,10 +16,6 @@ msgid "Authenticate"
 msgstr "認証"
 
 msgctxt "button"
-msgid "Browse"
-msgstr "ブラウズ"
-
-msgctxt "button"
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -62,6 +58,10 @@ msgstr "アカウントを管理"
 msgctxt "button"
 msgid "Need Help?"
 msgstr "お困りですか？"
+
+msgctxt "button"
+msgid "OK"
+msgstr "OK"
 
 msgctxt "button"
 msgid "Send error logs"
@@ -1372,6 +1372,10 @@ msgid "Username"
 msgstr "ユーザー名"
 
 msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
+
+msgctxt "label"
 msgid "VPN plan: {plan}"
 msgstr "VPNプラン: {plan}"
 
@@ -1914,8 +1918,16 @@ msgid "Moderate NAT"
 msgstr "モデレート NAT"
 
 msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
 msgid "No space left on device"
 msgstr "デバイスに空き容量がありません"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1936,6 +1948,10 @@ msgstr "更新情報"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "問題を報告"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -1976,6 +1992,10 @@ msgstr "アプリを最小化して起動する"
 msgctxt "title"
 msgid "Thanks for your feedback"
 msgstr "ご意見ありがとうございます"
+
+msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
 
 msgctxt "title"
 msgid "Two-factor authentication"

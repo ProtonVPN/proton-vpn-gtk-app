@@ -16,10 +16,6 @@ msgid "Authenticate"
 msgstr "验证身份"
 
 msgctxt "button"
-msgid "Browse"
-msgstr "浏览"
-
-msgctxt "button"
 msgid "Cancel"
 msgstr "取消"
 
@@ -1376,6 +1372,10 @@ msgid "Username"
 msgstr "用户名"
 
 msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
+
+msgctxt "label"
 msgid "VPN plan: {plan}"
 msgstr "VPN 套餐：{plan}"
 
@@ -1913,8 +1913,16 @@ msgid "Moderate NAT"
 msgstr "中等 NAT"
 
 msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
 msgid "No space left on device"
 msgstr "设备上无可用空间"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1935,6 +1943,10 @@ msgstr "版本说明"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "报告问题"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -1977,6 +1989,10 @@ msgid "Thanks for your feedback"
 msgstr "感谢您的反馈"
 
 msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "双因素身份验证 (2FA)"
 
@@ -1987,6 +2003,10 @@ msgstr "找不到服务器"
 msgctxt "title"
 msgid "Update system clock"
 msgstr "更新系统时钟"
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
 
 msgctxt "title"
 msgid "VPN connection error"

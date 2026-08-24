@@ -16,10 +16,6 @@ msgid "Authenticate"
 msgstr "인증"
 
 msgctxt "button"
-msgid "Browse"
-msgstr "찾아보기"
-
-msgctxt "button"
 msgid "Cancel"
 msgstr "취소"
 
@@ -1376,6 +1372,10 @@ msgid "Username"
 msgstr "사용자 이름"
 
 msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
+
+msgctxt "label"
 msgid "VPN plan: {plan}"
 msgstr "VPN 요금제: {plan}"
 
@@ -1919,8 +1919,16 @@ msgid "Moderate NAT"
 msgstr "일반형 NAT"
 
 msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
 msgid "No space left on device"
 msgstr "기기에 남은 공간 없음"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1941,6 +1949,10 @@ msgstr "릴리즈 노트"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "문제 제보하기"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"
@@ -1983,6 +1995,10 @@ msgid "Thanks for your feedback"
 msgstr "피드백 주셔서 감사합니다"
 
 msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "2단계 인증"
 
@@ -1993,6 +2009,10 @@ msgstr "서버를 찾을 수 없습니다"
 msgctxt "title"
 msgid "Update system clock"
 msgstr "시스템 시계 업데이트"
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
 
 msgctxt "title"
 msgid "VPN connection error"

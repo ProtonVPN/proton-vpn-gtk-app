@@ -16,10 +16,6 @@ msgid "Authenticate"
 msgstr "驗證"
 
 msgctxt "button"
-msgid "Browse"
-msgstr "瀏覽"
-
-msgctxt "button"
 msgid "Cancel"
 msgstr "取消"
 
@@ -1376,6 +1372,10 @@ msgid "Username"
 msgstr "使用者名稱"
 
 msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
+
+msgctxt "label"
 msgid "VPN plan: {plan}"
 msgstr "VPN 方案：{plan}"
 
@@ -1906,8 +1906,20 @@ msgid "Locations"
 msgstr "位置"
 
 msgctxt "title"
+msgid "Moderate NAT"
+msgstr "Moderate NAT"
+
+msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
 msgid "No space left on device"
 msgstr "裝置上沒有剩餘空間"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1928,6 +1940,10 @@ msgstr "版本資訊"
 msgctxt "title"
 msgid "Report an Issue"
 msgstr "回報問題"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
 
 msgctxt "title"
 msgid "Security key"

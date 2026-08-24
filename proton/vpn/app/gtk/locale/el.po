@@ -16,8 +16,8 @@ msgid "Authenticate"
 msgstr "Ταυτοποίηση"
 
 msgctxt "button"
-msgid "Browse"
-msgstr "Περιήγηση"
+msgid "Browse..."
+msgstr "Περιήγηση..."
 
 msgctxt "button"
 msgid "Cancel"
@@ -920,6 +920,10 @@ msgid "San Marino"
 msgstr "Άγιος Μαρίνος"
 
 msgctxt "country"
+msgid "Sao Tome and Principe"
+msgstr "Sao Tome and Principe"
+
+msgctxt "country"
 msgid "Saudi Arabia"
 msgstr "Σαουδική Αραβία"
 
@@ -1316,6 +1320,10 @@ msgid "Auto-selected from free locations"
 msgstr "Επιλέχθηκε αυτόματα από δωρεάν τοποθεσίες"
 
 msgctxt "label"
+msgid "BETA"
+msgstr "BETA"
+
+msgctxt "label"
 msgid "Block Malware"
 msgstr "Αποκλεισμός Κακόβουλου λογισμικού"
 
@@ -1328,8 +1336,16 @@ msgid "Description (minimum {count} characters)"
 msgstr "Περιγραφή (ελάχιστος αριθμός χαρακτήρων {count})"
 
 msgctxt "label"
+msgid "Email"
+msgstr "Email"
+
+msgctxt "label"
 msgid "Excluded apps "
 msgstr "Εξαιρούμενες εφαρμογές "
+
+msgctxt "label"
+msgid "Free"
+msgstr "Free"
 
 msgctxt "label"
 msgid "Included apps "
@@ -1374,6 +1390,10 @@ msgstr "Χρησιμοποιήστε πρωτόκολλα Proton"
 msgctxt "label"
 msgid "Username"
 msgstr "Όνομα Χρήστη"
+
+msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
 
 msgctxt "label"
 msgid "VPN plan: {plan}"
@@ -1967,6 +1987,10 @@ msgid "Kill Switch enabled"
 msgstr "Ενεργοποιημένο Kill Switch"
 
 msgctxt "title"
+msgid "Kill switch"
+msgstr "Kill switch"
+
+msgctxt "title"
 msgid "Locations"
 msgstr "Τοποθεσίες"
 
@@ -1975,8 +1999,16 @@ msgid "Moderate NAT"
 msgstr "Παραμετροποιήστε το NAT"
 
 msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
 msgid "No space left on device"
 msgstr "Δεν υπάρχει ελεύθερος χώρος στη συσκευή"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
 
 msgctxt "title"
 msgid "Pinned tray connections"
@@ -1999,6 +2031,10 @@ msgid "Report an Issue"
 msgstr "Αναφορά προβλήματος"
 
 msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
+
+msgctxt "title"
 msgid "Security key"
 msgstr "Κλειδί ασφαλείας"
 
@@ -2019,6 +2055,10 @@ msgid "Share anonymous crash reports"
 msgstr "Κοινοποιήστε ανώνυμες αναφορές σφαλμάτων"
 
 msgctxt "title"
+msgid "Smart routing"
+msgstr "Smart routing"
+
+msgctxt "title"
 msgid "Something went wrong"
 msgstr "Κάτι πήγε στραβά"
 
@@ -2035,6 +2075,10 @@ msgid "Thanks for your feedback"
 msgstr "Ευχαριστούμε για τα σχόλιά σας"
 
 msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
 msgid "Two-factor authentication"
 msgstr "Ταυτοποίηση δύο παραγόντων (2FA)"
 
@@ -2045,6 +2089,10 @@ msgstr "Δεν είναι δυνατή η εύρεση διακομιστή"
 msgctxt "title"
 msgid "Update system clock"
 msgstr "Ενημερώστε την ώρα συστήματός σας."
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
 
 msgctxt "title"
 msgid "VPN connection error"

@@ -1,37 +1,13 @@
-version: 4.18.1rc5
-time: 2026/08/24 06:39
-author: L10n bot
-email: service_account_73c4205ebb9a547d11aa5c7b26226660@noreply.gitlab.protontech.ch
+version: 4.18.1
+time: 2026/08/25 16:00
+author: Pep Llaneras
+email: josep.llaneras@proton.ch
 description:
-- "i18n(weekly-mr): Upgrade translations from crowdin (c6618d56)."
----
-version: 4.18.1rc4
-time: 2026/08/21 10:49
-author: Axel Langenskiold
-email: axel.langenskiold@proton.ch
-description:
-- "chore: Bump devtools."
----
-version: 4.18.1rc3
-time: 2026/08/20 15:49
-author: Luke Titley
-email: luke.titley@proton.ch
-description:
-- "fix: Scrolling protocols dropdown triggered callback cascade"
----
-version: 4.18.1rc2
-time: 2026/08/19 12:50
-author: Axel Langenskiold
-email: axel.langenskiold@proton.ch
-description:
-- "fix: Remove non ASCII chars for user facing strings"
----
-version: 4.18.1rc1
-time: 2026/08/19 13:57
-author: Richard Paterson
-email: richard.paterson@proton.ch
-description:
-- "feat: Only free countries are connectable for free tier users (behind feature flag)"
+- "i18n(weekly-mr): Upgrade translations from crowdin (c6618d56). (L10n bot)"
+- "chore: Bump devtools. (Axel Langenskiold)"
+- "fix: Scrolling protocols dropdown triggered callback cascade (Luke Titley)"
+- "fix: Remove non ASCII chars for user facing strings (Axel Langenskiold)"
+- "feat: Only free countries are connectable for free tier users (behind feature flag) (Richard Paterson)"
 ---
 version: 4.18.0
 time: 2026/08/12 14:27

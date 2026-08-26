@@ -231,7 +231,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
-        server = self._api.server_list.get_fastest_in_country(country_code)
+        server = self._api.get_server_for_country(country_code)
         return self._connect_to_vpn(server)
 
     def connect_to_fastest_server(self) -> Future:

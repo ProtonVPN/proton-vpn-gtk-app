@@ -49,6 +49,22 @@ def test_autoconnect_feature(
             mock_method.assert_called_once()
 
 
+def test_connect_to_country_delegates_server_selection_to_the_api():
+    mock_api = Mock()
+    controller = Controller(
+        executor=Mock(),
+        exception_handler=Mock(),
+        api=mock_api,
+        vpn_connector=Mock(),  # needed so _connect_to_vpn doesn't crash on None
+        vpn_reconnector=Mock(),
+        app_config=Mock()
+    )
+
+    controller.connect_to_country("US")
+
+    mock_api.get_server_for_country.assert_called_once_with("US")
+
+
 def test_submit_nps_survey_response_delegates_to_api():
     mock_executor = Mock()
     mock_api = Mock()

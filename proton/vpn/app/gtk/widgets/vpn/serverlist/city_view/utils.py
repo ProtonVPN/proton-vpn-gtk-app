@@ -26,13 +26,12 @@ from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.session import FREE_RESCOPE_FLAG
 from proton.vpn.session.servers import (
     Country, Location, LogicalServer, SecureCoreGroup, ServerList, TierEnum
 )
 
 GtkWidget = TypeVar("GtkWidget", bound=Gtk.Widget)
-
-FREE_RESCOPE_FLAG = "FreeRescope"
 
 
 def make_connect_callback(
@@ -44,6 +43,16 @@ def make_connect_callback(
             ServerList.get_available_servers(servers=servers, user_tier=user_tier)
         )
         future = controller.connect_to_server(fastest.name)
+        future.add_done_callback(lambda f: GLib.idle_add(f.result))
+    return on_connect
+
+
+def make_country_connect_callback(
+    controller: Controller, country_code: str
+) -> Callable[[], None]:
+    """Returns a callback that connects to the specified country."""
+    def on_connect():
+        future = controller.connect_to_country(country_code)
         future.add_done_callback(lambda f: GLib.idle_add(f.result))
     return on_connect
 

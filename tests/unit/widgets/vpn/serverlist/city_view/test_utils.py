@@ -25,6 +25,7 @@ from proton.vpn.session.servers import Country, Location, TierEnum
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
     FREE_RESCOPE_FLAG,
+    make_country_connect_callback,
     upgrade_required_for_row,
     upgrade_required_unless_free_country_row,
     upgrade_required_when_row_not_free,
@@ -91,3 +92,11 @@ def test_upgrade_required_for_row_preserves_country_connectability_when_flag_ena
     free_country = _row(Country, True)
 
     assert upgrade_required_for_row(controller, TierEnum.FREE, free_country) is False
+
+
+def test_make_country_connect_callback_connects_to_the_given_country():
+    controller = Mock(spec=Controller)
+
+    make_country_connect_callback(controller, "US")()
+
+    controller.connect_to_country.assert_called_once_with("US")

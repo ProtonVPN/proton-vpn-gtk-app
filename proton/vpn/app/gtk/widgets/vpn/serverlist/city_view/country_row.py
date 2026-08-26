@@ -33,8 +33,10 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import E
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 from proton.vpn.app.gtk.utils.assertions import runtime_assert
-from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils \
-    import make_connect_callback, sync_rows_with_model_items, upgrade_required_for_row
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import \
+    make_country_connect_callback, \
+    sync_rows_with_model_items, \
+    upgrade_required_for_row
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.secure_core_row import SecureCoreRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
 from proton.vpn.app.gtk.utils.country import get_localized_country_name
@@ -94,7 +96,7 @@ class CountryRow(Gtk.Box):
 
         row_data = RowViewModel(
             name=localized_country_name,
-            on_connect=make_connect_callback(controller, country.servers, user_tier),
+            on_connect=make_country_connect_callback(controller, country.code),
             free=country.free,
             under_maintenance=country.under_maintenance and not upgrade_required,
             features=country.features,

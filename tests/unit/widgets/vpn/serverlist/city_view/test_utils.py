@@ -24,7 +24,6 @@ from proton.vpn.session.servers import Country, Location, TierEnum
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
-    FREE_RESCOPE_FLAG,
     make_country_connect_callback,
     upgrade_required_for_row,
     upgrade_required_unless_free_country_row,
@@ -66,29 +65,27 @@ def test_upgrade_required_unless_free_country_row(user_tier, row, expected):
     assert upgrade_required_unless_free_country_row(user_tier, row) is expected
 
 
-def test_upgrade_required_for_row_delegates_to_per_row_policy_when_flag_disabled():
+def test_upgrade_required_for_row_delegates_to_per_row_policy_when_upgrade_is_not_required():
     controller = Mock(spec=Controller)
-    controller.feature_flags.get.return_value = False
+    controller.server_selection_requires_upgrade = False
     row = _row(Location, True)
 
     assert upgrade_required_for_row(controller, TierEnum.FREE, row) is False
-    controller.feature_flags.get.assert_called_once_with(FREE_RESCOPE_FLAG)
 
 
-def test_upgrade_required_for_row_delegates_to_unless_country_policy_when_flag_enabled():
+def test_upgrade_required_for_row_delegates_to_unless_country_policy_when_upgrade_is_required():
     controller = Mock(spec=Controller)
-    controller.feature_flags.get.return_value = True
+    controller.server_selection_requires_upgrade = True
     row = _row(Location, True)
 
     assert upgrade_required_for_row(controller, TierEnum.FREE, row) is True
-    controller.feature_flags.get.assert_called_once_with(FREE_RESCOPE_FLAG)
 
 
-def test_upgrade_required_for_row_preserves_country_connectability_when_flag_enabled():
-    """Country rows must stay connectable for free-tier users even when the
-    FreeRescope flag is enabled"""
+def test_upgrade_required_for_row_preserves_country_connectability_when_upgrade_is_required():
+    """Country rows must stay connectable for free-tier users even when
+    upgrade is otherwise required for server selection."""
     controller = Mock(spec=Controller)
-    controller.feature_flags.get.return_value = True
+    controller.server_selection_requires_upgrade = True
     free_country = _row(Country, True)
 
     assert upgrade_required_for_row(controller, TierEnum.FREE, free_country) is False

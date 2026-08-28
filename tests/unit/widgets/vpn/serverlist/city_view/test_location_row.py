@@ -158,14 +158,14 @@ def free_server():
     return [LogicalServer(server) for server in api_response["LogicalServers"]]
 
 
-def test_free_location_is_connectable_for_free_user_when_free_rescope_flag_disabled(
+def test_free_location_is_connectable_for_free_user_when_server_selection_does_not_require_upgrade(
     free_server
 ):
     """Current behavior: a free-tier user can connect to a location/server that's free."""
     location = Location(name="Tokyo", servers=free_server)
     location_row = LocationRow()
     mock_controller = Mock(spec=Controller)
-    mock_controller.feature_flags.get.return_value = False
+    mock_controller.server_selection_requires_upgrade = False
 
     location_row.display(mock_controller, location, TierEnum.FREE, expanded=True)
     process_gtk_events()
@@ -174,7 +174,7 @@ def test_free_location_is_connectable_for_free_user_when_free_rescope_flag_disab
     assert location_row.server_rows[0].label_sensitive is True
 
 
-def test_free_location_requires_upgrade_for_free_user_when_free_rescope_flag_enabled(
+def test_free_location_requires_upgrade_for_free_user_when_server_selection_requires_upgrade(
     free_server
 ):
     """New behavior: only country rows are connectable for free-tier users, regardless
@@ -182,7 +182,7 @@ def test_free_location_requires_upgrade_for_free_user_when_free_rescope_flag_ena
     location = Location(name="Tokyo", servers=free_server)
     location_row = LocationRow()
     mock_controller = Mock(spec=Controller)
-    mock_controller.feature_flags.get.return_value = True
+    mock_controller.server_selection_requires_upgrade = True
 
     location_row.display(mock_controller, location, TierEnum.FREE, expanded=True)
     process_gtk_events()

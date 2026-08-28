@@ -55,7 +55,8 @@ class TrayPinnedServersWidget(EntryWidget):
             title=self.TRAY_PINNED_SERVERS_LABEL,
             description=self.TRAY_PINNED_SERVERS_DESCRIPTION,
             setting_name=self.SETTING_NAME,
-            callback=self._save_and_reload_pinned_servers
+            callback=self._save_and_reload_pinned_servers,
+            requires_subscription_to_be_active=controller.server_selection_requires_upgrade
         )
         self._controller = controller
         self._tray_indicator = tray_indicator
@@ -299,12 +300,14 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
 
             entry_widget.save_setting(new_value)
 
+        upgrade_required = self._controller.server_selection_requires_upgrade
         self._connect_at_startup_entry = EntryWidget(
             controller=self._controller,
             title=self.CONNECT_AT_APP_STARTUP_LABEL,
             description=self.CONNECT_AT_APP_STARTUP_DESCRIPTION,
             setting_name="app_configuration.connect_at_app_startup",
-            callback=_format_and_save_autoconnect_field
+            callback=_format_and_save_autoconnect_field,
+            requires_subscription_to_be_active=upgrade_required
         )
         self.append(self._connect_at_startup_entry)
 

@@ -198,7 +198,7 @@ class TrayIndicator:
         self._tray.update_menu()
 
     def _setup_pinned_server_entries(self):
-        tray_pinned_servers = self._controller.get_app_configuration().tray_pinned_servers
+        tray_pinned_servers = self._controller.tray_pinned_servers
         if not tray_pinned_servers or not self.display_pinned_servers:
             return
 
@@ -329,7 +329,7 @@ class TrayIndicator:
     @property
     def top_most_pinned_server_label(self):
         """Returns the topmost pinned server button."""
-        pinned_servers = self._controller.get_app_configuration().tray_pinned_servers
+        pinned_servers = self._controller.tray_pinned_servers
         if not pinned_servers:
             return None
 

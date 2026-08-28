@@ -33,6 +33,7 @@ class TestGeneralSettings:
     def test_build_connect_at_app_startup_saves_value_when_callback_is_called(self):
         value_to_store = "new value"
         controller = Mock()
+        controller.server_selection_requires_upgrade = False
         gs = GeneralSettings(controller)
         gs.build_connect_at_app_startup()
 
@@ -43,6 +44,7 @@ class TestGeneralSettings:
 
     def test_build_connect_at_app_startup_populates_disabled_with_off(self):
         controller = Mock()
+        controller.server_selection_requires_upgrade = False
         gs = GeneralSettings(controller)
         gs.build_connect_at_app_startup()
 
@@ -68,7 +70,9 @@ class TestGeneralSettings:
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_start_app_minimized")
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.general_settings.GeneralSettings.build_tray_pinned_servers")
     def test_display_start_app_minimized_and_tray_pinned_servers_if_tray_indicator_is_found(self, build_tray_pinned_servers_mock, build_start_app_minimized_mock, tray_indicator_mock):
-        gs = GeneralSettings(MagicMock(), tray_indicator=tray_indicator_mock)
+        controller = MagicMock()
+        controller.server_selection_requires_upgrade = False
+        gs = GeneralSettings(controller, tray_indicator=tray_indicator_mock)
         gs.build_ui()
 
         if tray_indicator_mock:
@@ -209,6 +213,7 @@ class TestTrayPinnedServersWidget:
     def test_build_populates_entry_when_being_initialized(self):
         mock_controller = Mock(name="controller")
         mock_controller.get_setting_attr.return_value = ["PT", "CH"]
+        mock_controller.server_selection_requires_upgrade = False
         psw = TrayPinnedServersWidget(mock_controller, Mock())
 
         assert psw.entry.get_text() == "PT, CH"

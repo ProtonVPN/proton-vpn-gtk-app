@@ -26,7 +26,6 @@ from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.session import FREE_RESCOPE_FLAG
 from proton.vpn.session.servers import (
     Country, Location, LogicalServer, SecureCoreGroup, ServerList, TierEnum
 )
@@ -86,8 +85,8 @@ def upgrade_required_for_row(
     row: ServerListRow
 ) -> bool:
     """Decides whether a server-list row requires upgrade for the given user
-    tier, picking the behavior based on the FreeRescope feature flag."""
-    if controller.feature_flags.get(FREE_RESCOPE_FLAG):
+    tier."""
+    if controller.server_selection_requires_upgrade:
         return upgrade_required_unless_free_country_row(user_tier, row)
     return upgrade_required_when_row_not_free(user_tier, row.free)
 

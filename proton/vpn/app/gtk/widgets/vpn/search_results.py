@@ -219,7 +219,14 @@ class SearchResults(Gtk.ScrolledWindow):
             ):
                 yield (server.name, server.load)
 
-        self._filtered_country_list = FilteredList(countries, locations, servers)
+        server_filter = (
+            (lambda _: []) if controller.server_selection_requires_upgrade else servers
+        )
+        self._filtered_country_list = FilteredList(
+            countries,
+            locations,
+            server_filter
+        )
         safe_signal_connect(
             self._filtered_country_list,
             "row-activated", self._on_row_activated

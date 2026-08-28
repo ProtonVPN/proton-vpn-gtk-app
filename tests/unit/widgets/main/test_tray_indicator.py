@@ -28,7 +28,7 @@ from proton.vpn.connection import states
 @pytest.fixture
 def controller_mock():
     controller = Mock()
-    controller.get_app_configuration.return_value.tray_pinned_servers = None
+    controller.tray_pinned_servers = None
     return controller
 
 @pytest.fixture
@@ -312,7 +312,7 @@ def test_connect_pinned_server_entry_connects_to_vpn_when_activated(controller_m
     pinned_server = "TEST#30"
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = states.Disconnected()
-    controller_mock.get_app_configuration.return_value.tray_pinned_servers = [pinned_server]
+    controller_mock.tray_pinned_servers = [pinned_server]
 
     tray_indicator = TrayIndicator(controller=controller_mock,tray_availability_detection=tray_detection_mock)
     tray_indicator.setup(main_window)
@@ -330,7 +330,7 @@ def test_remove_pinned_server_entry_when_user_has_logged_out(controller_mock,tra
     pinned_server = "TEST#30"
     type(controller_mock).user_logged_in = PropertyMock(side_effect=[True, False, False, False])
     controller_mock.current_connection_status = states.Disconnected()
-    controller_mock.get_app_configuration.return_value.tray_pinned_servers = [pinned_server]
+    controller_mock.tray_pinned_servers = [pinned_server]
 
     tray_indicator = TrayIndicator(controller=controller_mock, tray_icon=indicator_mock,tray_availability_detection=tray_detection_mock)
     tray_indicator.setup(main_window)
@@ -352,7 +352,7 @@ def test_ensure_pinned_server_entries_remain_in_order_after_user_has_logged_out_
     pinned_server3 = "TEST#50"
     controller_mock.user_logged_in = True
     controller_mock.current_connection_status = states.Disconnected()
-    controller_mock.get_app_configuration.return_value.tray_pinned_servers = [pinned_server1, pinned_server2, pinned_server3]
+    controller_mock.tray_pinned_servers = [pinned_server1, pinned_server2, pinned_server3]
 
     tray_indicator = TrayIndicator(controller=controller_mock,tray_icon=indicator_mock,tray_availability_detection=tray_detection_mock)
     tray_indicator.setup(main_window)

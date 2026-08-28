@@ -25,7 +25,7 @@ from types import TracebackType
 from typing import Optional, Type, Callable, Union, Tuple, List
 
 from gi.repository import GLib
-from proton.vpn.session import ServerList
+from proton.vpn.session import ServerList, FREE_RESCOPE_FLAG
 
 from proton.vpn import logging
 
@@ -35,7 +35,7 @@ from proton.vpn.core.session_holder import ClientTypeMetadata
 from proton.vpn.core.vpnconnector import VPNConnector
 from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.core.settings import Settings
-from proton.vpn.session.servers import LogicalServer
+from proton.vpn.session.servers import LogicalServer, TierEnum
 from proton.vpn.session.session import \
     FeatureFlags, \
     Notifications as PullNotifications
@@ -198,7 +198,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         )
         if (
             self.user_logged_in
-            and self.get_app_configuration().connect_at_app_startup
+            and self.connect_at_app_startup
         ):
             self.autoconnect()
 
@@ -206,7 +206,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """Connects to a server from app configuration.
             This method is intended to be called at app startup.
         """
-        connect_at_app_startup = self.get_app_configuration().connect_at_app_startup
+        connect_at_app_startup = self.connect_at_app_startup
 
         # Temporary hack for parsing. Should be improved
         if connect_at_app_startup == "FASTEST":
@@ -392,6 +392,34 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         """Save object with app specific configurations to disk."""
         self._app_config = new_value
         self._cache_handler.save(self._app_config.to_dict())
+
+    @property
+    def server_selection_requires_upgrade(self) -> bool:
+        """Whether the current user must upgrade to pick or pin a specific
+        server."""
+        return bool(self.feature_flags.get(FREE_RESCOPE_FLAG)) and self.user_tier == TierEnum.FREE
+
+    @property
+    def connect_at_app_startup(self) -> Optional[str]:
+        """The configured autoconnect target.
+
+        Autoconnect is unavailable when the user's plan requires an
+        upgrade.
+        """
+        if self.server_selection_requires_upgrade:
+            return None
+        return self.get_app_configuration().connect_at_app_startup
+
+    @property
+    def tray_pinned_servers(self) -> Optional[List[str]]:
+        """The user's pinned tray connections.
+
+        Pinning is unavailable when the user's plan requires an
+        upgrade.
+        """
+        if self.server_selection_requires_upgrade:
+            return None
+        return self.get_app_configuration().tray_pinned_servers
 
     @property
     def app_version(self) -> str:

@@ -90,13 +90,13 @@ def free_secure_core_group():
     return SecureCoreGroup(servers=[_make_server(tier=TierEnum.FREE)])
 
 
-def test_free_secure_core_group_is_connectable_for_free_user_when_free_rescope_flag_disabled(
+def test_free_secure_core_group_is_connectable_when_server_selection_does_not_require_upgrade(
         free_secure_core_group
 ):
     """Current behavior: a free-tier user can connect to a secure core group that's free."""
     row = SecureCoreRow()
     mock_controller = Mock(spec=Controller)
-    mock_controller.feature_flags.get.return_value = False
+    mock_controller.server_selection_requires_upgrade = False
 
     row.display(mock_controller, free_secure_core_group, TierEnum.FREE, expanded=True)
     process_gtk_events()
@@ -105,14 +105,14 @@ def test_free_secure_core_group_is_connectable_for_free_user_when_free_rescope_f
     assert row.server_rows[0].label_sensitive is True
 
 
-def test_free_secure_core_group_requires_upgrade_for_free_user_when_free_rescope_flag_enabled(
+def test_free_secure_core_group_requires_upgrade_when_server_selection_requires_upgrade(
         free_secure_core_group
 ):
     """New behavior: only country rows are connectable for free-tier users, regardless
     of whether the secure core group/server is itself free."""
     row = SecureCoreRow()
     mock_controller = Mock(spec=Controller)
-    mock_controller.feature_flags.get.return_value = True
+    mock_controller.server_selection_requires_upgrade = True
 
     row.display(mock_controller, free_secure_core_group, TierEnum.FREE, expanded=True)
     process_gtk_events()

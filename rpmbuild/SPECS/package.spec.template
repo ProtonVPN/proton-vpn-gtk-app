@@ -2,8 +2,9 @@
 %define pep_625_name proton_vpn_gtk_app
 %define version {version}
 %define upstream_version {upstream_version}
-%define logo_filename proton-vpn-logo.svg
-%define desktop_entry_filename proton.vpn.app.gtk.desktop
+%define logo_filename com.protonvpn.app.svg
+%define desktop_entry_filename com.protonvpn.app.gtk.desktop
+%define appstream_filename com.protonvpn.app.gtk.metainfo.xml
 %define release 1
 
 Prefix: %{{_prefix}}
@@ -19,6 +20,7 @@ URL: https://github.com/ProtonVPN/%{{unmangled_name}}
 Source0: %{{pep_625_name}}-%{{upstream_version}}.tar.gz
 Source3: %{{desktop_entry_filename}}
 Source4: %{{logo_filename}}
+Source5: %{{appstream_filename}}
 BuildArch: noarch
 BuildRoot: %{{_tmppath}}/%{{pep_625_name}}-%{{version}}-%{{release}}-buildroot
 
@@ -60,10 +62,13 @@ desktop-file-install --dir=%{{buildroot}}%{{_datadir}}/applications %{{SOURCE3}}
 desktop-file-validate %{{buildroot}}%{{_datadir}}/applications/%{{desktop_entry_filename}}
 mkdir -p %{{buildroot}}%{{_datadir}}/icons/hicolor/scalable/apps
 cp %{{SOURCE4}} %{{buildroot}}%{{_datadir}}/icons/hicolor/scalable/apps/%{{logo_filename}}
+mkdir -p %{{buildroot}}%{{_datadir}}/metainfo
+cp %{{SOURCE5}} %{{buildroot}}%{{_datadir}}/metainfo/%{{appstream_filename}}
 
 %files -n %{{name}} -f %{{pyproject_files}}
 %{{_bindir}}/protonvpn-app
 %{{_datadir}}/applications/%{{desktop_entry_filename}}
 %{{_datadir}}/icons/hicolor/scalable/apps/%{{logo_filename}}
+%{{_datadir}}/metainfo/%{{appstream_filename}}
 
 %changelog

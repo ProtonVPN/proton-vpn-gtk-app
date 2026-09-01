@@ -41,7 +41,7 @@ msgstr "Désactiver"
 
 msgctxt "button"
 msgid "Disconnect"
-msgstr "Déconnecté"
+msgstr "Déconnecter"
 
 msgctxt "button"
 msgid "Done"

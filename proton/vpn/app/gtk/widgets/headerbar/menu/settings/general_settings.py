@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator
 
 _PROTOCOL_GROUPS = ("generic", "protun")
+LINUX_TELEMETRY_FLAG = "LinuxTelemetry"
 
 logger = logging.getLogger(__name__)
 
@@ -244,6 +245,13 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         "When enabled, the app starts minimized "
         "to the tray."
     )
+    TELEMETRY_LABEL = C_("title", "Share anonymous usage statistics")
+    TELEMETRY_DESCRIPTION = C_(
+        "message",
+        "Usage data helps us overcome VPN blocks and improve app performance."
+        "\n\nThese statistics do not contain your IP address, and they "
+        "cannot be used to identify you. We'll never share them with third parties."
+    )
     ANONYMOUS_CRASH_REPORTS_LABEL = C_("title", "Share anonymous crash reports")
     ANONYMOUS_CRASH_REPORTS_DESCRIPTION = C_(
         "message",
@@ -262,6 +270,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
         self._connect_at_startup_entry = None
         self._start_app_minimized_toggle = None
         self._anonymous_crash_reports_toggle = None
+        self._telemetry_toggle = None
         self._packet_capture_widget: Optional[PacketCaptureWidget] = None
 
     def on_settings_changed(self, settings):
@@ -287,6 +296,7 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
             self.build_start_app_minimized()
             self.build_tray_pinned_servers()
 
+        self.build_telemetry()
         self.build_anonymous_crash_reports()
         self.build_packet_capture()
         self.build_beta_upgrade()
@@ -336,6 +346,18 @@ class GeneralSettings(BaseCategoryContainer):  # pylint: disable=too-many-instan
             setting_name="settings.anonymous_crash_reports"
         )
         self.append(self._anonymous_crash_reports_toggle)
+
+    def build_telemetry(self):
+        """Builds and adds the `telemetry` setting to the widget."""
+        if not self._controller.feature_flags.get(LINUX_TELEMETRY_FLAG):
+            return
+        self._telemetry_toggle = ToggleWidget(
+            controller=self._controller,
+            title=self.TELEMETRY_LABEL,
+            description=self.TELEMETRY_DESCRIPTION,
+            setting_name="settings.telemetry"
+        )
+        self.append(self._telemetry_toggle)
 
     def build_packet_capture(self):
         """Builds and adds the `packet_capture` file path setting to the widget."""

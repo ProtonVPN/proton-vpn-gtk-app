@@ -1,9 +1,10 @@
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, call, patch
 import pytest
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.session.dataclasses import NPSSurveyResponse
-from proton.vpn.session.servers import TierEnum
+from proton.vpn.session.exceptions import ServerNotFoundError
+from proton.vpn.session.servers import LogicalServer, ServerList, TierEnum
 
 
 MockOpenVPNTCP = Mock(name="MockOpenVPNTCP")
@@ -53,7 +54,7 @@ def test_autoconnect_feature(
             mock_method.assert_called_once()
 
 
-def test_connect_to_country_delegates_server_selection_to_the_api():
+def test_connect_to_country_delegates_server_selection_to_the_server_list():
     mock_api = Mock()
     controller = Controller(
         executor=Mock(),
@@ -66,7 +67,153 @@ def test_connect_to_country_delegates_server_selection_to_the_api():
 
     controller.connect_to_country("US")
 
-    mock_api.get_server_for_country.assert_called_once_with("US")
+    mock_api.server_list.get_fastest_in_country.assert_called_once_with("US")
+
+
+def _server(server_id, exit_country="US", tier=TierEnum.FREE, score=1.0, features=0):
+    return LogicalServer({
+        "ID": server_id,
+        "Name": f"{exit_country}#{server_id}",
+        "Status": 1,
+        "Servers": [{"Status": 1}],
+        "Score": score,
+        "Tier": int(tier),
+        "ExitCountry": exit_country,
+        "City": "City",
+        "Features": features,
+    })
+
+
+def _controller_with_servers(servers, current_server_id, user_tier=TierEnum.FREE):
+    mock_api = Mock()
+    mock_api.server_list = ServerList(user_tier=user_tier, logicals=servers)
+    vpn_connector_mock = Mock(current_server_id=current_server_id)
+    controller = Controller(
+        executor=Mock(),
+        exception_handler=Mock(),
+        api=mock_api,
+        vpn_connector=vpn_connector_mock,
+        vpn_reconnector=Mock(),
+        app_config=Mock()
+    )
+    return controller, vpn_connector_mock
+
+
+def test_connect_to_random_server_picks_within_the_given_country():
+    current_server = _server("1", exit_country="CA")
+    other_server_in_country = _server("2", exit_country="CA")
+    server_in_other_country = _server("3", exit_country="US")
+    controller, vpn_connector_mock = _controller_with_servers(
+        [current_server, other_server_in_country, server_in_other_country],
+        current_server_id=current_server.id
+    )
+
+    controller.connect_to_random_server(from_country="CA")
+
+    vpn_connector_mock.get_vpn_server.assert_called_once_with(other_server_in_country, ANY)
+
+
+def test_connect_to_random_server_picks_from_any_country_when_from_country_is_none():
+    current_server = _server("1", exit_country="CA")
+    server_in_other_country = _server("2", exit_country="US")
+    controller, vpn_connector_mock = _controller_with_servers(
+        [current_server, server_in_other_country], current_server_id=current_server.id
+    )
+
+    controller.connect_to_random_server(from_country=None)
+
+    vpn_connector_mock.get_vpn_server.assert_called_once_with(server_in_other_country, ANY)
+
+
+def test_connect_to_random_server_returns_the_current_server_when_it_is_the_only_one_available():
+    only_server = _server("1", exit_country="CA")
+    controller, vpn_connector_mock = _controller_with_servers(
+        [only_server], current_server_id=only_server.id
+    )
+
+    controller.connect_to_random_server(from_country="CA")
+
+    vpn_connector_mock.get_vpn_server.assert_called_once_with(only_server, ANY)
+
+
+def test_connect_to_random_server_never_returns_a_server_above_the_user_tier():
+    current_server = _server("1", exit_country="CA", tier=TierEnum.FREE)
+    paid_server = _server("2", exit_country="CA", tier=TierEnum.PLUS)
+    controller, vpn_connector_mock = _controller_with_servers(
+        [current_server, paid_server], current_server_id=current_server.id, user_tier=TierEnum.FREE
+    )
+
+    controller.connect_to_random_server(from_country="CA")
+
+    vpn_connector_mock.get_vpn_server.assert_called_once_with(current_server, ANY)
+
+
+def test_connect_to_random_server_raises_when_no_server_is_available():
+    controller, _ = _controller_with_servers(
+        [_server("1", exit_country="FR")], current_server_id="1"
+    )
+
+    with pytest.raises(ServerNotFoundError):
+        controller.connect_to_random_server(from_country="CA")
+
+
+def test_change_server_uses_the_country_of_the_last_country_connection():
+    current_server = _server("1", exit_country="CA")
+    other_server_in_country = _server("2", exit_country="CA")
+    server_in_other_country = _server("3", exit_country="US")
+    controller, vpn_connector_mock = _controller_with_servers(
+        [current_server, other_server_in_country, server_in_other_country],
+        current_server_id=current_server.id
+    )
+    controller.connect_to_country("CA")
+
+    controller.change_server()
+
+    vpn_connector_mock.get_vpn_server.assert_called_with(other_server_in_country, ANY)
+
+
+def test_change_server_uses_any_country_after_connecting_to_the_fastest_server():
+    current_server = _server("1", exit_country="CA")
+    server_in_other_country = _server("2", exit_country="US")
+    controller, vpn_connector_mock = _controller_with_servers(
+        [current_server, server_in_other_country], current_server_id=current_server.id
+    )
+    controller.connect_to_fastest_server()
+
+    controller.change_server()
+
+    vpn_connector_mock.get_vpn_server.assert_called_with(server_in_other_country, ANY)
+
+
+def test_change_server_uses_any_country_when_no_connection_was_requested_yet():
+    current_server = _server("1", exit_country="CA")
+    server_in_other_country = _server("2", exit_country="US")
+    controller, vpn_connector_mock = _controller_with_servers(
+        [current_server, server_in_other_country], current_server_id=current_server.id
+    )
+
+    controller.change_server()
+
+    vpn_connector_mock.get_vpn_server.assert_called_once_with(server_in_other_country, ANY)
+
+
+def test_change_server_keeps_the_scope_of_the_last_requested_connection_across_repeated_changes():
+    current_server = _server("1", exit_country="CA")
+    other_server_in_country = _server("2", exit_country="CA")
+    server_in_other_country = _server("3", exit_country="US")
+    controller, vpn_connector_mock = _controller_with_servers(
+        [current_server, other_server_in_country, server_in_other_country],
+        current_server_id=current_server.id
+    )
+    controller.connect_to_country("CA")
+    vpn_connector_mock.get_vpn_server.reset_mock()
+
+    controller.change_server()
+    controller.change_server()
+
+    assert vpn_connector_mock.get_vpn_server.call_args_list == [
+        call(other_server_in_country, ANY), call(other_server_in_country, ANY)
+    ]
 
 
 def test_submit_nps_survey_response_delegates_to_api():

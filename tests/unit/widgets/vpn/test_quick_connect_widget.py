@@ -23,7 +23,14 @@ from gi.repository import GLib
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
-from proton.vpn.connection.states import Disconnected, Connected, Connecting, Error
+from proton.vpn.connection.states import \
+    Disconnected, \
+    Connected, \
+    Connecting, \
+    Disconnecting, \
+    Error, \
+    StateContext
+
 from tests.unit.testing_utils import process_gtk_events, run_main_loop
 
 
@@ -77,3 +84,81 @@ def test_quick_connect_widget_disconnects_from_current_server_when_disconnect_is
     process_gtk_events()
 
     controller_mock.disconnect.assert_called_once()
+
+
+@pytest.mark.parametrize("connection_state, change_server_button_visible", [
+    (Disconnected(), False),
+    (Connecting(), True),
+    (Connected(), True),
+    (Error(), False),
+])
+def test_quick_connect_widget_shows_change_server_button_only_while_connecting_or_connected(
+        connection_state, change_server_button_visible
+):
+    controller_mock = Mock()
+    controller_mock.server_selection_requires_upgrade = True
+    quick_connect_widget = QuickConnectWidget(controller=controller_mock)
+
+    quick_connect_widget.connection_status_update(connection_state)
+
+    assert quick_connect_widget.change_server_revealer.get_reveal_child() \
+        is change_server_button_visible
+
+
+def test_quick_connect_widget_never_shows_change_server_button_when_upgrade_is_not_required():
+    controller_mock = Mock()
+    controller_mock.server_selection_requires_upgrade = False
+    quick_connect_widget = QuickConnectWidget(controller=controller_mock)
+
+    quick_connect_widget.connection_status_update(Connected())
+
+    assert quick_connect_widget.change_server_revealer.get_reveal_child() is False
+
+
+@pytest.mark.parametrize("connection_state, change_server_button_sensitive", [
+    (Disconnected(), False),
+    (Disconnected(StateContext(reconnection=Mock())), False),
+    (Connecting(), False),
+    (Connected(), True),
+    (Disconnecting(), False),
+    (Error(), False),
+])
+def test_quick_connect_widget_enables_change_server_button_only_while_connected(
+        connection_state, change_server_button_sensitive
+):
+    controller_mock = Mock()
+    controller_mock.server_selection_requires_upgrade = True
+    quick_connect_widget = QuickConnectWidget(controller=controller_mock)
+
+    quick_connect_widget.connection_status_update(connection_state)
+
+    assert quick_connect_widget.change_server_button.get_sensitive() \
+        is change_server_button_sensitive
+
+
+def test_quick_connect_widget_keeps_change_server_button_visible_throughout_a_server_change():
+    controller_mock = Mock()
+    controller_mock.server_selection_requires_upgrade = True
+    quick_connect_widget = QuickConnectWidget(controller=controller_mock)
+    sequence = [
+        Connected(),
+        Disconnecting(),
+        Disconnected(StateContext(reconnection=Mock())),
+        Connecting(),
+        Connected(),
+    ]
+
+    for connection_state in sequence:
+        quick_connect_widget.connection_status_update(connection_state)
+        assert quick_connect_widget.change_server_revealer.get_reveal_child() is True
+
+
+def test_quick_connect_widget_changes_server_when_change_server_button_is_clicked():
+    controller_mock = Mock()
+    controller_mock.server_selection_requires_upgrade = True
+    quick_connect_widget = QuickConnectWidget(controller=controller_mock)
+
+    quick_connect_widget.change_server_button.emit("clicked")
+    process_gtk_events()
+
+    controller_mock.change_server.assert_called_once()

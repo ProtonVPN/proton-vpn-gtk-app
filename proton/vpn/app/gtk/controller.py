@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
+import random
 import subprocess  # nosec B404 # nosemgrep: gitlab.bandit.B404
 from concurrent.futures import Future
 from importlib import metadata
@@ -35,7 +36,8 @@ from proton.vpn.core.session_holder import ClientTypeMetadata
 from proton.vpn.core.vpnconnector import VPNConnector
 from proton.vpn.core.cache_handler import CacheHandler
 from proton.vpn.core.settings import Settings
-from proton.vpn.session.servers import LogicalServer, TierEnum
+from proton.vpn.session.exceptions import ServerNotFoundError
+from proton.vpn.session.servers import LogicalServer, ServerFeatureEnum, TierEnum
 from proton.vpn.session.session import \
     FeatureFlags, \
     Notifications as PullNotifications
@@ -102,6 +104,9 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         self._app_config = app_config
         self._cache_handler = cache_handler or CacheHandler(APP_CONFIG)
         self._settings_watchers = SettingsWatchers()
+        # Country of the last connection, if it was made at the country
+        # level. None otherwise.
+        self._last_requested_country: Optional[str] = None
 
     async def initialize_vpn_connector(self):
         """
@@ -231,7 +236,8 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
-        server = self._api.get_server_for_country(country_code)
+        self._last_requested_country = country_code
+        server = self._api.server_list.get_fastest_in_country(country_code)
         return self._connect_to_vpn(server)
 
     def connect_to_fastest_server(self) -> Future:
@@ -240,6 +246,7 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         :return: A Future object that resolves once the connection reaches the
         "connected" state.
         """
+        self._last_requested_country = None
         # FIXME: getting the fastest server takes too long  # pylint: disable=fixme
         server = self._api.server_list.get_fastest()
         return self._connect_to_vpn(server)
@@ -252,6 +259,53 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
         "connected" state.
         """
         server = self._api.server_list.get_by_name(server_name)
+        return self._connect_to_vpn(server)
+
+    def change_server(self) -> Future:
+        """
+        Reconnects to another randomly picked server.
+
+        If the last requested connection was at country level, the new
+        server is picked from that same country. If not, any server may be picked.
+
+        :return: A Future object that resolves once the connection reaches the
+        "connected" state.
+        """
+        return self.connect_to_random_server(self._last_requested_country)
+
+    def connect_to_random_server(self, from_country: Optional[str]) -> Future:
+        """
+        Establishes a VPN connection to a randomly picked server.
+
+        The server currently connected to is avoided, unless it is the only
+        one available.
+
+        :param from_country: restricts the pick to this country. When None,
+            any available server may be picked, including in another country.
+        :return: A Future object that resolves once the connection reaches the
+        "connected" state.
+        """
+        server_list = self._api.server_list
+        candidates = server_list.logicals
+        if from_country:
+            candidates = ServerList.get_servers_in_country_code(candidates, from_country)
+        candidates = ServerList.get_available_servers(candidates, server_list.user_tier)
+        candidates = list(ServerList.get_servers_with_features(
+            candidates,
+            exclude_features=ServerFeatureEnum.SECURE_CORE | ServerFeatureEnum.TOR
+        ))
+
+        if not candidates:
+            raise ServerNotFoundError("No server available in the current tier")
+
+        current_server_id = self.current_server_id
+        other_candidates = [
+            server for server in candidates
+            if server.id != current_server_id
+        ] or candidates
+
+        # nosemgrep: gitlab.bandit.B311
+        server = random.choice(other_candidates)  # nosec B311
         return self._connect_to_vpn(server)
 
     def _connect_to_vpn(self, server: LogicalServer) -> Future:
@@ -397,6 +451,8 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     def server_selection_requires_upgrade(self) -> bool:
         """Whether the current user must upgrade to pick or pin a specific
         server."""
+        # Retiring FreeRescope means changing this line, and only this line,
+        # to `return self.user_tier == TierEnum.FREE`.
         return bool(self.feature_flags.get(FREE_RESCOPE_FLAG)) and self.user_tier == TierEnum.FREE
 
     @property

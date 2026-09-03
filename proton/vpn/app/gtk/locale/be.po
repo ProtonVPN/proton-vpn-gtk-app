@@ -1183,7 +1183,8 @@ msgstr ""
 
 msgctxt "error"
 msgid "Our servers are not reachable. Please check your internet connection."
-msgstr "Нашы серверы недасягальныя. Праверце падключэнне да інтэрнэту."
+msgstr ""
+"Немагчыма падключыцца да сервераў Proton. Праверце падключэнне да інтэрнэту."
 
 msgctxt "error"
 msgid ""
@@ -1201,7 +1202,7 @@ msgid ""
 "Please try again."
 msgstr ""
 "Немагчыма звязацца з сэрвісамі Proton.\n"
-"Паспрабуйце яшчэ раз."
+"Паўтарыце спробу."
 
 msgctxt "error"
 msgid "Session limit reached"
@@ -1258,7 +1259,7 @@ msgstr "Немагчыма выйсці. Пераканайце, што вы п�
 
 msgctxt "error"
 msgid "We're sorry, an unexpected error occurred. Please try again."
-msgstr "На жаль, адбылася нечаканая памылка. Паспрабуйце яшчэ раз."
+msgstr "На жаль, адбылася нечаканая памылка. Паўтарыце спробу."
 
 msgctxt "error"
 msgid ""
@@ -1266,8 +1267,8 @@ msgid ""
 "You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
 "After that, the traffic will be enabled."
 msgstr ""
-"Вы падключаны да VPN, але ўвесь трафік заблакаваны.\n"
-"Вам трэба перайсці на старонку аўтэнтыфікацыі, прадастаўленую службай бяспекі, і прайсці аўтэнтыфікацыю з дапамогай апаратнага ключа.\n"
+"Вы падключаны да VPN, але ўвесь трафік заблакіраваны.\n"
+"Вам трэба перайсці на старонку аўтэнтыфікацыі, якую вам перадала служба бяспекі, і прайсці аўтэнтыфікацыю з дапамогай апаратнага ключа.\n"
 "Пасля гэтага трафік будзе ўключаны."
 
 msgctxt "error"
@@ -1445,7 +1446,8 @@ msgstr "Дазваляе выбраным праграмам падключац�
 
 msgctxt "message"
 msgid "Automatically disconnect from the internet if VPN connection is lost."
-msgstr "Аўтаматычна адключацца ад інтэрнэту, калі падключэнне з VPN страчана."
+msgstr ""
+"Аўтаматычна адключацца ад інтэрнэту, калі падключэнне да VPN страчана."
 
 msgctxt "message"
 msgid ""
@@ -1750,7 +1752,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "This will automatically set your protocol to WireGuard."
-msgstr "Гэта аўтаматычна ўсталюе ваш пратакол на WireGuard."
+msgstr "Гэта аўтаматычна прызначыць ваш пратакол на WireGuard."
 
 msgctxt "message"
 msgid "This will disable NetShield."
@@ -1957,7 +1959,7 @@ msgstr "Рэжым уключэння"
 
 msgctxt "title"
 msgid "Invalid Session"
-msgstr "Несапраўдны сеанс"
+msgstr "Памылковы сеанс"
 
 msgctxt "title"
 msgid "Kill Switch Enabled"
@@ -2069,7 +2071,7 @@ msgstr "Не ўдалося знайсці сервер"
 
 msgctxt "title"
 msgid "Update system clock"
-msgstr "Абнавіце сістэмны гадзіннік"
+msgstr "Абнавіць сістэмны гадзіннік"
 
 msgctxt "title"
 msgid "VPN Accelerator"
@@ -2077,7 +2079,7 @@ msgstr "VPN Accelerator"
 
 msgctxt "title"
 msgid "VPN connection error"
-msgstr "Памылка падключэння VPN"
+msgstr "Памылка падключэння да VPN"
 
 msgctxt "tooltip"
 msgid "Close"

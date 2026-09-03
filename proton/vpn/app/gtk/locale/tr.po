@@ -28,6 +28,10 @@ msgid "Cancel Connection"
 msgstr "Bağlantıyı iptal et"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "Sunucu değiştir"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "Bağlan"
 

@@ -24,6 +24,10 @@ msgid "Cancel Connection"
 msgstr "取消連線"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "切換伺服器"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "連線"
 

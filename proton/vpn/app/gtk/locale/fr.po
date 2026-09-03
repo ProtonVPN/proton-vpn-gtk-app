@@ -28,6 +28,10 @@ msgid "Cancel Connection"
 msgstr "Annuler la connexion"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "Changer de serveur"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "Se connecter"
 

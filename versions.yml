@@ -1,30 +1,12 @@
-version: 4.18.2rc4
+version: 4.18.2
 time: 2026/09/03 08:10
-author: L10n bot
-email: service_account_73c4205ebb9a547d11aa5c7b26226660@noreply.gitlab.protontech.ch
+author: Axel Langenskiold
+email: axel.langenskiold@proton.ch
 description:
-- "i18n(weekly-mr): Upgrade translations from crowdin (58d09466)."
----
-version: 4.18.2rc3
-time: 2026/08/31 17:48
-author: Richard Paterson
-email: richard.paterson@proton.ch
-description:
-- "feat: Free tier users can connect to fastest free global and country servers, and change servers randomly (behind feature flag)"
----
-version: 4.18.2rc2
-time: 2026/08/27 18:53
-author: Richard Paterson
-email: richard.paterson@proton.ch
-description:
-- "feat: Remove pinned servers, auto connect and server search for free tier (behind feature flag)"
----
-version: 4.18.2rc1
-time: 2026/08/25 16:38
-author: Richard Paterson
-email: richard.paterson@proton.ch
-description:
-- "feat: Free tier users always reconnect to the same server for a free country (behind feature flag)"
+- "i18n(weekly-mr): Upgrade translations from crowdin (58d09466). (L10n bot)"
+- "feat: Free tier users can connect to fastest free global and country servers, and change servers randomly (behind feature flag) (Richard Paterson)"
+- "feat: Remove pinned servers, auto connect and server search for free tier (behind feature flag) (Richard Paterson)"
+- "feat: Free tier users always reconnect to the same server for a free country (behind feature flag) (Richard Paterson)"
 ---
 version: 4.18.1
 time: 2026/08/25 16:00

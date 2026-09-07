@@ -278,8 +278,13 @@ class EarlyAccessWidget(ToggleWidget):
             ).result()
 
         if self._command_failed(result):
+            stderr = (
+                result.stderr.decode('utf-8')
+                if result and hasattr(result, 'stderr') and result.stderr
+                else "No result"
+            )
             logger.warning(
-                f"Unable to list repo packages: {result.stderr.decode('utf-8')}",
+                f"Unable to list repo packages: {stderr}",
                 category="subprocess", subcategory="command", event="run"
             )
             return stable_repo_package_installed, beta_repo_package_installed
@@ -305,9 +310,19 @@ class EarlyAccessWidget(ToggleWidget):
             result = future.result()
 
             if self._command_failed(result):
+                stderr = (
+                    result.stderr.decode('utf8')
+                    if result and hasattr(result, 'stderr') and result.stderr
+                    else ""
+                )
+                stdout = (
+                    result.stdout.decode('utf8')
+                    if result and hasattr(result, 'stdout') and result.stdout
+                    else ""
+                )
                 logger.warning(
-                    f"Unable to fulfil command: \nstderr: {result.stderr.decode('utf8')}\n"
-                    f"stdout: {result.stdout.decode('utf8')}",
+                    f"Unable to fulfil command: \nstderr: {stderr}\n"
+                    f"stdout: {stdout}",
                     category="subprocess", subcategory="command", event="run"
                 )
                 self._restore_switch_to_previous_state()
@@ -356,4 +371,6 @@ class EarlyAccessWidget(ToggleWidget):
         GLib.idle_add(self.set_state, self.get_setting())
 
     def _command_failed(self, result) -> bool:
+        if result is None:
+            return True
         return result.returncode != 0

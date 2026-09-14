@@ -1970,6 +1970,10 @@ msgid "Share anonymous crash reports"
 msgstr "使用匿名分享當機錯誤報告"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "分享匿名使用統計資料"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "智慧路由"
 

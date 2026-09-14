@@ -28,6 +28,10 @@ msgid "Cancel Connection"
 msgstr "Ακύρωση Σύνδεσης"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "Αλλαγή διακομιστή"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "Σύνδεση"
 
@@ -1792,6 +1796,16 @@ msgstr ""
 "δίκτυα IPv6."
 
 msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Τα δεδομένα χρήσης μάς βοηθούν να παρακάμπτουμε τους αποκλεισμούς VPN και να βελτιώνουμε την απόδοση της εφαρμογής.\n"
+"\n"
+"Αυτά τα στατιστικά στοιχεία δεν περιλαμβάνουν τη διεύθυνση IP σας και δεν μπορούν να χρησιμοποιηθούν για την ταυτοποίησή σας. Δε θα τα κοινοποιήσουμε ποτέ σε τρίτους."
+
+msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
 msgstr ""
 "Όταν είναι ενεργοποιημένη, η εφαρμογή ξεκινά ελαχιστοποιημένη στην περιοχή "
@@ -2053,6 +2067,10 @@ msgstr "Ρυθμίσεις"
 msgctxt "title"
 msgid "Share anonymous crash reports"
 msgstr "Κοινοποιήστε ανώνυμες αναφορές σφαλμάτων"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Κοινοποιήστε ανώνυμα στατιστικά χρήσης"
 
 msgctxt "title"
 msgid "Smart routing"

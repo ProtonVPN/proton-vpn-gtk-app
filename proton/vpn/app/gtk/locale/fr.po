@@ -45,7 +45,7 @@ msgstr "Désactiver"
 
 msgctxt "button"
 msgid "Disconnect"
-msgstr "Déconnecté"
+msgstr "Se déconnecter"
 
 msgctxt "button"
 msgid "Done"
@@ -2064,6 +2064,10 @@ msgstr "Paramètres"
 msgctxt "title"
 msgid "Share anonymous crash reports"
 msgstr "Partager des rapports de plantage anonymes"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Partager des statistiques d'utilisation anonyme"
 
 msgctxt "title"
 msgid "Smart routing"

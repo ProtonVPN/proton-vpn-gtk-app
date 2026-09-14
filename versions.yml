@@ -1,3 +1,10 @@
+version: 4.18.3rc2
+time: 2026/09/14 14:37
+author: L10n bot
+email: service_account_73c4205ebb9a547d11aa5c7b26226660@noreply.gitlab.protontech.ch
+description:
+- "i18n(weekly-mr): Upgrade translations from crowdin (db5aa8a7)."
+---
 version: 4.18.3rc1
 time: 2026/09/09 11:50
 author: Luke Titley

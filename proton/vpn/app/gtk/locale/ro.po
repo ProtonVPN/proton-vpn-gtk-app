@@ -1778,6 +1778,16 @@ msgstr ""
 "rețelele IPv6."
 
 msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Datele de utilizare ne ajută să depășim blocajele VPN și să îmbunătățim performanța aplicației.\n"
+"\n"
+"Aceste statistici nu vă conțin adresa IP și nu pot fi folosite pentru a vă identifica. Nu le vom partaja niciodată cu terțe părți."
+
+msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
 msgstr "Dacă e activată, aplicația pornește minimizată în zona de notificări."
 
@@ -2036,6 +2046,10 @@ msgstr "Setări"
 msgctxt "title"
 msgid "Share anonymous crash reports"
 msgstr "Partajare anonimă rapoarte de erori"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Partajare anonimă statistici de utilizare"
 
 msgctxt "title"
 msgid "Smart routing"

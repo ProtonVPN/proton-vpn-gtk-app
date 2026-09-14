@@ -28,6 +28,10 @@ msgid "Cancel Connection"
 msgstr "연결 취소"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "서버 변경"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "연결"
 
@@ -1732,6 +1736,16 @@ msgid ""
 msgstr "VPN을 통해 IPv6 트래픽을 터널링합니다. IPv6 네트워크와의 호환성을 향상시킬 수 있습니다."
 
 msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"사용 데이터는 당사 개발자의 VPN 차단 극복과 앱 성능 향상에 도움을 줄 수 있습니다.\n"
+"\n"
+"이러한 통계에는 사용자의 IP 주소가 포함되지 않으며 사용자의 식별에 사용될 수 없습니다. 이 정보는 제삼자와 절대 공유되지 않습니다."
+
+msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
 msgstr "활성화하면 앱이 트레이에 최소화된 상태로 시작됩니다."
 
@@ -1987,6 +2001,10 @@ msgstr "설정"
 msgctxt "title"
 msgid "Share anonymous crash reports"
 msgstr "익명으로 충돌 보고서 공유"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "익명으로 사용 통계 공유"
 
 msgctxt "title"
 msgid "Smart routing"

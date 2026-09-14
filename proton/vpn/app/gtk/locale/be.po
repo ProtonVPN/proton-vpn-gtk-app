@@ -28,6 +28,10 @@ msgid "Cancel Connection"
 msgstr "Скасаваць падключэнне"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "Змяніць сервер"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "Падключыць"
 
@@ -1779,6 +1783,16 @@ msgstr ""
 "сеткамі IPv6."
 
 msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Даныя аб выкарыстанні нам пераадолець блакіроўкі VPN і палепшыць прадукцыйнасць праграмы.\n"
+"\n"
+"Гэта статыстыка не змяшчае ваш IP-адрас і яна не будзе выкарыстана, каб ідэнтыфікаваць вас. Вашы даныя ніколі не будуць абагульвацца са староннімі асобамі."
+
+msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
 msgstr "Праграма запускаецца згорнутай у латок, калі ўключана."
 
@@ -2036,6 +2050,10 @@ msgstr "Налады"
 msgctxt "title"
 msgid "Share anonymous crash reports"
 msgstr "Абагульваць ананімныя справаздачы аб збоях"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Абагульваць ананімную статыстыку выкарыстання"
 
 msgctxt "title"
 msgid "Smart routing"

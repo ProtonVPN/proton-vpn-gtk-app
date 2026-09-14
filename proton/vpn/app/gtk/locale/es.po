@@ -28,6 +28,10 @@ msgid "Cancel Connection"
 msgstr "Cancelar conexión"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "Cambiar servidor"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "Conectar"
 
@@ -1784,6 +1788,16 @@ msgstr ""
 " con redes IPv6."
 
 msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"El uso de datos nos ayuda a superar los bloqueos de VPN y mejorar el rendimiento de la aplicación.\n"
+"\n"
+"Estas estadísticas no contienen su dirección IP y no se pueden usar para identificarle. Nunca las compartiremos con terceros."
+
+msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
 msgstr ""
 "Cuando está activada, la aplicación se iniciará minimizada en la bandeja."
@@ -2043,6 +2057,10 @@ msgstr "Ajustes"
 msgctxt "title"
 msgid "Share anonymous crash reports"
 msgstr "Compartir informes de errores anónimos"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Compartir estadísticas de uso anónimas"
 
 msgctxt "title"
 msgid "Smart routing"

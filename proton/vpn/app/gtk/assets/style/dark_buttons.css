@@ -1,4 +1,8 @@
-@import "dark_colours.css";
+button.primary,
+button.secondary,
+button.danger {
+    border-radius: 10px;
+}
 
 button.primary:not(:disabled) {
 	background-color: @interaction-norm;

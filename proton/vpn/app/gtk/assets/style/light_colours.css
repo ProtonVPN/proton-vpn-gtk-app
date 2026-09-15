@@ -1,0 +1,101 @@
+/* Light theme colour tokens, mirroring dark_colours.css.
+Values for primary/interaction-norm/text/background/border/signal come
+straight from Proton's light design tokens (same ones used by win-app's
+Colors.xaml). Tokens with no direct source-of-truth equivalent
+(field-*, interaction-norm-accent*, interaction-weak*, interaction-default*,
+signal-info*, shadow) are a first pass derived to stay consistent with the
+same relationships used in dark_colours.css; revisit with design review. */
+
+/* Primary
+
+Used for non-interactive elements.
+*/
+@define-color primary #6D4AFF;
+
+/* Interaction-norm
+
+Used for button-norm, links and other interactive elements.
+*/
+@define-color interaction-norm #6D4AFF;
+@define-color interaction-norm-hover #6243E6;
+@define-color interaction-norm-active #573BCC;
+
+/* Interaction-norm-accent */
+@define-color interaction-norm-accent #8A6EFF;
+@define-color interaction-norm-accent-hover #7C5CFF;
+@define-color interaction-norm-accent-active #6D4AFF;
+
+/* Text
+
+Text and icon colors.
+*/
+@define-color text-norm #0C0C14;
+@define-color text-weak rgba(12, 12, 20, 0.7);
+@define-color text-hint rgba(12, 12, 20, 0.5);
+@define-color text-disabled rgba(12, 12, 20, 0.3);
+@define-color text-invert #FFFFFF;
+
+/* Field
+
+Used for input fields, selects and selection controls.
+*/
+@define-color field-norm #D1CFDB;
+@define-color field-hover #B8B4C9;
+@define-color field-disabled #E8E7ED;
+
+/* Border
+
+Used as separators in tables and lists,
+for section lines and for containers.
+*/
+@define-color border-norm rgba(12, 12, 20, 0.16);
+@define-color border-weak rgba(12, 12, 20, 0.08);
+
+/* Background
+
+Used for main layout areas and components.
+*/
+@define-color background-norm #FFFFFF;
+@define-color background-weak #F5F4F2;
+@define-color background-strong #E5E4E1;
+
+/* Interaction-weak
+
+Used for button-weak.
+*/
+@define-color interaction-weak #FFFFFF;
+@define-color interaction-weak-hover #ECECEC;
+@define-color interaction-weak-active #D8D8D9;
+
+/* Interaction-default
+
+Used for button-ghost and interactions that have
+distinct visible background.
+E.g. sidenavigation and toolbar.
+*/
+@define-color interaction-default transparent;
+@define-color interaction-default-hover rgba(12, 12, 20, 0.05);
+@define-color interaction-default-active rgba(12, 12, 20, 0.1);
+
+/* Signal
+
+Used for banners, form-validation, buttons and meter-bars.
+*/
+@define-color signal-danger #B71432;
+@define-color signal-danger-hover #C22B47;
+@define-color signal-danger-active #A01129;
+
+@define-color signal-warning #FF9900;
+@define-color signal-warning-hover #FFB800;
+@define-color signal-warning-active #E68A00;
+
+@define-color signal-success #1EA885;
+@define-color signal-success-hover #1EA885;
+@define-color signal-success-active #198F71;
+
+@define-color signal-info #239ECE;
+@define-color signal-info-hover #27B1E8;
+@define-color signal-info-active #1F83B5;
+
+/* Shadows */
+@define-color shadow rgba(12, 12, 20, 0.16);

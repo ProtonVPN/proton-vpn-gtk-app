@@ -60,7 +60,6 @@ class MainWindow(Gtk.ApplicationWindow):
     ):
         super().__init__(application=application)
         self._application = application
-        self.get_settings().props.gtk_application_prefer_dark_theme = True
         self._controller = controller
         self._close_window_handler_id: Optional[int] = None
         self._shortcut_controller: Optional[Gtk.ShortcutController] = None
@@ -132,8 +131,12 @@ class MainWindow(Gtk.ApplicationWindow):
         Handle delete-event, set window resize restrictions...
         """
         self.set_name("main-window")
-        self.set_resizable(False)
+        # WIDTH/HEIGHT remain the window's default and minimum size (also used
+        # by the demo screenshot tooling to frame widgets consistently), but
+        # the window is no longer locked to that exact size: it can now be
+        # resized/maximized, closer to the Windows app's flexible layout.
         self.set_size_request(MainWindow.WIDTH, MainWindow.HEIGHT)
+        self.set_default_size(MainWindow.WIDTH, MainWindow.HEIGHT)
 
     def configure_close_button_behaviour(self, tray_indicator_enabled: bool):
         """Configures the behaviour of the button to close the window

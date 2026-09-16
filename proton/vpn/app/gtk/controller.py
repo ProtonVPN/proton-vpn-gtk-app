@@ -39,6 +39,7 @@ from proton.vpn.core.settings import Settings
 from proton.vpn.session.exceptions import ServerNotFoundError
 from proton.vpn.session.servers import LogicalServer, ServerFeatureEnum, TierEnum
 from proton.vpn.session.session import \
+    ClientConfig, \
     FeatureFlags, \
     Notifications as PullNotifications
 from proton.vpn.session.u2f_interaction import UserInteraction
@@ -377,6 +378,11 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
     def feature_flags(self) -> FeatureFlags:
         """Returns object which specifies which features are to be enabled or not."""
         return self._api.refresher.feature_flags
+
+    @property
+    def client_config(self) -> ClientConfig:
+        """Returns the current client configuration."""
+        return self._api.refresher.client_config
 
     @property
     def notifications(self) -> PullNotifications:

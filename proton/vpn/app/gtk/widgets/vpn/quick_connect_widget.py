@@ -19,6 +19,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import weakref
+from typing import Callable, Optional
+
 from gi.repository import GLib
 from proton.vpn.connection import states
 
@@ -26,6 +29,9 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.change_server_cooldown import \
+    ChangeServerCooldown, \
+    format_countdown
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -34,14 +40,24 @@ logger = logging.getLogger(__name__)
 class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Widget handling the "Quick Connect" functionality."""
     CHANGE_SERVER_LABEL = C_("button", "Change server")
+    LIMIT_REACHED_LABEL = C_(
+        "label", "You've reached the maximum number of free server changes for now"
+    )
+    UPGRADE_LABEL = C_("label", "Get unlimited server changes with VPN Plus.")
+    COOLDOWN_TICK_INTERVAL_SECONDS = 1
 
-    def __init__(self, controller: Controller):
+    def __init__(self, controller: Controller, clock: Optional[Callable[[], float]] = None):
         super().__init__(spacing=10)
         self.set_name("quick-connect-widget")
         self._controller = controller
         self._connection_state: states.State = None
         # Whether the "Change server" button is ever shown for this user.
         self._show_change_server = controller.server_selection_requires_upgrade
+        self._cooldown = ChangeServerCooldown(clock) if clock else ChangeServerCooldown()
+        self._cooldown_tick_src_id: Optional[int] = None
+        # Whether a cooldown is pending once a "Change server" requested
+        # connection has been established
+        self._cooldown_pending = False
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.connect_button = Gtk.Button(label=C_("button", "Connect"))
@@ -58,13 +74,14 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             "clicked", self._on_disconnect_button_clicked)
         self.disconnect_button.set_visible(False)
         self.append(self.disconnect_button)
-        self.change_server_button = Gtk.Button(
-            label=QuickConnectWidget.CHANGE_SERVER_LABEL
-        )
+        self.change_server_button = Gtk.Button()
         self.change_server_button.add_css_class("secondary")
+        self.change_server_button.set_child(self._build_change_server_button_child())
         safe_signal_connect(
             self.change_server_button,
-            "clicked", self._on_change_server_button_clicked)
+            "clicked",
+            self._on_change_server_button_clicked
+        )
         self.change_server_button.set_sensitive(False)
         self.change_server_revealer = Gtk.Revealer()
         self.change_server_revealer.set_child(self.change_server_button)
@@ -72,6 +89,56 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         # buttons is showing: Gtk.Box skips hidden children, so the hidden one
         # costs neither height nor spacing.
         self.append(self.change_server_revealer)
+        self.cooldown_card_revealer = Gtk.Revealer()
+        self.cooldown_card_revealer.set_child(self._build_cooldown_card())
+        self.append(self.cooldown_card_revealer)
+
+    def _build_change_server_button_child(self) -> Gtk.Widget:
+        """Builds the button content: the label, plus the cooldown countdown.
+
+        The countdown is a separate label so that it can stay legible while
+        the rest of the button is dimmed by its insensitive state.
+        """
+        box = Gtk.Box(spacing=8)
+        box.set_halign(Gtk.Align.CENTER)
+        box.append(Gtk.Label(label=QuickConnectWidget.CHANGE_SERVER_LABEL))
+        self.change_server_countdown_label = Gtk.Label()
+        self.change_server_countdown_label.add_css_class("change-server-countdown")
+        self.change_server_countdown_label.set_visible(False)
+        box.append(self.change_server_countdown_label)
+        return box
+
+    def _build_cooldown_card(self) -> Gtk.Widget:
+        """Builds the card shown below the button while a cooldown is running.
+
+        The upgrade prompt shows for the whole cooldown. The limit reached
+        message only applies to the long one, so it starts hidden and is
+        toggled by _refresh_change_server().
+        """
+        self.cooldown_limit_reached_label = self._build_cooldown_card_label(
+            QuickConnectWidget.LIMIT_REACHED_LABEL, css_class="heading"
+        )
+        self.cooldown_limit_reached_label.set_visible(False)
+        self.cooldown_upgrade_label = self._build_cooldown_card_label(
+            QuickConnectWidget.UPGRADE_LABEL, css_class="dim-label"
+        )
+
+        card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        card.set_name("change-server-cooldown-card")
+        card.append(self.cooldown_limit_reached_label)
+        card.append(self.cooldown_upgrade_label)
+        return card
+
+    @staticmethod
+    def _build_cooldown_card_label(text: str, css_class: str) -> Gtk.Label:
+        """Builds a left aligned, wrapping label for the cooldown card."""
+        label = Gtk.Label(label=text)
+        label.add_css_class(css_class)
+        label.set_halign(Gtk.Align.START)
+        label.set_xalign(0)
+        label.set_wrap(True)
+        label.set_max_width_chars(35)
+        return label
 
     @property
     def connection_state(self):
@@ -92,10 +159,10 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             self._on_connection_state_connecting()
         elif isinstance(connection_state, states.Connected):
             self._on_connection_state_connected()
-        elif isinstance(connection_state, states.Disconnecting):
-            self._on_connection_state_disconnecting()
         elif isinstance(connection_state, states.Error):
             self._on_connection_state_error()
+
+        self._refresh_change_server()
 
     def connection_status_update(self, connection_state):
         """This method is called by VPNWidget whenever the VPN connection status changes."""
@@ -105,36 +172,31 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self.disconnect_button.set_visible(False)
         self.connect_button.set_visible(True)
         self.change_server_revealer.set_reveal_child(False)
-        self.change_server_button.set_sensitive(False)
+        # The server change did not complete, so it does not count.
+        self._cooldown_pending = False
 
     def _on_connection_state_connecting(self):
         self.connect_button.set_visible(False)
         self.disconnect_button.set_label(C_("button", "Cancel Connection"))
         self.disconnect_button.set_visible(True)
         self.change_server_revealer.set_reveal_child(self._show_change_server)
-        # There is no established connection to change away from yet.
-        self.change_server_button.set_sensitive(False)
 
     def _on_connection_state_connected(self):
         self.connect_button.set_visible(False)
         self.disconnect_button.set_label(C_("button", "Disconnect"))
         self.disconnect_button.set_visible(True)
         self.change_server_revealer.set_reveal_child(self._show_change_server)
-        self.change_server_button.set_sensitive(self._show_change_server)
-
-    def _on_connection_state_disconnecting(self):
-        # Visibility is deliberately left alone so the button doesn't flicker
-        # while switching servers, but it must not be clickable while the
-        # current connection is being torn down: a click here would turn a
-        # user-requested disconnect into a reconnection.
-        self.change_server_button.set_sensitive(False)
+        if self._cooldown_pending:
+            self._cooldown_pending = False
+            self._start_cooldown()
 
     def _on_connection_state_error(self):
         self.connect_button.set_visible(False)
         self.disconnect_button.set_label(C_("button", "Cancel Connection"))
         self.disconnect_button.set_visible(True)
         self.change_server_revealer.set_reveal_child(False)
-        self.change_server_button.set_sensitive(False)
+        # The server change did not complete, so it does not count.
+        self._cooldown_pending = False
 
     def _on_connect_button_clicked(self, _):
         logger.info("Connect to fastest server", category="ui.tray", event="connect")
@@ -148,5 +210,57 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
 
     def _on_change_server_button_clicked(self, _):
         logger.info("Change to another server", category="ui", event="change_server")
+        self._cooldown_pending = True
         future = self._controller.change_server()
         future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
+
+    def _start_cooldown(self):
+        """Starts a cooldown and the timer refreshing the countdown."""
+        self._cooldown.arm(self._controller.client_config)
+        self._cancel_cooldown_tick()
+        # Held weakly, as GLib would otherwise keep this widget alive until the timer stops.
+        weak_tick = weakref.WeakMethod(self._on_cooldown_tick)
+
+        def tick() -> bool:
+            method = weak_tick()
+            return method() if method else GLib.SOURCE_REMOVE
+
+        self._cooldown_tick_src_id = GLib.timeout_add_seconds(
+            QuickConnectWidget.COOLDOWN_TICK_INTERVAL_SECONDS, tick
+        )
+
+    def _on_cooldown_tick(self) -> bool:
+        self._refresh_change_server()
+
+        if self._cooldown.is_active:
+            return GLib.SOURCE_CONTINUE
+
+        self._cooldown_tick_src_id = None
+        return GLib.SOURCE_REMOVE
+
+    def _cancel_cooldown_tick(self):
+        if self._cooldown_tick_src_id:
+            GLib.source_remove(self._cooldown_tick_src_id)
+            self._cooldown_tick_src_id = None
+
+    def _refresh_change_server(self):
+        """Updates whether the server can be changed, and the cooldown display.
+        """
+        cooldown_is_active = self._cooldown.is_active
+        is_connected = isinstance(self._connection_state, states.Connected)
+        # Only an established connection can be changed away from
+        self.change_server_button.set_sensitive(
+            self._show_change_server
+            and is_connected
+            and not cooldown_is_active
+        )
+
+        change_server_is_shown = self.change_server_revealer.get_reveal_child()
+        self.cooldown_card_revealer.set_reveal_child(
+            cooldown_is_active and change_server_is_shown
+        )
+        self.cooldown_limit_reached_label.set_visible(self._cooldown.is_long)
+        self.change_server_countdown_label.set_visible(cooldown_is_active)
+        self.change_server_countdown_label.set_label(
+            format_countdown(self._cooldown.remaining_seconds)
+        )

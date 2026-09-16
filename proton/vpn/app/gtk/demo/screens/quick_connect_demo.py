@@ -59,3 +59,32 @@ def quick_connect_connected() -> Gtk.Widget:
 def quick_connect_error() -> Gtk.Widget:
     """Quick-connect widget in the error state."""
     return _quick_connect(states.Error())
+
+
+def _cooling_down(server_changes: int) -> Gtk.Widget:
+    """Quick-connect widget after the given number of server changes."""
+    controller = mock_controller()
+    controller.server_selection_requires_upgrade = True
+    # The cooldown does arithmetic with these, so they cannot stay mocks.
+    controller.client_config.change_server_attempt_limit = 4
+    controller.client_config.change_server_short_delay_sec = 90
+    controller.client_config.change_server_long_delay_sec = 1200
+
+    widget = QuickConnectWidget(controller)
+    for _ in range(server_changes):
+        widget.change_server_button.emit("clicked")
+        widget.connection_status_update(states.Connected())
+
+    return framed_like_app(widget, fill_height=False)
+
+
+@register_demo("quick-connect", label="cooling-down-short")
+def quick_connect_cooling_down_short() -> Gtk.Widget:
+    """Quick-connect widget during the short cooldown after a server change."""
+    return _cooling_down(server_changes=1)
+
+
+@register_demo("quick-connect", label="cooling-down-long")
+def quick_connect_cooling_down_long() -> Gtk.Widget:
+    """Quick-connect widget during the long cooldown, once the limit is reached."""
+    return _cooling_down(server_changes=4)

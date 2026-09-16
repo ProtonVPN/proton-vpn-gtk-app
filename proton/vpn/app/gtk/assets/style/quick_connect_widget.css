@@ -1,6 +1,22 @@
+@import "dark_colours.css";
+
 #quick-connect-widget {
     /* Align with country flags */
     padding-left: 8px;
     /* Add padding to the right for consistency */
     padding-right: 8px;
+}
+
+#change-server-cooldown-card {
+    background-color: @background-weak;
+    border: 1px solid @border-weak;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* The button is insensitive while cooling down, which dims its contents.
+   The countdown has to stay legible, so the dimming is undone for it. */
+#quick-connect-widget button:disabled .change-server-countdown {
+    color: @text-norm;
+    opacity: 1;
 }

@@ -44,6 +44,14 @@ SPLIT_TUNNELING_APP_RESTART_MESSAGE = C_(
     "Split tunneling enabled. Remember to restart affected apps."
 )
 
+PROTUN_ONLY_FEATURE_FLAG = "LinuxProtunOnly"
+PROTUN_ONLY_FREE_USER_MESSAGE = C_(
+    "message",
+    "Free-tier launches default to a Proton protocol. "
+    "Any WireGuard or OpenVPN selection lasts only until the next "
+    "application restart."
+)
+
 
 class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-attributes
     """Displays the current connection status."""
@@ -184,6 +192,10 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
                 self._notifications.show_info_message(
                     message=SPLIT_TUNNELING_APP_RESTART_MESSAGE
                 )
+            if self._protun_only_enabled_for_free_user:
+                self._notifications.show_info_message(
+                    message=PROTUN_ONLY_FREE_USER_MESSAGE
+                )
         elif disconnecting and not reconnecting:
             self._show_spinner()
             self._set_status_title(C_("status", "Disconnecting..."), None)
@@ -301,3 +313,11 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
     def _split_tunneling_enabled(self) -> bool:
         """Check if split tunneling is enabled."""
         return cast(bool, self._controller.get_setting_attr(SPLIT_TUNNELING_TOGGLE_SETTING_NAME))
+
+    @property
+    def _protun_only_enabled_for_free_user(self) -> bool:
+        """Whether the free-tier Proton-protocol-only rollout applies to this user."""
+        return (
+            self._controller.user_tier == TierEnum.FREE
+            and bool(self._controller.feature_flags.get(PROTUN_ONLY_FEATURE_FLAG))
+        )

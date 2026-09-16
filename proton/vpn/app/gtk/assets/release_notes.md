@@ -1,4 +1,4 @@
- ## What's new (4.18.3)
+## What's new (4.18.3)
 - Minor improvements.
 
 ## 4.18.2

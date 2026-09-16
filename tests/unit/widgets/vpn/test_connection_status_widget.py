@@ -23,7 +23,11 @@ from proton.vpn.connection.events import EventContext
 
 from proton.vpn.session.servers import TierEnum
 
-from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget, SPLIT_TUNNELING_APP_RESTART_MESSAGE
+from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import (
+    VPNConnectionStatusWidget,
+    SPLIT_TUNNELING_APP_RESTART_MESSAGE,
+    PROTUN_ONLY_FREE_USER_MESSAGE,
+)
 import pytest
 
 
@@ -100,6 +104,37 @@ def test_connection_status_update_notifies_user_when_in_connected_state_and_spli
     mock_notifications.show_info_message.assert_called_once_with(
         message=SPLIT_TUNNELING_APP_RESTART_MESSAGE
     )
+
+
+@pytest.mark.parametrize("user_tier, flag_enabled, expected", [
+    (TierEnum.FREE, True, True),
+    (TierEnum.FREE, False, False),
+    (TierEnum.PLUS, True, False),
+])
+def test_protun_only_free_user_notification(user_tier, flag_enabled, expected):
+    controller_mock = Mock(name="controller")
+    controller_mock.get_setting_attr.return_value = False  # split tunneling off
+    controller_mock.user_tier = user_tier
+    controller_mock.feature_flags.get.return_value = flag_enabled
+    controller_mock.server_list.get_by_name.return_value = Mock(
+        exit_country="ch",
+        exit_country_name="Switzerland",
+        location="Zurich",
+        features=[]
+    )
+
+    mock_notifications = Mock()
+    widget = VPNConnectionStatusWidget(controller_mock, mock_notifications)
+
+    connection_state = states.Connected()
+    connection_state.context.connection = Mock(server_name="CH#1")
+    widget.connection_status_update(connection_state)
+
+    shown = any(
+        call.kwargs.get("message") == PROTUN_ONLY_FREE_USER_MESSAGE
+        for call in mock_notifications.show_info_message.call_args_list
+    )
+    assert shown is expected
 
 
 @pytest.mark.parametrize("connection_state_type, reconnection, expected_subtitle", [

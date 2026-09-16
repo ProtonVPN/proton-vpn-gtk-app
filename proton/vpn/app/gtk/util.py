@@ -27,7 +27,7 @@ from proton.vpn import logging
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
 # See: https://docs.gtk.org/gtk4/migrating-3to4.html#set-a-proper-application-id  # pylint: disable=line-too-long # noqa: E501
-APPLICATION_ID = "proton.vpn.app.gtk"
+APPLICATION_ID = "com.protonvpn.app.gtk"
 
 logger = logging.getLogger(__name__)
 

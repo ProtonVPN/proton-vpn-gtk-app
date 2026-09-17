@@ -63,7 +63,9 @@ class SettingsWindow(Gtk.Window):  # pylint: disable=too-many-instance-attribute
         self._controller = controller
         self._notification_bar = notification_bar or NotificationBar()
 
-        self._account_settings = account_settings or AccountSettings(self._controller)
+        self._account_settings = account_settings or AccountSettings(
+            self._controller, self._notification_bar
+        )
         self._feature_settings = feature_settings or FeatureSettings(
             self._controller, self
         )

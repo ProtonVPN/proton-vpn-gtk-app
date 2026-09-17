@@ -177,7 +177,8 @@ class CustomButton(Gtk.Grid):
         button_label: str,
         on_click_callback: Callable,
         requires_subscription_to_be_active: bool = False,
-        bold_title: bool = False
+        bold_title: bool = False,
+        extra_button: Optional[Gtk.Button] = None
     ):
         super().__init__()
         self._apply_grid_styles()
@@ -185,6 +186,7 @@ class CustomButton(Gtk.Grid):
         self.label = SettingName(title, bold=bold_title)
         self.description = SettingDescription(description)
         self.button = self._build_button(button_label, on_click_callback)
+        self.extra_button = extra_button
         self._build_ui()
 
     def _build_button(self, button_label: str, on_click_callback: Callable) -> Gtk.Button:
@@ -199,15 +201,30 @@ class CustomButton(Gtk.Grid):
             self.button = UpgradePlusTag()
 
         self.attach(self.label, 0, 0, 1, 1)
-
+        # Buttons are grouped in a box so extra buttons don't inherit the
+        # grid's 100px column spacing.
+        button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        button_box.append(self.button)
+        if self.extra_button:
+            button_box.append(self.extra_button)
         # Style interactive_object so it's always aligned
-        self.button.set_hexpand(True)
-        self.button.set_halign(Gtk.Align.END)
-
-        self.attach(self.button, 1, 0, 1, 1)
+        button_box.set_hexpand(True)
+        button_box.set_halign(Gtk.Align.END)
+        self.attach(button_box, 1, 0, 1, 1)
 
         if self.description:
             self.attach(self.description, 0, 1, 2, 1)
+
+    @staticmethod
+    def build_icon_button(
+        icon_name: str, tooltip_text: str, on_click_callback: Callable
+    ) -> Gtk.Button:
+        """Builds a square button with an icon and tooltip"""
+        button = Gtk.Button(icon_name=icon_name)
+        button.set_valign(Gtk.Align.CENTER)
+        button.set_tooltip_text(tooltip_text)
+        safe_signal_connect(button, "clicked", on_click_callback)
+        return button
 
     def _apply_grid_styles(self):
         self.add_css_class("setting-item")

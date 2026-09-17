@@ -409,6 +409,26 @@ class Controller:  # pylint: disable=too-many-public-methods, too-many-instance-
             nps_response
         )
 
+    def refresh_vpn_info(self, on_done=None, on_error=None) -> Future:
+        """Re-fetches VPN info from the REST API and updates the stored account data."""
+        def on_finished(finished: Future):
+            try:
+                vpninfo = finished.result()
+            except Exception as exception:  # pylint: disable=broad-except
+                GLib.idle_add(
+                    self.exception_handler.handle_exception,
+                    type(exception), exception, exception.__traceback__
+                )
+                if on_error:
+                    GLib.idle_add(on_error, exception)
+                return
+            if on_done:
+                GLib.idle_add(on_done, vpninfo)
+
+        future = self.executor.submit(self._api.refresh_vpn_info)
+        future.add_done_callback(on_finished)
+        return future
+
     def register_connection_status_subscriber(self, subscriber):
         """
         Registers a new subscriber to connection status updates.

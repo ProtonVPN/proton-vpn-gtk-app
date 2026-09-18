@@ -86,6 +86,11 @@ class VPNReconnector:  # pylint: disable=too-many-instance-attributes
         """Returns True if there is a pending scheduled reconnection and False otherwise."""
         return self._retry_src_id is not None
 
+    @property
+    def is_recovering_connection(self) -> bool:
+        """Returns True while an automatic reconnection attempt is in progress or pending."""
+        return self.retry_counter > 0
+
     def enable(self):
         """Enables the auto reconnect feature."""
         if not self._vpn_data_refresher.is_vpn_data_ready:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses

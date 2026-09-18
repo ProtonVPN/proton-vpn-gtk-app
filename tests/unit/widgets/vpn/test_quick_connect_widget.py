@@ -90,11 +90,11 @@ def test_quick_connect_widget_disconnects_from_current_server_when_disconnect_is
 
 @pytest.mark.parametrize("connection_state, change_server_button_visible", [
     (Disconnected(), False),
-    (Connecting(), True),
+    (Connecting(), False),
     (Connected(), True),
     (Error(), False),
 ])
-def test_quick_connect_widget_shows_change_server_button_only_while_connecting_or_connected(
+def test_quick_connect_widget_shows_change_server_button_only_once_connected(
         connection_state, change_server_button_visible
 ):
     controller_mock = Mock()
@@ -138,21 +138,23 @@ def test_quick_connect_widget_enables_change_server_button_only_while_connected(
         is change_server_button_sensitive
 
 
-def test_quick_connect_widget_keeps_change_server_button_visible_throughout_a_server_change():
+def test_quick_connect_widget_hides_change_server_button_during_a_reconnect_started_elsewhere():
     controller_mock = Mock()
     controller_mock.server_selection_requires_upgrade = True
+    # A normal, user-initiated reconnect, not an automatic retry.
+    controller_mock.reconnector.is_recovering_connection = False
     quick_connect_widget = QuickConnectWidget(controller=controller_mock)
     sequence = [
-        Connected(),
-        Disconnecting(),
-        Disconnected(StateContext(reconnection=Mock())),
-        Connecting(),
-        Connected(),
+        (Connected(), True),
+        (Disconnecting(), False),
+        (Disconnected(StateContext(reconnection=Mock())), False),
+        (Connecting(), False),
+        (Connected(), True),
     ]
 
-    for connection_state in sequence:
+    for connection_state, expected_visible in sequence:
         quick_connect_widget.connection_status_update(connection_state)
-        assert quick_connect_widget.change_server_revealer.get_reveal_child() is True
+        assert quick_connect_widget.change_server_revealer.get_reveal_child() is expected_visible
 
 
 def test_quick_connect_widget_changes_server_when_change_server_button_is_clicked():
@@ -344,3 +346,359 @@ def test_quick_connect_widget_never_shows_a_cooldown_when_upgrade_is_not_require
     # Neither the change server button nor the cooldown card are shown to paying users
     assert widget.change_server_revealer.get_reveal_child() is False
     assert widget.cooldown_card_revealer.get_reveal_child() is False
+
+
+class FakeScheduler:
+    """Stands in for GLib.timeout_add_seconds/source_remove: only fires when told to."""
+
+    def __init__(self):
+        self._next_id = 1
+        self._pending = {}
+
+    def schedule(self, delay_seconds, callback):
+        """Records a scheduled timeout instead of arming a real GLib timer."""
+        src_id = self._next_id
+        self._next_id += 1
+        self._pending[src_id] = (delay_seconds, callback)
+        return src_id
+
+    def cancel(self, src_id):
+        """Drops a scheduled timeout instead of calling GLib.source_remove."""
+        self._pending.pop(src_id, None)
+
+    @property
+    def pending_count(self):
+        """How many timeouts are currently scheduled and haven't fired or been cancelled."""
+        return len(self._pending)
+
+    def fire(self):
+        """Fires the sole pending timeout, as if its delay had elapsed."""
+        assert len(self._pending) == 1
+        src_id, (delay_seconds, callback) = next(iter(self._pending.items()))
+        assert delay_seconds == QuickConnectWidget.SLOW_CONNECTION_TIMEOUT_SECONDS
+        del self._pending[src_id]
+        callback()
+
+
+def _slow_connection_widget(requires_upgrade=True):
+    """A widget with a fake scheduler standing in for the slow-connection timer."""
+    controller_mock = Mock()
+    controller_mock.server_selection_requires_upgrade = requires_upgrade
+    controller_mock.client_config.change_server_attempt_limit = ATTEMPT_LIMIT
+    controller_mock.client_config.change_server_short_delay_sec = SHORT_DELAY
+    controller_mock.client_config.change_server_long_delay_sec = LONG_DELAY
+    # No automatic reconnection in progress by default: tests that need one set this True.
+    controller_mock.reconnector.is_recovering_connection = False
+    scheduler = FakeScheduler()
+    clock = FakeClock()
+    widget = QuickConnectWidget(
+        controller=controller_mock,
+        clock=clock,
+        schedule_timeout=scheduler.schedule,
+        cancel_timeout=scheduler.cancel,
+    )
+    return widget, scheduler, controller_mock, clock
+
+
+def test_quick_connect_widget_unlocks_change_server_once_connecting_takes_too_long():
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    assert widget.change_server_button.get_sensitive() is False
+
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+
+    assert widget.change_server_button.get_sensitive() is True
+
+
+def test_quick_connect_widget_slow_connection_unlock_bypasses_an_active_cooldown():
+    widget, scheduler, _, _ = _slow_connection_widget()
+    _change_server(widget)  # Arms a cooldown.
+    assert widget.change_server_button.get_sensitive() is False  # cooldown active
+    assert widget.cooldown_card_revealer.get_reveal_child() is True  # cooldown showing
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+
+    assert widget.change_server_button.get_sensitive() is True
+    assert widget.cooldown_card_revealer.get_reveal_child() is False
+    assert widget.change_server_countdown_label.get_visible() is False
+
+
+def test_quick_connect_widget_brings_back_an_active_cooldown_after_a_slow_connection_unlock():
+    """Changing server via the slow-connection unlock doesn't cancel a pre-existing
+    cooldown, only hides it: once connected, it must resume.
+    """
+    widget, scheduler, _, _ = _slow_connection_widget()
+    _change_server(widget)  # Arms a SHORT_DELAY (90s) cooldown.
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    widget.change_server_button.emit("clicked")
+    process_gtk_events()
+    widget.connection_status_update(Disconnecting(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Disconnected(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Connecting())
+    widget.connection_status_update(Connected())
+
+    # No time has passed on the fake clock: the original cooldown is untouched.
+    assert widget.change_server_button.get_sensitive() is False
+    assert widget.cooldown_card_revealer.get_reveal_child() is True
+    assert widget.change_server_countdown_label.get_label() == "01:30"
+
+
+def test_quick_connect_widget_reapplies_the_cooldown_after_a_slow_attempt_connects_unassisted():
+    """Waiting out a slow attempt instead of clicking Change Server resumes an active cool down
+    if connection succeeds.
+    """
+    widget, scheduler, _, _ = _slow_connection_widget()
+    _change_server(widget)  # Arms a SHORT_DELAY (90s) cooldown.
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    assert widget.change_server_button.get_sensitive() is True  # unlocked, bypassing it
+    assert widget.cooldown_card_revealer.get_reveal_child() is False  # and hidden
+
+    widget.connection_status_update(Connected())  # Succeeds on its own, no click.
+
+    # No time has passed on the fake clock: the original cooldown is untouched.
+    assert widget.change_server_button.get_sensitive() is False
+    assert widget.cooldown_card_revealer.get_reveal_child() is True
+    assert widget.change_server_countdown_label.get_label() == "01:30"
+
+
+def test_quick_connect_widget_does_not_reapply_an_expired_cooldown_unassisted():
+    widget, scheduler, _, clock = _slow_connection_widget()
+    _change_server(widget)  # Arms a SHORT_DELAY (90s) cooldown.
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    clock.advance(SHORT_DELAY)  # The cooldown genuinely expires while we wait.
+    widget.connection_status_update(Connected())
+
+    assert widget.change_server_button.get_sensitive() is True
+    assert widget.cooldown_card_revealer.get_reveal_child() is False
+
+
+def test_quick_connect_widget_cancels_slow_connection_timer_while_disconnecting():
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    widget.connection_status_update(Disconnecting())
+
+    assert scheduler.pending_count == 0
+
+
+def test_quick_connect_widget_cancels_slow_connection_timer_on_a_direct_disconnect():
+    """Disconnected() can follow Connecting() directly, skipping Disconnecting(), 
+    when something external tears down the VPN mid-attempt. That must
+    cancel a pending or already-fired timer too, not just the Disconnecting path.
+    """
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    assert widget.change_server_button.get_sensitive() is True
+
+    widget.connection_status_update(Disconnected())  # No Disconnecting() first.
+
+    assert widget.change_server_button.get_sensitive() is False
+
+    # A fresh attempt requires a new 8-second wait: nothing was left over.
+    widget.connection_status_update(Connecting())
+    assert widget.change_server_button.get_sensitive() is False
+    assert scheduler.pending_count == 1
+
+
+def test_quick_connect_widget_keeps_slow_connection_unlock_through_an_automatic_reconnect():
+    """Disconnecting() with a queued reconnection is teardown for an automatic retry,
+    not a manual cancellation, so the unlock triggered by a slow attempt must persist.
+    """
+    widget, scheduler, controller_mock, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    widget.connection_status_update(Error())
+    controller_mock.reconnector.is_recovering_connection = True
+    widget.connection_status_update(Disconnecting(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Disconnected(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Connecting())
+
+    assert widget.change_server_button.get_sensitive() is True
+
+
+def test_quick_connect_widget_a_change_server_click_overrides_a_concurrent_automatic_retry():
+    """Changing server via the slow-connection unlock starts a fresh attempt: it
+    resets the unlock and waits its own 8 seconds, even if an automatic retry is
+    also in progress.
+    """
+    widget, scheduler, controller_mock, _ = _slow_connection_widget()
+    controller_mock.reconnector.is_recovering_connection = True
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    assert widget.change_server_button.get_sensitive() is True
+
+    widget.change_server_button.emit("clicked")
+    process_gtk_events()
+    widget.connection_status_update(Disconnecting(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Disconnected(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Connecting())
+
+    assert widget.change_server_button.get_sensitive() is False
+    assert widget.change_server_revealer.get_reveal_child() is False
+
+
+def test_quick_connect_widget_requires_a_fresh_slow_connection_unlock_for_the_next_attempt():
+    """The unlock must disappear for the new attempt it just started:
+    it only comes back once that attempt connects, or takes long enough to unlock it again.
+    """
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    assert widget.change_server_revealer.get_reveal_child() is True
+
+    widget.change_server_button.emit("clicked")
+    process_gtk_events()
+    widget.connection_status_update(Disconnecting(StateContext(reconnection=Mock())))
+    assert widget.change_server_revealer.get_reveal_child() is False
+
+    widget.connection_status_update(Disconnected(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Connecting())
+    assert widget.change_server_revealer.get_reveal_child() is False
+
+    scheduler.fire()  # The new attempt's own 8-second timer elapses.
+    assert widget.change_server_revealer.get_reveal_child() is True
+
+
+def test_quick_connect_widget_hides_the_countdown_label_when_the_slow_connection_unlock_hides():
+    """The countdown label sits inside the button itself, so it must not flash back
+    on while the button's own revealer is still mid-animation collapsing it away.
+    """
+    widget, scheduler, _, _ = _slow_connection_widget()
+    _change_server(widget)  # Arms a cooldown.
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    widget.change_server_button.emit("clicked")
+    process_gtk_events()
+    widget.connection_status_update(Disconnecting(StateContext(reconnection=Mock())))
+
+    assert widget.change_server_revealer.get_reveal_child() is False
+    assert widget.change_server_countdown_label.get_visible() is False
+
+
+def test_quick_connect_widget_does_not_count_a_slow_connection_unlock_towards_the_limit():
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    widget.change_server_button.emit("clicked")
+    process_gtk_events()
+    widget.connection_status_update(Disconnecting(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Disconnected(StateContext(reconnection=Mock())))
+    widget.connection_status_update(Connecting())
+    widget.connection_status_update(Connected())
+
+    assert widget.cooldown_card_revealer.get_reveal_child() is False
+    assert widget.change_server_button.get_sensitive() is True
+
+
+def test_quick_connect_widget_keeps_change_server_visible_when_slow_connection_unlocked_on_error():
+    """Once unlocked, the button must stay visible through an Error to stay visible
+    through automatic retries.
+    """
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    widget.connection_status_update(Error())
+
+    assert widget.change_server_revealer.get_reveal_child() is True
+
+
+def test_quick_connect_widget_hides_change_server_on_error_without_a_slow_connection_unlock():
+    widget, _, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    widget.connection_status_update(Error())  # no timer fired yet: not unlocked
+
+    assert widget.change_server_revealer.get_reveal_child() is False
+
+
+def test_quick_connect_widget_hides_change_server_on_error_after_a_successful_connection():
+    widget, _, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connected())
+    assert widget.change_server_revealer.get_reveal_child() is True
+
+    widget.connection_status_update(Error())
+
+    assert widget.change_server_revealer.get_reveal_child() is False
+
+
+def test_quick_connect_widget_reveals_change_server_on_slow_connection_unlock_while_on_error():
+    """The timer can fire after Error is already showing (e.g. a fast initial failure,
+    with retries accumulating past 8s while displayed state is Error rather than
+    Connecting). The button must become visible then too.
+    """
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    widget.connection_status_update(Error())  # timer still pending: revealer hidden
+    assert widget.change_server_revealer.get_reveal_child() is False
+
+    scheduler.fire()  # The 8-second slow-connection timer elapses, while still on Error.
+
+    assert widget.change_server_revealer.get_reveal_child() is True
+    assert widget.change_server_button.get_sensitive() is True
+
+
+def test_quick_connect_widget_cancels_slow_connection_timer_and_unlock_once_connected():
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())
+    scheduler.fire()  # The 8-second slow-connection timer elapses.
+    widget.connection_status_update(Connected())
+
+    assert scheduler.pending_count == 0
+
+    # A fresh attempt requires a new 8-second wait: the unlock was reset.
+    widget.connection_status_update(Disconnected())
+    widget.connection_status_update(Connecting())
+    assert widget.change_server_button.get_sensitive() is False
+    assert scheduler.pending_count == 1
+
+
+def test_quick_connect_widget_cancels_the_old_timer_before_a_new_attempt_starts():
+    """A quickly-resolved attempt must cancel its timer, or a stale firing could wrongly
+    unlock the button - bypassing a cooldown - during a later, unrelated attempt.
+    """
+    widget, scheduler, _, _ = _slow_connection_widget()
+
+    widget.connection_status_update(Connecting())  # attempt 1, resolves quickly
+    widget.connection_status_update(Connected())
+    widget.connection_status_update(Disconnected())
+    widget.connection_status_update(Connecting())  # attempt 2
+
+    assert scheduler.pending_count == 1  # only attempt 2's timer is still armed
+
+
+def test_quick_connect_widget_never_starts_slow_connection_timer_when_upgrade_is_not_required():
+    widget, scheduler, _, _ = _slow_connection_widget(requires_upgrade=False)
+
+    widget.connection_status_update(Connecting())
+
+    assert scheduler.pending_count == 0
+
+
+def test_quick_connect_widget_is_not_kept_alive_by_a_pending_slow_connection_timer():
+    widget, _, _, _ = _slow_connection_widget()
+    widget.connection_status_update(Connecting())
+    widget_ref = weakref.ref(widget)
+
+    del widget
+    gc.collect()
+
+    assert widget_ref() is None

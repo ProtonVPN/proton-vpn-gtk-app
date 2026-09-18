@@ -1,3 +1,10 @@
+version: 4.18.4rc4
+time: 2026/09/18 14:17
+author: Richard Paterson
+email: richard.paterson@proton.ch
+description:
+- "feat: For slow connection attempts, allow free tier users to bypass change server cooldown (behind feature flag)"
+---
 version: 4.18.4rc3
 time: 2026/09/17 06:42
 author: Elena Švilpė

@@ -19,7 +19,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-import weakref
 from typing import Callable, Optional
 
 from gi.repository import GLib
@@ -32,6 +31,7 @@ from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.utils.change_server_cooldown import \
     ChangeServerCooldown, \
     format_countdown
+from proton.vpn.app.gtk.utils.glib import weak_deferred_glib_callback
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -45,8 +45,15 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
     )
     UPGRADE_LABEL = C_("label", "Get unlimited server changes with VPN Plus.")
     COOLDOWN_TICK_INTERVAL_SECONDS = 1
+    SLOW_CONNECTION_TIMEOUT_SECONDS = 8
 
-    def __init__(self, controller: Controller, clock: Optional[Callable[[], float]] = None):
+    def __init__(
+            self,
+            controller: Controller,
+            clock: Optional[Callable[[], float]] = None,
+            schedule_timeout: Callable[[int, Callable[[], bool]], int] = GLib.timeout_add_seconds,
+            cancel_timeout: Callable[[int], None] = GLib.source_remove,
+    ):
         super().__init__(spacing=10)
         self.set_name("quick-connect-widget")
         self._controller = controller
@@ -58,6 +65,15 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         # Whether a cooldown is pending once a "Change server" requested
         # connection has been established
         self._cooldown_pending = False
+        # Overridable so tests can provide a fake scheduler.
+        self._schedule_timeout = schedule_timeout
+        self._cancel_timeout = cancel_timeout
+        self._slow_connection_timer_src_id: Optional[int] = None
+        # Whether the current connection attempt has taken long enough to
+        # unlock "Change server" regardless of it being on cooldown.
+        self._change_server_unlocked_by_slow_connection = False
+        # Whether a "Change server" action is in progress
+        self._change_server_requested = False
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.connect_button = Gtk.Button(label=C_("button", "Connect"))
@@ -145,6 +161,11 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         """Returns the current connection state."""
         return self._connection_state
 
+    @property
+    def slow_connection_timer_is_running(self):
+        """Returns True if the slow-connection timer is currently scheduled."""
+        return self._slow_connection_timer_src_id is not None
+
     @connection_state.setter
     def connection_state(self, connection_state: states.State):
         """Sets the current connection state, updating the UI accordingly."""
@@ -161,6 +182,8 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             self._on_connection_state_connected()
         elif isinstance(connection_state, states.Error):
             self._on_connection_state_error()
+        elif isinstance(connection_state, states.Disconnecting):
+            self._on_connection_state_disconnecting()
 
         self._refresh_change_server()
 
@@ -174,18 +197,25 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self.change_server_revealer.set_reveal_child(False)
         # The server change did not complete, so it does not count.
         self._cooldown_pending = False
+        self._change_server_requested = False
+        self._cancel_slow_connection_timer()
+        self._change_server_unlocked_by_slow_connection = False
 
     def _on_connection_state_connecting(self):
         self.connect_button.set_visible(False)
         self.disconnect_button.set_label(C_("button", "Cancel Connection"))
         self.disconnect_button.set_visible(True)
-        self.change_server_revealer.set_reveal_child(self._show_change_server)
+        if self._show_change_server and not self.slow_connection_timer_is_running:
+            self._start_slow_connection_timer()
 
     def _on_connection_state_connected(self):
         self.connect_button.set_visible(False)
         self.disconnect_button.set_label(C_("button", "Disconnect"))
         self.disconnect_button.set_visible(True)
         self.change_server_revealer.set_reveal_child(self._show_change_server)
+        self._cancel_slow_connection_timer()
+        self._change_server_unlocked_by_slow_connection = False
+        self._change_server_requested = False
         if self._cooldown_pending:
             self._cooldown_pending = False
             self._start_cooldown()
@@ -194,9 +224,33 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self.connect_button.set_visible(False)
         self.disconnect_button.set_label(C_("button", "Cancel Connection"))
         self.disconnect_button.set_visible(True)
-        self.change_server_revealer.set_reveal_child(False)
+        if not self._change_server_unlocked_by_slow_connection:
+            self.change_server_revealer.set_reveal_child(False)
         # The server change did not complete, so it does not count.
         self._cooldown_pending = False
+        self._change_server_requested = False
+
+    def _on_connection_state_disconnecting(self):
+        is_automatic_retry = (
+            self._controller.reconnector.is_recovering_connection
+            and not self._change_server_requested
+        )
+        if is_automatic_retry:
+            # Automatic retry: leave change server button in current state
+            return
+
+        # Only a click on the (normal, not slow-connection-unlocked) change server
+        # button keeps the UI visible through the reconnect - anything else (a
+        # reconnect started elsewhere, or changing server via the slow-connection
+        # unlock) hides it.
+        keep_change_server_visible = (
+            self._change_server_requested and not self._change_server_unlocked_by_slow_connection
+        )
+        if not keep_change_server_visible:
+            self.change_server_revealer.set_reveal_child(False)
+        self._change_server_requested = False
+        self._cancel_slow_connection_timer()
+        self._change_server_unlocked_by_slow_connection = False
 
     def _on_connect_button_clicked(self, _):
         logger.info("Connect to fastest server", category="ui.tray", event="connect")
@@ -210,7 +264,9 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
 
     def _on_change_server_button_clicked(self, _):
         logger.info("Change to another server", category="ui", event="change_server")
-        self._cooldown_pending = True
+        self._change_server_requested = True
+        # Changing server via the slow-connection unlock doesn't count towards the cooldown limit.
+        self._cooldown_pending = not self._change_server_unlocked_by_slow_connection
         future = self._controller.change_server()
         future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
 
@@ -218,15 +274,9 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         """Starts a cooldown and the timer refreshing the countdown."""
         self._cooldown.arm(self._controller.client_config)
         self._cancel_cooldown_tick()
-        # Held weakly, as GLib would otherwise keep this widget alive until the timer stops.
-        weak_tick = weakref.WeakMethod(self._on_cooldown_tick)
-
-        def tick() -> bool:
-            method = weak_tick()
-            return method() if method else GLib.SOURCE_REMOVE
-
         self._cooldown_tick_src_id = GLib.timeout_add_seconds(
-            QuickConnectWidget.COOLDOWN_TICK_INTERVAL_SECONDS, tick
+            QuickConnectWidget.COOLDOWN_TICK_INTERVAL_SECONDS,
+            weak_deferred_glib_callback(self._on_cooldown_tick)
         )
 
     def _on_cooldown_tick(self) -> bool:
@@ -243,24 +293,48 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             GLib.source_remove(self._cooldown_tick_src_id)
             self._cooldown_tick_src_id = None
 
+    def _start_slow_connection_timer(self):
+        """Unlocks "Change server" once a connection attempt is taking too long."""
+        self._slow_connection_timer_src_id = self._schedule_timeout(
+            QuickConnectWidget.SLOW_CONNECTION_TIMEOUT_SECONDS,
+            weak_deferred_glib_callback(self._on_slow_connection_timeout, one_shot=True)
+        )
+
+    def _on_slow_connection_timeout(self):
+        self._slow_connection_timer_src_id = None
+        # unlock change server action to escape slow connection
+        self._change_server_unlocked_by_slow_connection = True
+        self.change_server_revealer.set_reveal_child(self._show_change_server)
+        self._refresh_change_server()
+
+    def _cancel_slow_connection_timer(self):
+        if self._slow_connection_timer_src_id:
+            self._cancel_timeout(self._slow_connection_timer_src_id)
+            self._slow_connection_timer_src_id = None
+
     def _refresh_change_server(self):
         """Updates whether the server can be changed, and the cooldown display.
         """
         cooldown_is_active = self._cooldown.is_active
         is_connected = isinstance(self._connection_state, states.Connected)
-        # Only an established connection can be changed away from
+        # Only an established connection can be changed away from, unless the
+        # current attempt has taken long enough to unlock it regardless.
         self.change_server_button.set_sensitive(
             self._show_change_server
-            and is_connected
-            and not cooldown_is_active
+            and (
+                (is_connected and not cooldown_is_active)
+                or self._change_server_unlocked_by_slow_connection
+            )
         )
 
         change_server_is_shown = self.change_server_revealer.get_reveal_child()
-        self.cooldown_card_revealer.set_reveal_child(
-            cooldown_is_active and change_server_is_shown
-        )
+        # A slow-connection unlock bypasses the cooldown but doesn't cancel it, so
+        # hide its display while unlocked. It reappears on its own once the unlock is gone, if
+        # still active.
+        show_cooldown = cooldown_is_active and not self._change_server_unlocked_by_slow_connection
+        self.cooldown_card_revealer.set_reveal_child(show_cooldown and change_server_is_shown)
         self.cooldown_limit_reached_label.set_visible(self._cooldown.is_long)
-        self.change_server_countdown_label.set_visible(cooldown_is_active)
+        self.change_server_countdown_label.set_visible(show_cooldown and change_server_is_shown)
         self.change_server_countdown_label.set_label(
             format_countdown(self._cooldown.remaining_seconds)
         )

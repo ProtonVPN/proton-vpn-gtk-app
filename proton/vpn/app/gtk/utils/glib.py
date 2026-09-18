@@ -19,6 +19,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import weakref
 from concurrent.futures import Future
 from typing import Callable
 
@@ -57,6 +58,32 @@ def run_periodically(function, *args, interval_ms: int, **kwargs) -> int:
         return True
 
     return GLib.timeout_add(interval_ms, wrapper_function)
+
+
+def weak_deferred_glib_callback(
+        method: Callable[[], bool], one_shot: bool = False
+) -> Callable[[], bool]:
+    """
+    Wraps a bound method as a GLib.timeout_add(_seconds)/idle_add callback without
+    letting GLib keep its owner alive: GLib holds a strong reference to the callback
+    for as long as the source is scheduled, so wrapping it in a weakref.WeakMethod
+    lets it become a self-removing no-op once the owner is garbage collected.
+
+    :param method: a bound method to call when the callback fires.
+    :param one_shot: if True, always returns GLib.SOURCE_REMOVE after calling the
+        method, for one-shot timeouts. If False (default), propagates the method's
+        own return value, for periodic timers that decide for themselves when to stop.
+    """
+    weak_method = weakref.WeakMethod(method)
+
+    def callback() -> bool:
+        bound_method = weak_method()
+        if bound_method is None:
+            return GLib.SOURCE_REMOVE
+        result = bound_method()
+        return GLib.SOURCE_REMOVE if one_shot else result
+
+    return callback
 
 
 def bubble_up_errors(future: Future):

@@ -1148,6 +1148,12 @@ msgid "Zimbabwe"
 msgstr "Зімбабвэ"
 
 msgctxt "error"
+msgid "Account info refresh failed, check your connection and try again"
+msgstr ""
+"Збой абнаўлення інфармацыі ўліковага запісу. Праверце сваё падключэнне і "
+"паўтарыце спробу"
+
+msgctxt "error"
 msgid "An unknown error occurred"
 msgstr "Адбылася невядомая памылка"
 
@@ -1344,6 +1350,10 @@ msgid "Free"
 msgstr "Бясплатна"
 
 msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Змяняйце серверы без абмежаванняў з VPN Plus"
+
+msgctxt "label"
 msgid "Included apps "
 msgstr "Уключаныя праграмы "
 
@@ -1403,6 +1413,12 @@ msgctxt "label"
 msgid "Via {country}"
 msgstr "Праз краіну {country}"
 
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr ""
+"На дадзены момант вы дасягнулі максімальнай колькасці пераключэнняў на "
+"бясплатных серверах"
+
 msgctxt "link"
 msgid "Learn more"
 msgstr "Даведацца больш"
@@ -1439,6 +1455,12 @@ msgstr ""
 "Доступ да пажаданых падключэнняў з сістэмнага латка. Увядзіце краіну або код"
 " сервера, які раздзелены коскамі для хуткага падключэння (напрыклад: NL#42, "
 "JP, US, IT#01)."
+
+msgctxt "message"
+msgid "Account info refreshed, restart the app to see changes"
+msgstr ""
+"Інфармацыя ўліковага запісу абноўлена. Перазапусціце праграму, каб убачыць "
+"змяненні"
 
 msgctxt "message"
 msgid "Active port is {new_port}"
@@ -1548,6 +1570,15 @@ msgstr "Кожны код можа выкарыстоўвацца толькі �
 msgctxt "message"
 msgid "Enabling Beta access..."
 msgstr "Уключэнне доступу да бэта-версіі..."
+
+msgctxt "message"
+msgid ""
+"Free-tier launches default to a Proton protocol. Any WireGuard or OpenVPN "
+"selection lasts only until the next application restart."
+msgstr ""
+"Праграма з бясплатным тарыфным планам прадвызначана запускаецца з "
+"выкарыстаннем пратакола Proton. Любы выбар пратаколаў WireGuard або OpenVPN "
+"дзейнічае толькі да наступнага перазапуску праграмы."
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."
@@ -2142,6 +2173,10 @@ msgstr "Схаваць усе серверы ад {name}"
 msgctxt "tooltip"
 msgid "P2P/BitTorrent supported"
 msgstr "Падтрымліваецца P2P/BitTorrent"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "Абнавіць падрабязнасці ўліковага запісу"
 
 msgctxt "tooltip"
 msgid ""

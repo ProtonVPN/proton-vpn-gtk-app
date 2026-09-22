@@ -1061,7 +1061,7 @@ msgstr "Туркменистан"
 
 msgctxt "country"
 msgid "Turks and Caicos Islands"
-msgstr "Острова Теркс и Кайкос"
+msgstr "Острова Тёркс и Кайкос"
 
 msgctxt "country"
 msgid "Tuvalu"

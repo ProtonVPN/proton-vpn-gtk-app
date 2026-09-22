@@ -57,11 +57,11 @@ msgstr "Amaga"
 
 msgctxt "button"
 msgid "Learn more"
-msgstr "Saber-ne més"
+msgstr "Més informació"
 
 msgctxt "button"
 msgid "Manage Account"
-msgstr "Gestioneu el compte"
+msgstr "Gestiona el compte"
 
 msgctxt "button"
 msgid "Need Help?"
@@ -81,7 +81,7 @@ msgstr "Compartir-ho de manera anònima"
 
 msgctxt "button"
 msgid "Show"
-msgstr "Mostrar"
+msgstr "Mostra"
 
 msgctxt "button"
 msgid "Sign in"
@@ -101,7 +101,7 @@ msgstr "Aturar"
 
 msgctxt "button"
 msgid "Upgrade"
-msgstr "Milloreu el pla"
+msgstr "Millora el pla"
 
 msgctxt "button"
 msgid "Use 6-digit authentication code"
@@ -1148,6 +1148,12 @@ msgid "Zimbabwe"
 msgstr "Zimbàbue"
 
 msgctxt "error"
+msgid "Account info refresh failed, check your connection and try again"
+msgstr ""
+"No s'ha pogut actualitzar la informació del compte, comproveu la connexió i "
+"torneu-ho a provar"
+
+msgctxt "error"
 msgid "An unknown error occurred"
 msgstr "S'ha produït un error desconegut"
 
@@ -1351,6 +1357,10 @@ msgid "Free"
 msgstr "Gratuït"
 
 msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Gaudiu de canvis il·limitats de servidors amb VPN Plus."
+
+msgctxt "label"
 msgid "Included apps "
 msgstr "Aplicacions incloses "
 
@@ -1410,6 +1420,10 @@ msgctxt "label"
 msgid "Via {country}"
 msgstr "Via {country}"
 
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "De moment, heu arribat al nombre màxim de canvis de servidor gratuït"
+
 msgctxt "link"
 msgid "Learn more"
 msgstr "Saber-ne més"
@@ -1446,6 +1460,12 @@ msgstr ""
 "Accediu a les connexions preferides des de la barra del sistema. Introduïu "
 "codis de país o de servidor, separats per comes, per connectar-vos "
 "ràpidament (p. ex.: NL#42, JP, US, IT#01)."
+
+msgctxt "message"
+msgid "Account info refreshed, restart the app to see changes"
+msgstr ""
+"S'ha actualitzat la informació del compte, reinicieu l'aplicació per veure "
+"els canvis"
 
 msgctxt "message"
 msgid "Active port is {new_port}"
@@ -1557,6 +1577,15 @@ msgstr "Cada codi només es pot utilitzar una vegada"
 msgctxt "message"
 msgid "Enabling Beta access..."
 msgstr "S'està habilitant l'accés beta..."
+
+msgctxt "message"
+msgid ""
+"Free-tier launches default to a Proton protocol. Any WireGuard or OpenVPN "
+"selection lasts only until the next application restart."
+msgstr ""
+"Els llançaments del nivell gratuït utilitzen per defecte un protocol de "
+"Proton. Qualsevol selecció de WireGuard o OpenVPN només dura fins al següent"
+" reinici de l'aplicació."
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."
@@ -1959,7 +1988,7 @@ msgstr "Mode d'exclusió"
 
 msgctxt "title"
 msgid "Fastest country"
-msgstr "El país més veloç"
+msgstr "País més ràpid"
 
 msgctxt "title"
 msgid "Fastest free server"
@@ -2111,7 +2140,7 @@ msgstr "S'ha produït un error de connexió a la VPN"
 
 msgctxt "tooltip"
 msgid "Close"
-msgstr "Tancar-ho"
+msgstr "Tanca"
 
 msgctxt "tooltip"
 msgid "Connect to {country_name}"
@@ -2152,6 +2181,10 @@ msgstr "Amagar tots els servidors de {name}"
 msgctxt "tooltip"
 msgid "P2P/BitTorrent supported"
 msgstr "Compatibilitat amb P2P/BitTorrent"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "Actualitzar els detalls del compte"
 
 msgctxt "tooltip"
 msgid ""

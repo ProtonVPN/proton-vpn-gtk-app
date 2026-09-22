@@ -1148,6 +1148,12 @@ msgid "Zimbabwe"
 msgstr "Ζιμπάμπουε"
 
 msgctxt "error"
+msgid "Account info refresh failed, check your connection and try again"
+msgstr ""
+"Η ανανέωση των στοιχείων λογαριασμού απέτυχε, ελέγξτε τη σύνδεσή σας και "
+"δοκιμάστε ξανά."
+
+msgctxt "error"
 msgid "An unknown error occurred"
 msgstr "Παρουσιάστηκε ένα άγνωστο σφάλμα"
 
@@ -1352,6 +1358,10 @@ msgid "Free"
 msgstr "Free"
 
 msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Αποκτήστε απεριόριστες αλλαγές διακομιστή με το VPN Plus."
+
+msgctxt "label"
 msgid "Included apps "
 msgstr "Συμπεριλαμβανόμενες εφαρμογές "
 
@@ -1411,6 +1421,11 @@ msgctxt "label"
 msgid "Via {country}"
 msgstr "Μέσω {country}"
 
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr ""
+"Έχετε φτάσει τον μέγιστο αριθμό αλλαγών σε δωρεάν διακομιστές προς το παρόν"
+
 msgctxt "link"
 msgid "Learn more"
 msgstr "Μάθετε περισσότερα"
@@ -1447,6 +1462,12 @@ msgstr ""
 "Αποκτήστε πρόσβαση στις προτιμώμενες συνδέσεις από την περιοχή ειδοποιήσεων."
 " Εισαγάγετε κωδικούς χώρας ή διακομιστή, διαχωρισμένους με κόμματα, για "
 "γρήγορη σύνδεση (π.χ.: NL#42, JP, US, IT#01)."
+
+msgctxt "message"
+msgid "Account info refreshed, restart the app to see changes"
+msgstr ""
+"Οι πληροφορίες λογαριασμού ανανεώθηκαν, επανεκκινήστε την εφαρμογή για να "
+"δείτε τις αλλαγές."
 
 msgctxt "message"
 msgid "Active port is {new_port}"
@@ -1558,6 +1579,15 @@ msgstr "Κάθε κωδικός μπορεί να χρησιμοποιηθεί �
 msgctxt "message"
 msgid "Enabling Beta access..."
 msgstr "Ενεργοποίηση πρόσβασης Beta..."
+
+msgctxt "message"
+msgid ""
+"Free-tier launches default to a Proton protocol. Any WireGuard or OpenVPN "
+"selection lasts only until the next application restart."
+msgstr ""
+"Στο δωρεάν επίπεδο χρήσης, η προεπιλεγμένη ρύθμιση είναι το πρωτόκολλο "
+"Proton. Οποιαδήποτε επιλογή WireGuard ή OpenVPN διατηρείται μόνο μέχρι την "
+"επόμενη επανεκκίνηση της εφαρμογής."
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."
@@ -2159,6 +2189,10 @@ msgstr "Απόκρυψη όλων των διακομιστών από το {nam
 msgctxt "tooltip"
 msgid "P2P/BitTorrent supported"
 msgstr "Υποστηρίζεται P2P/BitTorrent"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "Ανανέωση στοιχείων λογαριασμού"
 
 msgctxt "tooltip"
 msgid ""

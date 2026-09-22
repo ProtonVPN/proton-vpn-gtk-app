@@ -1337,6 +1337,10 @@ msgid "Free"
 msgstr "Brezplačno"
 
 msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Pridobite neomejene spremembe strežnika z VPN Plus."
+
+msgctxt "label"
 msgid "Included apps "
 msgstr "Vključene aplikacije "
 
@@ -1395,6 +1399,10 @@ msgstr "Preko Secure Core"
 msgctxt "label"
 msgid "Via {country}"
 msgstr "Preko {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "Dosegli ste trenutno največje število brezplačnih sprememb strežnika"
 
 msgctxt "link"
 msgid "Learn more"
@@ -1542,6 +1550,15 @@ msgstr "Vsaka koda se lahko uporabi samo enkrat"
 msgctxt "message"
 msgid "Enabling Beta access..."
 msgstr "Omogočanje beta dostopa ..."
+
+msgctxt "message"
+msgid ""
+"Free-tier launches default to a Proton protocol. Any WireGuard or OpenVPN "
+"selection lasts only until the next application restart."
+msgstr ""
+"V brezplačni različici se privzeto uporablja protokol Proton. Izbira "
+"protokola WireGuard ali OpenVPN velja le do naslednjega ponovnega zagona "
+"aplikacije."
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."

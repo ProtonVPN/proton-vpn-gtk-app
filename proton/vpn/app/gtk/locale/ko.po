@@ -1148,6 +1148,10 @@ msgid "Zimbabwe"
 msgstr "짐바브웨"
 
 msgctxt "error"
+msgid "Account info refresh failed, check your connection and try again"
+msgstr "계정 정보 새로고침에 실패했습니다. 연결 상태 확인 후 다시 시도하세요."
+
+msgctxt "error"
 msgid "An unknown error occurred"
 msgstr "예기치 못한 오류가 발생했습니다"
 
@@ -1336,6 +1340,10 @@ msgid "Free"
 msgstr "무료"
 
 msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "VPN Plus로 무제한으로 서버를 변경하세요."
+
+msgctxt "label"
 msgid "Included apps "
 msgstr "포함된 앱 "
 
@@ -1395,6 +1403,10 @@ msgctxt "label"
 msgid "Via {country}"
 msgstr "{country} 경유"
 
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "무료 서버 변경 횟수의 최대치에 달했습니다"
+
 msgctxt "link"
 msgid "Learn more"
 msgstr "자세히 알아보기"
@@ -1430,6 +1442,10 @@ msgid ""
 msgstr ""
 "시스템 트레이에서 선호하는 연결에 접근하세요. 국가 또는 서버 코드를 쉼표로 구분하여 입력하면 빠르게 연결할 수 있습니다(예: "
 "NL#42, JP, US, IT#01)."
+
+msgctxt "message"
+msgid "Account info refreshed, restart the app to see changes"
+msgstr "계정 정보 새로고침이 완료되었습니다. 변경사항을 확인하려면 앱을 재실행하세요."
 
 msgctxt "message"
 msgid "Active port is {new_port}"
@@ -1530,6 +1546,14 @@ msgstr "각각의 코드는 한 번만 사용할 수 있습니다."
 msgctxt "message"
 msgid "Enabling Beta access..."
 msgstr "베타 접근 활성화 중..."
+
+msgctxt "message"
+msgid ""
+"Free-tier launches default to a Proton protocol. Any WireGuard or OpenVPN "
+"selection lasts only until the next application restart."
+msgstr ""
+"무료 플랜 사용자는 기본적으로 Proton 프로토콜이 사용됩니다. WireGuard 또는 OpenVPN 선택은 다음 애플리케이션을 "
+"재시작할 때까지만 유효합니다."
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."
@@ -2093,6 +2117,10 @@ msgstr "{name}의 모든 서버 숨기기"
 msgctxt "tooltip"
 msgid "P2P/BitTorrent supported"
 msgstr "P2P/BitTorrent 지원됨"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "계정 세부사항 새로고침"
 
 msgctxt "tooltip"
 msgid ""

@@ -16,12 +16,20 @@ msgid "Authenticate"
 msgstr "Autenticar"
 
 msgctxt "button"
+msgid "Browse..."
+msgstr "Navegar..."
+
+msgctxt "button"
 msgid "Cancel"
 msgstr "Cancelar"
 
 msgctxt "button"
 msgid "Cancel Connection"
 msgstr "Cancelar conexão"
+
+msgctxt "button"
+msgid "Change server"
+msgstr "Alterar servidor"
 
 msgctxt "button"
 msgid "Connect"
@@ -1340,6 +1348,10 @@ msgid "Free"
 msgstr "Free"
 
 msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Obtenha alterações ilimitadas de servidor com VPN Plus."
+
+msgctxt "label"
 msgid "Included apps "
 msgstr "Aplicativos incluídos "
 
@@ -1398,6 +1410,11 @@ msgstr "Vía Secure Core"
 msgctxt "label"
 msgid "Via {country}"
 msgstr "Via {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr ""
+"Por enquanto, você alcançou o número máximo de mudanças de servidor grátis"
 
 msgctxt "link"
 msgid "Learn more"
@@ -2027,6 +2044,10 @@ msgid "Share anonymous crash reports"
 msgstr "Compartilhar relatórios de erros anônimos"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Compartilhar estatísticas anônimas de uso"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "Smart routing"
 
@@ -2113,6 +2134,10 @@ msgstr "Ocultar todos os servidores de {name}"
 msgctxt "tooltip"
 msgid "P2P/BitTorrent supported"
 msgstr "P2P/Bittorrent suportado"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "Atualizar os dados da conta"
 
 msgctxt "tooltip"
 msgid ""

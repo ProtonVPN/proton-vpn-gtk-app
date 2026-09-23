@@ -20,9 +20,14 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 Tests for framed_like_app: reproducing the app's container chain around a
 demo widget.
 """
+import pytest
+
+from proton.vpn.connection import states
+
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.demo import sizing
 from proton.vpn.app.gtk.demo.framing import framed_like_app
+from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 
 
@@ -60,3 +65,23 @@ def test_height_fills_window_content_area_when_filling():
     # The window's content area is its height minus the header bar.
     assert height == MainWindow.HEIGHT - header
     assert wrapper.get_first_child().get_vexpand() is True
+
+
+@pytest.mark.parametrize("state_type, expected_css_class", [
+    (states.Disconnected, "vpn-disconnected"),
+    (states.Connecting, "vpn-connecting"),
+    (states.Connected, "vpn-connected"),
+    (states.Disconnecting, "vpn-disconnecting"),
+    (states.Error, "vpn-error"),
+])
+def test_state_selects_the_same_gradient_class_the_app_uses(state_type, expected_css_class):
+    wrapper = framed_like_app(Gtk.Label(label="x"), state=state_type())
+
+    assert expected_css_class in wrapper.get_css_classes()
+
+
+def test_no_gradient_class_without_a_state():
+    wrapper = framed_like_app(Gtk.Label(label="x"))
+
+    gradient_classes = set(MainWidget.STATE_CSS_CLASSES.values())
+    assert not gradient_classes.intersection(wrapper.get_css_classes())

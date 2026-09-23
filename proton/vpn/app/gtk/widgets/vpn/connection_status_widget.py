@@ -30,6 +30,7 @@ from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import DoubleFlagIcon
 from proton.vpn.session.servers import ServerFeatureEnum, TierEnum
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
+from proton.vpn.app.gtk.widgets.vpn.free_countries_summary import FreeCountriesSummary
 from proton.vpn.app.gtk.widgets.vpn.port_forward_widget import PortForwardRevealer
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.split_tunneling import \
     SPLIT_TUNNELING_TOGGLE_SETTING_NAME
@@ -84,6 +85,7 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         self._connection_details_icon: Gtk.Image
         self._connection_details_title: Gtk.Label
         self._connection_details_subtitle: Gtk.Label
+        self._free_countries_summary: FreeCountriesSummary
 
         self._error_detail_label: Gtk.Label
         self._port_forward_revealer: PortForwardRevealer
@@ -129,10 +131,23 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         self._status_title_row.append(self._status_spinner)
         self._status_title_row.append(self._status_title_label)
 
-        self._connection_details_box = Gtk.Grid()
-        self._connection_details_box.set_name("connection-details-box")
-        self._connection_details_box.set_column_spacing(8)
-        self._connection_details_box.set_halign(Gtk.Align.START)
+        self._connection_details_box = self._build_connection_details_box()
+
+        self._error_detail_label = Gtk.Label(label="")
+        self._error_detail_label.set_name("error-detail-label")
+        self._error_detail_label.set_halign(Gtk.Align.CENTER)
+
+        box.append(self._status_title_row)
+        box.append(self._error_detail_label)
+        box.append(self._connection_details_box)
+
+        return box
+
+    def _build_connection_details_box(self) -> Gtk.Grid:
+        grid = Gtk.Grid()
+        grid.set_name("connection-details-box")
+        grid.set_column_spacing(8)
+        grid.set_halign(Gtk.Align.START)
 
         self._connection_details_icon = Gtk.Image()
         self._connection_details_icon.set_halign(Gtk.Align.START)
@@ -148,22 +163,18 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         self._connection_details_subtitle.set_name("connection-details-subtitle")
         self._connection_details_subtitle.set_halign(Gtk.Align.START)
 
-        self._connection_details_box.attach(self._connection_details_icon, 0, 0, 1, 1)
-        self._connection_details_box.attach(self._connection_details_title, 1, 0, 1, 1)
-        self._connection_details_box.attach(self._connection_details_subtitle, 1, 1, 1, 1)
+        self._free_countries_summary = FreeCountriesSummary(self._controller)
+        self._free_countries_summary.set_visible(False)
 
         self._port_forward_revealer = PortForwardRevealer(self._notifications)
-        self._connection_details_box.attach(self._port_forward_revealer, 1, 2, 1, 1)
 
-        self._error_detail_label = Gtk.Label(label="")
-        self._error_detail_label.set_name("error-detail-label")
-        self._error_detail_label.set_halign(Gtk.Align.CENTER)
+        grid.attach(self._connection_details_icon, 0, 0, 1, 1)
+        grid.attach(self._connection_details_title, 1, 0, 1, 1)
+        grid.attach(self._connection_details_subtitle, 1, 1, 1, 1)
+        grid.attach(self._free_countries_summary, 1, 2, 1, 1)
+        grid.attach(self._port_forward_revealer, 1, 3, 1, 1)
 
-        box.append(self._status_title_row)
-        box.append(self._error_detail_label)
-        box.append(self._connection_details_box)
-
-        return box
+        return grid
 
     @property
     def status_message(self) -> str:
@@ -267,16 +278,16 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         if disconnected:
             pixbuf = self._fastest_pixbuf
             self._connection_details_icon.set_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
-            is_free = self._controller.user_tier == TierEnum.FREE
-            if is_free:
-                self._connection_details_title.set_text(C_("title", "Fastest free server"))
-                self._connection_details_subtitle.set_text(
-                    C_("label", "Auto-selected from free locations")
-                )
+
+            if self._controller.server_selection_requires_upgrade:
+                self._show_free_countries_summary()
+            # Delete this branch when FreeRescope retires
+            elif self._controller.user_tier == TierEnum.FREE:
+                self._show_auto_selected_subtitle()
             else:
-                self._connection_details_title.set_text(C_("title", "Fastest country"))
-                self._connection_details_subtitle.set_text("")
+                self._show_fastest_country_title()
         else:
+            self._set_free_countries_summary_visible(False)
             server_name = connection.server_name
             logical_server = self._controller.server_list.get_by_name(server_name)
             is_secure_core = ServerFeatureEnum.SECURE_CORE in logical_server.features
@@ -300,6 +311,44 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
             else:
                 self._connection_details_subtitle.set_label(
                     f"{logical_server.location} - {server_name}")
+
+    def _show_free_countries_summary(self):
+        self._connection_details_title.set_text(C_("title", "Fastest free server"))
+        self._free_countries_summary.refresh()
+        self._set_free_countries_summary_visible(True)
+
+    def _show_auto_selected_subtitle(self):
+        self._connection_details_title.set_text(C_("title", "Fastest free server"))
+        self._connection_details_subtitle.set_text(
+            C_("label", "Auto-selected from free locations")
+        )
+        self._set_free_countries_summary_visible(False)
+
+    def _show_fastest_country_title(self):
+        self._connection_details_title.set_text(C_("title", "Fastest country"))
+        self._connection_details_subtitle.set_text("")
+        self._set_free_countries_summary_visible(False)
+
+    def _set_free_countries_summary_visible(self, visible: bool):
+        # The subtitle label is still needed for the connected state, and an
+        # empty one would claim a full line, so the two swap rather than stack.
+        self._free_countries_summary.set_visible(visible)
+        self._connection_details_subtitle.set_visible(not visible)
+
+    @property
+    def free_countries_summary(self) -> FreeCountriesSummary:
+        """The "Auto-selected from" row shown to free-tier users."""
+        return self._free_countries_summary
+
+    @property
+    def connection_details_title(self) -> Gtk.Label:
+        """The connected country, or the one that would be picked."""
+        return self._connection_details_title
+
+    @property
+    def connection_details_subtitle(self) -> Gtk.Label:
+        """The connected server's location, or how a server gets picked."""
+        return self._connection_details_subtitle
 
     def _build_connection_details_icon(self, logical_server, is_secure_core: bool) -> Gtk.Image:
         if is_secure_core:

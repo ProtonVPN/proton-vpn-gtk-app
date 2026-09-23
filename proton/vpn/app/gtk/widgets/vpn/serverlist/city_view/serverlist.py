@@ -21,7 +21,6 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 import time
-import locale
 from typing import List, Optional
 import logging
 from unittest.mock import Mock
@@ -31,8 +30,7 @@ from gi.repository import GLib, GObject
 from proton.vpn import logging as proton_logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
-from proton.vpn.app.gtk.translator import LOCALIZATION_ENABLED
-from proton.vpn.app.gtk.utils.country import get_localized_country_name
+from proton.vpn.app.gtk.utils.country import country_name_sort_key
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.session.servers import ServerList, TierEnum
 from proton.vpn.session.servers.server_list_fetcher import ServerListFetcher
@@ -143,16 +141,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
             include_free_servers=free_user
         )
 
-        if LOCALIZATION_ENABLED:
-            # Sort by the localized name so the order matches what's displayed.
-            # Free users get their free countries listed first.
-            countries.sort(key=lambda country: (
-                0 if (free_user and country.free) else 1,
-                locale.strxfrm(get_localized_country_name(country.code)),
-            ))
-        elif free_user:
-            # Free countries first, then by English name.
-            countries.sort(key=lambda country: (0 if country.free else 1, country.name))
+        # Order by the displayed name, free users' free countries first.
+        countries.sort(key=lambda country: (
+            0 if (free_user and country.free) else 1,
+            country_name_sort_key(country.code),
+        ))
 
         # Collect expanded states before refresh (keyed by country code and child group name)
         expanded_countries = {row.country_code.lower(): row.expanded for row in self.country_rows}

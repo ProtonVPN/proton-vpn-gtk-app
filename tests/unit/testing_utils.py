@@ -21,7 +21,35 @@ from concurrent.futures import Future
 
 from gi.repository import GLib
 
+from proton.vpn.session.servers import ServerList
+
 from proton.vpn.app.gtk import Gtk
+
+FREE_TIER = 0
+PLUS_TIER = 2
+
+
+def free_server_list(free_countries, paid_countries=()):
+    """Builds a server list with one server per requested country."""
+    def server(index, country_code, tier):
+        return {
+            "ID": index,
+            "Name": f"{country_code}#{index}",
+            "Status": 1,
+            "Load": 50,
+            "Servers": [{"Status": 1}],
+            "ExitCountry": country_code,
+            "Tier": tier,
+        }
+
+    servers = [
+        server(index, code, FREE_TIER)
+        for index, code in enumerate(free_countries)
+    ] + [
+        server(len(free_countries) + index, code, PLUS_TIER)
+        for index, code in enumerate(paid_countries)
+    ]
+    return ServerList.from_dict({"LogicalServers": servers, "MaxTier": PLUS_TIER})
 
 
 def raise_main_loop_exceptions(func):

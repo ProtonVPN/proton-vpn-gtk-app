@@ -132,7 +132,7 @@ class MainWidget(Gtk.Overlay):
         self._active_widget = widget
         self.content_layout.append(self._active_widget)
 
-    _STATE_CSS_CLASSES = {
+    STATE_CSS_CLASSES = {
         states.Connected: "vpn-connected",
         states.Connecting: "vpn-connecting",
         states.Disconnecting: "vpn-disconnecting",
@@ -145,9 +145,9 @@ class MainWidget(Gtk.Overlay):
 
         :param state: a connection state instance, or None to clear all.
         """
-        for css_class in self._STATE_CSS_CLASSES.values():
+        for css_class in self.STATE_CSS_CLASSES.values():
             self.remove_css_class(css_class)
-        if state and (css_class := self._STATE_CSS_CLASSES.get(type(state))):
+        if state and (css_class := self.STATE_CSS_CLASSES.get(type(state))):
             self.add_css_class(css_class)
 
     def initialize_visible_widget(self):

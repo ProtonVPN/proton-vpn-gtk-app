@@ -34,7 +34,7 @@ def _quick_connect(state: states.State) -> Gtk.Widget:
     widget.connection_status_update(state)
     # In the app the widget is a band within the MainWindow's column (it doesn't
     # fill the height), so frame it at that width with its natural height.
-    return framed_like_app(widget, fill_height=False)
+    return framed_like_app(widget, fill_height=False, state=state)
 
 
 @register_demo("quick-connect", label="disconnected")
@@ -71,11 +71,12 @@ def _cooling_down(server_changes: int) -> Gtk.Widget:
     controller.client_config.change_server_long_delay_sec = 1200
 
     widget = QuickConnectWidget(controller)
+    connected = states.Connected()
     for _ in range(server_changes):
         widget.change_server_button.emit("clicked")
-        widget.connection_status_update(states.Connected())
+        widget.connection_status_update(connected)
 
-    return framed_like_app(widget, fill_height=False)
+    return framed_like_app(widget, fill_height=False, state=connected)
 
 
 @register_demo("quick-connect", label="cooling-down-short")

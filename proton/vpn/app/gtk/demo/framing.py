@@ -25,12 +25,21 @@ pads by 20px, and they're shown at the MainWindow's column width. A widget shown
 bare misses that padding (its contents run edge-to-edge) and that width. A
 modal, by contrast, is a self-contained window and needs no framing.
 """
+from typing import Optional
+
+from proton.vpn.connection import states
+
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.demo.sizing import NATURAL, UNCONSTRAINED
+from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 
 
-def framed_like_app(widget: Gtk.Widget, fill_height: bool = False) -> Gtk.Widget:
+def framed_like_app(
+    widget: Gtk.Widget,
+    fill_height: bool = False,
+    state: Optional[states.State] = None,
+) -> Gtk.Widget:
     """Wrap `widget` in the app's #main-widget > #content-layout chain.
 
     Naming the chain makes the app's `#main-widget #content-layout` rule
@@ -43,6 +52,10 @@ def framed_like_app(widget: Gtk.Widget, fill_height: bool = False) -> Gtk.Widget
         bar), so the form spreads as it does in the app instead of collapsing.
       - False for a widget that's only a band within the window (e.g. quick-connect):
         the height is left natural.
+
+    state selects the background gradient, which the app tints per connection
+    state via a CSS class on #main-widget (the classless rule is transparent, so
+    without a state there is no gradient at all).
     """
     content_layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
     content_layout.set_name("content-layout")
@@ -51,6 +64,9 @@ def framed_like_app(widget: Gtk.Widget, fill_height: bool = False) -> Gtk.Widget
     main_widget = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
     main_widget.set_name("main-widget")
     main_widget.append(content_layout)
+
+    if state and (css_class := MainWidget.STATE_CSS_CLASSES.get(type(state))):
+        main_widget.add_css_class(css_class)
 
     if fill_height:
         content_layout.set_vexpand(True)  # fill the window height, as in the app

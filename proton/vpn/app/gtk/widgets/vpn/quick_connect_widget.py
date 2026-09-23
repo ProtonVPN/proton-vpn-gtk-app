@@ -65,7 +65,6 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         # Whether a cooldown is pending once a "Change server" requested
         # connection has been established
         self._cooldown_pending = False
-        # Overridable so tests can provide a fake scheduler.
         self._schedule_timeout = schedule_timeout
         self._cancel_timeout = cancel_timeout
         self._slow_connection_timer_src_id: Optional[int] = None
@@ -161,11 +160,6 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         """Returns the current connection state."""
         return self._connection_state
 
-    @property
-    def slow_connection_timer_is_running(self):
-        """Returns True if the slow-connection timer is currently scheduled."""
-        return self._slow_connection_timer_src_id is not None
-
     @connection_state.setter
     def connection_state(self, connection_state: states.State):
         """Sets the current connection state, updating the UI accordingly."""
@@ -205,7 +199,7 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self.connect_button.set_visible(False)
         self.disconnect_button.set_label(C_("button", "Cancel Connection"))
         self.disconnect_button.set_visible(True)
-        if self._show_change_server and not self.slow_connection_timer_is_running:
+        if self._show_change_server and not self._slow_connection_timer_is_running:
             self._start_slow_connection_timer()
 
     def _on_connection_state_connected(self):
@@ -293,6 +287,11 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             GLib.source_remove(self._cooldown_tick_src_id)
             self._cooldown_tick_src_id = None
 
+    @property
+    def _slow_connection_timer_is_running(self):
+        """Returns True if the slow-connection timer is currently scheduled."""
+        return self._slow_connection_timer_src_id is not None
+
     def _start_slow_connection_timer(self):
         """Unlocks "Change server" once a connection attempt is taking too long."""
         self._slow_connection_timer_src_id = self._schedule_timeout(
@@ -302,7 +301,6 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
 
     def _on_slow_connection_timeout(self):
         self._slow_connection_timer_src_id = None
-        # unlock change server action to escape slow connection
         self._change_server_unlocked_by_slow_connection = True
         self.change_server_revealer.set_reveal_child(self._show_change_server)
         self._refresh_change_server()

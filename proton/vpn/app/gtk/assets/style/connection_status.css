@@ -28,6 +28,67 @@
     margin-bottom: 8px;
 }
 
+#vpn-connection-status-widget #free-countries-summary {
+    border-spacing: 6px;
+}
+
+#vpn-connection-status-widget #free-countries-summary > label {
+    color: @text-weak;
+}
+
+#vpn-connection-status-widget .free-countries-info > button {
+    padding: 0;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+#free-countries-popover {
+    padding: 0;
+}
+
+#free-countries-popover .free-countries-content {
+    margin: 16px;
+    border-spacing: 12px;
+}
+
+#free-countries-popover .free-countries-header {
+    border-spacing: 6px;
+    margin-bottom: 12px;
+}
+
+#free-countries-popover .free-countries-header label {
+    font-size: 1em;
+}
+
+#free-countries-popover .free-countries-close {
+    padding: 0;
+    min-width: 16px;
+    min-height: 16px;
+    color: @text-weak;
+    /* The theme paints a gradient over the background colour without this. */
+    background-image: none;
+    background-color: @interaction-weak;
+}
+
+#free-countries-popover .free-countries-close:hover {
+    background-color: @interaction-weak-hover;
+}
+
+#free-countries-popover .free-countries-description {
+    color: @text-norm;
+}
+
+#free-countries-popover .free-countries-count {
+    color: @text-weak;
+    font-size: 0.85em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+#free-countries-popover .free-countries-entry {
+    border-spacing: 8px;
+}
+
 #port-forwarding-widget {
     margin-top: 4px;
 }

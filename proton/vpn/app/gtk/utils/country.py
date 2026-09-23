@@ -21,9 +21,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
+import locale
+
 from proton.vpn.session.servers.country_codes import get_country_name_by_code
 
-from proton.vpn.app.gtk.translator import C_
+from proton.vpn.app.gtk.translator import C_, LOCALIZATION_ENABLED
 
 
 def get_localized_country_name(country_code: str) -> str:
@@ -32,3 +34,13 @@ def get_localized_country_name(country_code: str) -> str:
     :param country_code: country code (e.g. "CH"), case-insensitive.
     """
     return C_("country", get_country_name_by_code(country_code))
+
+
+def country_name_sort_key(country_code: str) -> str:
+    """Returns a sort key ordering countries by the name the user sees.
+
+    :param country_code: country code (e.g. "CH"), case-insensitive.
+    """
+    if LOCALIZATION_ENABLED:
+        return locale.strxfrm(get_localized_country_name(country_code))
+    return get_country_name_by_code(country_code)

@@ -137,11 +137,6 @@ class VPNWidget(Gtk.Box):
         self.insert_child_after(self.search_widget, self.quick_connect_widget)
         self.insert_child_after(revealer, self.search_widget)
 
-        self._state_subscribers = [
-            self.connection_status_widget,
-            self.quick_connect_widget,
-        ]
-
         signal_id = safe_signal_connect(
             self,
             "connection-state-changed",
@@ -157,8 +152,14 @@ class VPNWidget(Gtk.Box):
         self.search_widget.reset()
 
     def _broadcast_connection_state(self, _, state):
-        for widget in self._state_subscribers:
-            widget.connection_status_update(state)
+        # The button description and the announcement are both read back
+        # from the status labels, so those are updated first.
+        self.connection_status_widget.update_status(state)
+        self.quick_connect_widget.set_accessible_details(
+            self.connection_status_widget.accessible_details
+        )
+        self.quick_connect_widget.connection_status_update(state)
+        self.connection_status_widget.announce_state_change(state)
 
     @GObject.Signal
     def vpn_widget_ready(self):
@@ -246,6 +247,8 @@ class VPNWidget(Gtk.Box):
             self.quick_connect_widget, self.server_list_widget
         ]:
             widget.set_visible(False)
+
+        self.connection_status_widget.reset_announcements()
 
         # Reset widget state
         self._state = VPNWidgetState()

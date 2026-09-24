@@ -32,6 +32,7 @@ from proton.vpn.app.gtk.utils.change_server_cooldown import \
     ChangeServerCooldown, \
     format_countdown
 from proton.vpn.app.gtk.utils.glib import weak_deferred_glib_callback
+from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -44,6 +45,10 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         "label", "You've reached the maximum number of free server changes for now"
     )
     UPGRADE_LABEL = C_("label", "Get unlimited server changes with VPN Plus.")
+    # Announced only: the button appearing is the visible equivalent.
+    CHANGE_SERVER_AVAILABLE_MESSAGE = C_(
+        "message", "Change server is now available"
+    )
     COOLDOWN_TICK_INTERVAL_SECONDS = 1
     SLOW_CONNECTION_TIMEOUT_SECONDS = 8
 
@@ -53,7 +58,8 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             clock: Optional[Callable[[], float]] = None,
             schedule_timeout: Callable[[int, Callable[[], bool]], int] = GLib.timeout_add_seconds,
             cancel_timeout: Callable[[int], None] = GLib.source_remove,
-    ):
+            announce: Callable[[Gtk.Widget, str], None] = accessibility.announce,
+    ):  # pylint: disable=too-many-arguments
         super().__init__(spacing=10)
         self.set_name("quick-connect-widget")
         self._controller = controller
@@ -67,7 +73,16 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self._cooldown_pending = False
         self._schedule_timeout = schedule_timeout
         self._cancel_timeout = cancel_timeout
+        self._announce = announce
         self._slow_connection_timer_src_id: Optional[int] = None
+        # The server a screen reader reads out when the action button takes
+        # focus.
+        self._accessible_details = ""
+        # Last text written to the button. GTK has no getter for an
+        # accessible property, so it cannot be read back.
+        self._described_as = ""
+        # What the action button currently does.
+        self._action: Callable[[], None] = self._connect
         # Whether the current connection attempt has taken long enough to
         # unlock "Change server" regardless of it being on cooldown.
         self._change_server_unlocked_by_slow_connection = False
@@ -75,23 +90,21 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self._change_server_requested = False
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
-        self.connect_button = Gtk.Button(label=C_("button", "Connect"))
-        self.connect_button.add_css_class("primary")
+        self.action_button = Gtk.Button()
+        self.action_button.set_visible(False)
         safe_signal_connect(
-            self.connect_button,
-            "clicked", self._on_connect_button_clicked)
-        self.connect_button.set_visible(False)
-        self.append(self.connect_button)
-        self.disconnect_button = Gtk.Button(label=C_("button", "Disconnect"))
-        self.disconnect_button.add_css_class("danger")
+            self.action_button, "clicked", self._on_action_button_clicked)
         safe_signal_connect(
-            self.disconnect_button,
-            "clicked", self._on_disconnect_button_clicked)
-        self.disconnect_button.set_visible(False)
-        self.append(self.disconnect_button)
+            self.action_button, "notify::has-focus", self._on_button_focus_changed)
+        self.append(self.action_button)
         self.change_server_button = Gtk.Button()
         self.change_server_button.add_css_class("secondary")
         self.change_server_button.set_child(self._build_change_server_button_child())
+        # Named explicitly: its child is a box of labels, which GTK 4.8
+        # cannot derive a name from.
+        self.change_server_button.update_property(
+            [Gtk.AccessibleProperty.LABEL], [QuickConnectWidget.CHANGE_SERVER_LABEL]
+        )
         safe_signal_connect(
             self.change_server_button,
             "clicked",
@@ -100,9 +113,7 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self.change_server_button.set_sensitive(False)
         self.change_server_revealer = Gtk.Revealer()
         self.change_server_revealer.set_child(self.change_server_button)
-        # Appended last so it renders below whichever of the connect/disconnect
-        # buttons is showing: Gtk.Box skips hidden children, so the hidden one
-        # costs neither height nor spacing.
+        # Appended last so it renders below the action button.
         self.append(self.change_server_revealer)
         self.cooldown_card_revealer = Gtk.Revealer()
         self.cooldown_card_revealer.set_child(self._build_cooldown_card())
@@ -185,9 +196,56 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         """This method is called by VPNWidget whenever the VPN connection status changes."""
         self.connection_state = connection_state
 
+    def set_accessible_details(self, details: str):
+        """Sets the detail read out when the action button takes focus.
+
+        Only written to the button while it is unfocused: writing it to a
+        focused button makes a screen reader read it out immediately,
+        duplicating the announcement.
+        """
+        self._accessible_details = details
+        if not self.action_button.has_focus():
+            self._describe()
+
+    def _describe(self):
+        """Writes the pending detail onto the action button, if it changed.
+
+        Writing the same text again can still be read out by a screen reader.
+        """
+        if not self._accessible_details or self._accessible_details == self._described_as:
+            return
+
+        self._described_as = self._accessible_details
+        self.action_button.update_property(
+            [Gtk.AccessibleProperty.DESCRIPTION], [self._accessible_details]
+        )
+
+    def _on_button_focus_changed(self, button: Gtk.Button, _param):
+        """Writes the pending detail now that focus has left the button.
+
+        A screen reader reads out a description written to the focused
+        button, which would duplicate the announcement, so the write waits
+        until here. The idle delay is the same concern: mid transition the
+        button is still treated as focused.
+        """
+        if button.has_focus():
+            return
+
+        GLib.idle_add(weak_deferred_glib_callback(self._describe, one_shot=True))
+
+    def _set_action(self, label: str, css_class: str, action: Callable[[], None]):
+        """Relabels the action button, restyles it and rebinds its click."""
+        self.action_button.set_label(label)
+        for candidate in ("primary", "danger"):
+            if candidate == css_class:
+                self.action_button.add_css_class(candidate)
+            else:
+                self.action_button.remove_css_class(candidate)
+        self._action = action
+        self.action_button.set_visible(True)
+
     def _on_connection_state_disconnected(self):
-        self.disconnect_button.set_visible(False)
-        self.connect_button.set_visible(True)
+        self._set_action(C_("button", "Connect"), "primary", self._connect)
         self.change_server_revealer.set_reveal_child(False)
         # The server change did not complete, so it does not count.
         self._cooldown_pending = False
@@ -196,16 +254,13 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self._change_server_unlocked_by_slow_connection = False
 
     def _on_connection_state_connecting(self):
-        self.connect_button.set_visible(False)
-        self.disconnect_button.set_label(C_("button", "Cancel Connection"))
-        self.disconnect_button.set_visible(True)
+        self._set_action(
+            C_("button", "Cancel Connection"), "danger", self._disconnect)
         if self._show_change_server and not self._slow_connection_timer_is_running:
             self._start_slow_connection_timer()
 
     def _on_connection_state_connected(self):
-        self.connect_button.set_visible(False)
-        self.disconnect_button.set_label(C_("button", "Disconnect"))
-        self.disconnect_button.set_visible(True)
+        self._set_action(C_("button", "Disconnect"), "danger", self._disconnect)
         self.change_server_revealer.set_reveal_child(self._show_change_server)
         self._cancel_slow_connection_timer()
         self._change_server_unlocked_by_slow_connection = False
@@ -215,9 +270,8 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             self._start_cooldown()
 
     def _on_connection_state_error(self):
-        self.connect_button.set_visible(False)
-        self.disconnect_button.set_label(C_("button", "Cancel Connection"))
-        self.disconnect_button.set_visible(True)
+        self._set_action(
+            C_("button", "Cancel Connection"), "danger", self._disconnect)
         if not self._change_server_unlocked_by_slow_connection:
             self.change_server_revealer.set_reveal_child(False)
         # The server change did not complete, so it does not count.
@@ -246,12 +300,15 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
         self._cancel_slow_connection_timer()
         self._change_server_unlocked_by_slow_connection = False
 
-    def _on_connect_button_clicked(self, _):
+    def _on_action_button_clicked(self, _):
+        self._action()
+
+    def _connect(self):
         logger.info("Connect to fastest server", category="ui.tray", event="connect")
         future = self._controller.connect_to_fastest_server()
         future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
 
-    def _on_disconnect_button_clicked(self, _):
+    def _disconnect(self):
         logger.info("Disconnect from VPN", category="ui", event="disconnect")
         future = self._controller.disconnect()
         future.add_done_callback(lambda f: GLib.idle_add(f.result))  # bubble up exceptions if any.
@@ -280,6 +337,9 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
             return GLib.SOURCE_CONTINUE
 
         self._cooldown_tick_src_id = None
+        if self.change_server_button.get_sensitive() \
+                and not self._change_server_unlocked_by_slow_connection:
+            self._announce(self, QuickConnectWidget.CHANGE_SERVER_AVAILABLE_MESSAGE)
         return GLib.SOURCE_REMOVE
 
     def _cancel_cooldown_tick(self):
@@ -301,9 +361,12 @@ class QuickConnectWidget(Gtk.Box):  # pylint: disable=too-many-instance-attribut
 
     def _on_slow_connection_timeout(self):
         self._slow_connection_timer_src_id = None
+        was_available = self.change_server_button.get_sensitive()
         self._change_server_unlocked_by_slow_connection = True
         self.change_server_revealer.set_reveal_child(self._show_change_server)
         self._refresh_change_server()
+        if not was_available:
+            self._announce(self, QuickConnectWidget.CHANGE_SERVER_AVAILABLE_MESSAGE)
 
     def _cancel_slow_connection_timer(self):
         if self._slow_connection_timer_src_id:

@@ -48,6 +48,13 @@ TRIPLE_FLAGS_ICON_HEIGHT = 16
 
 INFO_ICON_SIZE = 20
 
+FREE_COUNTRIES_INFO_LABEL = C_(
+    "tooltip",
+    # Names the button opening the popover that lists the countries a free
+    # connection can be assigned to. Also its screen reader name.
+    "Free server locations"
+)
+
 FREE_COUNTRIES_DESCRIPTION = C_(
     "message",
     "Proton Free automatically connects you to the fastest free server "
@@ -243,7 +250,12 @@ class FreeCountriesSummary(Gtk.Box):
     def _build_info_button(popover: Gtk.Popover) -> Gtk.MenuButton:
         button = Gtk.MenuButton()
         button.add_css_class("free-countries-info")
-        button.set_can_focus(False)
+        # Named explicitly: its only child is a picture, so there is no
+        # text for a screen reader to use.
+        button.set_tooltip_text(FREE_COUNTRIES_INFO_LABEL)
+        button.update_property(
+            [Gtk.AccessibleProperty.LABEL], [FREE_COUNTRIES_INFO_LABEL]
+        )
         button.set_has_frame(False)
         button.set_popover(popover)
         button.set_direction(Gtk.ArrowType.DOWN)

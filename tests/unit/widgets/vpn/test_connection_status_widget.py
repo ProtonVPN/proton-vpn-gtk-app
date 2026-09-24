@@ -256,6 +256,265 @@ def test_summary_appears_once_the_session_reports_a_free_plan():
     assert vpn_status_widget.free_countries_summary.get_visible() is True
 
 
+class _MockAnnouncer:
+    """Records what the screen reader would have been told, in order."""
+
+    def __init__(self):
+        self.messages = []
+        self.urgent_messages = []
+
+    def __call__(self, _widget, message, urgent=False):
+        self.messages.append(message)
+        if urgent:
+            self.urgent_messages.append(message)
+
+
+def _connecting_state(server_name="CH#1") -> states.Connecting:
+    connection_state = states.Connecting()
+    connection_state.context.reconnection = False
+    connection_state.context.connection = Mock(server_name=server_name)
+    connection_state.context.event = Mock()
+    return connection_state
+
+
+def _connected_state(server_name="CH#1") -> states.Connected:
+    connection_state = states.Connected()
+    connection_state.context.reconnection = False
+    connection_state.context.connection = Mock(server_name=server_name)
+    connection_state.context.event = Mock()
+    return connection_state
+
+
+def _free_tier_controller() -> Mock:
+    controller_mock = make_controller(
+        user_tier=TierEnum.FREE,
+        server_selection_requires_upgrade=True,
+        server_list=free_server_list(["CH", "JP", "NL", "US"]),
+    )
+    controller_mock.server_list.get_by_name = Mock(return_value=Mock(
+        exit_country="ch", location="Zurich", features=[]
+    ))
+    return controller_mock
+
+
+def test_disconnected_state_announces_the_status_and_the_intent():
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+
+    widget.connection_status_update(_disconnected_state())
+
+    assert announcer.messages == ["Unprotected. Fastest country"]
+
+
+def test_connecting_state_announces_the_server_being_connected_to():
+    """The details swap from the intent to the concrete target on Connecting,
+    so the target is announced whether quick connected or picked by country.
+    """
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+
+    widget.connection_status_update(_connecting_state())
+
+    assert announcer.messages == ["Connecting. Switzerland, Zurich - CH#1"]
+
+
+def test_reaching_connected_does_not_repeat_the_server_just_announced():
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+
+    widget.connection_status_update(_connecting_state())
+    widget.connection_status_update(_connected_state())
+
+    assert announcer.messages == [
+        "Connecting. Switzerland, Zurich - CH#1",
+        "Protected",
+    ]
+
+
+def test_replaying_an_unchanged_state_is_not_announced_again():
+    """VPNWidget replays the current status on load and on server list
+    updates.
+    """
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+
+    widget.connection_status_update(_connected_state())
+    widget.connection_status_update(_connected_state())
+
+    assert announcer.messages == ["Protected. Switzerland, Zurich - CH#1"]
+
+
+def test_error_state_announces_the_error_detail_and_cuts_in():
+    """Orca 49 onward honours the priority, so errors are sent as urgent."""
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+    widget.connection_status_update(_connected_state())
+
+    connection_state = states.Error()
+    connection_state.context.reconnection = False
+    connection_state.context.connection = Mock(server_name="CH#1")
+    connection_state.context.event = events.AuthDenied(EventContext(connection=Mock()))
+
+    widget.connection_status_update(connection_state)
+
+    assert announcer.messages == [
+        "Protected. Switzerland, Zurich - CH#1",
+        "Connection error. Authentication denied",
+    ]
+    assert announcer.urgent_messages == ["Connection error. Authentication denied"]
+
+
+def test_free_tier_announcement_omits_the_subtitle_the_summary_replaced():
+    """The subtitle keeps its last value while the free-countries summary
+    stands in for it, so the stale server name must not leak in.
+    """
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(_free_tier_controller(), Mock(), announce=announcer)
+
+    widget.connection_status_update(_connected_state())
+    widget.connection_status_update(_disconnected_state())
+
+    assert widget.connection_details_subtitle.get_text() == "Zurich - CH#1"
+    assert announcer.messages[-1] == "Unprotected. Fastest free server"
+
+
+def test_nothing_is_announced_once_the_user_has_logged_out():
+    """Updates can still arrive via GLib.idle_add after logout, when the
+    detail labels hold the previous session's server.
+    """
+    controller_mock = make_controller()
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(controller_mock, Mock(), announce=announcer)
+    widget.connection_status_update(_connected_state())
+
+    controller_mock.user_logged_in = False
+    widget.connection_status_update(_disconnected_state())
+
+    assert announcer.messages == ["Protected. Switzerland, Zurich - CH#1"]
+
+
+@pytest.mark.parametrize("state_type", [states.Disconnecting, states.Disconnected])
+def test_the_states_a_server_change_passes_through_are_not_announced(state_type):
+    """A server change passes through both on its way to the new connection.
+    Announcing them would say "Connecting" twice and claim the user is
+    unprotected mid-change.
+    """
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+    widget.connection_status_update(_connected_state())
+
+    intermediate = state_type()
+    intermediate.context.reconnection = Mock(server_name="JP#2")
+    intermediate.context.connection = Mock(server_name="CH#1")
+    intermediate.context.event = Mock()
+    widget.connection_status_update(intermediate)
+
+    assert announcer.messages == ["Protected. Switzerland, Zurich - CH#1"]
+
+
+def test_a_user_initiated_disconnect_is_still_announced():
+    """Disconnecting with no reconnection pending is the user's own
+    disconnect, not a step in a server change, so it is still announced.
+    """
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+    widget.connection_status_update(_connected_state())
+    announcer.messages.clear()
+
+    disconnecting = states.Disconnecting()
+    disconnecting.context.reconnection = None
+    disconnecting.context.connection = Mock(server_name="CH#1")
+    disconnecting.context.event = Mock()
+    widget.connection_status_update(disconnecting)
+    widget.connection_status_update(_disconnected_state())
+
+    assert announcer.messages == [
+        "Disconnecting",
+        "Unprotected. Fastest country",
+    ]
+
+
+def test_changing_server_announces_the_new_server_once():
+    """The whole sequence, as the state machine produces it."""
+    controller_mock = make_controller()
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(controller_mock, Mock(), announce=announcer)
+    widget.connection_status_update(_connected_state())
+    announcer.messages.clear()
+
+    pending = Mock(server_name="JP#2")
+    controller_mock.server_list.get_by_name.return_value = Mock(
+        exit_country="jp", location="Tokyo", features=[]
+    )
+    for state_type in (states.Disconnecting, states.Disconnected):
+        intermediate = state_type()
+        intermediate.context.reconnection = pending
+        intermediate.context.connection = Mock(server_name="CH#1")
+        intermediate.context.event = Mock()
+        widget.connection_status_update(intermediate)
+    for state_type in (states.Connecting, states.Connected):
+        state = state_type()
+        state.context.reconnection = None
+        state.context.connection = pending
+        state.context.event = Mock()
+        widget.connection_status_update(state)
+
+    assert announcer.messages == [
+        "Connecting. Japan, Tokyo - JP#2",
+        "Protected",
+    ]
+
+
+@pytest.mark.parametrize("state_factory, expected", [
+    (_disconnected_state, "Fastest country"),
+    (_connecting_state, "Switzerland, Zurich - CH#1"),
+    (_connected_state, "Switzerland, Zurich - CH#1"),
+])
+def test_accessible_details_feed_the_buttons_description(state_factory, expected):
+    """The label already carries the state, so the description carries the
+    server, or while disconnected what would be picked.
+    """
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=_MockAnnouncer())
+
+    widget.connection_status_update(state_factory())
+
+    assert widget.accessible_details == expected
+
+
+def test_update_status_does_not_announce_until_asked():
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+
+    state = _connecting_state()
+    widget.update_status(state)
+    assert announcer.messages == []
+
+    widget.announce_state_change(state)
+    assert announcer.messages == ["Connecting. Switzerland, Zurich - CH#1"]
+
+
+def test_reset_announcements_lets_the_same_state_be_announced_again():
+    announcer = _MockAnnouncer()
+    widget = VPNConnectionStatusWidget(make_controller(), Mock(), announce=announcer)
+
+    widget.connection_status_update(_connected_state())
+    widget.reset_announcements()
+    widget.connection_status_update(_connected_state())
+
+    assert announcer.messages == ["Protected. Switzerland, Zurich - CH#1"] * 2
+
+
+def test_announcing_without_a_toplevel_window_is_a_no_op():
+    """The real announcer runs here: a widget with no root window must be
+    silently skipped rather than raise.
+    """
+    widget = VPNConnectionStatusWidget(make_controller(), Mock())
+
+    widget.connection_status_update(_connected_state())
+
+    assert widget.status_message == "Protected"
+
+
 # ===========================================================================
 # FreeRescope rollout. Delete everything below when the flag retires: free
 # tier then always requires an upgrade to select a server, so a free user
@@ -279,3 +538,14 @@ def test_free_tier_without_free_rescope_keeps_the_auto_selected_subtitle():
         == "Auto-selected from free locations"
     assert vpn_status_widget.connection_details_subtitle.get_visible() is True
     assert vpn_status_widget.free_countries_summary.get_visible() is False
+
+
+def test_nothing_is_announced_when_free_rescope_is_off():
+    announcer = _MockAnnouncer()
+    controller_mock = make_controller()
+    controller_mock.feature_flags.get.return_value = False
+    widget = VPNConnectionStatusWidget(controller_mock, Mock(), announce=announcer)
+
+    widget.connection_status_update(_connected_state())
+
+    assert announcer.messages == []

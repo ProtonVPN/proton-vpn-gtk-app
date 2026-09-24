@@ -20,7 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from pathlib import Path
-from typing import Optional, cast
+from typing import Callable, Optional, cast
 from gi.repository import Gdk, GdkPixbuf
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.connection import events, states
@@ -28,6 +28,7 @@ from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import DoubleFlagIcon
+from proton.vpn.session import FREE_RESCOPE_FLAG
 from proton.vpn.session.servers import ServerFeatureEnum, TierEnum
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.vpn.free_countries_summary import FreeCountriesSummary
@@ -36,6 +37,7 @@ from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.split_tu
     SPLIT_TUNNELING_TOGGLE_SETTING_NAME
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import CountryFlagIcon
 from proton.vpn.app.gtk.utils.country import get_localized_country_name
+from proton.vpn.app.gtk.utils import accessibility
 from proton.vpn import logging
 
 logger = logging.getLogger(__name__)
@@ -65,12 +67,16 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
     def __init__(
         self, controller: Controller,
         notifications: Notifications,
+        announce: Callable[[Gtk.Widget, str, bool], None] = accessibility.announce,
     ):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         self.set_name("vpn-connection-status-widget")
         self._controller = controller
         self._notifications = notifications
+        self._announce = announce
+        self._last_status: Optional[str] = None
+        self._last_details: Optional[str] = None
 
         self._protected_pixbuf: GdkPixbuf.Pixbuf
         self._unprotected_pixbuf: GdkPixbuf.Pixbuf
@@ -181,8 +187,31 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
         """Returns the connection status message being displayed to the user."""
         return self._status_title_label.get_text()
 
+    @property
+    def accessible_details(self) -> str:
+        """The detail line as one string: the server, or what would be picked.
+
+        In the error state the error detail replaces it. The subtitle is
+        included only while visible.
+        """
+        error_detail = self._error_detail_label.get_text()
+        if error_detail:
+            return error_detail
+
+        title = self._connection_details_title.get_text()
+        subtitle = self._connection_details_subtitle.get_text() \
+            if self._connection_details_subtitle.get_visible() else ""
+        if title and subtitle:
+            return f"{title}, {subtitle}"
+        return title or subtitle
+
     def connection_status_update(self, connection_state: states.State):
-        """This method is called by VPNWidget whenever the VPN connection status changes."""
+        """Updates the UI and announces the change."""
+        self.update_status(connection_state)
+        self.announce_state_change(connection_state)
+
+    def update_status(self, connection_state: states.State):
+        """Updates the status title, icon, connection details and notifications."""
         disconnected = isinstance(connection_state, states.Disconnected)
         disconnecting = isinstance(connection_state, states.Disconnecting)
         connecting = isinstance(connection_state, states.Connecting)
@@ -247,6 +276,47 @@ class VPNConnectionStatusWidget(Gtk.Box):  # pylint: disable=too-many-instance-a
                 self._status_title_row.add_css_class(cls)
             else:
                 self._status_title_row.remove_css_class(cls)
+
+    def announce_state_change(self, connection_state: states.State):
+        """Announces the status, adding the detail line when it has changed.
+
+        Repeat announcements of an unchanged state are dropped.
+        """
+        if not self._controller.feature_flags.get(FREE_RESCOPE_FLAG):
+            return
+
+        if connection_state.context.reconnection:
+            # A new connection is already on its way, so the drop to
+            # disconnected is not worth announcing.
+            return
+
+        if not self._controller.user_logged_in:
+            # An update can arrive via GLib.idle_add after logout, when the
+            # labels still hold the previous session's server.
+            return
+
+        status = self.status_message
+        details = self.accessible_details
+        if status == self._last_status and details == self._last_details:
+            return
+
+        message = accessibility.for_speech(status)
+        if details and (details != self._last_details):
+            message = f"{message}. {details}"
+
+        self._last_status = status
+        self._last_details = details
+        urgent = isinstance(connection_state, states.Error)
+        self._announce(self, message, urgent)
+
+    def reset_announcements(self):
+        """Forgets the last announced status and restores the window name."""
+        if self._last_status is None:
+            return
+
+        self._last_status = None
+        self._last_details = None
+        accessibility.reset_announcements(self)
 
     def _on_connection_error(self, connection_state: states.Error):
         last_connection_event = connection_state.context.event

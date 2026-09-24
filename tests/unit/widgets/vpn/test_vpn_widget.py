@@ -107,7 +107,8 @@ def test_display_initializes_widget(server_list):
     vpn_widget.connect("connection-state-changed", connection_state_changed)
 
     # Prevent child widgets from processing the real state (tested separately).
-    vpn_widget.connection_status_widget.connection_status_update = Mock()
+    vpn_widget.connection_status_widget.update_status = Mock()
+    vpn_widget.connection_status_widget.announce_state_change = Mock()
     vpn_widget.quick_connect_widget.connection_status_update = Mock()
 
     vpn_widget_ready_event = Event()
@@ -124,18 +125,36 @@ def test_display_initializes_widget(server_list):
 
 
 def test_vpn_widget_notifies_child_widgets_on_connection_status_update():
+    """The quick connect button's accessible description and the screen
+    reader announcement are both built from the connection status labels,
+    so those labels are updated first.
+    """
     vpn_widget = VPNWidget(controller=Mock(), main_window=Mock(), notifications=Mock())
 
-    vpn_widget.connection_status_widget.connection_status_update = Mock()
-    vpn_widget.quick_connect_widget.connection_status_update = Mock()
+    calls = []
+    status_widget = vpn_widget.connection_status_widget
+    quick_connect = vpn_widget.quick_connect_widget
+    status_widget.update_status = Mock(side_effect=lambda s: calls.append(("update_status", s)))
+    status_widget.announce_state_change = Mock(
+        side_effect=lambda s: calls.append(("announce", s))
+    )
+    quick_connect.set_accessible_details = Mock(
+        side_effect=lambda s: calls.append(("describe", s))
+    )
+    quick_connect.connection_status_update = Mock(
+        side_effect=lambda s: calls.append(("relabel", s))
+    )
 
     state = Connected()
     vpn_widget.status_update(state)
 
     process_gtk_events()
 
-    vpn_widget.connection_status_widget.connection_status_update.assert_called_once_with(state)
-    vpn_widget.quick_connect_widget.connection_status_update.assert_called_once_with(state)
+    assert [name for name, _ in calls] == [
+        "update_status", "describe", "relabel", "announce"
+    ]
+    status_widget.update_status.assert_called_once_with(state)
+    quick_connect.connection_status_update.assert_called_once_with(state)
 
 
 def test_unload_resets_widget_state():

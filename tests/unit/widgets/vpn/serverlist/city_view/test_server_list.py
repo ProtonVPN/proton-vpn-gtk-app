@@ -159,44 +159,34 @@ SERVER_LIST_WITH_CITIES = ServerList.from_dict({
 })
 
 
+SERVER_LIST_WITH_SECURE_CORE = ServerList.from_dict({
+    "LogicalServers": [
+        {
+            "ID": 1, "Name": "JP#1", "Status": 1, "Load": 50,
+            "Servers": [{"Status": 1}], "ExitCountry": "JP",
+            "City": "Tokyo", "Tier": PLUS_TIER,
+        },
+        {
+            "ID": 2, "Name": "JP#2", "Status": 1, "Load": 50,
+            "Servers": [{"Status": 1}], "ExitCountry": "JP",
+            "City": "Osaka", "Tier": PLUS_TIER,
+        },
+        {
+            "ID": 3, "Name": "CH-JP#1", "Status": 1, "Load": 50,
+            "Servers": [{"Status": 1}], "Features": 1,  # Secure core feature
+            "EntryCountry": "CH", "ExitCountry": "JP", "City": "Zurich",
+            "Tier": PLUS_TIER,
+        },
+    ],
+    "MaxTier": PLUS_TIER
+})
+
+
 def _displayed_widget(server_list=SERVER_LIST_WITH_CITIES, user_tier=PLUS_TIER):
     widget = ServerListWidget(controller=Mock())
     widget.display(user_tier=user_tier, server_list=server_list)
     process_gtk_events()
     return widget
-
-
-def test_focus_on_entry_connects_directly_when_name_contains_hash():
-    mock_controller = Mock()
-    widget = ServerListWidget(controller=mock_controller)
-    widget.display(user_tier=PLUS_TIER, server_list=SERVER_LIST_WITH_CITIES)
-
-    widget.focus_on_entry(None, "JP#1")
-
-    mock_controller.connect_to_server.assert_called_once_with("JP#1")
-
-
-def test_focus_on_entry_focuses_country_row_when_name_matches_country():
-    widget = _displayed_widget()
-    country_row = widget.country_rows[0]
-    country_row.grab_focus = Mock()
-
-    widget.focus_on_entry(None, "Japan")
-
-    country_row.grab_focus.assert_called_once()
-
-
-def test_focus_on_entry_focuses_location_when_name_matches_city():
-    widget = _displayed_widget()
-    country_row = widget.country_rows[0]
-    country_row.click_toggle_button()
-    process_gtk_events()
-    location_row = next(r for r in country_row.location_rows if r.label == "Tokyo")
-    location_row.grab_focus = Mock()
-
-    widget.focus_on_entry(None, "Tokyo")
-
-    location_row.grab_focus.assert_called_once()
 
 
 def test_server_list_widget_subscribes_to_server_list_updates_on_realize():
@@ -263,3 +253,192 @@ def test_server_list_widget_orders_country_rows_depending_on_user_tier(
 
     country_names = [country_row.country_name for country_row in servers_widget.country_rows]
     assert country_names == expected_country_names
+
+
+def test_filter_hides_country_rows_not_matching_search_text(unsorted_server_list):
+    widget = _displayed_widget(server_list=unsorted_server_list)
+
+    widget.filter("Argentina")
+
+    country_visibility = {
+        row.country_name: row.get_visible() for row in widget.country_rows
+    }
+    assert country_visibility == {"Argentina": True, "Japan": False}
+
+
+def test_filter_keeps_country_matched_by_name_collapsed():
+    """Expanding a country matched only by its own name would build all its
+    location rows, which is too expensive on broad queries."""
+    widget = _displayed_widget()
+
+    japan_row = widget.country_rows[0]
+    widget.filter("Japan")
+
+    assert japan_row.get_visible()
+    assert not japan_row.expanded
+    assert not japan_row.location_rows
+
+
+def test_filter_expands_country_matched_via_child():
+    widget = _displayed_widget()
+
+    japan_row = widget.country_rows[0]
+    widget.filter("Tokyo")
+
+    assert japan_row.get_visible()
+    assert japan_row.expanded
+    assert japan_row.location_rows
+
+
+def test_filter_shows_all_children_of_manually_expanded_country_matched_by_name():
+    """A country the user had expanded stays expanded when matched by name,
+    with all its children visible and unfiltered."""
+    widget = _displayed_widget()
+
+    japan_row = widget.country_rows[0]
+    japan_row.click_toggle_button()
+    process_gtk_events()
+    widget.filter("Japan")
+
+    location_visibility = {
+        row.label: row.get_visible() for row in japan_row.location_rows
+    }
+    assert location_visibility == {"Tokyo": True, "Osaka": True}
+    for location_row in japan_row.location_rows:
+        assert all(row.get_visible() for row in location_row.server_rows)
+
+
+def test_filter_hides_locations_not_matching_search_text():
+    widget = _displayed_widget()
+
+    japan_row = widget.country_rows[0]
+    widget.filter("Tokyo")
+
+    location_visibility = {
+        row.label: row.get_visible() for row in japan_row.location_rows
+    }
+    assert location_visibility == {"Tokyo": True, "Osaka": False}
+
+
+def test_filter_shows_location_matching_server_name():
+    widget = _displayed_widget()
+
+    japan_row = widget.country_rows[0]
+    widget.filter("JP#2")
+
+    location_visibility = {
+        row.label: (row.get_visible(), row.expanded) for row in japan_row.location_rows
+    }
+    assert location_visibility == {"Tokyo": (False, False), "Osaka": (True, True)}
+
+    osaka_row = next(row for row in japan_row.location_rows if row.label == "Osaka")
+    server_visibility = {
+        row.label: row.get_visible() for row in osaka_row.server_rows
+    }
+    assert server_visibility == {"JP#2": True}
+
+
+def test_clearing_filter_restores_previous_state():
+    widget = _displayed_widget()
+
+    japan_row = widget.country_rows[0]
+    japan_row.click_toggle_button()
+    process_gtk_events()
+    tokyo_row = next(row for row in japan_row.location_rows if row.label == "Tokyo")
+    tokyo_row.click_toggle_button()
+    process_gtk_events()
+
+    widget.filter("Osaka")
+    widget.filter("")
+
+    location_state = {
+        row.label: (row.get_visible(), row.expanded) for row in japan_row.location_rows
+    }
+    assert location_state == {"Tokyo": (True, True), "Osaka": (True, False)}
+    assert {row.label: row.get_visible() for row in tokyo_row.server_rows} == {"JP#1": True}
+
+
+def test_filter_matches_secure_core_servers():
+    widget = _displayed_widget(server_list=SERVER_LIST_WITH_SECURE_CORE)
+
+    widget.filter("CH-JP#1")
+
+    japan_row = next(row for row in widget.country_rows if row.country_name == "Japan")
+    assert japan_row.get_visible()
+    assert japan_row.secure_core_row.get_visible()
+    assert japan_row.secure_core_row.expanded
+    server_visibility = {
+        row.label: row.get_visible() for row in japan_row.secure_core_row.server_rows
+    }
+    assert server_visibility == {"Via Switzerland": True}
+
+
+def test_filter_hides_secure_core_row_not_matching():
+    widget = _displayed_widget(server_list=SERVER_LIST_WITH_SECURE_CORE)
+
+    widget.filter("Osaka")
+
+    japan_row = next(row for row in widget.country_rows if row.country_name == "Japan")
+    assert japan_row.get_visible()
+    assert not japan_row.secure_core_row.get_visible()
+
+
+def test_filter_survives_server_list_refresh(unsorted_server_list):
+    mock_controller = Mock()
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=unsorted_server_list)
+
+    widget.filter("Argentina")
+    mock_controller.server_list = unsorted_server_list
+    server_list_updated_callback = (
+        mock_controller.set_server_list_updated_callback.call_args[0][0]
+    )
+    server_list_updated_callback()
+    process_gtk_events()
+
+    country_visibility = {
+        row.country_name: row.get_visible() for row in widget.country_rows
+    }
+    assert country_visibility == {"Argentina": True, "Japan": False}
+
+
+def test_server_list_update_is_deferred_while_filter_is_active(unsorted_server_list):
+    """The periodic server list/loads refreshes rebuild the whole widget, so
+    they are deferred while a filter is active and applied when it is cleared."""
+    mock_controller = Mock()
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=unsorted_server_list)
+    assert len(widget.country_rows) == 2
+
+    widget.filter("Argentina")
+
+    # A server list refresh arrives mid-search, with a different list.
+    mock_controller.server_list = SERVER_LIST  # single country
+    callback = mock_controller.set_server_list_updated_callback.call_args[0][0]
+    callback()
+    process_gtk_events()
+
+    # The refresh was deferred: the rows were not rebuilt mid-search.
+    assert len(widget.country_rows) == 2
+
+    widget.filter("")
+    process_gtk_events()
+
+    # The deferred refresh is applied once the filter is cleared.
+    assert len(widget.country_rows) == 1
+
+
+def test_filter_collapses_country_rows_that_stop_matching():
+    """Collapsing hidden rows frees their lazily built children, keeping the
+    widget tree small while filtering."""
+    widget = _displayed_widget()
+
+    japan_row = widget.country_rows[0]
+    japan_row.click_toggle_button()
+    process_gtk_events()
+    assert japan_row.location_rows
+
+    widget.filter("Nonexistent")
+
+    assert not japan_row.expanded
+    assert not japan_row.location_rows

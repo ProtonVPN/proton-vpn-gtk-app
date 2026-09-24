@@ -157,3 +157,32 @@ def test_unload_resets_widget_state():
     controller_mock.unregister_connection_status_subscriber.assert_called_once_with(vpn_widget)  # (2)
     controller_mock.reconnector.disable.assert_called_once()  # (3)
     controller_mock.disable_refresher.assert_called_once()  # (4)
+
+
+def test_search_entry_filters_server_list_in_place(server_list):
+    vpn_widget = VPNWidget(controller=Mock(), main_window=Mock(), notifications=Mock())
+
+    vpn_widget.connection_status_widget.connection_status_update = Mock()
+    vpn_widget.quick_connect_widget.connection_status_update = Mock()
+    vpn_widget.display(user_tier=PLUS_TIER, server_list=server_list)
+    process_gtk_events()
+
+    vpn_widget.search_widget.set_text("Nonexistent")
+    # Gtk.SearchEntry debounces the emission of "search-changed" (150 ms),
+    # so the signal is emitted directly, as GTK would after a key press.
+    vpn_widget.search_widget.emit("search-changed")
+    process_gtk_events()
+
+    assert all(
+        not row.get_visible()
+        for row in vpn_widget.server_list_widget.country_rows
+    )
+
+    vpn_widget.search_widget.set_text("")
+    vpn_widget.search_widget.emit("search-changed")
+    process_gtk_events()
+
+    assert all(
+        row.get_visible()
+        for row in vpn_widget.server_list_widget.country_rows
+    )

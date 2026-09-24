@@ -91,6 +91,25 @@ class ExpandableRow(Gtk.Box):
         self._row_content.expanded = expanded
         self._set_revealed(expanded)
 
+    def set_expanded_now(self, expanded: bool) -> None:
+        """Programmatically set the expanded state, synchronously building or
+        removing children and bypassing the reveal animation.
+
+        Unlike set_expanded(), collapsing does not wait for the reveal
+        animation to finish before removing the children.
+        """
+        if self._row_content.expanded == expanded:
+            return
+        self._row_content.expanded = expanded
+        if expanded:
+            if self._on_expand is not None:
+                self._on_expand()
+            self._revealer.set_reveal_child(True)
+        else:
+            if self._on_collapse is not None:
+                self._on_collapse()
+            self._revealer.set_reveal_child(False)
+
     def _on_collapse_complete(self, *_args) -> None:
         self._revealer.disconnect(self._revealer_collapse_signal_id)
         self._connected_signals.remove((self._revealer_collapse_signal_id, self._revealer))

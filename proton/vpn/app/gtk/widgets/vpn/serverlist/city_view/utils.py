@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
+from itertools import chain
 from typing import Any, Callable, List, Type, TypeVar, Union
 
 from gi.repository import GLib
@@ -57,6 +58,16 @@ def make_country_connect_callback(
 
 
 ServerListRow = Union[Country, Location, SecureCoreGroup, LogicalServer]
+
+
+def servers_to_display(location: Location, user_tier: int) -> List[LogicalServer]:
+    """Returns the servers displayed for the given location, in display order.
+
+    Free users see the free servers of a free location first.
+    """
+    if user_tier == TierEnum.FREE and location.free:
+        return list(chain(location.free_servers, location.paid_servers))
+    return list(chain(location.paid_servers, location.free_servers))
 
 
 def upgrade_required_when_row_not_free(

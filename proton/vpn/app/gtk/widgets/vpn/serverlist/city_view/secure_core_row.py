@@ -31,6 +31,7 @@ from proton.vpn.session.dataclasses.servers import SecureCoreGroup
 from proton.vpn.session.servers import LogicalServer
 
 from proton.vpn.app.gtk.utils.assertions import runtime_assert
+from proton.vpn.app.gtk.utils.search import fold
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
@@ -138,9 +139,42 @@ class SecureCoreRow(Gtk.Box):
         """Returns the label of the secure core row."""
         return self._expandable_row.row_content.label
 
+    def filter(self, needle: str) -> None:
+        """Filters this row and its server rows in place, by the given search needle.
+
+        The needle is expected to be already folded (case/accent-insensitive).
+        Matching server rows (by server name or "Via {country}" label) are
+        shown; everything else is hidden. The row itself matches by its label
+        or by any of its server names.
+        """
+        if not needle or self._secure_core_group is None:
+            return
+
+        self.set_visible(
+            needle in fold(self.LABEL)
+            or any(needle in fold(server.name)
+                   for server in self._secure_core_group.servers)
+        )
+        if not self.get_visible():
+            return
+
+        if not self.expanded:
+            self._expandable_row.set_expanded_now(True)
+
+        # Server rows map 1:1 (by position) to the secure core group servers.
+        for server_row, server in zip(
+                self.server_rows, self._secure_core_group.servers):
+            server_row.set_visible(
+                needle in fold(server.name) or needle in fold(server_row.label)
+            )
+
     def reset(self, keep_children: bool = False) -> None:
         """Resets the secure core row to its initial state."""
         self._expandable_row.reset(keep_children=keep_children)
+
+    def set_expanded_now(self, expanded: bool) -> None:
+        """Sets the expanded state synchronously, without the reveal animation."""
+        self._expandable_row.set_expanded_now(expanded)
 
     def _remove_server_rows(self) -> None:
         while self._server_rows:

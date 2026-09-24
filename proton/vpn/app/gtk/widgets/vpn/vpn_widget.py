@@ -34,7 +34,6 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
-from proton.vpn.app.gtk.widgets.vpn.search_results import SearchResults
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.serverlist import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
@@ -92,7 +91,7 @@ class VPNWidget(Gtk.Box):
         self.append(self.quick_connect_widget)
 
         self.search_widget = SearchEntry()
-        self.server_list_widget = ServerListWidget(self._controller, self.search_widget)
+        self.server_list_widget = ServerListWidget(self._controller)
         self.append(self.server_list_widget)
         self._connected_signals.append((
             safe_signal_connect(
@@ -105,37 +104,15 @@ class VPNWidget(Gtk.Box):
             target_signal="request_focus",
             shortcut="<Control>f"
         )
-        self.search_results_widget = SearchResults(self._controller)
-        revealer = Gtk.Revealer()
-        revealer.set_child(self.search_results_widget)
-        self.search_results_widget.set_revealer(revealer)
-
         self._connected_signals.append((
             safe_signal_connect(
                 self.search_widget,
                 "search-changed",
-                self.search_results_widget.on_search_changed,
+                self._on_search_changed,
             ),
             self.search_widget
         ))
-        self._connected_signals.append((
-            safe_signal_connect(
-                self.search_results_widget,
-                "result-chosen",
-                self.server_list_widget.focus_on_entry
-            ),
-            self.search_results_widget
-        ))
-        self._connected_signals.append((
-            safe_signal_connect(
-                self.search_results_widget,
-                "result-chosen",
-                self._reset_search_on_result_chosen
-            ),
-            self.search_results_widget
-        ))
         self.insert_child_after(self.search_widget, self.quick_connect_widget)
-        self.insert_child_after(revealer, self.search_widget)
 
         self._state_subscribers = [
             self.connection_status_widget,
@@ -153,8 +130,9 @@ class VPNWidget(Gtk.Box):
 
         safe_signal_connect(self, "unrealize", self._on_unrealize)
 
-    def _reset_search_on_result_chosen(self, *_) -> None:
-        self.search_widget.reset()
+    def _on_search_changed(self, search_entry: SearchEntry):
+        """Filters the server list in place whenever the search text changes."""
+        self.server_list_widget.filter(search_entry.get_text())
 
     def _broadcast_connection_state(self, _, state):
         for widget in self._state_subscribers:

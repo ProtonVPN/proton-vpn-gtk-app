@@ -22,20 +22,21 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import annotations
 
-from itertools import chain
 from typing import List, Optional
 
 from gi.repository import GLib
 
-from proton.vpn.session.servers import Location, TierEnum
+from proton.vpn.session.servers import Location, LogicalServer
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
+from proton.vpn.app.gtk.utils.search import fold
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
-    upgrade_required_for_row, make_connect_callback, sync_rows_with_model_items
+    upgrade_required_for_row, make_connect_callback, sync_rows_with_model_items,
+    servers_to_display
 )
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import LocationIcon
 
@@ -77,7 +78,7 @@ class LocationRow(Gtk.Box):
         upgrade_required = upgrade_required_for_row(controller, user_tier, location)
 
         row_data = RowViewModel(
-            name=location.name,
+            name=location.name or "",
             on_connect=make_connect_callback(controller, location.servers, user_tier),
             free=location.free,
             under_maintenance=location.under_maintenance and not upgrade_required,
@@ -132,18 +133,22 @@ class LocationRow(Gtk.Box):
         """Simulates a click on the toggle button to expand/collapse the row."""
         self._expandable_row.row_content.click_toggle_button()
 
+    def set_expanded_now(self, expanded: bool):
+        """Sets the expanded state synchronously, without the reveal animation."""
+        self._expandable_row.set_expanded_now(expanded)
+
     def _remove_server_rows(self):
         while self._server_rows:
             server_row = self._server_rows.pop()
             self._expandable_row.remove_child(server_row)
             server_row.reset()
 
+    def _servers_to_display(self) -> List[LogicalServer]:
+        """Returns the servers displayed for this location, in display order."""
+        return servers_to_display(self._location, self._user_tier)
+
     def _add_server_rows(self):
-        servers = self._location.servers
-        if self._user_tier == TierEnum.FREE and self._location.free:
-            servers = chain(self._location.free_servers, self._location.paid_servers)
-        else:
-            servers = chain(self._location.paid_servers, self._location.free_servers)
+        servers = self._servers_to_display()
 
         # Capture controller directly to avoid closing over `self` in on_connect
         controller = self._controller
@@ -181,3 +186,30 @@ class LocationRow(Gtk.Box):
             RowContent,
             display_server_row
         )
+
+    def filter(self, needle: str):
+        """Filters this row and its server rows in place, by the given search needle.
+
+        The needle is expected to be already folded (case/accent-insensitive).
+        Locations matching only by server name are expanded, showing only
+        the matching server rows.
+        """
+        if not needle or self._location is None:
+            return
+
+        servers = self._servers_to_display()
+        name_match = bool(self._location.name) and needle in fold(self._location.name)
+        matching_server_names = {
+            server.name for server in servers if needle in fold(server.name)
+        }
+
+        self.set_visible(name_match or bool(matching_server_names))
+        if not self.get_visible():
+            return
+
+        if matching_server_names and not name_match and not self.expanded:
+            self._expandable_row.set_expanded_now(True)
+
+        # Server rows map 1:1 (by position) to the servers displayed.
+        for server_row, server in zip(self.server_rows, servers):
+            server_row.set_visible(name_match or server.name in matching_server_names)

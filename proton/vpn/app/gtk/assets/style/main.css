@@ -1,5 +1,4 @@
 @import "dark_colours.css";
-@import "dark_buttons.css";
 @import "connection_status.css";
 @import "main_widget.css";
 @import "quick_connect_widget.css";
@@ -7,116 +6,6 @@
 @import "search_results.css";
 @import "server_list.css";
 @import "nps_survey_modal.css";
-
-entry:focus-within,
-button:focus-visible,
-label:focus-visible,
-label link:focus-visible,
-switch:focus-visible {
-    outline-color: @interaction-norm;
-}
-
-entry:focus-within {
-    border-color: @interaction-norm;
-    box-shadow: none;
-}
-
-switch {
-    background-color: @field-norm;
-    background-image: image(@field-norm);
-    border-color: @field-norm;
-    border-radius: 999px;
-}
-
-switch:checked {
-    background-color: @interaction-norm;
-    background-image: image(@interaction-norm);
-    border-color: @interaction-norm;
-}
-
-switch:checked:hover {
-    background-color: @interaction-norm-hover;
-    background-image: image(@interaction-norm-hover);
-    border-color: @interaction-norm-hover;
-}
-
-switch slider {
-    border-radius: 999px;
-    background-color: @text-norm;
-    background-image: image(@text-norm);
-}
-
-checkbutton > check:checked,
-checkbutton > check:indeterminate {
-    background-color: @interaction-norm;
-    background-image: image(@interaction-norm);
-    border-color: @interaction-norm;
-    color: @text-norm;
-}
-
-checkbutton > check:checked:hover,
-checkbutton > check:indeterminate:hover {
-    background-color: @interaction-norm-hover;
-    background-image: image(@interaction-norm-hover);
-    border-color: @interaction-norm-hover;
-}
-
-checkbutton > radio {
-    border-radius: 999px;
-}
-
-checkbutton > radio:checked {
-    background-color: @interaction-norm;
-    background-image: image(@interaction-norm);
-    border-color: @interaction-norm;
-    color: @text-norm;
-}
-
-entry text selection {
-    background-color: @interaction-norm;
-    color: @text-norm;
-}
-
-label link {
-    color: @interaction-norm;
-}
-
-label link:hover {
-    color: @interaction-norm-hover;
-}
-
-scrollbar {
-    border: none;
-}
-
-scrollbar slider,
-scrollbar slider:hover {
-    background-color: @border-norm;
-}
-
-label.info {
-    background-color: @signal-info;
-    background-image: image(@signal-info);
-    color: @text-norm;
-    text-shadow: None;
-    padding: 5px;
-}
-
-label.error {
-    background-color: @signal-danger;
-    background-image: image(@signal-danger);
-    color: @text-norm;
-    text-shadow: None;
-    padding: 5px;
-}
-
-label.success {
-    background-color: @signal-success;
-    background-image: image(@signal-success);
-    color: @text-norm;
-    text-shadow: None;
-    padding: 5px;
-}
 
 #login-logo {
     margin-top: 75px;
@@ -179,10 +68,6 @@ label.success {
     border-top: 1px solid rgba(155, 155, 155, 0.2);
     padding: 15px 0px;
     margin-top: 20px;
-}
-
-label.signal-danger {
-    color: @signal-danger;
 }
 
 #split-tunneling-app-selection-window viewport {

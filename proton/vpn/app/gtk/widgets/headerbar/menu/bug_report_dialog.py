@@ -37,6 +37,7 @@ from proton.vpn.app.gtk.translator import C_
 from proton.vpn import logging
 from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.window import register_proton_window
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 
 if TYPE_CHECKING:
@@ -77,6 +78,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         log_collector: Optional["LogCollector"] = None
     ):
         super().__init__()
+        register_proton_window(self)
         self.set_name("bug-report-dialog")
         self._controller = controller
         self._main_window = main_window

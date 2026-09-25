@@ -35,6 +35,7 @@ from gi.repository import Gdk, Graphene
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.demo import registry
 from proton.vpn.app.gtk.demo.sizing import NO_BASELINE, UNCONSTRAINED
+from proton.vpn.app.gtk.utils.window import PROTON_APP_CSS_CLASS, register_proton_window
 
 _MARGIN = 18
 
@@ -283,6 +284,23 @@ def _labelled_group(label: str, widget: Gtk.Widget) -> Gtk.Widget:
     return group
 
 
+def _measure_in_app_root(widget: Gtk.Widget) -> Tuple[int, int]:
+    """Return the widget's natural width, and its height at that width.
+
+    This runs before the widget is added to the gallery window, so .proton-app
+    rules that change its size (padding, borders) don't apply to it yet. It is
+    measured inside a temporary box with the .proton-app class instead, which
+    gives the size it will have in the gallery.
+    """
+    root = Gtk.Box()
+    root.add_css_class(PROTON_APP_CSS_CLASS)
+    root.append(widget)
+    natural_width = widget.measure(Gtk.Orientation.HORIZONTAL, UNCONSTRAINED)[1]
+    height_for_width = widget.measure(Gtk.Orientation.VERTICAL, natural_width)[1]
+    root.remove(widget)
+    return natural_width, height_for_width
+
+
 def build_window(screen_name: str) -> DemoGallery:
     """Build (without presenting) the gallery window that shows the screen.
 
@@ -315,10 +333,7 @@ def build_window(screen_name: str) -> DemoGallery:
             # height-for-width — and lock the cell to it. Otherwise the
             # auto-sizing gallery would inflate to the widget's larger
             # unconstrained natural height (the login form's).
-            natural_width = widget.measure(Gtk.Orientation.HORIZONTAL, UNCONSTRAINED)[1]
-            height_for_width = widget.measure(
-                Gtk.Orientation.VERTICAL, natural_width
-            )[1]
+            natural_width, height_for_width = _measure_in_app_root(widget)
             widget = fixed_size(widget, natural_width, height_for_width)
         row.append(_labelled_group(label, widget))
 
@@ -332,6 +347,9 @@ def build_window(screen_name: str) -> DemoGallery:
     scrolled.set_child(row)
 
     window = Gtk.Window()
+    # Register the gallery like any app window, so the app's scoped styles apply
+    # to the widgets shown in it.
+    register_proton_window(window)
     window.set_title(f"demo: {screen_name}")
     window.set_child(scrolled)
     return DemoGallery(window=window, row=row)
@@ -346,7 +364,12 @@ def show(
 
     If screenshot_path is given, save a PNG on the first painted frame and exit.
     """
-    Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
+    settings = Gtk.Settings.get_default()
+    settings.props.gtk_application_prefer_dark_theme = True
+    # Screenshots are taken on the first frame the window draws. With animations
+    # on, a focused entry's focus ring may still be fading in on that frame, so
+    # screenshots would differ between runs.
+    settings.props.gtk_enable_animations = False
     _load_demo_css()
 
     gallery = build_window(screen_name)

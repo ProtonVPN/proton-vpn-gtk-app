@@ -29,6 +29,7 @@ from proton.vpn.app.gtk.assets.icons import ICONS_PATH
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.glib import run_once
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.window import register_proton_window
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
 
 
@@ -83,6 +84,7 @@ class Notifications:
             text=title,
         )
         self.error_dialog.set_destroy_with_parent(True)
+        register_proton_window(self.error_dialog)
 
         buttons = buttons or [DialogButton(C_("button", "OK"), Gtk.ResponseType.OK)]
         for button in buttons:

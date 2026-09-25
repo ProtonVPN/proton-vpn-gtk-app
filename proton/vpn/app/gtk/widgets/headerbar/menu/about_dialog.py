@@ -25,6 +25,7 @@ from gi.repository import Gdk, Gtk
 from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk import __version__
 from proton.vpn.app.gtk.translator import C_
+from proton.vpn.app.gtk.utils.window import register_proton_window
 
 
 class AboutDialog(Gtk.AboutDialog):
@@ -40,6 +41,7 @@ class AboutDialog(Gtk.AboutDialog):
 
     def __init__(self):
         super().__init__()
+        register_proton_window(self)
         self.set_title(self.TITLE)
         self.set_program_name(self.PROGRAM_NAME)
         self.set_version(self.VERSION)

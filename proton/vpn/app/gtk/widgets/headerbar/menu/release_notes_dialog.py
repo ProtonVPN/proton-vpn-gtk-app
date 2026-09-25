@@ -26,6 +26,7 @@ from gi.repository import Gtk
 
 from proton.vpn.app.gtk.assets import ASSETS_PATH
 from proton.vpn.app.gtk.translator import C_
+from proton.vpn.app.gtk.utils.window import register_proton_window
 
 
 class ReleaseNotesDialog(Gtk.Dialog):
@@ -39,6 +40,7 @@ class ReleaseNotesDialog(Gtk.Dialog):
 
     def __init__(self):
         super().__init__()
+        register_proton_window(self)
         self.set_default_size(self.WIDTH, self.HEIGHT)
         self.set_title(self.TITLE)
         self.set_modal(True)

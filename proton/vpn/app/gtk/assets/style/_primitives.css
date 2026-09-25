@@ -1,0 +1,198 @@
+/* Styles for GTK's built-in widgets (buttons, switches, entries, ...).
+ * Start every selector with .proton-app, so the rule only applies inside the
+ * app's own windows.
+ * main.css is loaded after this file. If both set the same property on the same
+ * widget, the value from main.css is used, even if the selector here is more
+ * specific. */
+@import "dark_colours.css";
+
+.proton-app button.primary:not(:disabled) {
+	background-color: @interaction-norm;
+	background-image: image(@interaction-norm);
+	border-color: @interaction-norm;
+    color: @text-norm;
+	text-shadow: none;
+}
+
+.proton-app button.secondary:hover,
+.proton-app button.primary:hover,
+.proton-app button.secondary:focus,
+.proton-app button.primary:focus {
+	background-color: @interaction-norm-hover;
+	background-image: image(@interaction-norm-hover);
+	border-color: @interaction-norm-hover;
+	color: @text-norm;
+	text-shadow: none;
+}
+
+.proton-app button.danger:hover,
+.proton-app button.danger:focus {
+	border-color: @signal-danger;
+    background-color: @signal-danger;
+	background-image: image(@signal-danger);
+	color: @text-norm;
+	text-shadow: none;
+}
+
+.proton-app button.secondary:active,
+.proton-app button.primary:active {
+	background-image: image(@interaction-norm-active);
+	border-color: @interaction-norm-active;
+	color: @text-norm;
+	text-shadow: none;
+}
+
+.proton-app button.danger:active {
+	border-color: @signal-danger-active;
+    background-color: @signal-danger-active;
+	background-image: image(@signal-danger-active);
+	color: @text-norm;
+	text-shadow: none;
+}
+
+.proton-app button.destructive-action:not(:disabled) {
+	background-color: @signal-danger;
+	background-image: image(@signal-danger);
+	border-color: @signal-danger;
+	color: @text-norm;
+	text-shadow: none;
+}
+
+.proton-app button.destructive-action:not(:disabled):hover,
+.proton-app button.destructive-action:not(:disabled):focus {
+	background-color: @signal-danger-hover;
+	background-image: image(@signal-danger-hover);
+	border-color: @signal-danger-hover;
+	color: @text-norm;
+	text-shadow: none;
+}
+
+.proton-app button.destructive-action:not(:disabled):active {
+	background-color: @signal-danger-active;
+	background-image: image(@signal-danger-active);
+	border-color: @signal-danger-active;
+	color: @text-norm;
+	text-shadow: none;
+}
+
+.proton-app button.spaced label {
+	padding: 5px 20px;
+}
+
+.proton-app button.link label {
+    color: @interaction-norm;
+}
+
+.proton-app entry:focus-within,
+.proton-app button:focus-visible,
+.proton-app label:focus-visible,
+.proton-app label link:focus-visible,
+.proton-app switch:focus-visible {
+    outline-color: @interaction-norm;
+}
+
+.proton-app entry:focus-within {
+    border-color: @interaction-norm;
+    box-shadow: none;
+}
+
+.proton-app switch {
+    background-color: @field-norm;
+    background-image: image(@field-norm);
+    border-color: @field-norm;
+    border-radius: 999px;
+}
+
+.proton-app switch:checked {
+    background-color: @interaction-norm;
+    background-image: image(@interaction-norm);
+    border-color: @interaction-norm;
+}
+
+.proton-app switch:checked:hover {
+    background-color: @interaction-norm-hover;
+    background-image: image(@interaction-norm-hover);
+    border-color: @interaction-norm-hover;
+}
+
+.proton-app switch slider {
+    border-radius: 999px;
+    background-color: @text-norm;
+    background-image: image(@text-norm);
+}
+
+.proton-app checkbutton > check:checked,
+.proton-app checkbutton > check:indeterminate {
+    background-color: @interaction-norm;
+    background-image: image(@interaction-norm);
+    border-color: @interaction-norm;
+    color: @text-norm;
+}
+
+.proton-app checkbutton > check:checked:hover,
+.proton-app checkbutton > check:indeterminate:hover {
+    background-color: @interaction-norm-hover;
+    background-image: image(@interaction-norm-hover);
+    border-color: @interaction-norm-hover;
+}
+
+.proton-app checkbutton > radio {
+    border-radius: 999px;
+}
+
+.proton-app checkbutton > radio:checked {
+    background-color: @interaction-norm;
+    background-image: image(@interaction-norm);
+    border-color: @interaction-norm;
+    color: @text-norm;
+}
+
+.proton-app entry text selection {
+    background-color: @interaction-norm;
+    color: @text-norm;
+}
+
+.proton-app label link {
+    color: @interaction-norm;
+}
+
+.proton-app label link:hover {
+    color: @interaction-norm-hover;
+}
+
+.proton-app scrollbar {
+    border: none;
+}
+
+.proton-app scrollbar slider,
+.proton-app scrollbar slider:hover {
+    background-color: @border-norm;
+}
+
+.proton-app label.info {
+    background-color: @signal-info;
+    background-image: image(@signal-info);
+    color: @text-norm;
+    text-shadow: None;
+    padding: 5px;
+}
+
+.proton-app label.error {
+    background-color: @signal-danger;
+    background-image: image(@signal-danger);
+    color: @text-norm;
+    text-shadow: None;
+    padding: 5px;
+}
+
+.proton-app label.success {
+    background-color: @signal-success;
+    background-image: image(@signal-success);
+    color: @text-norm;
+    text-shadow: None;
+    padding: 5px;
+}
+
+.proton-app label.signal-danger {
+    color: @signal-danger;
+}

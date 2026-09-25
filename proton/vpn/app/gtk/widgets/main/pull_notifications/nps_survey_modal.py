@@ -29,6 +29,7 @@ from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.window import register_proton_window
 from proton.vpn.session.dataclasses import NPSSurveyResponse
 
 
@@ -163,6 +164,7 @@ class NPSSurveyModal(Gtk.Window):
         dismiss_handler: NPSDismissHandler
     ):
         super().__init__()
+        register_proton_window(self)
         self.set_modal(True)
         self.set_default_size(450, 595)
         self.set_resizable(False)

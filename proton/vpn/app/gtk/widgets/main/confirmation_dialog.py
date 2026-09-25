@@ -26,6 +26,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn import logging
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.window import register_proton_window
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,7 @@ class ConfirmationDialog(Gtk.Dialog):
         yes_text: Optional[str] = None, no_text: Optional[str] = None
     ):
         super().__init__()
+        register_proton_window(self)
         self.set_title(title)
         self.set_default_size(self.WIDTH, self.HEIGHT)
 

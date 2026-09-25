@@ -29,6 +29,7 @@ from proton.session.exceptions import ProtonAPINotReachable, ProtonAPIError
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.exceptions import NPSError
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.window import register_proton_window
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.headerbar.headerbar import HeaderBar
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
@@ -59,6 +60,7 @@ class MainWindow(Gtk.ApplicationWindow):
             overlay_widget: Optional[OverlayWidget] = None
     ):
         super().__init__(application=application)
+        register_proton_window(self)
         self._application = application
         self.get_settings().props.gtk_application_prefer_dark_theme = True
         self._controller = controller

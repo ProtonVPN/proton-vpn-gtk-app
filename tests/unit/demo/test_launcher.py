@@ -27,12 +27,13 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from gi.repository import GLib
+from gi.repository import Gdk, GLib
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.demo import discovery, launcher
 from proton.vpn.app.gtk.demo.launcher import _snapshot_supported
 from proton.vpn.app.gtk.demo.sizing import UNCONSTRAINED
+from proton.vpn.app.gtk.utils.window import PROTON_APP_CSS_CLASS
 from tests.unit.testing_utils import process_gtk_events
 
 _requires_snapshot = pytest.mark.skipif(
@@ -297,3 +298,37 @@ def test_screenshot_dimensions_match_natural_size(shm_path):  # pylint: disable=
 
     assert destroyed
     assert _png_dimensions(out) == (natural_size["width"], natural_size["height"])
+
+
+def test_gallery_window_is_a_proton_app_root():
+    """The gallery is registered like an app window, so scoped styles apply to
+    the widgets shown in it."""
+    assert launcher.build_window("primitives").window.has_css_class(PROTON_APP_CSS_CLASS)
+
+
+def test_widget_is_measured_with_the_scoped_rules_applied():
+    """Cells are sized before the widget is added to the gallery window. If
+    padding from .proton-app rules were left out of the measurement, the cell
+    would be too small for the widget."""
+    provider = Gtk.CssProvider()
+    provider.load_from_data(b".proton-app label.measure-probe { padding: 0 40px; }")
+    display = Gdk.Display.get_default()
+    Gtk.StyleContext.add_provider_for_display(
+        display, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+    )
+    try:
+        def probe():
+            label = Gtk.Label(label="probe")
+            label.add_css_class("measure-probe")
+            return label
+
+        # Two separate labels, because GTK caches a widget's measured size.
+        detached_width = probe().measure(Gtk.Orientation.HORIZONTAL, UNCONSTRAINED)[1]
+        label = probe()
+
+        width, _ = launcher._measure_in_app_root(label)  # pylint: disable=protected-access
+
+        assert width == detached_width + 80
+        assert label.get_parent() is None
+    finally:
+        Gtk.StyleContext.remove_provider_for_display(display, provider)

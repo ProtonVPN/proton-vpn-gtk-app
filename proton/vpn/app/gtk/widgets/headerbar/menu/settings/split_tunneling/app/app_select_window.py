@@ -27,6 +27,7 @@ from gi.repository import Gtk, GObject
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.window import register_proton_window
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.split_tunneling.app.data_structures \
     import AppRowWithCheckbox, AppData
 
@@ -47,6 +48,7 @@ class AppSelectionWindow(Gtk.Window):
         gtk: ModuleType = Gtk
     ):  # pylint: disable=too-many-arguments
         super().__init__()
+        register_proton_window(self)
         self.set_modal(True)
         self.set_title(title)
         self.set_default_size(600, 500)

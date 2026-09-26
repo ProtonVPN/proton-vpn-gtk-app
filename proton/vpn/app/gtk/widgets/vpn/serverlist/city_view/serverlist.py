@@ -49,6 +49,12 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
 
 logger = proton_logging.getLogger(__name__)
 
+# How long to wait before rebuilding the widget after a data update. Updates
+# can land at any moment (on a slow connection, right in the middle of a
+# search), so the rebuild gives way to whatever the user is doing first: if a
+# filter is active by the time it runs, it stays deferred until it is cleared.
+REFRESH_DELAY_MS = 200
+
 
 class ServerListWidget(Gtk.ScrolledWindow):
     """Server list widget displaying countries, locations and their servers."""
@@ -86,6 +92,8 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._filter_snapshot: Optional[dict] = None
         self._active_filter: Optional[str] = None
         self._pending_refresh = False
+        self._pending_refresh_description = ""
+        self._refresh_source_id: Optional[int] = None
 
     def display(self, user_tier: int, server_list: ServerList):
         """Builds and displays the server list."""
@@ -151,8 +159,7 @@ class ServerListWidget(Gtk.ScrolledWindow):
             )
 
         if self._pending_refresh:
-            self._pending_refresh = False
-            self._display_server_list("Deferred server list widget update")
+            self._schedule_refresh()
 
     def _populate_countries(self, server_list: ServerList):
         self._display_country_rows(server_list)
@@ -218,27 +225,50 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def _on_server_list_update(self):
         """Whenever a new server list is received the UI should be updated."""
-        self._defer_refresh_while_filtering("Full server list widget update")
+        self._queue_refresh("Full server list widget update")
 
     def _on_server_loads_update(self):
-        self._defer_refresh_while_filtering("Partial server list widget update")
+        self._queue_refresh("Partial server list widget update")
 
     def _on_location_names_update(self):
         """Whenever refreshed location (city/state) names arrive the UI should be updated."""
-        self._defer_refresh_while_filtering("Location names widget update")
+        self._queue_refresh("Location names widget update")
 
-    def _defer_refresh_while_filtering(self, description: str):
-        """Rebuilds the widget for the given update type, unless a filter is
-        active.
+    def _queue_refresh(self, description: str):
+        """Queues a widget rebuild for the given update type instead of
+        running it inline.
 
-        Refreshes rebuild the whole widget, which freezes the UI in the middle
-        of a search, so they are deferred until the filter is cleared.
+        The update handlers run on the UI thread, and a rebuild redraws the
+        whole widget, so running one inline would freeze the UI for whatever
+        the user is doing at that moment. Data updates can land at any time
+        (on a slow connection, right in the middle of a search), so the
+        rebuild is postponed briefly: if a filter is active by the time it
+        runs, it stays deferred until the filter is cleared.
         """
+        self._pending_refresh = True
+        self._pending_refresh_description = description
         if self._active_filter:
-            self._pending_refresh = True
             logger.info(f"{description} deferred while a filter is active.")
-            return
-        self._display_server_list(description)
+        self._schedule_refresh()
+
+    def _schedule_refresh(self):
+        """Schedules the queued rebuild, coalescing bursts of updates (e.g.
+        server list followed by loads followed by location names) into a
+        single rebuild."""
+        if self._refresh_source_id is None:
+            self._refresh_source_id = GLib.timeout_add(
+                REFRESH_DELAY_MS, self._run_pending_refresh
+            )
+
+    def _run_pending_refresh(self) -> bool:
+        self._refresh_source_id = None
+        if self._active_filter or not self._pending_refresh:
+            # Still searching: stay queued. _clear_filter() schedules the
+            # rebuild again once the filter is cleared.
+            return GLib.SOURCE_REMOVE
+        self._pending_refresh = False
+        self._display_server_list(self._pending_refresh_description)
+        return GLib.SOURCE_REMOVE
 
     def _display_server_list(self, description: str):
         start = time.time()
@@ -252,6 +282,10 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._controller.unset_server_list_updated_callback()
         self._controller.unset_server_loads_updated_callback()
         self._controller.unset_location_names_updated_callback()
+        if self._refresh_source_id is not None:
+            GLib.source_remove(self._refresh_source_id)
+            self._refresh_source_id = None
+        self._pending_refresh = False
         self._remove_country_rows()
 
 

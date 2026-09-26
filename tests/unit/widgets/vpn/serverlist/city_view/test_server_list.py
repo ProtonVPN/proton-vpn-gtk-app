@@ -22,6 +22,7 @@ from unittest.mock import Mock
 import pytest
 from proton.vpn.session.servers import ServerList
 
+from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view import serverlist as serverlist_module
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.serverlist import ServerListWidget
 from tests.unit.testing_utils import process_gtk_events
 
@@ -189,7 +190,8 @@ def _displayed_widget(server_list=SERVER_LIST_WITH_CITIES, user_tier=PLUS_TIER):
     return widget
 
 
-def test_server_list_widget_subscribes_to_server_list_updates_on_realize():
+def test_server_list_widget_subscribes_to_server_list_updates_on_realize(monkeypatch):
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
     mock_controller = Mock()
 
     server_list_widget = ServerListWidget(
@@ -402,9 +404,12 @@ def test_filter_survives_server_list_refresh(unsorted_server_list):
     assert country_visibility == {"Argentina": True, "Japan": False}
 
 
-def test_server_list_update_is_deferred_while_filter_is_active(unsorted_server_list):
+def test_server_list_update_is_deferred_while_filter_is_active(
+        unsorted_server_list, monkeypatch
+):
     """The periodic server list/loads refreshes rebuild the whole widget, so
     they are deferred while a filter is active and applied when it is cleared."""
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
     mock_controller = Mock()
     widget = ServerListWidget(controller=mock_controller)
     widget.display(user_tier=PLUS_TIER, server_list=unsorted_server_list)
@@ -426,6 +431,105 @@ def test_server_list_update_is_deferred_while_filter_is_active(unsorted_server_l
 
     # The deferred refresh is applied once the filter is cleared.
     assert len(widget.country_rows) == 1
+
+
+def _ui_update_counter(widget) -> list:
+    """Counts how many times the widget was fully rebuilt (ui-updated)."""
+    updates = []
+    widget.connect("ui-updated", lambda *_: updates.append(1))
+    return updates
+
+
+def _refresh_callback(mock_controller):
+    return mock_controller.set_server_list_updated_callback.call_args[0][0]
+
+
+def test_server_list_update_never_rebuilds_inline(unsorted_server_list, monkeypatch):
+    """A data update handler runs on the UI thread, so a full rebuild there
+    would steal the main thread from whatever the user is doing at that
+    moment (e.g. typing in the search box). The rebuild runs a moment later,
+    off the handler."""
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
+    mock_controller = Mock()
+    mock_controller.server_list = unsorted_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=unsorted_server_list)
+    ui_updates = _ui_update_counter(widget)
+
+    _refresh_callback(mock_controller)()
+
+    assert len(ui_updates) == 0  # no inline rebuild
+
+    process_gtk_events()
+    assert len(ui_updates) == 1  # rebuilt off the handler
+
+
+def test_refresh_landing_in_the_typing_window_stays_deferred(
+        unsorted_server_list, monkeypatch
+):
+    """A refresh landing between a keystroke and the (debounced)
+    "search-changed" signal must not rebuild the list mid-search: by the time
+    the scheduled rebuild runs, the filter is already active, so the rebuild
+    waits until the filter is cleared."""
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
+    mock_controller = Mock()
+    mock_controller.server_list = unsorted_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=unsorted_server_list)
+
+    # A refresh arrives with a different list, before "search-changed" fires.
+    mock_controller.server_list = SERVER_LIST  # single country
+    _refresh_callback(mock_controller)()
+    widget.filter("Argentina")  # "search-changed" fires before the rebuild runs
+    process_gtk_events()
+
+    # Still searching: not rebuilt.
+    assert len(widget.country_rows) == 2
+
+    widget.filter("")
+    process_gtk_events()
+
+    # Applied once the filter is cleared.
+    assert len(widget.country_rows) == 1
+
+
+def test_clearing_the_filter_does_not_rebuild_inside_the_keystroke_handler(
+        unsorted_server_list, monkeypatch
+):
+    """The rebuild queued while searching runs after filter("") returns, not
+    synchronously inside it -- filter("") is called from the search entry's
+    "search-changed" handler, and a rebuild there would freeze the UI right
+    when the user is typing."""
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
+    mock_controller = Mock()
+    mock_controller.server_list = unsorted_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=unsorted_server_list)
+    ui_updates = _ui_update_counter(widget)
+
+    widget.filter("Argentina")
+    _refresh_callback(mock_controller)()  # refresh arrives mid-search -> queued
+    widget.filter("")
+
+    assert len(ui_updates) == 0  # no rebuild inside the clear handler
+
+    process_gtk_events()
+    assert len(ui_updates) == 1  # rebuilt right after, off the handler
+
+
+def test_unload_cancels_a_scheduled_rebuild(unsorted_server_list, monkeypatch):
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
+    mock_controller = Mock()
+    mock_controller.server_list = unsorted_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=unsorted_server_list)
+    ui_updates = _ui_update_counter(widget)
+
+    _refresh_callback(mock_controller)()
+    widget.unload()
+    process_gtk_events()
+
+    assert len(ui_updates) == 0
 
 
 def test_filter_collapses_country_rows_that_stop_matching():

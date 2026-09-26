@@ -21,6 +21,7 @@ from unittest.mock import Mock
 
 import pytest
 from proton.vpn.session.servers import ServerList
+from proton.vpn.session.servers.types import ServerLoad
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view import serverlist as serverlist_module
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.serverlist import ServerListWidget
@@ -181,6 +182,34 @@ SERVER_LIST_WITH_SECURE_CORE = ServerList.from_dict({
     ],
     "MaxTier": PLUS_TIER
 })
+
+
+@pytest.fixture
+def two_server_list():
+    """A fresh ServerList (AR#1 and AR#2, load 50) that tests may mutate."""
+    return ServerList.from_dict({
+        "LogicalServers": [
+            {
+                "ID": 1,
+                "Name": "AR#1",
+                "Status": 1,
+                "Load": 50,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "AR",
+                "Tier": PLUS_TIER,
+            },
+            {
+                "ID": 2,
+                "Name": "AR#2",
+                "Status": 1,
+                "Load": 50,
+                "Servers": [{"Status": 1}],
+                "ExitCountry": "AR",
+                "Tier": PLUS_TIER,
+            },
+        ],
+        "MaxTier": PLUS_TIER
+    })
 
 
 def _displayed_widget(server_list=SERVER_LIST_WITH_CITIES, user_tier=PLUS_TIER):
@@ -444,6 +473,22 @@ def _refresh_callback(mock_controller):
     return mock_controller.set_server_list_updated_callback.call_args[0][0]
 
 
+def _loads_callback(mock_controller):
+    return mock_controller.set_server_loads_updated_callback.call_args[0][0]
+
+
+def _expanded_server_rows(widget):
+    """Expands the only country row and its only location row, and returns
+    the location row together with its built server rows indexed by label."""
+    country_row = widget.country_rows[0]
+    country_row.click_toggle_button()
+    process_gtk_events()
+    location_row = country_row.location_rows[0]
+    location_row.click_toggle_button()
+    process_gtk_events()
+    return location_row, {row.label: row for row in location_row.server_rows}
+
+
 def test_server_list_update_never_rebuilds_inline(unsorted_server_list, monkeypatch):
     """A data update handler runs on the UI thread, so a full rebuild there
     would steal the main thread from whatever the user is doing at that
@@ -546,3 +591,177 @@ def test_filter_collapses_country_rows_that_stop_matching():
 
     assert not japan_row.expanded
     assert not japan_row.location_rows
+
+
+def test_server_loads_update_updates_displayed_loads_in_place(
+        two_server_list, monkeypatch
+):
+    """A loads update mutates the server models the rows already reference,
+    so the displayed loads can be applied inline, without rebuilding."""
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
+    mock_controller = Mock()
+    mock_controller.server_list = two_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=two_server_list)
+    ui_updates = _ui_update_counter(widget)
+    location_row, rows_by_label = _expanded_server_rows(widget)
+    assert rows_by_label["AR#1"].server_load == "50%"
+    assert rows_by_label["AR#2"].server_load == "50%"
+    row_ids_before = [id(row) for row in location_row.server_rows]
+
+    two_server_list.update([
+        ServerLoad({"ID": 1, "Load": 25, "Score": 1, "Status": 1}),
+        ServerLoad({"ID": 2, "Load": 75, "Score": 2, "Status": 1}),
+    ])
+    _loads_callback(mock_controller)()
+
+    # Applied inline: no process_gtk_events() in between.
+    assert rows_by_label["AR#1"].server_load == "25%"
+    assert rows_by_label["AR#2"].server_load == "75%"
+    assert [id(row) for row in location_row.server_rows] == row_ids_before
+    assert len(ui_updates) == 0
+
+
+def test_server_loads_update_does_not_create_or_destroy_rows(two_server_list):
+    mock_controller = Mock()
+    mock_controller.server_list = two_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=two_server_list)
+    ui_updates = _ui_update_counter(widget)
+    country_row = widget.country_rows[0]
+    location_row, _ = _expanded_server_rows(widget)
+
+    state_before = (
+        [id(row) for row in widget.country_rows],
+        len(country_row.location_rows),
+        [id(row) for row in location_row.server_rows],
+        country_row.expanded,
+        location_row.expanded,
+    )
+
+    two_server_list.update([
+        ServerLoad({"ID": 1, "Load": 25, "Score": 1, "Status": 1}),
+        ServerLoad({"ID": 2, "Load": 75, "Score": 2, "Status": 1}),
+    ])
+    _loads_callback(mock_controller)()
+    process_gtk_events()
+
+    state_after = (
+        [id(row) for row in widget.country_rows],
+        len(country_row.location_rows),
+        [id(row) for row in location_row.server_rows],
+        country_row.expanded,
+        location_row.expanded,
+    )
+    assert state_after == state_before
+    assert len(ui_updates) == 0
+
+
+def test_server_loads_update_is_not_deferred_while_filter_is_active(two_server_list):
+    """Loads used to stay stale on screen until a search filter was cleared
+    (the rebuild the loads update queued stayed deferred). They are now
+    applied inline, without touching the filter state."""
+    mock_controller = Mock()
+    mock_controller.server_list = two_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=two_server_list)
+    ui_updates = _ui_update_counter(widget)
+    _, rows_by_label = _expanded_server_rows(widget)
+
+    widget.filter("AR#1")
+    visibility_before = {
+        label: row.get_visible() for label, row in rows_by_label.items()
+    }
+    assert visibility_before == {"AR#1": True, "AR#2": False}
+
+    two_server_list.update([
+        ServerLoad({"ID": 1, "Load": 25, "Score": 1, "Status": 1}),
+        ServerLoad({"ID": 2, "Load": 75, "Score": 2, "Status": 1}),
+    ])
+    _loads_callback(mock_controller)()
+
+    assert rows_by_label["AR#1"].server_load == "25%"  # applied right away
+    visibility_after = {
+        label: row.get_visible() for label, row in rows_by_label.items()
+    }
+    assert visibility_after == visibility_before
+    process_gtk_events()
+    assert len(ui_updates) == 0
+
+
+def test_server_loads_update_keeps_visibility_and_expansion_untouched(two_server_list):
+    mock_controller = Mock()
+    mock_controller.server_list = two_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=two_server_list)
+    ui_updates = _ui_update_counter(widget)
+    country_row = widget.country_rows[0]
+    location_row, rows_by_label = _expanded_server_rows(widget)
+    widget.filter("AR#1")
+
+    state_before = (
+        country_row.get_visible(), country_row.expanded,
+        location_row.get_visible(), location_row.expanded,
+        {label: row.get_visible() for label, row in rows_by_label.items()},
+        len(location_row.server_rows),  # built children are retained
+    )
+
+    two_server_list.update([
+        ServerLoad({"ID": 1, "Load": 25, "Score": 1, "Status": 1}),
+        ServerLoad({"ID": 2, "Load": 75, "Score": 2, "Status": 1}),
+    ])
+    _loads_callback(mock_controller)()
+    process_gtk_events()
+
+    state_after = (
+        country_row.get_visible(), country_row.expanded,
+        location_row.get_visible(), location_row.expanded,
+        {label: row.get_visible() for label, row in rows_by_label.items()},
+        len(location_row.server_rows),
+    )
+    assert state_after == state_before
+    assert len(ui_updates) == 0
+
+
+def test_server_loads_update_falls_back_to_rebuild_when_maintenance_changes(
+        two_server_list, monkeypatch
+):
+    """Restyling a row (swapping the connect button for the maintenance icon)
+    is not done in place: the loads update falls back to the usual deferred
+    rebuild."""
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
+    mock_controller = Mock()
+    mock_controller.server_list = two_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=two_server_list)
+    ui_updates = _ui_update_counter(widget)
+    _expanded_server_rows(widget)
+
+    # AR#2 goes under maintenance.
+    two_server_list.update([ServerLoad({"ID": 2, "Load": 75, "Score": 2, "Status": 0})])
+    _loads_callback(mock_controller)()
+    process_gtk_events()
+
+    assert len(ui_updates) == 1  # the deferred rebuild ran
+    location_row = widget.country_rows[0].location_rows[0]
+    rows_by_label = {row.label: row for row in location_row.server_rows}
+    assert rows_by_label["AR#2"].under_maintenance_icon.get_visible()
+
+
+def test_server_loads_update_with_no_displayed_rows_is_a_no_op(monkeypatch):
+    monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
+    empty_server_list = ServerList.from_dict({
+        "LogicalServers": [],
+        "MaxTier": PLUS_TIER
+    })
+    mock_controller = Mock()
+    mock_controller.server_list = empty_server_list
+    widget = ServerListWidget(controller=mock_controller)
+    widget.display(user_tier=PLUS_TIER, server_list=empty_server_list)
+    ui_updates = _ui_update_counter(widget)
+
+    _loads_callback(mock_controller)()
+    process_gtk_events()
+
+    assert not widget.country_rows
+    assert len(ui_updates) == 0

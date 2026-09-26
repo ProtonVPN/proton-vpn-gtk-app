@@ -228,7 +228,27 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._queue_refresh("Full server list widget update")
 
     def _on_server_loads_update(self):
-        self._queue_refresh("Partial server list widget update")
+        """Applies fresh server loads in place, without rebuilding the widget.
+
+        A loads update mutates the server models the rows already reference
+        (only Load/Score/Status change; the servers, their grouping and their
+        order are unchanged), so the rows just re-read them: collapsed rows
+        have nothing to update and rows hidden by an active filter keep their
+        visibility. No rebuild, and no "ui-updated".
+        """
+        start = time.time()
+        needs_rebuild = False
+        for country_row in self._country_rows:
+            needs_rebuild |= country_row.update_server_loads()
+        if needs_rebuild:
+            # A visible server went in/out of maintenance (or the rows are out
+            # of sync with the models): restyling rows in place is not worth
+            # it, so fall back to the deferred rebuild.
+            self._queue_refresh("Partial server list widget update")
+            return
+        logger.info(
+            f"Server loads applied in place in {time.time() - start:.2f} seconds."
+        )
 
     def _on_location_names_update(self):
         """Whenever refreshed location (city/state) names arrive the UI should be updated."""

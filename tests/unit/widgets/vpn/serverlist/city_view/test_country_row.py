@@ -21,6 +21,7 @@ from unittest.mock import Mock
 import pytest
 
 from proton.vpn.session.servers import Country, LogicalServer, TierEnum
+from proton.vpn.session.servers.types import ServerLoad
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.country_row import CountryRow
@@ -176,3 +177,38 @@ def test_free_country_connectability_is_invariant_to_free_rescope_flag(
     process_gtk_events()
 
     assert country_row.row_content.label_sensitive is True
+
+
+def test_country_row_update_server_loads_updates_displayed_server_rows(
+        free_and_plus_servers
+):
+    """Built server rows re-read their (already mutated) server models;
+    collapsed locations have nothing built, so they are untouched."""
+    country = Country(code="jp", servers=free_and_plus_servers, group_by_location=True)
+    country_row = CountryRow()
+    mock_controller = Mock(spec=Controller)
+
+    country_row.display(mock_controller, country, TierEnum.PLUS)
+    country_row.click_toggle_button()
+    process_gtk_events()
+    tokyo_row = next(
+        row for row in country_row.location_rows if row.label == "Tokyo"
+    )
+    tokyo_row.click_toggle_button()
+    process_gtk_events()
+
+    new_loads_by_name = {"JP#9": 10, "JP-FREE#10": 20, "JP-FREE#11": 30}
+    for logical in country.servers:
+        logical.update(ServerLoad({
+            "ID": logical.id, "Load": new_loads_by_name[logical.name],
+            "Score": 1, "Status": 1,
+        }))
+
+    assert country_row.update_server_loads() is False
+
+    loads_by_label = {row.label: row.server_load for row in tokyo_row.server_rows}
+    assert loads_by_label == {"JP-FREE#10": "20%", "JP-FREE#11": "30%"}
+    osaka_row = next(
+        row for row in country_row.location_rows if row.label == "Osaka"
+    )
+    assert osaka_row.server_rows == []

@@ -24,6 +24,8 @@ from typing import List, Optional
 
 from gi.repository import GLib
 
+from proton.vpn import logging as proton_logging
+
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
@@ -43,6 +45,8 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     SecureCoreIcon,
 )
 from proton.vpn.app.gtk.utils.country import get_localized_country_name
+
+logger = proton_logging.getLogger(__name__)
 
 
 class SecureCoreRow(Gtk.Box):
@@ -167,6 +171,41 @@ class SecureCoreRow(Gtk.Box):
             server_row.set_visible(
                 needle in fold(server.name) or needle in fold(server_row.label)
             )
+
+    def update_server_loads(self) -> bool:
+        """Updates the load displayed by each of this row's built server rows,
+        in place. See LocationRow.update_server_loads() for the contract."""
+        if self._secure_core_group is None or not self._server_rows:
+            return False
+
+        servers = self._secure_core_group.servers
+        server_rows = self.server_rows
+        if len(server_rows) != len(servers):
+            logger.warning(
+                f"Secure core row: got {len(server_rows)} rows for "
+                f"{len(servers)} servers. Falling back to a full rebuild."
+            )
+            return True
+
+        needs_rebuild = False
+        for server_row, server in zip(server_rows, servers):
+            expected_label = C_("label", "Via {country}").format(
+                country=get_localized_country_name(server.entry_country)
+            )
+            if server_row.label != expected_label:
+                logger.warning(
+                    f"Secure core row: row '{server_row.label}' does not match "
+                    f"server '{server.name}'. Falling back to a full rebuild."
+                )
+                return True
+            upgrade_required = upgrade_required_for_row(
+                self._controller, self._user_tier, server
+            )
+            needs_rebuild |= server_row.update_server_load(
+                load=None if server.under_maintenance else server.load,
+                under_maintenance=server.under_maintenance and not upgrade_required,
+            )
+        return needs_rebuild
 
     def reset(self, keep_children: bool = False) -> None:
         """Resets the secure core row to its initial state."""

@@ -326,6 +326,17 @@ class CountryRow(Gtk.Box):
         if self._secure_core_row is not None:
             self._secure_core_row.filter(needle)
 
+    def update_server_loads(self) -> bool:
+        """Updates the load displayed by every built server row under this
+        country, in place. See LocationRow.update_server_loads() for the
+        contract and the return value."""
+        needs_rebuild = False
+        for location_row in self._location_rows:
+            needs_rebuild |= location_row.update_server_loads()
+        if self._secure_core_row is not None:
+            needs_rebuild |= self._secure_core_row.update_server_loads()
+        return needs_rebuild
+
     def _reset_children_visibility(self):
         """Makes all the children of this row visible again, unfiltered."""
         for location_row in self.location_rows:

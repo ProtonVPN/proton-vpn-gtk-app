@@ -21,6 +21,7 @@ from unittest.mock import Mock
 import pytest
 
 from proton.vpn.session.servers import Location, LogicalServer, TierEnum
+from proton.vpn.session.servers.types import ServerLoad
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.location_row import LocationRow
@@ -189,3 +190,79 @@ def test_free_location_requires_upgrade_for_free_user_when_server_selection_requ
 
     assert location_row.row_content.label_sensitive is False
     assert location_row.server_rows[0].label_sensitive is False
+
+
+@pytest.mark.parametrize("user_tier", [TierEnum.FREE, TierEnum.PLUS])
+def test_location_row_update_server_loads_updates_displayed_loads_in_place(
+        user_tier, plus_and_free_servers
+):
+    """Loads updates mutate the server models the rows already reference, so
+    the built server rows just re-read them (in both display orderings)."""
+    location = Location(name="Tokyo", servers=plus_and_free_servers)
+    location_row = LocationRow()
+    location_row.display(Mock(spec=Controller), location, user_tier, expanded=True)
+    process_gtk_events()
+    assert len(location_row.server_rows) == 2
+
+    for logical in location.servers:
+        new_load = 25 if logical.name == "JP#9" else 75
+        logical.update(ServerLoad({
+            "ID": logical.id, "Load": new_load, "Score": 1, "Status": 1,
+        }))
+
+    assert location_row.update_server_loads() is False
+
+    loads_by_label = {row.label: row.server_load for row in location_row.server_rows}
+    assert loads_by_label == {"JP#9": "25%", "JP-FREE#10": "75%"}
+    assert len(location_row.server_rows) == 2
+
+
+def test_location_row_update_server_loads_is_a_no_op_for_collapsed_rows(
+        plus_and_free_servers
+):
+    location = Location(name="Tokyo", servers=plus_and_free_servers)
+    location_row = LocationRow()
+
+    location_row.display(Mock(spec=Controller), location, TierEnum.PLUS)
+    process_gtk_events()
+
+    assert location_row.server_rows == []
+    assert location_row.update_server_loads() is False
+
+
+def test_location_row_update_server_loads_returns_true_when_a_server_goes_under_maintenance(
+        plus_and_free_servers
+):
+    location = Location(name="Tokyo", servers=plus_and_free_servers)
+    location_row = LocationRow()
+    location_row.display(Mock(spec=Controller), location, TierEnum.PLUS, expanded=True)
+    process_gtk_events()
+    rows_by_label = {row.label: row for row in location_row.server_rows}
+
+    jp_free = next(
+        logical for logical in location.servers if logical.name == "JP-FREE#10"
+    )
+    jp_free.update(ServerLoad({"ID": jp_free.id, "Load": 75, "Score": 1, "Status": 0}))
+
+    assert location_row.update_server_loads() is True
+
+    # The restyle is not done in place: the row is left as it was displayed.
+    assert not rows_by_label["JP-FREE#10"].under_maintenance_icon.get_visible()
+    assert rows_by_label["JP-FREE#10"].server_load == "50%"
+
+
+def test_location_row_update_server_loads_falls_back_when_rows_are_out_of_sync(
+        plus_and_free_servers
+):
+    location = Location(name="Tokyo", servers=plus_and_free_servers)
+    location_row = LocationRow()
+    location_row.display(Mock(spec=Controller), location, TierEnum.PLUS, expanded=True)
+    process_gtk_events()
+    rows_by_label = {row.label: row for row in location_row.server_rows}
+
+    # Simulate a desync between the built rows and the server models.
+    location_row._server_rows.pop()
+
+    assert location_row.update_server_loads() is True
+    # No row was touched before the fallback was requested.
+    assert rows_by_label["JP#9"].server_load == "50%"

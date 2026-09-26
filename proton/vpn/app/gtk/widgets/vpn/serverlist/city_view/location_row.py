@@ -26,6 +26,8 @@ from typing import List, Optional
 
 from gi.repository import GLib
 
+from proton.vpn import logging as proton_logging
+
 from proton.vpn.session.servers import Location, LogicalServer
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
@@ -39,6 +41,8 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
     servers_to_display
 )
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import LocationIcon
+
+logger = proton_logging.getLogger(__name__)
 
 
 class LocationRow(Gtk.Box):
@@ -213,3 +217,46 @@ class LocationRow(Gtk.Box):
         # Server rows map 1:1 (by position) to the servers displayed.
         for server_row, server in zip(self.server_rows, servers):
             server_row.set_visible(name_match or server.name in matching_server_names)
+
+    def update_server_loads(self) -> bool:
+        """Updates the load displayed by each of this row's built server rows,
+        in place, re-reading the (already mutated) server models.
+
+        Returns True when the caller should schedule a full widget rebuild
+        instead: a server row's under-maintenance state changed (restyling a
+        row requires a full re-display) or the built rows no longer correspond
+        to the servers to display (should not happen).
+
+        Rows collapsed by the user have no built server rows, so this is a
+        no-op for them. This method must not change the visibility or expansion
+        state of any row: an active filter is left untouched.
+        """
+        if self._location is None or not self._server_rows:
+            return False
+
+        servers = self._servers_to_display()
+        server_rows = self.server_rows
+        if len(server_rows) != len(servers):
+            logger.warning(
+                f"Location '{self._location.name}': got {len(server_rows)} rows "
+                f"for {len(servers)} servers. Falling back to a full rebuild."
+            )
+            return True
+
+        needs_rebuild = False
+        for server_row, server in zip(server_rows, servers):
+            if server_row.label != server.name:
+                logger.warning(
+                    f"Location '{self._location.name}': row '{server_row.label}' "
+                    f"does not match server '{server.name}'. "
+                    f"Falling back to a full rebuild."
+                )
+                return True
+            upgrade_required = upgrade_required_for_row(
+                self._controller, self._user_tier, server
+            )
+            needs_rebuild |= server_row.update_server_load(
+                load=None if server.under_maintenance else server.load,
+                under_maintenance=server.under_maintenance and not upgrade_required,
+            )
+        return needs_rebuild

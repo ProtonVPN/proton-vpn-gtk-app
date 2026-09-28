@@ -1298,6 +1298,10 @@ msgstr ""
 "wiederherzustellen, trennen Sie bitte die Verbindung eines anderen Geräts."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "mehr als {count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0 (sehr unwahrscheinlich)"
 
@@ -1324,6 +1328,10 @@ msgstr "Erweitert"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Alle Länder ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Automatisch ausgewählt aus"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1356,6 +1364,10 @@ msgstr "Ausgeschlossene Apps "
 msgctxt "label"
 msgid "Free"
 msgstr "Kostenlos"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Kostenlose Serverstandorte ({count})"
 
 msgctxt "label"
 msgid "Get unlimited server changes with VPN Plus."
@@ -1515,6 +1527,10 @@ msgstr ""
 "Erfasse ein bestimmtes Problem, auf das du bei der Nutzung von Proton VPN gestoßen bist, um Hilfe von unserem Kundensupport-Team zu erhalten.\n"
 "\n"
 "Warnhinweis: Diese Datei enthält eine Aufnahme aller deiner Internetaktivitäten während der Aufzeichnungssitzung."
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "Das Wechseln des Servers ist nun möglich"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1710,6 +1726,15 @@ msgid ""
 msgstr ""
 "Die Protokollauswahl ist deaktiviert, solange das VPN aktiv ist. Trenne die "
 "Verbindung, um Änderungen vornehmen zu können."
+
+msgctxt "message"
+msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr ""
+"Proton Free verbindet dich automatisch mit dem schnellsten verfügbaren "
+"Server. Dies ist normalerweise der Server, der deinem Standort am nächsten "
+"ist."
 
 msgctxt "message"
 msgid ""
@@ -2008,6 +2033,10 @@ msgid "Features"
 msgstr "Funktionen"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Kostenlose Verbindungen"
+
+msgctxt "title"
 msgid "General"
 msgstr "Allgemein"
 
@@ -2172,6 +2201,10 @@ msgstr "Verbindung mit {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Portnummer kopieren"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Kostenlose Serverstandorte"
 
 msgctxt "tooltip"
 msgid ""

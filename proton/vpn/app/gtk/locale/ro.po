@@ -1293,6 +1293,10 @@ msgstr ""
 "deconectați-vă de la un alt dispozitiv."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "+{count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0 este foarte improbabil"
 
@@ -1319,6 +1323,10 @@ msgstr "Avansat"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Toate țările ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Autoselectat din"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1351,6 +1359,10 @@ msgstr "Aplicații excluse "
 msgctxt "label"
 msgid "Free"
 msgstr "Free"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Locuri cu servere gratuite ({count})"
 
 msgctxt "label"
 msgid "Get unlimited server changes with VPN Plus."
@@ -1509,6 +1521,10 @@ msgstr ""
 "Înregistrați o problemă specifică pe care o întâmpinați când utilizați Proton VPN pentru a obține ajutor de la echipa noastră de asistență pentru clienți.\n"
 "\n"
 "Avertisment: Acest fișier este o înregistrare a întregii activități pe internet în timpul sesiunii de captură."
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "Acum este posibilă modificarea serverului"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1696,6 +1712,15 @@ msgid ""
 msgstr ""
 "Selecția protocolului este dezactivată cât timp VPN-ul este activ. "
 "Deconectați-vă pentru a face modificări."
+
+msgctxt "message"
+msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr ""
+"Proton Free vă conectează automat la cel mai rapid server gratuit "
+"disponibil. De obicei, acesta este serverul cel mai apropiat de locul "
+"conectării."
 
 msgctxt "message"
 msgid ""
@@ -1985,6 +2010,10 @@ msgid "Features"
 msgstr "Funcții"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Conexiuni gratuite"
+
+msgctxt "title"
 msgid "General"
 msgstr "Generale"
 
@@ -2147,6 +2176,10 @@ msgstr "Conectare la {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Copiere număr port"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Locuri cu servere gratuite"
 
 msgctxt "tooltip"
 msgid ""

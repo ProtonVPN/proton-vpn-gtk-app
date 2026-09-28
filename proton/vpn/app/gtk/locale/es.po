@@ -1293,6 +1293,10 @@ msgstr ""
 "desconecte alguno de sus dispositivos."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "{count}+"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0: Muy improbable"
 
@@ -1319,6 +1323,10 @@ msgstr "Avanzado"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Todos los países ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Selección automática desde"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1351,6 +1359,10 @@ msgstr "Aplicaciones excluidas "
 msgctxt "label"
 msgid "Free"
 msgstr "Free"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Ubicaciones de servidores gratuitos ({count})"
 
 msgctxt "label"
 msgid "Get unlimited server changes with VPN Plus."
@@ -1509,6 +1521,10 @@ msgstr ""
 "Captura un problema específico que esté experimentando al usar Proton VPN para que nuestro equipo de soporte al cliente pueda ayudarle.\n"
 "\n"
 "Advertencia: Este archivo registra toda su actividad en internet durante la sesión de captura."
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "Cambiar de servidor ya disponible"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1698,6 +1714,14 @@ msgid ""
 msgstr ""
 "La opción de protocolo está desactivada mientras la VPN está activa. "
 "Desconéctese para aplicar los cambios."
+
+msgctxt "message"
+msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr ""
+"Proton Free le conecta automáticamente al servidor gratuito más rápido "
+"disponible. Usualmente es el servidor más cercano a su ubicación."
 
 msgctxt "message"
 msgid ""
@@ -1996,6 +2020,10 @@ msgid "Features"
 msgstr "Funciones"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Conexiones gratuitas"
+
+msgctxt "title"
 msgid "General"
 msgstr "General"
 
@@ -2158,6 +2186,10 @@ msgstr "Conectar a {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Copiar número de puerto"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Ubicaciones de servidores gratuitos"
 
 msgctxt "tooltip"
 msgid ""

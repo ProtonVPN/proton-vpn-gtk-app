@@ -1298,6 +1298,10 @@ msgstr ""
 "παρακαλούμε αποσυνδεθείτε από την άλλη συσκευή."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "+{count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0 είναι το πλέον απίθανο"
 
@@ -1324,6 +1328,10 @@ msgstr "Προχωρημένα"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Όλες οι χώρες ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Επιλέχθηκε αυτόματα από"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1356,6 +1364,10 @@ msgstr "Εξαιρούμενες εφαρμογές "
 msgctxt "label"
 msgid "Free"
 msgstr "Free"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Τοποθεσίες δωρεάν διακομιστών ({count})"
 
 msgctxt "label"
 msgid "Get unlimited server changes with VPN Plus."
@@ -1514,6 +1526,10 @@ msgstr ""
 "Καταγράφει ένα συγκεκριμένο πρόβλημα που αντιμετωπίζετε όταν χρησιμοποιείτε το Proton VPN για να λάβετε βοήθεια από την ομάδα υποστήριξης πελατών μας.\n"
 "\n"
 "Προειδοποίηση: Αυτό το αρχείο καταγράφει όλη τη δραστηριότητά σας στο διαδίκτυο κατά τη διάρκεια της συνεδρίας καταγραφής."
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "Η αλλαγή διακομιστή είναι πλέον διαθέσιμη"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1705,6 +1721,15 @@ msgid ""
 msgstr ""
 "Η επιλογή πρωτοκόλλου είναι απενεργοποιημένη όσο το VPN είναι ενεργό. "
 "Αποσυνδεθείτε για να κάνετε αλλαγές."
+
+msgctxt "message"
+msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr ""
+"Το Proton Free σάς συνδέει αυτόματα με τον ταχύτερο διαθέσιμο δωρεάν "
+"διακομιστή. Συνήθως, πρόκειται για τον διακομιστή που βρίσκεται πιο κοντά "
+"στην τοποθεσία σας."
 
 msgctxt "message"
 msgid ""
@@ -2007,6 +2032,10 @@ msgid "Features"
 msgstr "Χαρακτηριστικά"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Δωρεάν συνδέσεις"
+
+msgctxt "title"
 msgid "General"
 msgstr "Γενικά"
 
@@ -2169,6 +2198,10 @@ msgstr "Σύνδεση με {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Αντιγραφή αριθμού θύρας"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Τοποθεσίες δωρεάν διακομιστών"
 
 msgctxt "tooltip"
 msgid ""

@@ -1290,6 +1290,10 @@ msgstr ""
 "için lütfen başka bir aygıtın bağlantısını kesin."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "+{count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0 hiç önermem"
 
@@ -1316,6 +1320,10 @@ msgstr "Gelişmiş"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Tüm ülkeler ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Şuradan otomatik olarak seçildi"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1348,6 +1356,10 @@ msgstr "Katılmayacak uygulamalar "
 msgctxt "label"
 msgid "Free"
 msgstr "Ücretsiz"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Free sunucuları konumları ({count})"
 
 msgctxt "label"
 msgid "Get unlimited server changes with VPN Plus."
@@ -1507,6 +1519,10 @@ msgstr ""
 "Proton VPN kullanırken karşılaştığınız belirli bir sorunu kaydederek müşteri destek ekibimizden yardım alabilirsiniz.\n"
 "\n"
 "Uyarı: Bu dosyada kayıt oturumu sırasında yaptığınız tüm internet etkinliklerinin kaydı bulunur."
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "Artık sunucu değiştirilebilir"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1694,6 +1710,14 @@ msgid ""
 msgstr ""
 "VPN kullanılırken iletişim kuralı seçimi yapılamaz. Değişiklik yapmak için "
 "bağlantıyı kesin."
+
+msgctxt "message"
+msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr ""
+"Proton Free sizi olabilecek en hızlı Free sunucusuna otomatik olarak bağlar."
+" Bu sunucu genellikle bulunduğunuz yere en yakın sunucudur."
 
 msgctxt "message"
 msgid ""
@@ -1993,6 +2017,10 @@ msgid "Features"
 msgstr "Özellikler"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Free bağlantıları"
+
+msgctxt "title"
 msgid "General"
 msgstr "Genel"
 
@@ -2155,6 +2183,10 @@ msgstr "{name} ile bağlantı kur"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Bağlantı noktasını kopyala"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Free sunucuları konumları"
 
 msgctxt "tooltip"
 msgid ""

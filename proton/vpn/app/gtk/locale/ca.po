@@ -25,7 +25,7 @@ msgstr "Cancel·la"
 
 msgctxt "button"
 msgid "Cancel Connection"
-msgstr "Cancel·leu la connexió"
+msgstr "Cancel·la la connexió"
 
 msgctxt "button"
 msgid "Change server"
@@ -45,7 +45,7 @@ msgstr "Desactiva"
 
 msgctxt "button"
 msgid "Disconnect"
-msgstr "Desconnecteu-vos"
+msgstr "Desconnecta"
 
 msgctxt "button"
 msgid "Done"
@@ -1297,6 +1297,10 @@ msgstr ""
 "VPN, desconnecteu-vos d'un altre dispositiu."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "+{count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0 és molt improbable"
 
@@ -1323,6 +1327,10 @@ msgstr "Avançat"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Tots els països ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Seleccionat automàticament des de"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1355,6 +1363,10 @@ msgstr "Aplicacions excloses "
 msgctxt "label"
 msgid "Free"
 msgstr "Gratuït"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Ubicacions de servidors gratuïts ({count})"
 
 msgctxt "label"
 msgid "Get unlimited server changes with VPN Plus."
@@ -1513,6 +1525,10 @@ msgstr ""
 "Registra un problema específic que tingueu quan utilitzeu Proton VPN, \n"
 "per tal d'obtenir ajuda del nostre equip d'atenció al client. \n"
 "Advertència: aquest fitxer és un enregistrament de tota la vostra activitat a internet durant la sessió de captura."
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "Canvieu de servidor, ara està disponible"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1698,6 +1714,14 @@ msgid ""
 msgstr ""
 "La selecció de protocol estarà desactivada mentre la VPN estigui activa. "
 "Desconnecteu-vos per fer-hi canvis."
+
+msgctxt "message"
+msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr ""
+"Proton Free us connecta automàticament al servidor gratuït més ràpid "
+"disponible. Normalment és el servidor més proper a la vostra ubicació."
 
 msgctxt "message"
 msgid ""
@@ -1999,6 +2023,10 @@ msgid "Features"
 msgstr "Característiques"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Connexions gratuïtes"
+
+msgctxt "title"
 msgid "General"
 msgstr "General"
 
@@ -2161,6 +2189,10 @@ msgstr "Connectar-se a {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Copieu el número de port"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Ubicacions de servidors gratuïts"
 
 msgctxt "tooltip"
 msgid ""

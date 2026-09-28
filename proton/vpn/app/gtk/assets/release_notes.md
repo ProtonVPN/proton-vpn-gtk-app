@@ -1,8 +1,11 @@
-## What's new (4.18.4)
+## What's new (4.18.5)
+- Minor bug fix
+
+## 4.18.4
 - Minor UI improvements and bug fixes.
 - Added acount information refresh button in settings.
 
-# 4.18.3
+## 4.18.3
 - Minor improvements.
 
 ## 4.18.2

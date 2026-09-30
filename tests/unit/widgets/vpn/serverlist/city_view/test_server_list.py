@@ -162,6 +162,24 @@ SERVER_LIST_WITH_CITIES = ServerList.from_dict({
 })
 
 
+SERVER_LIST_WITH_MANY_SERVERS = ServerList.from_dict({
+    "LogicalServers": [
+        {
+            "ID": i,
+            "Name": f"JP#{i}",
+            "Status": 1,
+            "Load": 50,
+            "Servers": [{"Status": 1}],
+            "ExitCountry": "JP",
+            "City": "Tokyo",
+            "Tier": PLUS_TIER,
+        }
+        for i in range(1, 16)  # 15 servers: more than the auto-expand cap
+    ],
+    "MaxTier": PLUS_TIER
+})
+
+
 SERVER_LIST_WITH_SECURE_CORE = ServerList.from_dict({
     "LogicalServers": [
         {
@@ -374,6 +392,23 @@ def test_filter_shows_location_matching_server_name():
         row.label: row.get_visible() for row in osaka_row.server_rows
     }
     assert server_visibility == {"JP#2": True}
+
+
+def test_filter_does_not_auto_expand_locations_with_many_matching_servers():
+    """Auto-expanding a location builds every one of its server row widgets
+    (~1ms each): typing "us" auto-expanded all US locations and built ~5800
+    row widgets, freezing the UI for ~5.5 seconds per keystroke. Locations
+    matching through a broad query stay collapsed (and can be expanded
+    manually); only focused matches are auto-expanded."""
+    widget = _displayed_widget(server_list=SERVER_LIST_WITH_MANY_SERVERS)
+
+    widget.filter("jp")  # matches every server name in the location
+    process_gtk_events()
+
+    japan_row = widget.country_rows[0]
+    tokyo_row = japan_row.location_rows[0]
+    assert tokyo_row.get_visible()   # the matching location is shown...
+    assert not tokyo_row.expanded    # ...but not auto-expanded
 
 
 def test_clearing_filter_restores_previous_state():

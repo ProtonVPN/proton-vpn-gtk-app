@@ -44,6 +44,15 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import LocationIcon
 
 logger = proton_logging.getLogger(__name__)
 
+# Locations matched through server names are auto-expanded, so that the
+# matching server rows are visible. On broad queries a single location can
+# match hundreds of servers (typing "us" matched ~5800 servers across the
+# US locations), and expanding one builds a widget per server (~1ms each),
+# which freezes the UI. Only focused matches (a handful of servers) are
+# auto-expanded; broader matches stay collapsed and can be expanded
+# manually, one location at a time.
+AUTO_EXPAND_MAX_MATCHING_SERVERS = 10
+
 
 class LocationRow(Gtk.Box):
     """Row representing a location in the server list widget."""
@@ -211,7 +220,10 @@ class LocationRow(Gtk.Box):
         if not self.get_visible():
             return
 
-        if matching_server_names and not name_match and not self.expanded:
+        if (
+                matching_server_names and not name_match and not self.expanded
+                and len(matching_server_names) <= AUTO_EXPAND_MAX_MATCHING_SERVERS
+        ):
             self._expandable_row.set_expanded_now(True)
 
         # Server rows map 1:1 (by position) to the servers displayed.

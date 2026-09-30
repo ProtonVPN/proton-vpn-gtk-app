@@ -20,6 +20,7 @@ import time
 from unittest.mock import Mock
 
 import pytest
+from gi.repository import GLib
 from proton.vpn.session.servers import ServerList
 from proton.vpn.session.servers.types import ServerLoad
 
@@ -290,6 +291,7 @@ def test_filter_hides_country_rows_not_matching_search_text(unsorted_server_list
     widget = _displayed_widget(server_list=unsorted_server_list)
 
     widget.filter("Argentina")
+    process_gtk_events()
 
     country_visibility = {
         row.country_name: row.get_visible() for row in widget.country_rows
@@ -304,6 +306,7 @@ def test_filter_keeps_country_matched_by_name_collapsed():
 
     japan_row = widget.country_rows[0]
     widget.filter("Japan")
+    process_gtk_events()
 
     assert japan_row.get_visible()
     assert not japan_row.expanded
@@ -315,6 +318,7 @@ def test_filter_expands_country_matched_via_child():
 
     japan_row = widget.country_rows[0]
     widget.filter("Tokyo")
+    process_gtk_events()
 
     assert japan_row.get_visible()
     assert japan_row.expanded
@@ -330,6 +334,7 @@ def test_filter_shows_all_children_of_manually_expanded_country_matched_by_name(
     japan_row.click_toggle_button()
     process_gtk_events()
     widget.filter("Japan")
+    process_gtk_events()
 
     location_visibility = {
         row.label: row.get_visible() for row in japan_row.location_rows
@@ -344,6 +349,7 @@ def test_filter_hides_locations_not_matching_search_text():
 
     japan_row = widget.country_rows[0]
     widget.filter("Tokyo")
+    process_gtk_events()
 
     location_visibility = {
         row.label: row.get_visible() for row in japan_row.location_rows
@@ -356,6 +362,7 @@ def test_filter_shows_location_matching_server_name():
 
     japan_row = widget.country_rows[0]
     widget.filter("JP#2")
+    process_gtk_events()
 
     location_visibility = {
         row.label: (row.get_visible(), row.expanded) for row in japan_row.location_rows
@@ -380,7 +387,9 @@ def test_clearing_filter_restores_previous_state():
     process_gtk_events()
 
     widget.filter("Osaka")
+    process_gtk_events()
     widget.filter("")
+    process_gtk_events()
 
     location_state = {
         row.label: (row.get_visible(), row.expanded) for row in japan_row.location_rows
@@ -393,6 +402,7 @@ def test_filter_matches_secure_core_servers():
     widget = _displayed_widget(server_list=SERVER_LIST_WITH_SECURE_CORE)
 
     widget.filter("CH-JP#1")
+    process_gtk_events()
 
     japan_row = next(row for row in widget.country_rows if row.country_name == "Japan")
     assert japan_row.get_visible()
@@ -408,6 +418,7 @@ def test_filter_hides_secure_core_row_not_matching():
     widget = _displayed_widget(server_list=SERVER_LIST_WITH_SECURE_CORE)
 
     widget.filter("Osaka")
+    process_gtk_events()
 
     japan_row = next(row for row in widget.country_rows if row.country_name == "Japan")
     assert japan_row.get_visible()
@@ -562,6 +573,82 @@ def test_clearing_the_filter_does_not_rebuild_inside_the_keystroke_handler(
     assert len(ui_updates) == 1  # rebuilt right after, off the handler
 
 
+def test_filter_pass_yields_to_the_main_loop(unsorted_server_list, monkeypatch):
+    """A filter pass runs in time-sliced chunks: a callback queued after the
+    pass starts runs before the pass reaches the last row. A pass that filters
+    every row inline would freeze the UI for its whole duration (measured at
+    6 seconds for broad queries like "us")."""
+    monkeypatch.setattr(serverlist_module, "FILTER_CHUNK_DURATION_SECONDS", 0)
+    widget = _displayed_widget(server_list=unsorted_server_list)
+
+    last_row = widget.country_rows[-1]
+    marker_ran = False
+    last_row_visible_at_marker = None
+
+    def marker():
+        nonlocal marker_ran, last_row_visible_at_marker
+        marker_ran = True
+        last_row_visible_at_marker = last_row.get_visible()
+        return GLib.SOURCE_REMOVE
+
+    widget.filter("Argentina")
+    GLib.idle_add(marker)
+    process_gtk_events()
+
+    assert marker_ran
+    assert last_row_visible_at_marker  # filtered in a later chunk
+    assert not last_row.get_visible()  # ...but filtered by the end
+
+
+def test_new_keystroke_cancels_the_pending_filter_pass(
+        unsorted_server_list, monkeypatch
+):
+    """A keystroke while a filter pass is still running cancels the stale
+    pass: only the newest needle is applied."""
+    monkeypatch.setattr(serverlist_module, "FILTER_CHUNK_DURATION_SECONDS", 0)
+    widget = _displayed_widget(server_list=unsorted_server_list)
+
+    widget.filter("Argentina")  # its pass only starts...
+    widget.filter("Japan")      # ...this keystroke cancels it mid-flight
+
+    process_gtk_events()
+
+    country_visibility = {
+        row.country_name: row.get_visible() for row in widget.country_rows
+    }
+    assert country_visibility == {"Argentina": False, "Japan": True}
+
+
+def test_clearing_the_filter_also_yields_to_the_main_loop(
+        unsorted_server_list, monkeypatch
+):
+    """Restoring every row after clearing the search is chunked too
+    (clearing "us" was measured at 1.4 seconds of frozen UI)."""
+    monkeypatch.setattr(serverlist_module, "FILTER_CHUNK_DURATION_SECONDS", 0)
+    widget = _displayed_widget(server_list=unsorted_server_list)
+
+    widget.filter("Argentina")
+    process_gtk_events()
+    japan_row = widget.country_rows[-1]
+
+    marker_ran = False
+    japan_visible_at_marker = None
+
+    def marker():
+        nonlocal marker_ran, japan_visible_at_marker
+        marker_ran = True
+        japan_visible_at_marker = japan_row.get_visible()
+        return GLib.SOURCE_REMOVE
+
+    widget.filter("")
+    GLib.idle_add(marker)
+    process_gtk_events()
+
+    assert marker_ran
+    assert not japan_visible_at_marker  # restored in a later chunk
+    assert japan_row.get_visible()      # ...but restored by the end
+
+
 def test_unload_cancels_a_scheduled_rebuild(unsorted_server_list, monkeypatch):
     monkeypatch.setattr(serverlist_module, "REFRESH_DELAY_MS", 0)
     mock_controller = Mock()
@@ -588,6 +675,7 @@ def test_filter_collapses_country_rows_that_stop_matching():
     assert japan_row.location_rows
 
     widget.filter("Nonexistent")
+    process_gtk_events()
 
     assert not japan_row.expanded
     assert not japan_row.location_rows
@@ -669,6 +757,7 @@ def test_server_loads_update_is_not_deferred_while_filter_is_active(two_server_l
     _, rows_by_label = _expanded_server_rows(widget)
 
     widget.filter("AR#1")
+    process_gtk_events()
     visibility_before = {
         label: row.get_visible() for label, row in rows_by_label.items()
     }
@@ -698,6 +787,7 @@ def test_server_loads_update_keeps_visibility_and_expansion_untouched(two_server
     country_row = widget.country_rows[0]
     location_row, rows_by_label = _expanded_server_rows(widget)
     widget.filter("AR#1")
+    process_gtk_events()
 
     state_before = (
         country_row.get_visible(), country_row.expanded,

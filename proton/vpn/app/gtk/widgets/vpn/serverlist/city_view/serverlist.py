@@ -22,7 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 import time
 import locale
-from typing import List, Optional
+from typing import Iterator, List, Optional
 import logging
 from unittest.mock import Mock
 
@@ -54,6 +54,10 @@ logger = proton_logging.getLogger(__name__)
 # search), so the rebuild gives way to whatever the user is doing first: if a
 # filter is active by the time it runs, it stays deferred until it is cleared.
 REFRESH_DELAY_MS = 200
+
+# Maximum time spent filtering (or restoring after a search) country rows
+# per main loop iteration, so that a filter pass cannot freeze the UI.
+FILTER_CHUNK_DURATION_SECONDS = 0.010
 
 
 class ServerListWidget(Gtk.ScrolledWindow):
@@ -91,6 +95,9 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._country_rows: List[CountryRow] = []
         self._filter_snapshot: Optional[dict] = None
         self._active_filter: Optional[str] = None
+        self._filter_generation = 0
+        self._filter_row_iterator: Optional[Iterator[CountryRow]] = None
+        self._filter_source_id: Optional[int] = None
         self._pending_refresh = False
         self._pending_refresh_description = ""
         self._refresh_source_id: Optional[int] = None
@@ -117,8 +124,13 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
         The rows expanded before filtering are restored when the search text
         is cleared.
+
+        The pass is time-sliced: country rows are filtered in chunks on the
+        main loop, so a broad query cannot freeze the UI for the whole pass,
+        and a new keystroke cancels the pending pass.
         """
         needle = fold(search_text.strip())
+        self._filter_generation += 1  # cancels a pass still in flight
         if not needle:
             self._clear_filter()
             return
@@ -129,9 +141,27 @@ class ServerListWidget(Gtk.ScrolledWindow):
                 for row in self.country_rows
             }
 
-        for row in self.country_rows:
-            row.filter(needle)
         self._active_filter = needle
+        self._filter_row_iterator = iter(self.country_rows)
+        self._filter_source_id = GLib.idle_add(
+            self._run_filter_chunk, self._filter_generation, needle
+        )
+
+    def _run_filter_chunk(self, generation: int, needle: str) -> bool:
+        """Filters the next chunk of country rows (runs on the main loop)."""
+        if generation != self._filter_generation:
+            # A newer keystroke replaced this pass (and its state): just stop.
+            return GLib.SOURCE_REMOVE
+
+        deadline = time.monotonic() + FILTER_CHUNK_DURATION_SECONDS
+        for row in self._filter_row_iterator:
+            row.filter(needle)
+            if time.monotonic() >= deadline:
+                return GLib.SOURCE_CONTINUE
+
+        self._filter_source_id = None
+        self._filter_row_iterator = None
+        return GLib.SOURCE_REMOVE
 
     def _expanded_groups_of(self, row: CountryRow) -> set[str]:
         """Returns the lowercase labels of the row's currently expanded groups."""
@@ -142,24 +172,43 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def _clear_filter(self):
         """Clears the filter, making every row visible again and restoring
-        the expansion state from before the filter was applied."""
+        the expansion state from before the filter was applied.
+
+        Like the filter pass itself, the restore is time-sliced on the main
+        loop: restoring every row inline froze the UI for over a second on
+        real server lists. The snapshot is consumed by the last chunk, so a
+        new keystroke mid-restore keeps the original pre-filter state."""
         self._active_filter = None
-        snapshot = self._filter_snapshot
-        self._filter_snapshot = None
+        self._filter_row_iterator = iter(self.country_rows)
+        self._filter_source_id = GLib.idle_add(
+            self._run_clear_chunk, self._filter_generation, self._filter_snapshot
+        )
 
-        for row in self.country_rows:
+    def _run_clear_chunk(self, generation: int, snapshot: Optional[dict]) -> bool:
+        """Restores the next chunk of country rows (runs on the main loop)."""
+        if generation != self._filter_generation:
+            # A newer keystroke replaced this pass (and its state): just stop.
+            return GLib.SOURCE_REMOVE
+
+        deadline = time.monotonic() + FILTER_CHUNK_DURATION_SECONDS
+        for row in self._filter_row_iterator:
             row.set_visible(True)
-            if snapshot is None:
-                continue
-            expanded, expanded_groups = snapshot.get(
-                row.country_code.lower(), (False, set())
-            )
-            row.restore_expanded_state(
-                expanded=expanded, expanded_groups=expanded_groups
-            )
+            if snapshot is not None:
+                expanded, expanded_groups = snapshot.get(
+                    row.country_code.lower(), (False, set())
+                )
+                row.restore_expanded_state(
+                    expanded=expanded, expanded_groups=expanded_groups
+                )
+            if time.monotonic() >= deadline:
+                return GLib.SOURCE_CONTINUE
 
+        self._filter_source_id = None
+        self._filter_row_iterator = None
+        self._filter_snapshot = None
         if self._pending_refresh:
             self._schedule_refresh()
+        return GLib.SOURCE_REMOVE
 
     def _populate_countries(self, server_list: ServerList):
         self._display_country_rows(server_list)
@@ -282,9 +331,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def _run_pending_refresh(self) -> bool:
         self._refresh_source_id = None
-        if self._active_filter or not self._pending_refresh:
-            # Still searching: stay queued. _clear_filter() schedules the
-            # rebuild again once the filter is cleared.
+        if self._active_filter or self._filter_row_iterator is not None \
+                or not self._pending_refresh:
+            # Still searching (or restoring the rows after a search): stay
+            # queued. The last clear chunk schedules the rebuild again once
+            # the filter is cleared.
             return GLib.SOURCE_REMOVE
         self._pending_refresh = False
         self._display_server_list(self._pending_refresh_description)
@@ -302,6 +353,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._controller.unset_server_list_updated_callback()
         self._controller.unset_server_loads_updated_callback()
         self._controller.unset_location_names_updated_callback()
+        self._filter_generation += 1  # cancels a filter/clear pass in flight
+        if self._filter_source_id is not None:
+            GLib.source_remove(self._filter_source_id)
+            self._filter_source_id = None
+        self._filter_row_iterator = None
         if self._refresh_source_id is not None:
             GLib.source_remove(self._refresh_source_id)
             self._refresh_source_id = None

@@ -1,30 +1,12 @@
-version: 4.18.6rc4
+version: 4.18.6
 time: 2026/09/28 15:00
-author: Richard Paterson
-email: richard.paterson@proton.ch
+author: Elena Švilpė
+email: elena.svilpe@proton.ch
 description:
-- "feat: Moves stock GTK widget styling to its own layer"
----
-version: 4.18.6rc3
-time: 2026/09/28 05:03
-author: L10n bot
-email: service_account_73c4205ebb9a547d11aa5c7b26226660@noreply.gitlab.protontech.ch
-description:
-- "i18n(weekly-mr): Upgrade translations from crowdin (f9b1996e)."
----
-version: 4.18.6rc2
-time: 2026/09/24 11:28
-author: Richard Paterson
-email: richard.paterson@proton.ch
-description:
-- "feat: Add accessibility announcements for connection state and intent (behind feature flag)"
----
-version: 4.18.6rc1
-time: 2026/09/23 16:12
-author: Richard Paterson
-email: richard.paterson@proton.ch
-description:
-- "feat: Add free country preview and popover to connection status (behind feature flag)"
+- "feat: Moves stock GTK widget styling to its own layer (Richard Paterson)"
+- "i18n(weekly-mr): Upgrade translations from crowdin (f9b1996e). (L10n bot)"
+- "feat: Add accessibility announcements for connection state and intent (behind feature flag) (Richard Paterson)"
+- "feat: Add free country preview and popover to connection status (behind feature flag) (Richard Paterson)"
 ---
 version: 4.18.5
 time: 2026/09/28 07:35

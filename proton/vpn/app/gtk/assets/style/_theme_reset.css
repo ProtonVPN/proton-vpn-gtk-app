@@ -1,0 +1,41 @@
+/* Removes theme gradients, shadows and icon effects from the widgets we restyle. */
+
+/* Themes add gradient fills, shadows and icon effects to buttons. */
+.proton-app button.primary,
+.proton-app button.secondary,
+.proton-app button.danger,
+.proton-app button.destructive-action {
+    background-image: none;
+    box-shadow: none;
+    text-shadow: none;
+    -gtk-icon-filter: none;
+    -gtk-icon-shadow: none;
+    text-decoration: none;
+}
+
+/* Themes add gradients, shadows and their own check and radio glyphs. */
+.proton-app switch,
+.proton-app switch > slider,
+.proton-app checkbutton > check,
+.proton-app checkbutton > radio {
+    background-image: none;
+    box-shadow: none;
+    -gtk-icon-source: none;
+    -gtk-icon-filter: none;
+    -gtk-icon-shadow: none;
+}
+
+/* Some themes paint link buttons like ordinary buttons. */
+.proton-app button.link {
+    background-color: transparent;
+    background-image: none;
+    border-color: transparent;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+/* Clears any image a theme paints over the popover background. */
+.proton-app popover > contents,
+.proton-app popover > arrow {
+    background-image: none;
+}

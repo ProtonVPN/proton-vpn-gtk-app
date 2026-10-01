@@ -33,6 +33,7 @@ from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.demo.sizing import NATURAL, UNCONSTRAINED
 from proton.vpn.app.gtk.widgets.main.main_widget import MainWidget
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
+from proton.vpn.app.gtk.utils.window import PROTON_APP_CSS_CLASS
 
 
 def framed_like_app(
@@ -63,6 +64,8 @@ def framed_like_app(
 
     main_widget = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
     main_widget.set_name("main-widget")
+    # Styled as if inside an app window.
+    main_widget.add_css_class(PROTON_APP_CSS_CLASS)
     main_widget.append(content_layout)
 
     if state and (css_class := MainWidget.STATE_CSS_CLASSES.get(type(state))):

@@ -30,6 +30,7 @@ import os
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
+import gi
 from gi.repository import Gdk, Graphene
 
 from proton.vpn.app.gtk import Gtk
@@ -58,7 +59,7 @@ def _snapshot_supported() -> bool:
 class DemoGallery:
     """The gallery window and its content row, as built by build_window()."""
     window: Gtk.Window
-    row: Gtk.Box
+    row: Gtk.Widget
 
 
 # Loaded only in demo mode (see show()); never part of the app CSS.
@@ -94,7 +95,7 @@ def _load_demo_css() -> None:
     )
 
 
-def _take_screenshot(window: Gtk.Window, row: Gtk.Box, path: str) -> None:
+def _take_screenshot(window: Gtk.Window, row: Gtk.Widget, path: str) -> None:
     """Render the full gallery content to PNG at its full natural size.
 
     GTK allocates widgets to fit the on-screen window, which is capped by the
@@ -145,7 +146,7 @@ def _take_screenshot(window: Gtk.Window, row: Gtk.Box, path: str) -> None:
     texture.save_to_png(path)
 
 
-def _schedule_screenshot(window: Gtk.Window, row: Gtk.Box, path: str) -> None:
+def _schedule_screenshot(window: Gtk.Window, row: Gtk.Widget, path: str) -> None:
     """On the first rendered frame, take a screenshot then destroy the window.
 
     Called after present(), so the window is already realized and the frame
@@ -301,13 +302,28 @@ def _measure_in_app_root(widget: Gtk.Widget) -> Tuple[int, int]:
     return natural_width, height_for_width
 
 
+def _gallery_row() -> Gtk.Widget:
+    """Cells left to right at their own size, wrapping onto new lines when the
+    window is too narrow. Without libadwaita 1.7 they stay on one line.
+
+    At unconstrained width both keep every cell on one line, which is how
+    screenshots lay out the gallery.
+    """
+    try:
+        gi.require_version("Adw", "1")
+        from gi.repository import Adw  # pylint: disable=import-outside-toplevel
+        return Adw.WrapBox(child_spacing=_MARGIN, line_spacing=_MARGIN)
+    except (ValueError, ImportError, AttributeError):
+        return Gtk.Box(spacing=_MARGIN)
+
+
 def build_window(screen_name: str) -> DemoGallery:
     """Build (without presenting) the gallery window that shows the screen.
 
     Every entry — embeddable widget or reparented top-level — becomes a labelled
-    cell laid out left to right at its fixed size, so states sit side by side
-    with nothing floating or overlapping. Raises KeyError if no demo is
-    registered for the screen.
+    cell at its fixed size, laid out left to right and wrapping onto new lines
+    when the window is too narrow, with nothing floating or overlapping.
+    Raises KeyError if no demo is registered for the screen.
     """
     labelled_widgets = build_demo_widgets_for_screen(screen_name)
     if not labelled_widgets:
@@ -318,7 +334,7 @@ def build_window(screen_name: str) -> DemoGallery:
     modal_windows = [w for _, w in labelled_widgets if isinstance(w, Gtk.Window)]
     modal_size = modal_content_size(modal_windows) if modal_windows else None
 
-    row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=_MARGIN)
+    row = _gallery_row()
     row.set_valign(Gtk.Align.START)
     row.set_margin_top(_MARGIN)
     row.set_margin_bottom(_MARGIN)
@@ -337,11 +353,11 @@ def build_window(screen_name: str) -> DemoGallery:
             widget = fixed_size(widget, natural_width, height_for_width)
         row.append(_labelled_group(label, widget))
 
-    # The window always auto-sizes to the content's exact natural size
-    # (propagated by the ScrolledWindow, uncapped). If the user shrinks it below
-    # that, the content scrolls rather than clipping.
+    # The window asks for every cell on one line. When it's narrower (GTK
+    # limits it to the monitor, or the user resizes it) the cells wrap onto
+    # more lines. The content scrolls if it's taller than the window.
     scrolled = Gtk.ScrolledWindow()
-    scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+    scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
     scrolled.set_propagate_natural_width(True)
     scrolled.set_propagate_natural_height(True)
     scrolled.set_child(row)
@@ -366,10 +382,11 @@ def show(
     """
     settings = Gtk.Settings.get_default()
     settings.props.gtk_application_prefer_dark_theme = True
-    # Screenshots are taken on the first frame the window draws. With animations
-    # on, a focused entry's focus ring may still be fading in on that frame, so
-    # screenshots would differ between runs.
-    settings.props.gtk_enable_animations = False
+    if screenshot_path is not None:
+        # Screenshots are taken on the first frame the window draws. With
+        # animations on, a focused entry's focus ring may still be fading in on
+        # that frame, so screenshots would differ between runs.
+        settings.props.gtk_enable_animations = False
     _load_demo_css()
 
     gallery = build_window(screen_name)

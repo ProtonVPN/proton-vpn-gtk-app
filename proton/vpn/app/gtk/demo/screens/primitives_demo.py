@@ -27,6 +27,7 @@ from typing import Callable, List, Optional, Tuple
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.demo.registry import register_demo
+from proton.vpn.app.gtk.utils.window import PROTON_APP_CSS_CLASS
 
 HOVER = Gtk.StateFlags.PRELIGHT
 ACTIVE = Gtk.StateFlags.ACTIVE
@@ -45,14 +46,15 @@ def _force(widget: Gtk.Widget, flags: Optional[Gtk.StateFlags]) -> Gtk.Widget:
 
 
 def _canvas(grid: Gtk.Grid) -> Gtk.Widget:
-    """Put `grid` in a box with the theme's window background colour.
+    """Put `grid` in a box with the app window's background colour.
 
-    This shows the widgets on the same background as in the app.
+    This shows the widgets on the same background as in the app, where the
+    .proton-app class on the window gives it that colour.
     """
     for margin in ("top", "bottom", "start", "end"):
         getattr(grid, f"set_margin_{margin}")(_SPACING)
     box = Gtk.Box()
-    box.add_css_class("background")
+    box.add_css_class(PROTON_APP_CSS_CLASS)
     box.append(grid)
     return box
 
@@ -92,37 +94,56 @@ def _radio(active: bool, flags: Optional[Gtk.StateFlags] = None) -> Gtk.CheckBut
     return _force(radio, flags)
 
 
+_TOGGLE_STATES: List[Tuple[str, Callable[[Gtk.Widget], None]]] = [
+    ("default", lambda w: None),
+    ("hover", lambda w: _force(w, HOVER)),
+    ("active", lambda w: _force(w, ACTIVE)),
+    ("focus-visible", lambda w: _force(w, FOCUS_VISIBLE)),
+    ("disabled", lambda w: w.set_sensitive(False)),
+]
+
+
+def _state_grid(rows: List[Tuple[str, Callable[[], Gtk.Widget]]]) -> Gtk.Widget:
+    """One row per variant (e.g. off, on) and one column per state."""
+    grid = Gtk.Grid(row_spacing=_SPACING, column_spacing=_SPACING)
+    for column, (state, _) in enumerate(_TOGGLE_STATES, start=1):
+        grid.attach(Gtk.Label(label=state), column, 0, 1, 1)
+    for row, (caption, new_widget) in enumerate(rows, start=1):
+        grid.attach(Gtk.Label(label=caption, xalign=0), 0, row, 1, 1)
+        for column, (_, apply_state) in enumerate(_TOGGLE_STATES, start=1):
+            widget = new_widget()
+            widget.set_halign(Gtk.Align.CENTER)
+            widget.set_valign(Gtk.Align.CENTER)
+            apply_state(widget)
+            grid.attach(widget, column, row, 1, 1)
+    return _canvas(grid)
+
+
 @register_demo("primitives", label="switch")
 def switches() -> Gtk.Widget:
-    """Switch track and handle, one row per state."""
-    return _grid([
-        ("off", _switch(False)),
-        ("on", _switch(True)),
-        ("on + hover", _switch(True, HOVER)),
-        ("focus-visible", _switch(False, FOCUS_VISIBLE)),
+    """Switch, off and on, in each state."""
+    return _state_grid([
+        ("off", lambda: _switch(False)),
+        ("on", lambda: _switch(True)),
     ])
 
 
 @register_demo("primitives", label="checkbutton")
 def checkbuttons() -> Gtk.Widget:
-    """Checkbox, one row per state."""
-    return _grid([
-        ("off", _check(False)),
-        ("on", _check(True)),
-        ("indeterminate", _check(False, inconsistent=True)),
-        ("on + hover", _check(True, flags=HOVER)),
-        ("indeterminate + hover", _check(False, inconsistent=True, flags=HOVER)),
-        ("focus-visible", _check(False, flags=FOCUS_VISIBLE)),
+    """Checkbox, unchecked, checked and indeterminate, in each state."""
+    return _state_grid([
+        ("off", lambda: _check(False)),
+        ("on", lambda: _check(True)),
+        ("indeterminate", lambda: _check(False, inconsistent=True)),
     ])
 
 
 @register_demo("primitives", label="radio")
 def radios() -> Gtk.Widget:
-    """Radio button, one row per state."""
-    return _grid([
-        ("off", _radio(False)),
-        ("on", _radio(True)),
-        ("focus-visible", _radio(False, FOCUS_VISIBLE)),
+    """Radio button, off and on, in each state."""
+    return _state_grid([
+        ("off", lambda: _radio(False)),
+        ("on", lambda: _radio(True)),
     ])
 
 
@@ -218,7 +239,7 @@ def buttons() -> Gtk.Widget:
     for column, (state, _) in enumerate(_BUTTON_STATES, start=1):
         grid.attach(Gtk.Label(label=state), column, 0, 1, 1)
     for row, css_class in enumerate(
-        ("primary", "secondary", "danger", "destructive-action", "spaced", "link"), start=1
+        ("primary", "secondary", "danger", "destructive-action", "link"), start=1
     ):
         grid.attach(Gtk.Label(label=f".{css_class}", xalign=0), 0, row, 1, 1)
         for column, (_, apply_state) in enumerate(_BUTTON_STATES, start=1):

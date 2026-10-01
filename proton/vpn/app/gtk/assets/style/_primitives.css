@@ -1,93 +1,24 @@
 /* Styles for GTK's built-in widgets (buttons, switches, entries, ...).
- * Start every selector with .proton-app, so the rule only applies inside the
- * app's own windows.
- * main.css is loaded after this file. If both set the same property on the same
- * widget, the value from main.css is used, even if the selector here is more
- * specific. */
-@import "dark_colours.css";
+ * Start every selector with .proton-app, so rules only apply in the app's windows. */
+@import "_dark_palette.css";
+@import "_theme_reset.css";
 
-.proton-app button.primary:not(:disabled) {
-	background-color: @interaction-norm;
-	background-image: image(@interaction-norm);
-	border-color: @interaction-norm;
+/* Sets the window background and default text colour, overriding the theme. */
+.proton-app {
+    background-color: @background-norm;
     color: @text-norm;
-	text-shadow: none;
 }
 
-.proton-app button.secondary:hover,
-.proton-app button.primary:hover,
-.proton-app button.secondary:focus,
-.proton-app button.primary:focus {
-	background-color: @interaction-norm-hover;
-	background-image: image(@interaction-norm-hover);
-	border-color: @interaction-norm-hover;
-	color: @text-norm;
-	text-shadow: none;
-}
-
-.proton-app button.danger:hover,
-.proton-app button.danger:focus {
-	border-color: @signal-danger;
-    background-color: @signal-danger;
-	background-image: image(@signal-danger);
-	color: @text-norm;
-	text-shadow: none;
-}
-
-.proton-app button.secondary:active,
-.proton-app button.primary:active {
-	background-image: image(@interaction-norm-active);
-	border-color: @interaction-norm-active;
-	color: @text-norm;
-	text-shadow: none;
-}
-
-.proton-app button.danger:active {
-	border-color: @signal-danger-active;
-    background-color: @signal-danger-active;
-	background-image: image(@signal-danger-active);
-	color: @text-norm;
-	text-shadow: none;
-}
-
-.proton-app button.destructive-action:not(:disabled) {
-	background-color: @signal-danger;
-	background-image: image(@signal-danger);
-	border-color: @signal-danger;
-	color: @text-norm;
-	text-shadow: none;
-}
-
-.proton-app button.destructive-action:not(:disabled):hover,
-.proton-app button.destructive-action:not(:disabled):focus {
-	background-color: @signal-danger-hover;
-	background-image: image(@signal-danger-hover);
-	border-color: @signal-danger-hover;
-	color: @text-norm;
-	text-shadow: none;
-}
-
-.proton-app button.destructive-action:not(:disabled):active {
-	background-color: @signal-danger-active;
-	background-image: image(@signal-danger-active);
-	border-color: @signal-danger-active;
-	color: @text-norm;
-	text-shadow: none;
-}
-
-.proton-app button.spaced label {
-	padding: 5px 20px;
-}
-
-.proton-app button.link label {
-    color: @interaction-norm;
+/* Popovers and menus have the same background and text colour as the window. */
+.proton-app popover > contents,
+.proton-app popover > arrow {
+    background-color: @background-norm;
+    color: @text-norm;
 }
 
 .proton-app entry:focus-within,
 .proton-app button:focus-visible,
-.proton-app label:focus-visible,
-.proton-app label link:focus-visible,
-.proton-app switch:focus-visible {
+.proton-app label:focus-visible {
     outline-color: @interaction-norm;
 }
 
@@ -96,68 +27,9 @@
     box-shadow: none;
 }
 
-.proton-app switch {
-    background-color: @field-norm;
-    background-image: image(@field-norm);
-    border-color: @field-norm;
-    border-radius: 999px;
-}
-
-.proton-app switch:checked {
-    background-color: @interaction-norm;
-    background-image: image(@interaction-norm);
-    border-color: @interaction-norm;
-}
-
-.proton-app switch:checked:hover {
-    background-color: @interaction-norm-hover;
-    background-image: image(@interaction-norm-hover);
-    border-color: @interaction-norm-hover;
-}
-
-.proton-app switch slider {
-    border-radius: 999px;
-    background-color: @text-norm;
-    background-image: image(@text-norm);
-}
-
-.proton-app checkbutton > check:checked,
-.proton-app checkbutton > check:indeterminate {
-    background-color: @interaction-norm;
-    background-image: image(@interaction-norm);
-    border-color: @interaction-norm;
-    color: @text-norm;
-}
-
-.proton-app checkbutton > check:checked:hover,
-.proton-app checkbutton > check:indeterminate:hover {
-    background-color: @interaction-norm-hover;
-    background-image: image(@interaction-norm-hover);
-    border-color: @interaction-norm-hover;
-}
-
-.proton-app checkbutton > radio {
-    border-radius: 999px;
-}
-
-.proton-app checkbutton > radio:checked {
-    background-color: @interaction-norm;
-    background-image: image(@interaction-norm);
-    border-color: @interaction-norm;
-    color: @text-norm;
-}
-
 .proton-app entry text selection {
     background-color: @interaction-norm;
     color: @text-norm;
-}
-
-.proton-app label link {
-    color: @interaction-norm;
-}
-
-.proton-app label link:hover {
-    color: @interaction-norm-hover;
 }
 
 .proton-app scrollbar {
@@ -195,4 +67,245 @@
 
 .proton-app label.signal-danger {
     color: @signal-danger;
+}
+
+/* Primary, secondary and danger buttons. All have a 1px border (transparent
+ * for primary) so they're the same height. */
+.proton-app button.primary,
+.proton-app button.secondary,
+.proton-app button.danger,
+.proton-app button.destructive-action {
+    min-height: 18px;
+    padding: 11px 19px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-clip: border-box;
+    color: @text-norm;
+    font-size: 1.14em;
+    font-weight: 500;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out, border-color 150ms ease-out,
+                color 150ms ease-out;
+}
+
+.proton-app button.primary {
+    background-color: @interaction-norm;
+}
+
+.proton-app button.primary:hover {
+    background-color: @interaction-norm-hover;
+}
+
+.proton-app button.primary:active {
+    background-color: @interaction-norm-active;
+}
+
+.proton-app button.secondary,
+.proton-app button.danger,
+.proton-app button.destructive-action {
+    background-color: @interaction-weak;
+    border-color: @border-weak;
+}
+
+.proton-app button.secondary:hover {
+    background-color: @interaction-weak-hover;
+}
+
+.proton-app button.secondary:active {
+    background-color: @interaction-weak-active;
+}
+
+/* Danger looks like secondary until hovered or pressed. */
+.proton-app button.danger:hover,
+.proton-app button.destructive-action:hover {
+    background-color: @signal-danger-hover;
+}
+
+.proton-app button.danger:active,
+.proton-app button.destructive-action:active {
+    background-color: @signal-danger-active;
+}
+
+.proton-app button.primary:disabled,
+.proton-app button.secondary:disabled,
+.proton-app button.danger:disabled,
+.proton-app button.destructive-action:disabled {
+    background-color: @surface-default;
+    border-color: @border-weak;
+    color: @text-disabled;
+}
+
+/* Keyboard focus: a ring on the button's edge, on top of its state. Inside the
+ * edge, so a container that clips to the button's size can't cut it off. */
+.proton-app button.primary:focus-visible,
+.proton-app button.secondary:focus-visible,
+.proton-app button.danger:focus-visible,
+.proton-app button.destructive-action:focus-visible {
+    outline: 2px solid @focus-ring;
+    outline-offset: -2px;
+}
+
+/* Switch: a 46 × 26 track. GTK makes the handle half the track's inner width,
+ * so 3px padding and a 20px handle give the design's 3px inset. */
+.proton-app switch {
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 3px;
+    border: none;
+    border-radius: 999px;
+    background-color: @interaction-weak;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out;
+}
+
+.proton-app switch:hover {
+    background-color: @interaction-weak-hover;
+}
+
+.proton-app switch:active {
+    background-color: @interaction-weak-active;
+}
+
+.proton-app switch:checked {
+    background-color: @interaction-norm;
+}
+
+.proton-app switch:checked:hover {
+    background-color: @interaction-norm-hover;
+}
+
+.proton-app switch:checked:active {
+    background-color: @interaction-norm-active;
+}
+
+.proton-app switch:disabled {
+    background-color: alpha(@white, 0.3);
+    opacity: 0.3;
+}
+
+.proton-app switch:focus-visible {
+    outline: 2px solid @focus-ring;
+    outline-offset: -2px;
+}
+
+.proton-app switch > slider {
+    min-width: 20px;
+    min-height: 20px;
+    margin: 0;
+    border: none;
+    border-radius: 999px;
+    background-clip: border-box;
+    background-color: @white;
+}
+
+/* Checkbox and radio: a 20 × 20 box, 8px from its label. */
+.proton-app checkbutton {
+    border-spacing: 8px;
+    outline: 0 solid transparent;
+}
+
+.proton-app checkbutton > check,
+.proton-app checkbutton > radio {
+    min-width: 18px;
+    min-height: 18px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid @border-weak;
+    background-clip: border-box;
+    background-color: @interaction-weak;
+    color: @white;
+    -gtk-icon-size: 16px;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+
+.proton-app checkbutton > check {
+    border-radius: 3px;
+}
+
+.proton-app checkbutton > radio {
+    border-radius: 999px;
+}
+
+.proton-app checkbutton:hover > check,
+.proton-app checkbutton:hover > radio {
+    background-color: @interaction-weak-hover;
+}
+
+.proton-app checkbutton:active > check,
+.proton-app checkbutton:active > radio {
+    background-color: @interaction-weak-active;
+}
+
+.proton-app checkbutton > check:checked,
+.proton-app checkbutton > check:indeterminate,
+.proton-app checkbutton > radio:checked {
+    border-color: transparent;
+    background-color: @interaction-norm;
+}
+
+.proton-app checkbutton:hover > check:checked,
+.proton-app checkbutton:hover > check:indeterminate,
+.proton-app checkbutton:hover > radio:checked {
+    background-color: @interaction-norm-hover;
+}
+
+.proton-app checkbutton:active > check:checked,
+.proton-app checkbutton:active > check:indeterminate,
+.proton-app checkbutton:active > radio:checked {
+    background-color: @interaction-norm-active;
+}
+
+.proton-app checkbutton > check:checked {
+    -gtk-icon-source: -gtk-recolor(url("../icons/ic-checkmark-symbolic.svg"));
+}
+
+.proton-app checkbutton > check:indeterminate {
+    -gtk-icon-source: -gtk-recolor(url("../icons/ic-minus-symbolic.svg"));
+}
+
+/* The radio's 8px dot. */
+.proton-app checkbutton > radio:checked {
+    background-image: radial-gradient(circle, @white 3.5px, transparent 4px);
+}
+
+.proton-app checkbutton:disabled > check,
+.proton-app checkbutton:disabled > radio {
+    opacity: 0.3;
+}
+
+.proton-app checkbutton:disabled > label {
+    color: @text-disabled;
+}
+
+.proton-app checkbutton:focus-visible > check,
+.proton-app checkbutton:focus-visible > radio {
+    outline: 2px solid @focus-ring;
+    outline-offset: -2px;
+}
+
+/* Links: link buttons and links in label text. */
+.proton-app button.link label,
+.proton-app label link {
+    color: @link-norm;
+}
+
+.proton-app button.link:hover label,
+.proton-app label link:hover {
+    color: @link-hover;
+}
+
+.proton-app button.link:active label,
+.proton-app label link:active {
+    color: @link-active;
+}
+
+.proton-app button.link:focus-visible {
+    outline: 2px solid @focus-ring;
+    outline-offset: -2px;
+}
+
+.proton-app label link:focus-visible {
+    outline: 2px solid @focus-ring;
 }

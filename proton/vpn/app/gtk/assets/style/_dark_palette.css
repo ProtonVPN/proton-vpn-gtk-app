@@ -1,0 +1,52 @@
+/* Dark colour palette ("dark UI colour palette" in Figma). */
+
+@define-color interaction-norm        #6D4AFF;
+@define-color interaction-norm-hover  #7C5CFF;
+@define-color interaction-norm-active #8A6EFF;
+
+@define-color interaction-weak        #4A4658;
+@define-color interaction-weak-hover  #5C5969;
+@define-color interaction-weak-active #6E6B79;
+
+@define-color text-norm     #FFFFFF;
+@define-color text-weak     rgba(255, 255, 255, 0.7);
+@define-color text-hint     rgba(255, 255, 255, 0.5);
+@define-color text-disabled rgba(255, 255, 255, 0.3);
+@define-color text-invert   #1C1B24;
+
+@define-color link-norm   #AC99FF;
+@define-color link-hover  #C5B8FF;
+@define-color link-active #D6CCFF;
+
+@define-color background-norm   #16141C;
+@define-color background-weak   #292733;
+@define-color background-invert #FFFFFF;
+
+@define-color surface-default rgba(255, 255, 255, 0.05);
+@define-color surface-hover   rgba(255, 255, 255, 0.1);
+@define-color surface-active  rgba(255, 255, 255, 0.2);
+
+@define-color border-norm rgba(255, 255, 255, 0.2);
+@define-color border-weak rgba(255, 255, 255, 0.1);
+
+@define-color signal-danger        #F7607E;
+@define-color signal-danger-hover  #F47B93;
+@define-color signal-danger-active #F68EA3;
+@define-color signal-warning #FFAD33;
+@define-color signal-success #4BB99D;
+
+@define-color backdrop-norm    rgba(12, 12, 20, 0.5);
+@define-color proton-vpn-green #2CFFCC;
+@define-color white            #FFFFFF;
+
+@define-color focus-ring         #AC99FF;
+@define-color signal-danger-tint rgba(247, 96, 126, 0.05);
+
+/* Not in the Figma palette. */
+@define-color primary                    #8A6EFF;
+@define-color field-norm                 #5B576B;
+@define-color background-strong          #3F3B4C;
+@define-color signal-info                #239ECE;
+@define-color interaction-default        transparent;
+@define-color interaction-default-hover  @surface-hover;
+@define-color interaction-default-active @surface-active;

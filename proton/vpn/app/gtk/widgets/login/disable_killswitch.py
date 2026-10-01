@@ -43,6 +43,9 @@ class KillSwitchLabel(Gtk.Label):
         # set_max_width_chars is required for set_line_wrap to have effect.
         self.set_max_width_chars(20)
         self.set_justify(Gtk.Justification.LEFT)
+        # Takes the width the button doesn't use, left-aligned.
+        self.set_hexpand(True)
+        self.set_xalign(0)
 
 
 class DisableKillSwitchButton(Gtk.Button):
@@ -80,7 +83,8 @@ class DisableKillSwitchWidget(Gtk.Revealer):
         self.killswitch_label = killswitch_label or KillSwitchLabel()
         self.disable_killswitch_button = killswitch_button or DisableKillSwitchButton()
 
-        container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        self.disable_killswitch_button.set_valign(Gtk.Align.CENTER)
 
         container.append(self.killswitch_label)
         container.append(self.disable_killswitch_button)

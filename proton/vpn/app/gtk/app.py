@@ -24,11 +24,15 @@ from typing import Any, Optional
 from gi.repository import GObject, Gtk, Gdk, GLib, Gio
 
 from proton.vpn import logging
+from proton.vpn.session import FREE_RESCOPE_FLAG
+from proton.vpn.session.feature_flags_fetcher import FeatureFlagsFetcher
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
-from proton.vpn.app.gtk.assets.style import load_app_css
+from proton.vpn.app.gtk.assets.style import (
+    MAIN_CSS, MAIN_PRIORITY, PRIMITIVES_PRIORITY, STYLE_PATH, app_css_paths, load_app_css,
+)
 from proton.vpn.app.gtk.util import APPLICATION_ID, log_proton_package_versions
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 
@@ -80,7 +84,17 @@ class App(Gtk.Application):
         any necessary UI elements.
         """
         Gtk.Application.do_startup(self)
-        load_app_css(Gdk.Display.get_default())
+        # FreeRescope flag off: load the legacy stylesheets. The flag is read from
+        # the cache, so a change applies at the following launch.
+        # Retiring the flag: delete this block, _primitives_legacy.css and
+        # dark_colours.css, and the @import lines for dark_colours.css.
+        paths = app_css_paths()
+        if not FeatureFlagsFetcher(session=None).load_from_cache().get(FREE_RESCOPE_FLAG):
+            paths = [
+                (STYLE_PATH / "_primitives_legacy.css", PRIMITIVES_PRIORITY),
+                (MAIN_CSS, MAIN_PRIORITY),
+            ]
+        load_app_css(Gdk.Display.get_default(), paths)
 
     def do_activate(self):  # pylint: disable=W0221
         """

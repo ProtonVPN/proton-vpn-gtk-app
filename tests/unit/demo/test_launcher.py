@@ -194,6 +194,16 @@ def test_widget_variants_share_one_width():
     assert len(cells) > 1 and len(widths) == 1
 
 
+def test_gallery_wraps_onto_more_lines_when_narrower_than_one_line():
+    row = launcher.build_window("login").row
+    if isinstance(row, Gtk.Box):
+        pytest.skip("wrapping needs libadwaita 1.7")
+    one_line_width = _natural(row, H)
+    one_line_height = row.measure(V, one_line_width)[1]
+
+    assert row.measure(V, one_line_width // 2)[1] > one_line_height
+
+
 # --- screenshot ---
 #
 # These drive show() — the same function DemoApp.do_activate() calls — which

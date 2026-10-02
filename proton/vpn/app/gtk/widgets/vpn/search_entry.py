@@ -47,7 +47,3 @@ class SearchEntry(Gtk.SearchEntry):
     @GObject.Signal(name="request_focus", flags=GObject.SignalFlags.ACTION)
     def request_focus(self, _):
         """Emitting this signal requests input focus on the search text entry."""
-
-    def reset(self):
-        """Resets the widget UI."""
-        self.set_text("")

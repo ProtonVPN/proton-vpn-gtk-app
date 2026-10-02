@@ -18,6 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>."""
 import unicodedata
+from functools import lru_cache
 
 
 def normalize(search_string: str):
@@ -25,7 +26,11 @@ def normalize(search_string: str):
     return search_string.lower().replace(" ", "")
 
 
+@lru_cache(maxsize=4096)
 def fold(text: str) -> str:
-    """Case and accent-insensitive search key ('Zürich' -> 'zurich')."""
+    """Case and accent-insensitive search key ('Zürich' -> 'zurich').
+
+    Results are cached: while filtering, the same country, location and
+    server names are folded again on every keystroke."""
     return "".join(c for c in unicodedata.normalize("NFKD", text.casefold())
                    if not unicodedata.combining(c))

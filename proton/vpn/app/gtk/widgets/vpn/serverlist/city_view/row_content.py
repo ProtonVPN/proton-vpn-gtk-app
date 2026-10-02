@@ -188,6 +188,27 @@ class RowContent(Gtk.Box):  # pylint: disable=too-many-instance-attributes
         else:
             self._set_toggle_button_visible(False)
 
+    def update_server_load(self, load: Optional[int], under_maintenance: bool) -> bool:
+        """Updates the displayed server load in place, without rebuilding the row.
+
+        Args:
+            load: the load percentage to display, or None if there is none.
+            under_maintenance: the server's current under-maintenance state
+                (already combined with the upgrade-required state, exactly as
+                passed to RowViewModel at display time).
+
+        Returns True if the row's under-maintenance state differs from the state
+        it was displayed with. Restyling a row (swapping the connect button for
+        the maintenance icon) requires a full re-display, which this method must
+        not do, so the caller is expected to fall back to a full rebuild.
+        """
+        if self._row_data is None:
+            return True
+        maintenance_changed = under_maintenance != self._row_data.under_maintenance
+        if not maintenance_changed and not under_maintenance and load is not None:
+            self._server_load.set_load(load)
+        return maintenance_changed
+
     def _show_under_maintenance_icon(self):
         self.under_maintenance_icon.set_visible(True)
         # {name} is a country, location or server name.

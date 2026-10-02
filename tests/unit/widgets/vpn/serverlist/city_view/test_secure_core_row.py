@@ -4,6 +4,7 @@ import pytest
 
 from proton.vpn.session.dataclasses.servers import SecureCoreGroup
 from proton.vpn.session.servers import LogicalServer, TierEnum
+from proton.vpn.session.servers.types import ServerLoad
 
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.secure_core_row import SecureCoreRow
@@ -119,3 +120,30 @@ def test_free_secure_core_group_requires_upgrade_when_server_selection_requires_
 
     assert row.row_content.label_sensitive is False
     assert row.server_rows[0].label_sensitive is False
+
+
+def test_secure_core_row_update_server_loads_updates_displayed_loads_in_place(
+        multi_server_group
+):
+    row = _toggled_row(multi_server_group)
+
+    for logical in multi_server_group.servers:
+        new_load = 20 if logical.name == "CH#1" else 70
+        logical.update(ServerLoad({
+            "ID": logical.id, "Load": new_load, "Score": 1, "Status": 1,
+        }))
+
+    assert row.update_server_loads() is False
+
+    loads_by_label = {server_row.label: server_row.server_load
+                      for server_row in row.server_rows}
+    assert loads_by_label == {"Via Switzerland": "20%", "Via Iceland": "70%"}
+
+
+def test_secure_core_row_update_server_loads_is_a_no_op_for_collapsed_rows(
+        multi_server_group
+):
+    row = _displayed_row(multi_server_group)
+
+    assert row.server_rows == []
+    assert row.update_server_loads() is False

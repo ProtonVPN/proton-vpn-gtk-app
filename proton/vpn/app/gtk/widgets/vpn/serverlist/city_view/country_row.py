@@ -28,6 +28,7 @@ from proton.vpn.session.servers import Country, Location, TierEnum
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
+from proton.vpn.app.gtk.utils.search import fold
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.location_row import LocationRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
@@ -35,6 +36,7 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import R
 from proton.vpn.app.gtk.utils.assertions import runtime_assert
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import \
     make_country_connect_callback, \
+    servers_to_display, \
     sync_rows_with_model_items, \
     upgrade_required_for_row
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.secure_core_row import SecureCoreRow
@@ -245,7 +247,8 @@ class CountryRow(Gtk.Box):
             locations = sorted(self._country.locations, key=lambda loc: loc.name)
 
         def display_location_row(location_row, location):
-            location_expanded = location.name.lower() in expanded_locations
+            # Servers without a city are grouped under a location with no name.
+            location_expanded = (location.name or "").lower() in expanded_locations
             location_row.display(
                 self._controller, location, self._user_tier, expanded=location_expanded
             )
@@ -257,3 +260,122 @@ class CountryRow(Gtk.Box):
             LocationRow,
             display_location_row
         )
+
+    def restore_expanded_state(
+        self, expanded: bool, expanded_groups: Optional[set[str]] = None
+    ):
+        """Restores the expansion state of this row and its children (e.g.
+        after clearing a filter), synchronously."""
+        expanded_groups = expanded_groups or set()
+        self._expandable_row.set_expanded_now(expanded)
+
+        for location_row in self.location_rows:
+            location_row.set_visible(True)
+            location_row.set_expanded_now(
+                location_row.label.lower() in expanded_groups
+            )
+            for server_row in location_row.server_rows:
+                server_row.set_visible(True)
+
+        secure_core_row = self._secure_core_row
+        if secure_core_row is not None:
+            secure_core_row.set_visible(True)
+            secure_core_row.set_expanded_now(
+                secure_core_row.label.lower() in expanded_groups
+            )
+            for server_row in secure_core_row.server_rows:
+                server_row.set_visible(True)
+
+    def filter(self, needle: str):
+        """Filters this row and its children in place, by the given search needle.
+
+        The needle is expected to be already folded (case/accent-insensitive).
+
+        A country matched only by its own name is left collapsed: expanding it
+        would lazily build all of its location rows, which is prohibitively
+        expensive on broad queries. Only countries matched through a child
+        (location or server) are expanded, so that the matching child becomes
+        visible. If a name-matched country was already expanded by the user,
+        all its children are shown unfiltered.
+        """
+        if not needle:
+            return
+
+        name_match = self._name_matches(needle)
+        self.set_visible(name_match or self._children_match(needle))
+        if not self.get_visible():
+            if self.expanded:
+                # Free the lazily built children: rows that no longer match
+                # must not keep the widget tree bloated while filtering.
+                # The expansion state is restored from the filter snapshot
+                # when the filter is cleared.
+                self._expandable_row.set_expanded_now(False)
+            return
+
+        if name_match:
+            if self.expanded:
+                self._reset_children_visibility()
+            return
+
+        if not self.expanded:
+            self._expandable_row.set_expanded_now(True)
+
+        for location_row in self.location_rows:
+            location_row.filter(needle)
+
+        if self._secure_core_row is not None:
+            self._secure_core_row.filter(needle)
+
+    def update_server_loads(self) -> bool:
+        """Updates the load displayed by every built server row under this
+        country, in place. See LocationRow.update_server_loads() for the
+        contract and the return value."""
+        needs_rebuild = False
+        for location_row in self._location_rows:
+            needs_rebuild |= location_row.update_server_loads()
+        if self._secure_core_row is not None:
+            needs_rebuild |= self._secure_core_row.update_server_loads()
+        return needs_rebuild
+
+    def _reset_children_visibility(self):
+        """Makes all the children of this row visible again, unfiltered."""
+        for location_row in self.location_rows:
+            location_row.set_visible(True)
+            for server_row in location_row.server_rows:
+                server_row.set_visible(True)
+
+        secure_core_row = self._secure_core_row
+        if secure_core_row is not None:
+            secure_core_row.set_visible(True)
+            for server_row in secure_core_row.server_rows:
+                server_row.set_visible(True)
+
+    def _name_matches(self, needle: str) -> bool:
+        """Returns whether the localized country name matches the needle."""
+        return needle in fold(self._localized_country_name or "")
+
+    def _children_match(self, needle: str) -> bool:
+        """Returns whether any location or server under this country matches
+        the needle."""
+        runtime_assert(self._country is not None, "Country is not set")
+
+        for location in self._country.locations:
+            if location.name and needle in fold(location.name):
+                return True
+            if any(
+                needle in fold(server.name)
+                for server in servers_to_display(location, self._user_tier)
+            ):
+                return True
+
+        secure_core_group = self._country.secure_core_group
+        if secure_core_group:
+            if needle in fold(SecureCoreRow.LABEL):
+                return True
+            if any(
+                needle in fold(server.name)
+                for server in secure_core_group.servers
+            ):
+                return True
+
+        return False

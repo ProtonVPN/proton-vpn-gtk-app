@@ -22,22 +22,36 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 
 from __future__ import annotations
 
-from itertools import chain
 from typing import List, Optional
 
 from gi.repository import GLib
 
-from proton.vpn.session.servers import Location, TierEnum
+from proton.vpn import logging as proton_logging
+
+from proton.vpn.session.servers import Location, LogicalServer
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
+from proton.vpn.app.gtk.utils.search import fold
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.expandable_row import ExpandableRow
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_content import RowContent
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.row_view_model import RowViewModel
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
-    upgrade_required_for_row, make_connect_callback, sync_rows_with_model_items
+    upgrade_required_for_row, make_connect_callback, sync_rows_with_model_items,
+    servers_to_display
 )
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import LocationIcon
+
+logger = proton_logging.getLogger(__name__)
+
+# Locations matched through server names are auto-expanded, so that the
+# matching server rows are visible. On broad queries a single location can
+# match hundreds of servers (typing "us" matched ~5800 servers across the
+# US locations), and expanding one builds a widget per server (~1ms each),
+# which freezes the UI. Only focused matches (a handful of servers) are
+# auto-expanded; broader matches stay collapsed and can be expanded
+# manually, one location at a time.
+AUTO_EXPAND_MAX_MATCHING_SERVERS = 10
 
 
 class LocationRow(Gtk.Box):
@@ -77,7 +91,7 @@ class LocationRow(Gtk.Box):
         upgrade_required = upgrade_required_for_row(controller, user_tier, location)
 
         row_data = RowViewModel(
-            name=location.name,
+            name=location.name or "",
             on_connect=make_connect_callback(controller, location.servers, user_tier),
             free=location.free,
             under_maintenance=location.under_maintenance and not upgrade_required,
@@ -132,18 +146,22 @@ class LocationRow(Gtk.Box):
         """Simulates a click on the toggle button to expand/collapse the row."""
         self._expandable_row.row_content.click_toggle_button()
 
+    def set_expanded_now(self, expanded: bool):
+        """Sets the expanded state synchronously, without the reveal animation."""
+        self._expandable_row.set_expanded_now(expanded)
+
     def _remove_server_rows(self):
         while self._server_rows:
             server_row = self._server_rows.pop()
             self._expandable_row.remove_child(server_row)
             server_row.reset()
 
+    def _servers_to_display(self) -> List[LogicalServer]:
+        """Returns the servers displayed for this location, in display order."""
+        return servers_to_display(self._location, self._user_tier)
+
     def _add_server_rows(self):
-        servers = self._location.servers
-        if self._user_tier == TierEnum.FREE and self._location.free:
-            servers = chain(self._location.free_servers, self._location.paid_servers)
-        else:
-            servers = chain(self._location.paid_servers, self._location.free_servers)
+        servers = self._servers_to_display()
 
         # Capture controller directly to avoid closing over `self` in on_connect
         controller = self._controller
@@ -181,3 +199,76 @@ class LocationRow(Gtk.Box):
             RowContent,
             display_server_row
         )
+
+    def filter(self, needle: str):
+        """Filters this row and its server rows in place, by the given search needle.
+
+        The needle is expected to be already folded (case/accent-insensitive).
+        Locations matching only by server name are expanded, showing only
+        the matching server rows.
+        """
+        if not needle or self._location is None:
+            return
+
+        servers = self._servers_to_display()
+        name_match = bool(self._location.name) and needle in fold(self._location.name)
+        matching_server_names = {
+            server.name for server in servers if needle in fold(server.name)
+        }
+
+        self.set_visible(name_match or bool(matching_server_names))
+        if not self.get_visible():
+            return
+
+        if (
+                matching_server_names and not name_match and not self.expanded
+                and len(matching_server_names) <= AUTO_EXPAND_MAX_MATCHING_SERVERS
+        ):
+            self._expandable_row.set_expanded_now(True)
+
+        # Server rows map 1:1 (by position) to the servers displayed.
+        for server_row, server in zip(self.server_rows, servers):
+            server_row.set_visible(name_match or server.name in matching_server_names)
+
+    def update_server_loads(self) -> bool:
+        """Updates the load displayed by each of this row's built server rows,
+        in place, re-reading the (already mutated) server models.
+
+        Returns True when the caller should schedule a full widget rebuild
+        instead: a server row's under-maintenance state changed (restyling a
+        row requires a full re-display) or the built rows no longer correspond
+        to the servers to display (should not happen).
+
+        Rows collapsed by the user have no built server rows, so this is a
+        no-op for them. This method must not change the visibility or expansion
+        state of any row: an active filter is left untouched.
+        """
+        if self._location is None or not self._server_rows:
+            return False
+
+        servers = self._servers_to_display()
+        server_rows = self.server_rows
+        if len(server_rows) != len(servers):
+            logger.warning(
+                f"Location '{self._location.name}': got {len(server_rows)} rows "
+                f"for {len(servers)} servers. Falling back to a full rebuild."
+            )
+            return True
+
+        needs_rebuild = False
+        for server_row, server in zip(server_rows, servers):
+            if server_row.label != server.name:
+                logger.warning(
+                    f"Location '{self._location.name}': row '{server_row.label}' "
+                    f"does not match server '{server.name}'. "
+                    f"Falling back to a full rebuild."
+                )
+                return True
+            upgrade_required = upgrade_required_for_row(
+                self._controller, self._user_tier, server
+            )
+            needs_rebuild |= server_row.update_server_load(
+                load=None if server.under_maintenance else server.load,
+                under_maintenance=server.under_maintenance and not upgrade_required,
+            )
+        return needs_rebuild

@@ -22,7 +22,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 import time
 import locale
-from typing import List, Optional
+from typing import Iterator, List, Optional
 import logging
 from unittest.mock import Mock
 
@@ -34,6 +34,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import LOCALIZATION_ENABLED
 from proton.vpn.app.gtk.utils.country import get_localized_country_name
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.search import fold
 from proton.vpn.session.servers import ServerList, TierEnum
 from proton.vpn.session.servers.server_list_fetcher import ServerListFetcher
 
@@ -41,7 +42,6 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.country_row import Coun
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.server_list_header_row import (
     ServerListHeaderRow,
 )
-from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
     sync_rows_with_model_items,
@@ -49,15 +49,24 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.utils import (
 
 logger = proton_logging.getLogger(__name__)
 
+# How long to wait before rebuilding the widget after a data update. Updates
+# can land at any moment (on a slow connection, right in the middle of a
+# search), so the rebuild gives way to whatever the user is doing first: if a
+# filter is active by the time it runs, it stays deferred until it is cleared.
+REFRESH_DELAY_MS = 200
+
+# Maximum time spent filtering (or restoring after a search) country rows
+# per main loop iteration, so that a filter pass cannot freeze the UI.
+FILTER_CHUNK_DURATION_SECONDS = 0.010
+
 
 class ServerListWidget(Gtk.ScrolledWindow):
     """Server list widget displaying countries, locations and their servers."""
 
-    def __init__(self, controller: Controller, search_entry: SearchEntry | None = None):
+    def __init__(self, controller: Controller):
         super().__init__()
         self._controller = controller
         self._user_tier: Optional[int] = None
-        self._search_entry = search_entry
 
         self.set_policy(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
@@ -84,6 +93,14 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._container.append(self._country_rows_container)
 
         self._country_rows: List[CountryRow] = []
+        self._filter_snapshot: Optional[dict] = None
+        self._active_filter: Optional[str] = None
+        self._filter_generation = 0
+        self._filter_row_iterator: Optional[Iterator[CountryRow]] = None
+        self._filter_source_id: Optional[int] = None
+        self._pending_refresh = False
+        self._pending_refresh_description = ""
+        self._refresh_source_id: Optional[int] = None
 
     def display(self, user_tier: int, server_list: ServerList):
         """Builds and displays the server list."""
@@ -92,35 +109,106 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._controller.set_server_list_updated_callback(self._on_server_list_update)
         self._controller.set_server_loads_updated_callback(self._on_server_loads_update)
         self._controller.set_location_names_updated_callback(self._on_location_names_update)
+        if self._active_filter:
+            # A server list refresh must not reset the active filter.
+            self.filter(self._active_filter)
         self.emit("ui-updated")
-
-    def focus_on_entry(self, _widget, name_to_search: str) -> None:
-        """Searches for an entry by name and either connects to it directly,
-           or focuses on it."""
-        # pylint: disable=duplicate-code
-        # Server
-        if "#" in name_to_search:
-            future = self._controller.connect_to_server(name_to_search)
-            future.add_done_callback(lambda f: GLib.idle_add(f.result))
-            if self._search_entry:
-                self._search_entry.grab_focus()
-            return
-        for country in self.country_rows:
-            # Country
-            if country.country_name.lower() == name_to_search.lower():
-                country.grab_focus()
-                return
-
-            # Location
-            for location in country.locations:
-                if location.name.lower() == name_to_search.lower():
-                    country.focus_on_location(location.name)
-                    return
 
     @GObject.Signal(name="ui-updated")
     def ui_updated(self):
         """Signal emitted once the server list within the UI has been updated.
         Mainly used for test purposes."""
+
+    def filter(self, search_text: str):
+        """Filters the displayed country rows in place, by the given search text.
+
+        The rows expanded before filtering are restored when the search text
+        is cleared.
+
+        The pass is time-sliced: country rows are filtered in chunks on the
+        main loop, so a broad query cannot freeze the UI for the whole pass,
+        and a new keystroke cancels the pending pass.
+        """
+        needle = fold(search_text.strip())
+        self._filter_generation += 1  # cancels a pass still in flight
+        if not needle:
+            self._clear_filter()
+            return
+
+        if self._filter_snapshot is None:
+            self._filter_snapshot = {
+                row.country_code.lower(): (row.expanded, self._expanded_groups_of(row))
+                for row in self.country_rows
+            }
+
+        self._active_filter = needle
+        self._filter_row_iterator = iter(self.country_rows)
+        self._filter_source_id = GLib.idle_add(
+            self._run_filter_chunk, self._filter_generation, needle
+        )
+
+    def _run_filter_chunk(self, generation: int, needle: str) -> bool:
+        """Filters the next chunk of country rows (runs on the main loop)."""
+        if generation != self._filter_generation:
+            # A newer keystroke replaced this pass (and its state): just stop.
+            return GLib.SOURCE_REMOVE
+
+        deadline = time.monotonic() + FILTER_CHUNK_DURATION_SECONDS
+        for row in self._filter_row_iterator:
+            row.filter(needle)
+            if time.monotonic() >= deadline:
+                return GLib.SOURCE_CONTINUE
+
+        self._filter_source_id = None
+        self._filter_row_iterator = None
+        return GLib.SOURCE_REMOVE
+
+    def _expanded_groups_of(self, row: CountryRow) -> set[str]:
+        """Returns the lowercase labels of the row's currently expanded groups."""
+        children = row.location_rows + (
+            [row.secure_core_row] if row.secure_core_row else []
+        )
+        return {child.label.lower() for child in children if child.expanded}
+
+    def _clear_filter(self):
+        """Clears the filter, making every row visible again and restoring
+        the expansion state from before the filter was applied.
+
+        Like the filter pass itself, the restore is time-sliced on the main
+        loop: restoring every row inline froze the UI for over a second on
+        real server lists. The snapshot is consumed by the last chunk, so a
+        new keystroke mid-restore keeps the original pre-filter state."""
+        self._active_filter = None
+        self._filter_row_iterator = iter(self.country_rows)
+        self._filter_source_id = GLib.idle_add(
+            self._run_clear_chunk, self._filter_generation, self._filter_snapshot
+        )
+
+    def _run_clear_chunk(self, generation: int, snapshot: Optional[dict]) -> bool:
+        """Restores the next chunk of country rows (runs on the main loop)."""
+        if generation != self._filter_generation:
+            # A newer keystroke replaced this pass (and its state): just stop.
+            return GLib.SOURCE_REMOVE
+
+        deadline = time.monotonic() + FILTER_CHUNK_DURATION_SECONDS
+        for row in self._filter_row_iterator:
+            row.set_visible(True)
+            if snapshot is not None:
+                expanded, expanded_groups = snapshot.get(
+                    row.country_code.lower(), (False, set())
+                )
+                row.restore_expanded_state(
+                    expanded=expanded, expanded_groups=expanded_groups
+                )
+            if time.monotonic() >= deadline:
+                return GLib.SOURCE_CONTINUE
+
+        self._filter_source_id = None
+        self._filter_row_iterator = None
+        self._filter_snapshot = None
+        if self._pending_refresh:
+            self._schedule_refresh()
+        return GLib.SOURCE_REMOVE
 
     def _populate_countries(self, server_list: ServerList):
         self._display_country_rows(server_list)
@@ -186,28 +274,78 @@ class ServerListWidget(Gtk.ScrolledWindow):
 
     def _on_server_list_update(self):
         """Whenever a new server list is received the UI should be updated."""
-        start = time.time()
-        self.display(self._user_tier, self._controller.server_list)
-        logger.info(
-            "Full server list widget update completed in "
-            f"{time.time() - start:.2f} seconds."
-        )
+        self._queue_refresh("Full server list widget update")
 
     def _on_server_loads_update(self):
+        """Applies fresh server loads in place, without rebuilding the widget.
+
+        A loads update mutates the server models the rows already reference
+        (only Load/Score/Status change; the servers, their grouping and their
+        order are unchanged), so the rows just re-read them: collapsed rows
+        have nothing to update and rows hidden by an active filter keep their
+        visibility. No rebuild, and no "ui-updated".
+        """
         start = time.time()
-        self.display(self._user_tier, self._controller.server_list)
+        needs_rebuild = False
+        for country_row in self._country_rows:
+            needs_rebuild |= country_row.update_server_loads()
+        if needs_rebuild:
+            # A visible server went in/out of maintenance (or the rows are out
+            # of sync with the models): restyling rows in place is not worth
+            # it, so fall back to the deferred rebuild.
+            self._queue_refresh("Partial server list widget update")
+            return
         logger.info(
-            "Partial server list widget update completed in "
-            f"{time.time() - start:.2f} seconds."
+            f"Server loads applied in place in {time.time() - start:.2f} seconds."
         )
 
     def _on_location_names_update(self):
         """Whenever refreshed location (city/state) names arrive the UI should be updated."""
+        self._queue_refresh("Location names widget update")
+
+    def _queue_refresh(self, description: str):
+        """Queues a widget rebuild for the given update type instead of
+        running it inline.
+
+        The update handlers run on the UI thread, and a rebuild redraws the
+        whole widget, so running one inline would freeze the UI for whatever
+        the user is doing at that moment. Data updates can land at any time
+        (on a slow connection, right in the middle of a search), so the
+        rebuild is postponed briefly: if a filter is active by the time it
+        runs, it stays deferred until the filter is cleared.
+        """
+        self._pending_refresh = True
+        self._pending_refresh_description = description
+        if self._active_filter:
+            logger.info(f"{description} deferred while a filter is active.")
+        self._schedule_refresh()
+
+    def _schedule_refresh(self):
+        """Schedules the queued rebuild, coalescing bursts of updates (e.g.
+        server list followed by loads followed by location names) into a
+        single rebuild."""
+        if self._refresh_source_id is None:
+            self._refresh_source_id = GLib.timeout_add(
+                REFRESH_DELAY_MS, self._run_pending_refresh
+            )
+
+    def _run_pending_refresh(self) -> bool:
+        self._refresh_source_id = None
+        if self._active_filter or self._filter_row_iterator is not None \
+                or not self._pending_refresh:
+            # Still searching (or restoring the rows after a search): stay
+            # queued. The last clear chunk schedules the rebuild again once
+            # the filter is cleared.
+            return GLib.SOURCE_REMOVE
+        self._pending_refresh = False
+        self._display_server_list(self._pending_refresh_description)
+        return GLib.SOURCE_REMOVE
+
+    def _display_server_list(self, description: str):
         start = time.time()
         self.display(self._user_tier, self._controller.server_list)
         logger.info(
-            "Location names widget update completed in "
-            f"{time.time() - start:.2f} seconds."
+            f"{description} completed in {time.time() - start:.2f} seconds."
         )
 
     def unload(self):
@@ -215,6 +353,15 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._controller.unset_server_list_updated_callback()
         self._controller.unset_server_loads_updated_callback()
         self._controller.unset_location_names_updated_callback()
+        self._filter_generation += 1  # cancels a filter/clear pass in flight
+        if self._filter_source_id is not None:
+            GLib.source_remove(self._filter_source_id)
+            self._filter_source_id = None
+        self._filter_row_iterator = None
+        if self._refresh_source_id is not None:
+            GLib.source_remove(self._refresh_source_id)
+            self._refresh_source_id = None
+        self._pending_refresh = False
         self._remove_country_rows()
 
 

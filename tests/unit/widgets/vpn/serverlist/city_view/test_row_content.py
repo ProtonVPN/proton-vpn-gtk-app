@@ -136,3 +136,36 @@ def test_row_content_displays_server_features():
     assert SmartRoutingIcon in icon_types
     assert P2PIcon in icon_types
     assert TORIcon in icon_types
+
+
+def test_row_content_update_server_load_updates_load_in_place():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(toggable=False, load=50))
+    assert row_content.server_load == "50%"
+
+    assert row_content.update_server_load(load=80, under_maintenance=False) is False
+    assert row_content.server_load == "80%"
+    assert row_content.label == "test"
+
+
+def test_row_content_update_server_load_reports_maintenance_state_change():
+    row_content = RowContent()
+    row_content.display(row_data=_row_data(toggable=False, load=50))
+
+    # The state change is escalated to the caller instead of being restyled in
+    # place: the row is left exactly as it was displayed.
+    assert row_content.update_server_load(load=80, under_maintenance=True) is True
+    assert not row_content.under_maintenance_icon.get_visible()
+    assert row_content.server_load == "50%"
+
+
+def test_row_content_update_server_load_skips_load_when_under_maintenance():
+    # Rows displayed under maintenance are displayed without a load.
+    row_content = RowContent()
+    row_content.display(
+        row_data=_row_data(toggable=False, load=None, under_maintenance=True)
+    )
+    assert row_content.server_load is None
+
+    assert row_content.update_server_load(load=80, under_maintenance=True) is False
+    assert row_content.server_load is None  # still hidden

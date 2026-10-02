@@ -175,3 +175,25 @@ class TestEarlyAccessWidget:
             callback(None, False, None)
 
             mock_distro_manager.build_update_command.assert_called_once_with(mock_distro_manager.beta_package_name, mock_distro_manager.stable_package_name)
+
+    @pytest.mark.parametrize("distro_manager", [early_access.DEBIAN_MANAGER, early_access.FEDORA_MANAGER])
+    @pytest.mark.parametrize("enable", [True, False])
+    def test_privileged_command_only_uses_absolute_paths(self, distro_manager, enable):
+        """pkexec resolves relative program names using the caller's PATH, so every
+        binary in the elevated command must be referenced by absolute path (VPNLINUX-1944)."""
+        controller = Mock()
+        with patch.object(EarlyAccessWidget, "get_setting", return_value=not enable):
+            switch = EarlyAccessWidget(controller, distro_manager, Mock())
+            switch._on_switch_early_access_state(None, enable, None)
+
+        cmd = controller.run_subprocess.call_args[0][0]
+        assert cmd[:3] == [early_access.PKEXEC_PATH, early_access.SHELL_PATH, "-c"]
+        assert cmd[0].startswith("/") and cmd[1].startswith("/")
+
+        for sub_command in cmd[3].split("&&"):
+            binary = sub_command.split()[0]
+            assert binary.startswith("/"), f"Relative binary in privileged command: {binary}"
+            assert binary != "sudo"
+
+        assert distro_manager.package_manager.startswith("/")
+        assert distro_manager.list_installed_packages_command.split()[0].startswith("/")

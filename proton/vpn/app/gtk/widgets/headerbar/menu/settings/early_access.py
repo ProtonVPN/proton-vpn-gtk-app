@@ -38,6 +38,16 @@ logger = logging.getLogger(__name__)
 COMPATIBLE_DISTRIBUTIONS = distro.like().split()
 COMPATIBLE_DISTRIBUTIONS.append(distro.id())
 
+# Binaries executed (directly or via pkexec) are referenced by absolute path.
+# pkexec resolves a relative program name using the *caller's* PATH before
+# elevating, so a relative name (e.g. `sh`) could be hijacked by a binary placed
+# earlier in the user's PATH and end up running as root.
+PKEXEC_PATH = "/usr/bin/pkexec"
+SHELL_PATH = "/bin/sh"
+APT_PATH = "/usr/bin/apt"
+DNF_PATH = "/usr/bin/dnf"
+RPM_PATH = "/usr/bin/rpm"
+
 
 @dataclass
 class DistroManager:  # pylint: disable=too-many-instance-attributes
@@ -69,23 +79,23 @@ class DistroManager:  # pylint: disable=too-many-instance-attributes
 
 DEBIAN_MANAGER = DistroManager(
     names=["debian", "ubuntu"],
-    package_manager="/usr/bin/apt",
-    install_repo_command="/usr/bin/apt -y install",
-    list_installed_packages_command="/usr/bin/apt list --installed",
-    update_local_index_command="/usr/bin/apt update",
-    reinstall_app_command="sudo /usr/bin/apt autoremove -y proton-vpn-gnome-desktop "
-    "&& sudo /usr/bin/apt install -y proton-vpn-gnome-desktop",
+    package_manager=APT_PATH,
+    install_repo_command=f"{APT_PATH} -y install",
+    list_installed_packages_command=f"{APT_PATH} list --installed",
+    update_local_index_command=f"{APT_PATH} update",
+    reinstall_app_command=f"{APT_PATH} autoremove -y proton-vpn-gnome-desktop "
+    f"&& {APT_PATH} install -y proton-vpn-gnome-desktop",
     remove_old_package=False  # debian handles old package removal when installing new one
 )
 
 FEDORA_MANAGER = DistroManager(
     names=["fedora"],
-    package_manager="dnf",
-    list_installed_packages_command="rpm -qa",
-    install_repo_command="sudo dnf swap -y",
-    update_local_index_command="dnf makecache",
-    reinstall_app_command="sudo dnf remove -y proton-vpn-gnome-desktop "
-    "&& sudo dnf install -y proton-vpn-gnome-desktop",
+    package_manager=DNF_PATH,
+    list_installed_packages_command=f"{RPM_PATH} -qa",
+    install_repo_command=f"{DNF_PATH} swap -y",
+    update_local_index_command=f"{DNF_PATH} makecache",
+    reinstall_app_command=f"{DNF_PATH} remove -y proton-vpn-gnome-desktop "
+    f"&& {DNF_PATH} install -y proton-vpn-gnome-desktop",
     remove_old_package=True
 )
 
@@ -212,7 +222,7 @@ class EarlyAccessWidget(ToggleWidget):
             return False
 
         # If we couldn't find `pkexec` binary on system, don't show early access.
-        if not shutil.which("pkexec"):
+        if not shutil.which(PKEXEC_PATH):
             return False
 
         return True
@@ -340,7 +350,7 @@ class EarlyAccessWidget(ToggleWidget):
                 )
             )
 
-        cmd = ["pkexec", "sh", "-c",
+        cmd = [PKEXEC_PATH, SHELL_PATH, "-c",
                self.distro_manager.build_update_command(package_to_remove, package_to_install)]
         future = self._controller.run_subprocess(cmd)
         future.add_done_callback(on_handle_early_access)

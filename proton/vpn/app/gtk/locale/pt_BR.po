@@ -1288,6 +1288,10 @@ msgstr ""
 "desconecte-se de outro dispositivo."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "+{count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0 é muito improvável"
 
@@ -1314,6 +1318,10 @@ msgstr "Avançado"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Todos os países ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Seleção automática de"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1346,6 +1354,10 @@ msgstr "Aplicativos excluídos "
 msgctxt "label"
 msgid "Free"
 msgstr "Free"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Localizações dos servidores gratuitos ({count})"
 
 msgctxt "label"
 msgid "Get unlimited server changes with VPN Plus."
@@ -1952,6 +1964,10 @@ msgid "Features"
 msgstr "Recursos"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Conexões gratuitas"
+
+msgctxt "title"
 msgid "General"
 msgstr "Geral"
 
@@ -2114,6 +2130,10 @@ msgstr "Conectar a {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Copiar número da porta"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Localizações dos servidores gratuitos"
 
 msgctxt "tooltip"
 msgid ""

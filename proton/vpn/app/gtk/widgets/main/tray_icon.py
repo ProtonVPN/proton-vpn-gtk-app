@@ -376,6 +376,7 @@ class TrayIcon:  # pylint: disable=too-many-instance-attributes
         self.icon_desc = icon_desc
         self.status = "Active"
 
+        self.next_menu_id = 1
         self.menu_items = []
         self.on_left_click = None
         self.on_middle_click = None
@@ -425,7 +426,10 @@ class TrayIcon:  # pylint: disable=too-many-instance-attributes
 
     def _generate_menu_id(self):
         """Generate an used to identify the item in the menu."""
-        return len(self.menu_items) + 1 if len(self.menu_items) > 0 else 1
+        #Uses a generic incrementing counter over the previous length based approach to avoid issues with KDE Plasma
+        item_id = self.next_menu_id
+        self.next_menu_id += 1
+        return item_id
 
     def setup(self):
         """

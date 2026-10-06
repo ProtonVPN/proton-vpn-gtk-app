@@ -86,28 +86,13 @@ xvfb-run -a behave integration_tests/features
 ```
 
 ## Versioning
-Version matches format: `[major][minor][patch]`
+Don't edit versions.yml in merge requests.
 
-We automate the versioning of the debian and rpm files.
-All versions of the application are recorded in versions.yml.
-To bump the version, add the following text to the top of versions.yml
+- develop builds: CI stamps `<next release>rc<UTC timestamp>`, e.g. `4.18.8rc202610060949`
+  (`scripts/devtools/dev_version.py`). Never committed.
+- releases: release MR writes the entry from commit subjects since the previous release
+  (`scripts/devtools/release_version.py`): `feat!:` → major, `feat:` → minor,
+  `fix:`, `chore:`, `i18n:` and other conventional types → patch.
 
-```
-version: <latest version>
-time: <date> <time>
-author: <your name>
-email: <your email address>
-urgency: low
-stability: unstable
-description:
-- <A description of the changes this new version contains>
----
-```
-
-Make sure you have the '---' dashes at the end of your block of text.
-You can use the previous entries as an example.
-
-Finally run `scripts/build_packages.py`. This will generate a new package.spec
-file for rpmbuild and a new changelog file for debian.
-
-That's it.
+`scripts/create_changelogs.py` generates debian/changelog, the rpm spec and CHANGELOG.md
+from versions.yml.

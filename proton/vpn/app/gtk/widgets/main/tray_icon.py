@@ -238,6 +238,7 @@ class _StatusNotifierItem(dbus.service.Object):
     def __init__(self, tray_icon, bus, object_path):
         self.tray = tray_icon
         self.bus = bus
+        self._watcher_owner = None
 
         # Generate unique bus name
         self.bus_name_str = f"org.kde.StatusNotifierItem-{tray_icon.app_id}-{os.getpid()}"
@@ -248,8 +249,30 @@ class _StatusNotifierItem(dbus.service.Object):
         # Create DBusMenu
         self.menu = _DBusMenuService(bus, tray_icon.menu_items)
 
+        # Re-register if the tray host disappears and comes back.
+        self._subscribe_watcher_changes()
         # Register with watcher
         self._register_to_watcher()
+
+    def _subscribe_watcher_changes(self):
+        self.bus.add_signal_receiver(
+            self._on_name_owner_changed,
+            signal_name="NameOwnerChanged",
+            dbus_interface="org.freedesktop.DBus",
+            bus_name="org.freedesktop.DBus",
+            path="/org/freedesktop/DBus",
+            arg0=SNW_BUS_NAME,
+        )
+
+    def _on_name_owner_changed(self, name, old_owner, new_owner):
+        if name != SNW_BUS_NAME:
+            return
+
+        if new_owner and new_owner != self._watcher_owner:
+            self._watcher_owner = str(new_owner)
+            self._register_to_watcher()
+        elif not new_owner:
+            self._watcher_owner = None
 
     def _register_to_watcher(self):
         """Register with StatusNotifierWatcher"""
@@ -259,6 +282,7 @@ class _StatusNotifierItem(dbus.service.Object):
                 self.bus_name_str,
                 dbus_interface=SNW_INTERFACE
             )
+            self._watcher_owner = str(self.bus.get_name_owner(SNW_BUS_NAME))
         except dbus.exceptions.DBusException:
             # Silent fail, will still work on some DEs,
             # see https://specifications.freedesktop.org/status-notifier-item-spec/status-notifier-item-spec-latest.html#registration  # pylint: disable=line-too-long # noqa: E501

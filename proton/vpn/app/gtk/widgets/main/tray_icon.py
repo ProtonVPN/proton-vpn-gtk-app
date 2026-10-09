@@ -248,8 +248,9 @@ class _StatusNotifierItem(dbus.service.Object):
         # Create DBusMenu
         self.menu = _DBusMenuService(bus, tray_icon.menu_items)
 
-        # Register with watcher
+        # Register with watcher, and again if the watcher is restarted
         self._register_to_watcher()
+        self._watch_for_watcher_restarts()
 
     def _register_to_watcher(self):
         """Register with StatusNotifierWatcher"""
@@ -267,6 +268,47 @@ class _StatusNotifierItem(dbus.service.Object):
                 category="TRAY_ICON",
                 event="STATUS_NOTIFIER_WATCHER_REGISTRATION_FAILED",
             )
+
+    def _watch_for_watcher_restarts(self):
+        """Register again whenever a new StatusNotifierWatcher appears.
+
+        The watcher is owned by the desktop shell or panel, which can restart on
+        its own: Quickshell, Waybar, plasmashell, a GNOME extension host
+        reloading. A newly started watcher begins with an empty registry, so an
+        item that registers only once silently loses its icon until the whole
+        application is restarted.
+        """
+        # The spec puts this on the item: it should watch the bus and register
+        # whenever the watcher becomes available, not only at startup. See
+        # https://specifications.freedesktop.org/status-notifier-item-spec/status-notifier-item-spec-latest.html#registration  # pylint: disable=line-too-long # noqa: E501
+        try:
+            self.bus.add_signal_receiver(
+                self._on_watcher_name_owner_changed,
+                signal_name="NameOwnerChanged",
+                dbus_interface="org.freedesktop.DBus",
+                bus_name="org.freedesktop.DBus",
+                path="/org/freedesktop/DBus",
+                arg0=SNW_BUS_NAME,
+            )
+        except dbus.exceptions.DBusException:
+            logger.warning(
+                "Failed to watch StatusNotifierWatcher name ownership",
+                category="TRAY_ICON",
+                event="STATUS_NOTIFIER_WATCHER_WATCH_FAILED",
+            )
+
+    def _on_watcher_name_owner_changed(self, _name, _old_owner, new_owner):
+        """Re-register the item when a new watcher takes the name."""
+        if not new_owner:
+            # The watcher went away; nothing to do until a new one shows up.
+            return
+
+        logger.info(
+            "StatusNotifierWatcher reappeared, registering tray icon again",
+            category="TRAY_ICON",
+            event="STATUS_NOTIFIER_WATCHER_REREGISTERING",
+        )
+        self._register_to_watcher()
 
     @dbus.service.method(
         dbus_interface="org.freedesktop.DBus.Properties",

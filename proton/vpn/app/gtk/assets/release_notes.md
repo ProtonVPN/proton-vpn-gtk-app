@@ -1,4 +1,7 @@
-## What's new (4.18.7)
+## What's new (4.18.8)
+- Bug fixes.
+
+## 4.18.7
 - Improved translations across supported languages.
 - Minor improvements.
 

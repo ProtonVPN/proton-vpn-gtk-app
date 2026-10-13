@@ -251,6 +251,35 @@ class _StatusNotifierItem(dbus.service.Object):
         # Register with watcher
         self._register_to_watcher()
 
+        # Re-register with a fresh StatusNotifierWatcher when the tray host
+        # (e.g. waybar) restarts, since that creates a new watcher which drops
+        # all previously registered items.
+        self._watch_watcher_owner()
+
+    def _watch_watcher_owner(self):
+        """Re-register with a new StatusNotifierWatcher when it (re)starts."""
+        try:
+            dbus_bus = self.bus.get_object(
+                "org.freedesktop.DBus", "/org/freedesktop/DBus"
+            )
+            dbus_bus.connect_to_signal(
+                "NameOwnerChanged",
+                self._on_watcher_owner_changed,
+                dbus_interface="org.freedesktop.DBus",
+            )
+        except dbus.exceptions.DBusException:
+            logger.debug(
+                "Unable to subscribe to StatusNotifierWatcher owner changes",
+                category="TRAY_ICON",
+                event="STATUS_NOTIFIER_WATCHER_OWNER_WATCH_FAILED",
+            )
+
+    def _on_watcher_owner_changed(self, name, old_owner, new_owner):
+        """Re-register once the StatusNotifierWatcher comes back up."""
+        if name != SNW_BUS_NAME or not new_owner or new_owner == old_owner:
+            return
+        self._register_to_watcher()
+
     def _register_to_watcher(self):
         """Register with StatusNotifierWatcher"""
         try:

@@ -30,6 +30,7 @@ from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.confirmation_dialog import ConfirmationDialog
 from proton.vpn.core.settings import CustomDNSEntry, NetShield
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.common import ToggleWidget
+from proton.vpn.app.gtk.utils.entry import add_clear_icon
 
 
 if TYPE_CHECKING:
@@ -50,6 +51,8 @@ class CustomDNSRow(Gtk.Box):  # pylint: disable=too-few-public-methods
         ip_label.set_hexpand(True)  # Make label expand to push button to the right
         ip_label.set_halign(self.gtk.Align.START)  # Keep label left-aligned
         self.button = self.gtk.Button.new_from_icon_name("edit-delete-symbolic")
+        self.button.add_css_class("danger")
+        self.button.add_css_class("small")
         self.append(ip_label)
         self.append(self.button)
 
@@ -125,10 +128,15 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         row.set_column_spacing(10)
 
         self._dns_entry: Gtk.Entry = self.gtk.Entry()
+        add_clear_icon(self._dns_entry)
         self._dns_entry.set_hexpand(True)
         self._dns_entry.set_halign(Gtk.Align.FILL)
+        safe_signal_connect(self._dns_entry, "changed", self._on_dns_entry_changed)
 
         self._add_button: Gtk.Button = self.gtk.Button(label=C_("button", "Add"))
+        self._add_button.add_css_class("secondary")
+        self._add_button.add_css_class("small")
+        self._add_button.set_valign(Gtk.Align.CENTER)
         safe_signal_connect(self._add_button, "clicked", self._on_dns_add_clicked)
 
         row.attach(self._dns_entry, 0, 0, 1, 1)
@@ -149,9 +157,6 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
     def _on_dns_add_clicked(
         self, _: Gtk.Button
     ):
-        if self._error_message_revealer.get_reveal_child():
-            self._error_message_revealer.set_reveal_child(False)
-
         string_from_entry = self._dns_entry.get_text().lower().strip()
 
         try:
@@ -162,6 +167,10 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
 
         self._add_dns(new_custom_dns_entry)
         self._dns_entry.set_text("")
+
+    def _on_dns_entry_changed(self, _: Gtk.Entry):
+        self._error_message_revealer.set_reveal_child(False)
+        self._dns_entry.remove_css_class("input-error")
 
     def _add_dns(self, new_custom_dns_entry: CustomDNSEntry):
         with self._edit_ip_list() as ip_list:
@@ -177,6 +186,7 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
         child = error_message_revealer.get_child()
         child.set_label(self.INVALID_IP_ERROR_MESSAGE)
         error_message_revealer.set_reveal_child(True)
+        self._dns_entry.add_css_class("input-error")
 
     @contextmanager
     def _get_ip_list(self):

@@ -18,6 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from unittest.mock import Mock, patch
 
+from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from tests.unit.testing_utils import process_gtk_events
 
@@ -39,7 +40,7 @@ def test_show_error_dialog_shows_error_in_popup_window(gtk_mock):
     response_callback = dialog_mock.connect.call_args[0][1]
     response_callback(dialog_mock, 0)
 
-    dialog_mock.set_markup.assert_called_once()
+    assert dialog_mock.props.secondary_text == ERROR_MESSAGE
     dialog_mock.present.assert_called_once()
     dialog_mock.destroy.assert_called_once()
 
@@ -92,3 +93,18 @@ def test_show_success_message_displays_success_message_in_app_notification_bar(g
     glib_mock.idle_add.assert_called_once_with(
         notification_bar_mock.show_success_message, "Success message"
     )
+
+
+def test_error_dialog_shows_the_title_above_the_message():
+    parent = Gtk.Window()
+    notifications = Notifications(main_window=parent, notification_bar=Mock())
+
+    notifications.show_error_dialog(ERROR_MESSAGE, ERROR_TITLE)
+    process_gtk_events()
+
+    dialog = notifications.error_dialog
+    assert dialog.props.text == ERROR_TITLE
+    assert dialog.props.secondary_text == ERROR_MESSAGE
+    dialog.destroy()
+    parent.destroy()
+    process_gtk_events()

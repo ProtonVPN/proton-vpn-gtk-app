@@ -28,6 +28,7 @@ from proton.vpn import logging
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.utils.entry import use_clear_icon
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,7 @@ class SearchEntry(Gtk.SearchEntry):
     """Widget used to filter server list based on user input."""
     def __init__(self):
         super().__init__()
+        use_clear_icon(self)
         self.set_name("search-entry")
         placeholder = C_("placeholder", "Press Ctrl+F to search")
         self.props.placeholder_text = placeholder  # pylint: disable=no-member

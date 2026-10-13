@@ -36,6 +36,19 @@ from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.utils.window import PROTON_APP_CSS_CLASS
 
 
+def _app_header_bar_height() -> int:
+    """The height of a header bar in an app window.
+
+    It's measured inside a box with the .proton-app class, so the app's header
+    bar styles apply to it as they do in the window.
+    """
+    root = Gtk.Box()
+    root.add_css_class(PROTON_APP_CSS_CLASS)
+    header_bar = Gtk.HeaderBar()
+    root.append(header_bar)
+    return header_bar.measure(Gtk.Orientation.VERTICAL, UNCONSTRAINED)[1]
+
+
 def framed_like_app(
     widget: Gtk.Widget,
     fill_height: bool = False,
@@ -73,11 +86,8 @@ def framed_like_app(
 
     if fill_height:
         content_layout.set_vexpand(True)  # fill the window height, as in the app
-        header_height = Gtk.HeaderBar().measure(
-            Gtk.Orientation.VERTICAL, UNCONSTRAINED
-        )[1]
         main_widget.set_size_request(
-            MainWindow.WIDTH, MainWindow.HEIGHT - header_height
+            MainWindow.WIDTH, MainWindow.HEIGHT - _app_header_bar_height()
         )
     else:
         main_widget.set_size_request(MainWindow.WIDTH, NATURAL)

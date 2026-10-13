@@ -40,6 +40,36 @@ class DialogButton:
     response_type: Gtk.ResponseType
 
 
+def build_error_dialog(  # pylint: disable=too-many-arguments
+        parent: Optional[Gtk.Window], title: str, message: str,
+        hint: Optional[str] = None,
+        message_type: Optional[Gtk.MessageType] = Gtk.MessageType.ERROR,
+        buttons: Optional[List[DialogButton]] = None,
+) -> Gtk.MessageDialog:
+    """A modal dialog showing `title` above `message`, and `hint` in small text."""
+    dialog = Gtk.MessageDialog(
+        transient_for=parent,
+        message_type=message_type,
+        buttons=Gtk.ButtonsType.NONE,
+        text=title,
+    )
+    dialog.set_destroy_with_parent(True)
+    register_proton_window(dialog)
+
+    buttons = buttons or [DialogButton(C_("button", "OK"), Gtk.ResponseType.OK)]
+    for button in buttons:
+        dialog.add_button(button.label, button.response_type)
+
+    secondary_text = message
+    if hint:
+        secondary_text += f"\n\n<span size=\"smaller\" weight=\"light\">{hint}</span>"
+
+    dialog.set_modal(True)
+    dialog.props.secondary_text = secondary_text
+    dialog.props.secondary_use_markup = True
+    return dialog
+
+
 class Notifications:
     """It wraps all types of notifications to be shown by the app."""
 
@@ -77,25 +107,9 @@ class Notifications:
             self.error_dialog.destroy()
             self.error_dialog = None
 
-        self.error_dialog = Gtk.MessageDialog(
-            transient_for=self._main_window,
-            message_type=message_type,
-            buttons=Gtk.ButtonsType.NONE,
-            text=title,
+        self.error_dialog = build_error_dialog(
+            self._main_window, title, message, hint, message_type, buttons
         )
-        self.error_dialog.set_destroy_with_parent(True)
-        register_proton_window(self.error_dialog)
-
-        buttons = buttons or [DialogButton(C_("button", "OK"), Gtk.ResponseType.OK)]
-        for button in buttons:
-            self.error_dialog.add_button(button.label, button.response_type)
-
-        secondary_text = message
-        if hint:
-            secondary_text += f"\n\n<span size=\"smaller\" weight=\"light\">{hint}</span>"
-
-        self.error_dialog.set_modal(True)
-        self.error_dialog.set_markup(secondary_text)
 
         self._on_dialog_closed = on_dialog_closed
         safe_signal_connect(self.error_dialog, "response", self._on_dialog_response)

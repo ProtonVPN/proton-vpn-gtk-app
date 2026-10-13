@@ -42,6 +42,19 @@ def widget_child_count(widget: Gtk.Widget) -> int:
     return child_count
 
 
+def find_child(widget: Gtk.Widget, widget_type: type) -> Gtk.Widget:
+    """The first descendant of `widget` of type `widget_type`, depth first."""
+    child = widget.get_first_child()
+    while child is not None:
+        if isinstance(child, widget_type):
+            return child
+        found = find_child(child, widget_type)
+        if found is not None:
+            return found
+        child = child.get_next_sibling()
+    return None
+
+
 class TestCustomDNSList:
 
     @pytest.mark.parametrize("ips_to_add", [
@@ -108,6 +121,23 @@ class TestCustomDNSManager:
         on_button_clicked_callback(add_button_mock)
 
         revealer_mock.set_reveal_child.assert_called_once_with(True)
+
+    def test_changing_the_entry_text_hides_the_invalid_dns_ip_error(self):
+        controller = Mock(name="controller")
+        controller.get_setting_attr.return_value = []
+        custom_dns_manager = CustomDNSManager(controller=controller)
+        entry = find_child(custom_dns_manager, Gtk.Entry)
+        error_message = find_child(custom_dns_manager, Gtk.Revealer)
+
+        custom_dns_manager.set_entry_text("some invalid ip")
+        custom_dns_manager.add_button_click()
+        assert entry.has_css_class("input-error")
+        assert error_message.get_reveal_child()
+
+        custom_dns_manager.set_entry_text("")
+
+        assert not entry.has_css_class("input-error")
+        assert not error_message.get_reveal_child()
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.append")
     def test_add_new_dns_ensure_it_stores_new_dns_to_file(self, _):

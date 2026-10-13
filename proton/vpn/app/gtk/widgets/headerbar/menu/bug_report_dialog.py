@@ -39,6 +39,7 @@ from proton.vpn.app.gtk.utils.executor import AsyncExecutor
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.utils.window import register_proton_window
 from proton.vpn.app.gtk.widgets.main.notification_bar import NotificationBar
+from proton.vpn.app.gtk.utils.entry import add_clear_icon
 
 if TYPE_CHECKING:
     from proton.vpn.app.gtk.controller import Controller
@@ -244,6 +245,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         username_label.set_halign(Gtk.Align.START)
 
         self.username_entry = Gtk.Entry()
+        add_clear_icon(self.username_entry)
         self.username_entry.set_property("margin-bottom", 10)
         self.username_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
         self.username_entry.set_name("username")
@@ -254,6 +256,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         email_label.set_halign(Gtk.Align.START)
 
         self.email_entry = Gtk.Entry()
+        add_clear_icon(self.email_entry)
         self.email_entry.set_property("margin-bottom", 10)
         self.email_entry.set_input_purpose(Gtk.InputPurpose.EMAIL)
         self.email_entry.set_name("email")

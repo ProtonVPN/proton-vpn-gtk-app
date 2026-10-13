@@ -56,7 +56,6 @@ class DisableKillSwitchButton(Gtk.Button):
     def __init__(self):
         super().__init__(label=DisableKillSwitchButton.BUTTON_LABEL)
         self.add_css_class("secondary")
-        self.add_css_class("spaced")
 
 
 class DisableKillSwitchWidget(Gtk.Revealer):

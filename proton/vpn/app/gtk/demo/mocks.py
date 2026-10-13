@@ -23,17 +23,27 @@ from unittest.mock import MagicMock
 
 from proton.vpn.connection.enum import KillSwitchSetting
 
+from proton.vpn.app.gtk.controller import Controller
+from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
+
 
 def mock_controller(killswitch: KillSwitchSetting = KillSwitchSetting.OFF) -> MagicMock:
     """A shared Controller mock for demo screens to construct and render.
 
+    It only has Controller's attributes, so a widget using one that Controller
+    doesn't have fails instead of rendering differently from the app.
     `get_settings().killswitch` is read at render time by the login widget.
     """
-    controller = MagicMock(name="Controller")
+    controller = MagicMock(spec=Controller, name="Controller")
+    # Attributes each Controller instance has. The spec only lists what's
+    # defined on the class, so these are added by hand.
+    controller.executor = MagicMock(name="executor")
+    controller.exception_handler = MagicMock(name="exception_handler")
+    controller.reconnector = MagicMock(name="reconnector")
     controller.get_settings.return_value.killswitch = killswitch
     return controller
 
 
 def mock_main_window() -> MagicMock:
-    """A MainWindow mock."""
-    return MagicMock(name="MainWindow")
+    """A MainWindow mock with only MainWindow's attributes."""
+    return MagicMock(spec=MainWindow, name="MainWindow")

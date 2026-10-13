@@ -31,6 +31,7 @@ from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.login.two_factor_auth.authenticate_button import AuthenticateButton
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
+from proton.vpn.app.gtk.utils.entry import add_clear_icon
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +86,7 @@ class AuthenticatorAppForm(Gtk.Box):  # pylint: disable=too-many-instance-attrib
 
         # pylint: disable=R0801
         self._code_entry = Gtk.Entry()
+        add_clear_icon(self._code_entry)
         safe_signal_connect(
             self._code_entry, "changed", self._on_entry_changed
         )

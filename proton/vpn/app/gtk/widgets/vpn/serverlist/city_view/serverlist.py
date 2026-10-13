@@ -57,9 +57,11 @@ class ServerListWidget(Gtk.ScrolledWindow):
         self._user_tier: Optional[int] = None
         self._search_entry = search_entry
 
+        # Always showing the scrollbar keeps the rows exactly as wide as the
+        # visible area, so the list never shifts sideways.
         self.set_policy(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
-            vscrollbar_policy=Gtk.PolicyType.AUTOMATIC
+            vscrollbar_policy=Gtk.PolicyType.ALWAYS
         )
         self.set_propagate_natural_width(True)
         self.set_name("server-list-widget")

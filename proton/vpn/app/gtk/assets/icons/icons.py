@@ -7,7 +7,7 @@ https://docs.gtk.org/gtk3/class.IconTheme.html
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
-from gi.repository import GdkPixbuf
+from gi.repository import GdkPixbuf, Gio
 
 ICONS_PATH = Path(__file__).parent
 
@@ -53,3 +53,11 @@ def get(
     _cache[cache_key] = pixbuf
 
     return pixbuf
+
+
+def file_icon(relative_path: str) -> Gio.FileIcon:
+    """An icon loaded from a file in the icons directory.
+
+    :param relative_path: Path relative to the icons directory root.
+    """
+    return Gio.FileIcon.new(Gio.File.new_for_path(str(ICONS_PATH / relative_path)))

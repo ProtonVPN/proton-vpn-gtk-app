@@ -22,11 +22,8 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from pathlib import Path
 
-from gi.repository import Gdk
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     P2PIcon,
@@ -35,6 +32,9 @@ from proton.vpn.app.gtk.widgets.vpn.serverlist.icons import (
     TORIcon,
 )
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.widgets.vpn.info_button import info_menu_button
+
+FEATURES_TITLE = C_("title", "Features")
 
 
 @dataclass
@@ -113,7 +113,15 @@ class FeatureLegendPopover(Gtk.Popover):
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         main.set_spacing(0)
         main.append(self._build_header())
-        main.append(self._build_feature_rows())
+
+        # The feature rows scroll when the screen is too short to show them all,
+        # so the popover can still open, just shorter.
+        rows = Gtk.ScrolledWindow()
+        rows.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        rows.set_propagate_natural_width(True)
+        rows.set_propagate_natural_height(True)
+        rows.set_child(self._build_feature_rows())
+        main.append(rows)
         return main
 
     def _on_close_clicked(self, _):
@@ -124,7 +132,7 @@ class FeatureLegendPopover(Gtk.Popover):
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         header.add_css_class("feature-legend-header")
 
-        title = Gtk.Label(label=C_("title", "Features"))
+        title = Gtk.Label(label=FEATURES_TITLE)
         title.add_css_class("dim-label")
         title.set_halign(Gtk.Align.START)
         title.set_hexpand(True)
@@ -220,20 +228,9 @@ class ServerListHeaderRow(Gtk.Box):
         self._count_label.add_css_class("dim-label")
         self.prepend(self._count_label)
 
-        self._info_button = Gtk.MenuButton()
-        self._info_button.set_can_focus(False)
-        self._info_button.set_has_frame(False)
-        self._info_button.add_css_class("dim-label")
-        self._info_button.add_css_class("server-list-header-info-icon")
         self._feature_legend_popover = FeatureLegendPopover()
-        self._info_button.set_popover(self._feature_legend_popover)
-        self._info_button.set_direction(Gtk.ArrowType.DOWN)
-        self._info_button.set_always_show_arrow(False)
-        self._info_button.set_cursor(Gdk.Cursor.new_from_name("pointer", None))
-        pixbuf = icons.get(Path("info.svg"), width=18, height=18)
-        info_icon = Gtk.Image.new_from_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
-        info_icon.set_size_request(pixbuf.get_width(), pixbuf.get_height())
-        self._info_button.set_child(info_icon)
+        self._info_button = info_menu_button(self._feature_legend_popover, FEATURES_TITLE)
+        self._info_button.add_css_class("dim-label")
         spacer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         spacer.set_hexpand(True)
         self.append(spacer)

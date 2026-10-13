@@ -9,6 +9,14 @@
     color: @text-norm;
 }
 
+/* Boxes with the `background` class, such as the loading overlay, take the
+ * window's background and text colours. Popovers and tooltips, which also
+ * have the class, are left out. */
+.proton-app box.background {
+    background-color: @background-norm;
+    color: @text-norm;
+}
+
 /* Popovers and menus have the same background and text colour as the window. */
 .proton-app popover > contents,
 .proton-app popover > arrow {
@@ -16,15 +24,9 @@
     color: @text-norm;
 }
 
-.proton-app entry:focus-within,
 .proton-app button:focus-visible,
 .proton-app label:focus-visible {
     outline-color: @interaction-norm;
-}
-
-.proton-app entry:focus-within {
-    border-color: @interaction-norm;
-    box-shadow: none;
 }
 
 .proton-app entry text selection {
@@ -69,6 +71,336 @@
     color: @signal-danger;
 }
 
+/* Text fields: 34px tall, with a 1px border that only shows while typing or in
+ * error, so the height doesn't change. */
+.proton-app entry {
+    min-height: 18px;
+    margin: 4px;
+    padding: 7px 11px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    border-spacing: 8px;
+    background-clip: border-box;
+    background-color: @surface-default;
+    color: @text-norm;
+    caret-color: @text-norm;
+    font-size: 1.14em;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+
+.proton-app entry:hover {
+    background-color: @surface-hover;
+}
+
+.proton-app entry:focus-within {
+    border-color: @white;
+    background-color: @surface-active;
+}
+
+.proton-app entry.input-error {
+    border-color: @signal-danger;
+    background-color: @signal-danger-tint;
+}
+
+.proton-app entry:disabled {
+    border-color: transparent;
+    background-color: @surface-default;
+    color: @text-disabled;
+}
+
+.proton-app entry > text > placeholder {
+    color: @text-hint;
+}
+
+.proton-app entry:disabled > text > placeholder {
+    color: @text-disabled;
+}
+
+.proton-app entry > image {
+    color: @text-weak;
+    -gtk-icon-size: 16px;
+}
+
+/* App bar: every window's title bar, 56px tall. */
+.proton-app headerbar {
+    min-height: 48px;
+    padding: 4px;
+    border: none;
+    background-color: @background-weak;
+    color: @text-norm;
+}
+
+.proton-app headerbar .title {
+    font-size: 1.14em;
+    font-weight: 600;
+}
+
+.proton-app windowcontrols {
+    margin: 0;
+    padding: 0;
+    border-spacing: 0;
+}
+
+/* Window controls: round 32px buttons, 8px apart, with the system's icons in
+ * white. The bar stretches them to its height, so the vertical margin keeps
+ * them round. */
+.proton-app windowcontrols > button {
+    min-width: 16px;
+    min-height: 16px;
+    margin: 8px 4px;
+    padding: 8px;
+    border: none;
+    border-radius: 999px;
+    background-color: @surface-default;
+    color: @white;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out;
+}
+
+.proton-app windowcontrols > button:hover {
+    background-color: @surface-hover;
+}
+
+.proton-app windowcontrols > button:active {
+    background-color: @surface-active;
+}
+
+.proton-app windowcontrols > button > image {
+    min-width: 16px;
+    min-height: 16px;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    -gtk-icon-size: 16px;
+}
+
+/* The app bar's menu button: 40 × 40, showing a chevron. The chevron is drawn
+ * as the button's background; the button's own icon stays, invisible, to keep
+ * its size. */
+.proton-app headerbar menubutton > button {
+    min-width: 16px;
+    min-height: 16px;
+    margin: 4px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: @surface-default;
+    background-image: -gtk-icontheme("pan-down-symbolic");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    color: @white;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out;
+}
+
+.proton-app headerbar menubutton > button:hover {
+    background-color: @surface-hover;
+}
+
+.proton-app headerbar menubutton > button:active,
+.proton-app headerbar menubutton > button:checked {
+    background-color: @surface-active;
+}
+
+.proton-app headerbar menubutton {
+    margin: 0;
+    padding: 0;
+}
+
+.proton-app headerbar menubutton > button image {
+    opacity: 0;
+    -gtk-icon-size: 16px;
+}
+
+/* Tooltips. */
+.proton-app tooltip {
+    padding: 4px 8px;
+    border: 1px solid @border-norm;
+    border-radius: 4px;
+    background-color: @background-weak;
+    color: @text-norm;
+    font-size: 0.86em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.24);
+}
+
+.proton-app tooltip label {
+    color: @text-norm;
+}
+
+/* Lists drawn as tree views, e.g. the search results: the window's colours,
+ * and selected rows in Proton's accent rather than the theme's. */
+.proton-app treeview.view {
+    background-color: @background-norm;
+    color: @text-norm;
+}
+
+.proton-app treeview.view:disabled {
+    color: @text-hint;
+}
+
+.proton-app treeview.view:selected {
+    background-color: @interaction-norm;
+    color: @text-norm;
+}
+
+/* Keyboard focus: the ring is drawn inside the list, as the scrolled view
+ * around it would cut off a ring drawn outside. */
+.proton-app treeview.view:focus-visible {
+    outline: 2px solid @focus-ring;
+    outline-offset: -2px;
+}
+
+/* Dropdowns: a 34px field showing the chosen option and a chevron that points
+ * up while the menu is open. */
+.proton-app combobox button.combo {
+    min-height: 18px;
+    margin: 4px;
+    padding: 7px 11px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: @surface-default;
+    color: @text-norm;
+    font-size: 1.14em;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out;
+}
+
+.proton-app combobox button.combo:hover {
+    background-color: @surface-hover;
+}
+
+.proton-app combobox button.combo:checked {
+    background-color: @surface-active;
+}
+
+.proton-app combobox button.combo:disabled {
+    background-color: @surface-default;
+    color: @text-disabled;
+}
+
+.proton-app combobox button.combo > box {
+    border-spacing: 8px;
+}
+
+.proton-app combobox button.combo arrow {
+    color: @text-weak;
+    -gtk-icon-size: 16px;
+    -gtk-icon-source: -gtk-icontheme("pan-down-symbolic");
+}
+
+.proton-app combobox button.combo:checked arrow {
+    -gtk-icon-source: -gtk-icontheme("pan-up-symbolic");
+}
+
+.proton-app combobox button.combo:disabled arrow {
+    color: @text-disabled;
+}
+
+/* A dropdown's menu of options. */
+.proton-app combobox popover > contents {
+    padding: 4px;
+    border-radius: 8px;
+    background-color: @interaction-weak;
+}
+
+.proton-app combobox popover modelbutton {
+    min-height: 18px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: @text-norm;
+    font-size: 1.14em;
+    outline: 0 solid transparent;
+}
+
+/* The current option, reached with the pointer or the keyboard, has no fill
+ * of its own: the pointer adds the hover fill, the keyboard the focus ring. */
+.proton-app combobox popover modelbutton:selected,
+.proton-app combobox popover modelbutton:active {
+    background-color: transparent;
+    color: @text-norm;
+}
+
+.proton-app combobox popover modelbutton:hover {
+    background-color: @surface-hover;
+}
+
+.proton-app combobox popover modelbutton:disabled {
+    color: @text-disabled;
+}
+
+.proton-app combobox popover modelbutton:focus-visible {
+    outline: 2px solid @focus-ring;
+    outline-offset: -2px;
+}
+
+/* Segmented control: a row of options inside a 1px outline, one of them
+ * selected. Used for stack switchers. */
+.proton-app stackswitcher {
+    padding: 0;
+    border: 1px solid @border-weak;
+    border-radius: 8px;
+    border-spacing: 0;
+}
+
+/* The app bar stretches its children to its height, so the vertical margin
+ * keeps the control 32px tall there. */
+.proton-app headerbar stackswitcher {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.proton-app stackswitcher > button {
+    min-width: 94px;
+    min-height: 18px;
+    margin: 0;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 0;
+    background-color: @surface-default;
+    color: @text-weak;
+    font-size: 0.9545em;
+    font-weight: 600;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out;
+}
+
+.proton-app stackswitcher > button:first-child {
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+}
+
+.proton-app stackswitcher > button:last-child {
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+
+.proton-app stackswitcher > button:hover {
+    background-image: image(@surface-hover);
+}
+
+.proton-app stackswitcher > button:active,
+.proton-app stackswitcher > button:checked {
+    background-color: @surface-active;
+    background-image: none;
+}
+
+.proton-app stackswitcher > button:checked {
+    color: @text-norm;
+}
+
+.proton-app stackswitcher > button:disabled {
+    color: @text-disabled;
+}
+
+/* Keyboard focus: a ring inside the segment, on top of its state. */
+.proton-app stackswitcher > button:focus-visible {
+    outline: 2px solid @focus-ring;
+    outline-offset: -2px;
+    border-radius: 8px;
+}
+
 /* Primary, secondary and danger buttons. All have a 1px border (transparent
  * for primary) so they're the same height. */
 .proton-app button.primary,
@@ -76,6 +408,7 @@
 .proton-app button.danger,
 .proton-app button.destructive-action {
     min-height: 18px;
+    margin: 4px;
     padding: 11px 19px;
     border: 1px solid transparent;
     border-radius: 8px;
@@ -86,6 +419,24 @@
     outline: 0 solid transparent;
     transition: background-color 150ms ease-out, border-color 150ms ease-out,
                 color 150ms ease-out;
+}
+
+/* Small buttons: 32px tall, holding a label or a 16px icon. The label is
+ * centred in a fixed content height, so the height doesn't depend on the
+ * font's line height. */
+.proton-app button.small {
+    min-height: 30px;
+    padding: 0 11px;
+}
+
+.proton-app button.small.image-button {
+    min-width: 16px;
+    min-height: 16px;
+    padding: 7px;
+}
+
+.proton-app button.small.image-button image {
+    -gtk-icon-size: 16px;
 }
 
 .proton-app button.primary {
@@ -135,14 +486,36 @@
     color: @text-disabled;
 }
 
-/* Keyboard focus: a ring on the button's edge, on top of its state. Inside the
- * edge, so a container that clips to the button's size can't cut it off. */
-.proton-app button.primary:focus-visible,
-.proton-app button.secondary:focus-visible,
-.proton-app button.danger:focus-visible,
-.proton-app button.destructive-action:focus-visible {
-    outline: 2px solid @focus-ring;
-    outline-offset: -2px;
+/* Ghost button: an icon on a transparent 32 × 32 button. */
+.proton-app menubutton.ghost > button {
+    min-width: 16px;
+    min-height: 16px;
+    margin: 4px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    background-color: transparent;
+    color: @text-weak;
+    outline: 0 solid transparent;
+    transition: background-color 150ms ease-out;
+}
+
+.proton-app menubutton.ghost > button:hover {
+    background-color: @surface-hover;
+}
+
+.proton-app menubutton.ghost > button:active,
+.proton-app menubutton.ghost > button:checked {
+    background-color: @surface-active;
+}
+
+.proton-app menubutton.ghost > button:disabled {
+    background-color: transparent;
+    color: @text-disabled;
+}
+
+.proton-app menubutton.ghost image {
+    -gtk-icon-size: 16px;
 }
 
 /* Switch: a 46 × 26 track. GTK makes the handle half the track's inner width,
@@ -150,7 +523,7 @@
 .proton-app switch {
     min-width: 0;
     min-height: 0;
-    margin: 0;
+    margin: 4px;
     padding: 3px;
     border: none;
     border-radius: 999px;
@@ -184,11 +557,6 @@
     opacity: 0.3;
 }
 
-.proton-app switch:focus-visible {
-    outline: 2px solid @focus-ring;
-    outline-offset: -2px;
-}
-
 .proton-app switch > slider {
     min-width: 20px;
     min-height: 20px;
@@ -199,9 +567,10 @@
     background-color: @white;
 }
 
-/* Checkbox and radio: a 20 × 20 box, 8px from its label. */
+/* Checkbox and radio: a 20 × 20 box, 8px from its label (the box's margin plus
+ * the spacing). */
 .proton-app checkbutton {
-    border-spacing: 8px;
+    border-spacing: 4px;
     outline: 0 solid transparent;
 }
 
@@ -209,7 +578,7 @@
 .proton-app checkbutton > radio {
     min-width: 18px;
     min-height: 18px;
-    margin: 0;
+    margin: 4px;
     padding: 0;
     border: 1px solid @border-weak;
     background-clip: border-box;
@@ -279,12 +648,6 @@
     color: @text-disabled;
 }
 
-.proton-app checkbutton:focus-visible > check,
-.proton-app checkbutton:focus-visible > radio {
-    outline: 2px solid @focus-ring;
-    outline-offset: -2px;
-}
-
 /* Links: link buttons and links in label text. */
 .proton-app button.link label,
 .proton-app label link {
@@ -301,11 +664,30 @@
     color: @link-active;
 }
 
-.proton-app button.link:focus-visible {
-    outline: 2px solid @focus-ring;
-    outline-offset: -2px;
-}
-
 .proton-app label link:focus-visible {
     outline: 2px solid @focus-ring;
+}
+
+.proton-app button.link {
+    margin: 4px;
+}
+
+/* Keyboard focus: a 2px ring 2px outside the widget. Each widget has a 4px
+ * margin for it, so a container that clips to its children's space doesn't
+ * cut the ring off. */
+.proton-app button.primary:focus-visible,
+.proton-app button.secondary:focus-visible,
+.proton-app button.danger:focus-visible,
+.proton-app button.destructive-action:focus-visible,
+.proton-app button.link:focus-visible,
+.proton-app menubutton.ghost > button:focus-visible,
+.proton-app windowcontrols > button:focus-visible,
+.proton-app headerbar menubutton > button:focus-visible,
+.proton-app entry:focus-visible,
+.proton-app combobox button.combo:focus-visible,
+.proton-app switch:focus-visible,
+.proton-app checkbutton:focus-visible > check,
+.proton-app checkbutton:focus-visible > radio {
+    outline: 2px solid @focus-ring;
+    outline-offset: 2px;
 }

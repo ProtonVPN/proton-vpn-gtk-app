@@ -36,12 +36,6 @@
     color: @text-weak;
 }
 
-#vpn-connection-status-widget .free-countries-info > button {
-    padding: 0;
-    min-width: 24px;
-    min-height: 24px;
-}
-
 #free-countries-popover {
     padding: 0;
 }

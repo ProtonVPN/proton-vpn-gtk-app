@@ -29,6 +29,7 @@ from proton.vpn.app.gtk.widgets.main.confirmation_dialog import \
     show_confirmation_dialog
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
+from proton.vpn.app.gtk.utils.entry import add_clear_icon
 from proton.vpn import logging
 
 if TYPE_CHECKING:
@@ -192,6 +193,8 @@ class CustomButton(Gtk.Grid):
     def _build_button(self, button_label: str, on_click_callback: Callable) -> Gtk.Button:
         button = Gtk.Button()
         button.set_label(button_label)
+        button.add_css_class("secondary")
+        button.add_css_class("small")
         safe_signal_connect(button, "clicked", on_click_callback)
         return button
 
@@ -221,6 +224,8 @@ class CustomButton(Gtk.Grid):
     ) -> Gtk.Button:
         """Builds a square button with an icon and tooltip"""
         button = Gtk.Button(icon_name=icon_name)
+        button.add_css_class("secondary")
+        button.add_css_class("small")
         button.set_valign(Gtk.Align.CENTER)
         button.set_tooltip_text(tooltip_text)
         safe_signal_connect(button, "clicked", on_click_callback)
@@ -698,6 +703,7 @@ class EntryWidget(Gtk.Grid):
 
     def _build_entry(self) -> Gtk.Entry:
         entry = Gtk.Entry()
+        add_clear_icon(entry)
         value = self.get_setting()
         if value is None:
             value = C_("label", "Off")

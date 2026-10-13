@@ -34,6 +34,7 @@ from proton.vpn.app.gtk.widgets.login.logo import ProtonVPNLogo
 from proton.vpn.app.gtk.widgets.login.password_entry import PasswordEntry
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.app.gtk.widgets.main.loading_widget import OverlayWidget, DefaultLoadingWidget
+from proton.vpn.app.gtk.utils.entry import add_clear_icon
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +72,7 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self.append(ProtonVPNLogo())
 
         self._username_entry = Gtk.Entry()
+        add_clear_icon(self._username_entry)
         # Placeholder for username textfield.
         self._username_entry.set_placeholder_text(C_("placeholder", "Username"))
         self._username_entry.set_input_purpose(Gtk.InputPurpose.FREE_FORM)
@@ -85,7 +87,6 @@ class LoginForm(Gtk.Box):  # pylint: disable=R0902
         self._login_button = Gtk.Button(label=C_("button", "Sign in"))
         safe_signal_connect(self._login_button, "clicked", self._on_login_button_clicked)
         self._login_button.add_css_class("primary")
-        self._login_button.add_css_class("spaced")
         self._login_button.set_halign(Gtk.Align.CENTER)
         # By default, the button should never be clickable, as username and
         # password fields are empty and users need to actively provide an input

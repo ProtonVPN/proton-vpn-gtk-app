@@ -16,9 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from pathlib import Path
-
-from gi.repository import Gdk, Gtk
+from gi.repository import Gtk
 from proton.vpn.app.gtk.assets import icons
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 
@@ -35,33 +33,18 @@ class PasswordEntry(Gtk.Entry):
     icon is pressed, the text is revealed and the icon to hide the password
     is shown instead.
     """
+    SHOW_ICON = "eye/show-symbolic.svg"
+    HIDE_ICON = "eye/hide-symbolic.svg"
+
     def __init__(self):
         super().__init__()
         self.set_input_purpose(Gtk.InputPurpose.PASSWORD)
         self.set_visibility(False)
-        # Load icon to hide the password.
-        eye_dirpath = Path("eye")
-        hide_fp = eye_dirpath / "hide.svg"
-        self._hide_pixbuff = icons.get(
-            hide_fp,
-            width=17,
-            height=17,
-            preserve_aspect_ratio=True
-        )
-        # Load icon to show the password.
-        show_fp = eye_dirpath / "show.svg"
-        self._show_pixbuff = icons.get(
-            show_fp,
-            width=17,
-            height=17,
-            preserve_aspect_ratio=True
-        )
         # By default, the password is not shown. Therefore, the icon to
         # be able to show the password is shown.
-        show_texture = Gdk.Texture.new_for_pixbuf(self._show_pixbuff)
         self.set_icon_from_gicon(
             Gtk.EntryIconPosition.SECONDARY,
-            show_texture
+            icons.file_icon(self.SHOW_ICON)
         )
         self.set_icon_activatable(
             Gtk.EntryIconPosition.SECONDARY,
@@ -75,9 +58,7 @@ class PasswordEntry(Gtk.Entry):
         """Changes password visibility, updating accordingly the icon."""
         is_text_visible = gtk_entry_object.get_visibility()
         gtk_entry_object.set_visibility(not is_text_visible)
-        pixbuf = self._show_pixbuff if is_text_visible else self._hide_pixbuff
-        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
         self.set_icon_from_gicon(
             Gtk.EntryIconPosition.SECONDARY,
-            texture
+            icons.file_icon(self.SHOW_ICON if is_text_visible else self.HIDE_ICON)
         )

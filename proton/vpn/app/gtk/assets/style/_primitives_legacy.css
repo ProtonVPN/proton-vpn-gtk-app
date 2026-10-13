@@ -10,9 +10,10 @@
 	text-shadow: none;
 }
 
-.proton-app button.secondary:hover,
+/* Small buttons keep the theme's look. */
+.proton-app button.secondary:not(.small):hover,
 .proton-app button.primary:hover,
-.proton-app button.secondary:focus,
+.proton-app button.secondary:not(.small):focus,
 .proton-app button.primary:focus {
 	background-color: @interaction-norm-hover;
 	background-image: image(@interaction-norm-hover);
@@ -21,8 +22,8 @@
 	text-shadow: none;
 }
 
-.proton-app button.danger:hover,
-.proton-app button.danger:focus {
+.proton-app button.danger:not(.small):hover,
+.proton-app button.danger:not(.small):focus {
 	border-color: @signal-danger;
     background-color: @signal-danger;
 	background-image: image(@signal-danger);
@@ -30,7 +31,7 @@
 	text-shadow: none;
 }
 
-.proton-app button.secondary:active,
+.proton-app button.secondary:not(.small):active,
 .proton-app button.primary:active {
 	background-image: image(@interaction-norm-active);
 	border-color: @interaction-norm-active;
@@ -38,7 +39,7 @@
 	text-shadow: none;
 }
 
-.proton-app button.danger:active {
+.proton-app button.danger:not(.small):active {
 	border-color: @signal-danger-active;
     background-color: @signal-danger-active;
 	background-image: image(@signal-danger-active);
@@ -71,7 +72,8 @@
 	text-shadow: none;
 }
 
-.proton-app button.spaced label {
+.proton-app #login-form > button.primary label,
+.proton-app #login-kill-switch-revealer button.secondary label {
 	padding: 5px 20px;
 }
 
@@ -191,4 +193,30 @@
 
 .proton-app label.signal-danger {
     color: @signal-danger;
+}
+
+/* Icons at the end of a text field, such as the password field's show/hide
+ * icon. */
+.proton-app entry > image.right {
+    color: @primary;
+    -gtk-icon-size: 17px;
+}
+
+/* The info icons on the free-countries summary and the server list header. */
+.proton-app menubutton.ghost image {
+    color: @text-weak;
+}
+
+.proton-app #free-countries-summary menubutton image {
+    -gtk-icon-size: 20px;
+}
+
+.proton-app #vpn-connection-status-widget #free-countries-summary menubutton > button {
+    padding: 0;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.proton-app #server-list-header-row menubutton image {
+    -gtk-icon-size: 18px;
 }

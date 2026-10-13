@@ -33,6 +33,7 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.country import country_name_sort_key, get_localized_country_name
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
+from proton.vpn.app.gtk.widgets.vpn.info_button import info_menu_button
 
 # The flags icon depicts this many countries, so the "+N" label only has to
 # account for the remaining ones.
@@ -45,8 +46,6 @@ FLAG_HEIGHT = 16
 
 TRIPLE_FLAGS_ICON_WIDTH = 56
 TRIPLE_FLAGS_ICON_HEIGHT = 16
-
-INFO_ICON_SIZE = 20
 
 FREE_COUNTRIES_INFO_LABEL = C_(
     "tooltip",
@@ -248,26 +247,8 @@ class FreeCountriesSummary(Gtk.Box):
 
     @staticmethod
     def _build_info_button(popover: Gtk.Popover) -> Gtk.MenuButton:
-        button = Gtk.MenuButton()
-        button.add_css_class("free-countries-info")
-        # Named explicitly: its only child is a picture, so there is no
-        # text for a screen reader to use.
+        button = info_menu_button(popover, FREE_COUNTRIES_INFO_LABEL)
         button.set_tooltip_text(FREE_COUNTRIES_INFO_LABEL)
-        button.update_property(
-            [Gtk.AccessibleProperty.LABEL], [FREE_COUNTRIES_INFO_LABEL]
-        )
-        button.set_has_frame(False)
-        button.set_popover(popover)
-        button.set_direction(Gtk.ArrowType.DOWN)
-        button.set_always_show_arrow(False)
-        button.set_cursor(Gdk.Cursor.new_from_name("pointer", None))
-        pixbuf = icons.get(Path("info.svg"), width=INFO_ICON_SIZE, height=INFO_ICON_SIZE)
-        icon = Gtk.Picture.new_for_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
-        icon.set_can_shrink(False)
-        icon.set_size_request(pixbuf.get_width(), pixbuf.get_height())
-        icon.set_halign(Gtk.Align.CENTER)
-        icon.set_valign(Gtk.Align.CENTER)
-        button.set_child(icon)
         return button
 
     @property

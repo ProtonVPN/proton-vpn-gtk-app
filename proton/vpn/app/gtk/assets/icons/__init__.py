@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
-from proton.vpn.app.gtk.assets.icons.icons import get, ICONS_PATH
+from proton.vpn.app.gtk.assets.icons.icons import get, file_icon, ICONS_PATH
 
 
-__all__ = ["get", "ICONS_PATH"]
+__all__ = ["get", "file_icon", "ICONS_PATH"]

@@ -4,7 +4,8 @@
 .proton-app button.primary,
 .proton-app button.secondary,
 .proton-app button.danger,
-.proton-app button.destructive-action {
+.proton-app button.destructive-action,
+.proton-app menubutton.ghost > button {
     background-image: none;
     box-shadow: none;
     text-shadow: none;
@@ -23,6 +24,75 @@
     -gtk-icon-source: none;
     -gtk-icon-filter: none;
     -gtk-icon-shadow: none;
+}
+
+/* Themes add focus glows, shadows and icon effects to text fields, and fade
+ * or italicise the placeholder. */
+.proton-app entry {
+    background-image: none;
+    box-shadow: none;
+    text-shadow: none;
+    -gtk-icon-filter: none;
+    -gtk-icon-shadow: none;
+}
+
+.proton-app entry > text > placeholder {
+    opacity: 1;
+    font-style: normal;
+}
+
+/* Themes add gradients, shadows and a bottom line to title bars, and paint
+ * window controls like buttons. */
+.proton-app headerbar {
+    background-image: none;
+    box-shadow: none;
+}
+
+.proton-app windowcontrols > button,
+.proton-app windowcontrols > button > image {
+    background-image: none;
+    box-shadow: none;
+    text-shadow: none;
+    -gtk-icon-filter: none;
+    -gtk-icon-shadow: none;
+}
+
+.proton-app headerbar menubutton > button {
+    box-shadow: none;
+    text-shadow: none;
+    -gtk-icon-filter: none;
+    -gtk-icon-shadow: none;
+}
+
+/* Clears any image, text shadow or background clipping a theme adds to
+ * tooltips, so the background also shows through the translucent border. */
+.proton-app tooltip {
+    background-image: none;
+    background-clip: border-box;
+    text-shadow: none;
+}
+
+/* Some themes pad the tooltip's text on top of the tooltip's own padding. */
+.proton-app tooltip label {
+    padding: 0;
+}
+
+/* Themes add gradients, shadows, separators, icon effects and fading to
+ * dropdowns, their menus and stack switcher buttons. */
+.proton-app combobox button.combo,
+.proton-app combobox popover modelbutton,
+.proton-app stackswitcher > button {
+    background-image: none;
+    box-shadow: none;
+    text-shadow: none;
+    -gtk-icon-filter: none;
+    -gtk-icon-shadow: none;
+    opacity: 1;
+}
+
+/* Clears any image a theme paints over selected rows. */
+.proton-app treeview.view:selected {
+    background-image: none;
 }
 
 /* Some themes paint link buttons like ordinary buttons. */

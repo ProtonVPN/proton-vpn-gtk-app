@@ -21,9 +21,9 @@ Named values for GTK's sizing/measurement APIs, so the bare -1s they stand in
 for read clearly at the call site.
 """
 
-# Pass as a set_size_request() width or height to leave that dimension unpinned:
-# GTK then sizes the widget to its own natural size on that axis instead of
-# forcing a minimum.
+# Pass as a set_size_request() or set_default_size() width or height to leave
+# that dimension unpinned: GTK then sizes the widget or window to its own
+# natural size on that axis.
 NATURAL = -1
 
 # The "for size" argument to Gtk.Widget.measure(): the opposite dimension is

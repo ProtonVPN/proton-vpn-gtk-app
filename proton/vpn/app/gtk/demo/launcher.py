@@ -65,7 +65,12 @@ class DemoGallery:
 # Loaded only in demo mode (see show()); never part of the app CSS.
 #  - .demo-label: a monospace tag, clearly not part of the widget under test.
 #  - .demo-bounds: just a soft drop shadow to show a widget's extent
+#  - .demo-gallery: a neutral grey behind the cells, unlike any app colour, so
+#    each widget's own background stands out
 _DEMO_CSS = b"""
+.demo-gallery {
+    background-color: #4D4D52;
+}
 .demo-label {
     font-family: monospace;
     font-size: 0.78em;
@@ -366,6 +371,7 @@ def build_window(screen_name: str) -> DemoGallery:
     # Register the gallery like any app window, so the app's scoped styles apply
     # to the widgets shown in it.
     register_proton_window(window)
+    window.add_css_class("demo-gallery")
     window.set_title(f"demo: {screen_name}")
     window.set_child(scrolled)
     return DemoGallery(window=window, row=row)

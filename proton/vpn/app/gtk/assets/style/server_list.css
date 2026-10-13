@@ -31,13 +31,13 @@
 #server-list-widget .row-content {
     /* Keep row height consistent whether showing connect button or upgrade link */
     min-height: 32px;
-    /* Leave space for the scrollbar */
-    margin-right: 18px;
+    /* Gap before the scrollbar */
+    margin-right: 4px;
 }
 
 #server-list-widget #server-list-header-row {
-    /* Leave space for the scrollbar */
-    margin-right: 18px;
+    /* Gap before the scrollbar */
+    margin-right: 4px;
 }
 
 /* Avoid flag shifts right when row button is displayed */

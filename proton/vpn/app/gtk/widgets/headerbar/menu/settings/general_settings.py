@@ -158,6 +158,8 @@ class PacketCaptureWidget(EntryWidget):
         self.attach(self.label, 0, 0, 1, 1)
 
         self._start_stop_button = Gtk.Button(label=C_("button", "Start"))
+        self._start_stop_button.add_css_class("secondary")
+        self._start_stop_button.add_css_class("small")
         self._start_stop_button.set_sensitive(self._controller.is_connection_active)
         self._start_stop_button.connect("clicked", self._on_start_stop_clicked)
         self._start_stop_button.set_hexpand(True)
@@ -175,6 +177,9 @@ class PacketCaptureWidget(EntryWidget):
 
         if self._on_browse_clicked is not None:
             browse_button = Gtk.Button(label=C_("button", "Browse..."))
+            browse_button.add_css_class("secondary")
+            browse_button.add_css_class("small")
+            browse_button.set_valign(Gtk.Align.CENTER)
             browse_button.connect("clicked", self._on_browse_clicked)
             file_row.append(browse_button)
 
@@ -218,9 +223,11 @@ class PacketCaptureWidget(EntryWidget):
             C_("button", "Stop") if capturing else C_("button", "Start")
         )
         if capturing:
+            self._start_stop_button.remove_css_class("secondary")
             self._start_stop_button.add_css_class("destructive-action")
         else:
             self._start_stop_button.remove_css_class("destructive-action")
+            self._start_stop_button.add_css_class("secondary")
 
     @property
     def capturing(self) -> bool:

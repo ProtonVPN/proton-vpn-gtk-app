@@ -119,15 +119,19 @@ class Conflicts:
         if setting_type == "settings":
             if setting == "features.split_tunneling.enabled" and value is True:
                 if not _supports_split_tunneling(settings.protocol):
-                    settings.protocol = WIREGUARD_PROTOCOL
-                settings.killswitch = 0
+                    if settings.protocol != WIREGUARD_PROTOCOL:
+                        settings.protocol = WIREGUARD_PROTOCOL
+                if settings.killswitch != 0:
+                    settings.killswitch = 0
 
             # Kill switch conflicts
             if setting == "killswitch" and value != 0:
-                settings.features.split_tunneling.enabled = False
+                if settings.features.split_tunneling.enabled:
+                    settings.features.split_tunneling.enabled = False
 
             # Protocol
             if setting == "protocol" and (not _supports_split_tunneling(value)):
-                settings.features.split_tunneling.enabled = False
+                if settings.features.split_tunneling.enabled:
+                    settings.features.split_tunneling.enabled = False
 
         return settings  # No conflicts for now, but can be extended in the future.

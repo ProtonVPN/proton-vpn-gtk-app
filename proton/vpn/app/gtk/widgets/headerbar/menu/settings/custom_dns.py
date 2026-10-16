@@ -196,9 +196,10 @@ class CustomDNSManager(Gtk.Box):  # pylint: disable=too-few-public-methods
     @contextmanager
     def _edit_ip_list(self):
         """Helper method to edit the ip list and save it."""
-        ip_list = self._controller.get_setting_attr(CustomDNSManager.SETTING_NAME)
+        # The stored value is a tuple, so edit a list copy and store it back as a tuple.
+        ip_list = list(self._controller.get_setting_attr(CustomDNSManager.SETTING_NAME))
         yield ip_list
-        self._controller.save_setting_attr(CustomDNSManager.SETTING_NAME, ip_list)
+        self._controller.save_setting_attr(CustomDNSManager.SETTING_NAME, tuple(ip_list))
 
     def set_entry_text(self, new_value: str):
         """Simulate typing content to entry."""

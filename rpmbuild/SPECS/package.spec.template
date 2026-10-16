@@ -29,7 +29,8 @@ BuildRequires: gtk4
 BuildRequires: libnotify
 BuildRequires: python3-gobject
 BuildRequires: python3-dbus
-BuildRequires: python3-proton-vpn-api-core >= 5.8.1
+BuildRequires: python3-proton-vpn-api-core >= 6.0.0
+BuildRequires: python3-proton-vpn-api-core < 7.0.0~
 BuildRequires: librsvg2
 BuildRequires: python3-packaging
 BuildRequires: gettext
@@ -38,7 +39,8 @@ Requires: gtk4
 Requires: libnotify
 Requires: python3-gobject
 Requires: python3-dbus
-Requires: python3-proton-vpn-api-core >= 5.8.1
+Requires: python3-proton-vpn-api-core >= 6.0.0
+Requires: python3-proton-vpn-api-core < 7.0.0~
 Requires: librsvg2
 Requires: python3-packaging
 

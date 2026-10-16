@@ -18,7 +18,7 @@ along with ProtonVPN.  If not, see <https://www.gnu.org/licenses/>.
 """
 from __future__ import annotations
 from types import ModuleType
-from typing import Optional, cast
+from typing import Optional
 
 from gi.repository import Gtk
 
@@ -192,10 +192,10 @@ class AppBasedSplitTunnelingSettings(Gtk.Box):  # pylint: disable=too-many-insta
         ]
 
     def _get_settings(self) -> list[str]:
-        return cast(list[str], self._controller.get_setting_attr(self._setting_path_name))
+        return list(self._controller.get_setting_attr(self._setting_path_name))
 
     def _save_settings(self):
-        self._controller.save_setting_attr(self._setting_path_name, self._stored_apps)
+        self._controller.save_setting_attr(self._setting_path_name, tuple(self._stored_apps))
 
     @property
     def _setting_path_name(self) -> str:

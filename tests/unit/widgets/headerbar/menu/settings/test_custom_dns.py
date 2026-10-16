@@ -27,6 +27,7 @@ from unittest.mock import MagicMock, Mock, patch
 from proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns import \
     CustomDNSList, CustomDNSManager, CustomDNSWidget
 from proton.vpn.core.settings import NetShield
+from proton.vpn.core.settings.settings import Settings
 
 FREE_TIER = 0
 PLUS_TIER = 1
@@ -98,7 +99,7 @@ class TestCustomDNSManager:
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.append")
     def test_error_message_is_displayed_when_trying_to_add_invalid_dns_ip(self, _):
         mock_controller = Mock(name="controller")
-        mock_controller.get_setting_attr.return_value = []
+        mock_controller.get_setting_attr.return_value = ()
         new_dns_to_be_added = "some invalid ip"
         gtk_mock = Mock()
         revealer_mock = Mock()
@@ -142,19 +143,19 @@ class TestCustomDNSManager:
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.append")
     def test_add_new_dns_ensure_it_stores_new_dns_to_file(self, _):
         controller_mock = Mock(name="controller_mock")
-        controller_mock.get_setting_attr.return_value = []
+        controller_mock.get_setting_attr.return_value = ()
         new_dns_to_be_added = CustomDNSEntry.new_from_string("192.1.1.1")
         custom_dns_manager = CustomDNSManager(controller=controller_mock, custom_dns_list=Mock())
         custom_dns_manager.set_entry_text(str(new_dns_to_be_added.ip))
         custom_dns_manager.add_button_click()
 
-        controller_mock.save_setting_attr.assert_called_once_with(CustomDNSManager.SETTING_NAME, [new_dns_to_be_added])
+        controller_mock.save_setting_attr.assert_called_once_with(CustomDNSManager.SETTING_NAME, (new_dns_to_be_added,))
 
     @patch("proton.vpn.app.gtk.widgets.headerbar.menu.settings.custom_dns.CustomDNSManager.append")
     def test_on_delete_dns_ensure_it_removes_dns_from_file(self, pack_start_mock):
         existing_dns_ip = CustomDNSEntry.new_from_string("192.1.1.1")
         controller_mock = Mock(name="controller_mock")
-        controller_mock.get_setting_attr.return_value = [existing_dns_ip]
+        controller_mock.get_setting_attr.return_value = (existing_dns_ip,)
 
         custom_dns_list_mock = Mock(name="custom_dns_list_mock")
         custom_dns_manager = CustomDNSManager(controller=controller_mock, custom_dns_list=custom_dns_list_mock)
@@ -163,7 +164,52 @@ class TestCustomDNSManager:
 
         on_delete_dns_entry_callback(custom_dns_list_mock, existing_dns_ip)
 
-        controller_mock.save_setting_attr.assert_called_once_with(CustomDNSManager.SETTING_NAME, [])
+        controller_mock.save_setting_attr.assert_called_once_with(CustomDNSManager.SETTING_NAME, ())
+
+
+class TestCustomDNSManagerWithRealSettings:
+    """Uses a real Settings object, whose custom DNS list is stored as a tuple."""
+
+    @staticmethod
+    def _controller_for(settings: Settings) -> Mock:
+        def get_setting_attr(path: str):
+            value = settings
+            for attr in path.split(".")[1:]:
+                value = getattr(value, attr)
+            return value
+
+        def save_setting_attr(path: str, new_value):
+            *parents, name = path.split(".")[1:]
+            node = settings
+            for attr in parents:
+                node = getattr(node, attr)
+            setattr(node, name, new_value)
+
+        controller = Mock(name="controller")
+        controller.get_setting_attr.side_effect = get_setting_attr
+        controller.save_setting_attr.side_effect = save_setting_attr
+        return controller
+
+    def test_add_and_delete_dns_entry_with_tuple_backed_setting(self):
+        settings = Settings.from_dict({})
+        settings.set_defaults(PLUS_TIER)
+        custom_dns_list = CustomDNSList([])
+        manager = CustomDNSManager(
+            controller=self._controller_for(settings), custom_dns_list=custom_dns_list
+        )
+        first = CustomDNSEntry.new_from_string("192.1.1.1")
+        second = CustomDNSEntry.new_from_string("192.1.1.2")
+
+        for entry in (first, second):
+            manager.set_entry_text(str(entry.ip))
+            manager.add_button_click()
+
+        assert settings.custom_dns.ip_list == (first, second)
+
+        # Deleting goes through the real signal emitted by the list.
+        custom_dns_list.emit("dns-ip-removed", first)
+
+        assert settings.custom_dns.ip_list == (second,)
 
 
 class TestCustomDNSWidget:

@@ -52,13 +52,14 @@ def _force(widget: Gtk.Widget, flags: Optional[Gtk.StateFlags]) -> Gtk.Widget:
 def _canvas(grid: Gtk.Grid) -> Gtk.Widget:
     """Put `grid` in a box with the app window's background colour.
 
-    This shows the widgets on the same background as in the app, where the
-    .proton-app class on the window gives it that colour.
+    This shows the widgets on the same background as in the app: the box has
+    the window's .proton-app class and GTK's background class.
     """
     for margin in ("top", "bottom", "start", "end"):
         getattr(grid, f"set_margin_{margin}")(_SPACING)
     box = Gtk.Box()
     box.add_css_class(PROTON_APP_CSS_CLASS)
+    box.add_css_class("background")
     box.append(grid)
     return box
 
@@ -358,6 +359,7 @@ def tooltips() -> Gtk.Widget:
         getattr(box, f"set_margin_{margin}")(_SPACING)
     canvas = Gtk.Box()
     canvas.add_css_class(PROTON_APP_CSS_CLASS)
+    canvas.add_css_class("background")
     canvas.append(box)
     return canvas
 

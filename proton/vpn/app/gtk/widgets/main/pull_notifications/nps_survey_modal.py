@@ -254,6 +254,7 @@ class NPSSurveyModal(Gtk.Window):
         self._prompt_label.add_css_class("feedback-prompt-label")
 
         self._scrolled_text_view = Gtk.ScrolledWindow()
+        self._scrolled_text_view.set_has_frame(True)
         self._scrolled_text_view.add_css_class("feedback-scroll")
         self._scrolled_text_view.set_min_content_height(120)
         self._scrolled_text_view.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)

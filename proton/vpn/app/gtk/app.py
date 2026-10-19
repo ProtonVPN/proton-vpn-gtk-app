@@ -31,10 +31,12 @@ from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.widgets.main.main_window import MainWindow
 from proton.vpn.app.gtk.assets.style import (
-    MAIN_CSS, MAIN_PRIORITY, PRIMITIVES_PRIORITY, STYLE_PATH, app_css_paths, load_app_css,
+    MAIN_CSS, MAIN_PRIORITY, MIN_GTK_INTERFACE_SETTINGS, PRIMITIVES_CSS,
+    PRIMITIVES_PRIORITY, STYLE_PATH, HighContrastToggle, load_app_css,
 )
 from proton.vpn.app.gtk.util import APPLICATION_ID, log_proton_package_versions
 from proton.vpn.app.gtk.utils.entry import disable_clear_icons
+from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.main.tray_indicator import TrayIndicator, TrayIndicatorNotSupported
 
 logger = logging.getLogger(__name__)
@@ -47,21 +49,28 @@ CONTINUE_STARTUP = -1
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
-# The first GTK version with an interface colour scheme setting.
-_MIN_COLOUR_SCHEME_GTK = (4, 20)
 
-
-def _prefer_dark_colour_scheme():
+def prefer_dark_colour_scheme() -> Optional[int]:
     """Use the dark colour scheme, including in high contrast.
 
     Overrides the desktop's light or dark preference for this app only, and
-    stays in effect when the desktop's preference changes.
+    remains in effect when the desktop's preference or theme changes.
+
+    :return: the ID of the handler that reapplies the scheme when the theme
+        changes, or None on GTK versions without the colour scheme setting.
     """
     gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(), Gtk.get_micro_version())
-    if gtk_version >= _MIN_COLOUR_SCHEME_GTK:
-        Gtk.Settings.get_default().props.gtk_interface_color_scheme = (
-            Gtk.InterfaceColorScheme.DARK
-        )
+    if gtk_version < MIN_GTK_INTERFACE_SETTINGS:
+        return None
+    settings = Gtk.Settings.get_default()
+    _set_dark_colour_scheme(settings)
+    # Each theme change, including GNOME turning high contrast on or off, applies the
+    # light colour scheme, so the dark scheme is reapplied after every theme change.
+    return safe_signal_connect(settings, "notify::gtk-theme-name", _set_dark_colour_scheme)
+
+
+def _set_dark_colour_scheme(settings: Gtk.Settings, _pspec=None) -> None:
+    settings.props.gtk_interface_color_scheme = Gtk.InterfaceColorScheme.DARK
 
 
 class App(Gtk.Application):
@@ -92,6 +101,7 @@ class App(Gtk.Application):
         self._tray_indicator = None
         self._signal_connect_queue: list[Any] = []
         self._start_minimized_from_cli = False
+        self._high_contrast_toggle: Optional[HighContrastToggle] = None
         self.add_options()
 
     def do_startup(self):  # pylint: disable=arguments-differ
@@ -101,22 +111,26 @@ class App(Gtk.Application):
         any necessary UI elements.
         """
         Gtk.Application.do_startup(self)
-        # FreeRescope flag on: the redesign; off: the legacy stylesheets and no clear
-        # icons. The flag is read from the cache, so a change applies at the
-        # following launch.
+        # FreeRescope flag on: the redesign, high contrast toggle
+        # off: the legacy stylesheets and no clear icons.
+        # The flag is read from the cache, so a change applies at the following launch.
         # Retiring the flag: keep the flag-on branch; delete the flag-off one,
         # disable_clear_icons(), _primitives_legacy.css and dark_colours.css, and
         # the @import lines for dark_colours.css.
-        paths = app_css_paths()
+        display = Gdk.Display.get_default()
         if FeatureFlagsFetcher(session=None).load_from_cache().get(FREE_RESCOPE_FLAG):
-            _prefer_dark_colour_scheme()
+            providers = load_app_css(display)
+            prefer_dark_colour_scheme()
+            self._high_contrast_toggle = HighContrastToggle(
+                display, providers[PRIMITIVES_CSS], PRIMITIVES_PRIORITY
+            )
+            self._high_contrast_toggle.track_desktop_contrast()
         else:
-            paths = [
+            load_app_css(display, [
                 (STYLE_PATH / "_primitives_legacy.css", PRIMITIVES_PRIORITY),
                 (MAIN_CSS, MAIN_PRIORITY),
-            ]
+            ])
             disable_clear_icons()
-        load_app_css(Gdk.Display.get_default(), paths)
 
     def do_activate(self):  # pylint: disable=W0221
         """

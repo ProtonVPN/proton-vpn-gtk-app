@@ -283,6 +283,7 @@ class BugReportDialog(Gtk.Dialog):  # pylint: disable=too-many-instance-attribut
         self.description_textview.set_justification(Gtk.Justification.FILL)
         self.description_textview.set_name("description")
         scrolled_window_textview = Gtk.ScrolledWindow()
+        scrolled_window_textview.set_has_frame(True)
         scrolled_window_textview.set_property("margin-bottom", 10)
         scrolled_window_textview.set_min_content_height(100)
         scrolled_window_textview.set_child(self.description_textview)

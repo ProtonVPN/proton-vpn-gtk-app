@@ -25,10 +25,25 @@ from typing import Optional
 from gi.repository import Gdk, Gio, GLib
 
 from proton.vpn.app.gtk import Gtk
-from proton.vpn.app.gtk.app import CONTINUE_STARTUP, EXIT_FAILURE, EXIT_SUCCESS
-from proton.vpn.app.gtk.assets.style import load_app_css
+from proton.vpn.app.gtk.app import (
+    CONTINUE_STARTUP, EXIT_FAILURE, EXIT_SUCCESS, prefer_dark_colour_scheme,
+)
+from proton.vpn.app.gtk.assets.style import (
+    MIN_GTK_INTERFACE_SETTINGS, PRIMITIVES_CSS, PRIMITIVES_PRIORITY, HighContrastToggle,
+    load_app_css,
+)
 from proton.vpn.app.gtk.demo import discovery, launcher, registry
 from proton.vpn.app.gtk.util import APPLICATION_ID
+
+
+def _show_high_contrast_theme():
+    """Makes GTK use its high-contrast theme."""
+    settings = Gtk.Settings.get_default()
+    gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(), Gtk.get_micro_version())
+    if gtk_version >= MIN_GTK_INTERFACE_SETTINGS:
+        settings.props.gtk_interface_contrast = Gtk.InterfaceContrast.MORE
+    else:
+        settings.props.gtk_theme_name = "HighContrast"
 
 
 class DemoApp(Gtk.Application):
@@ -46,16 +61,26 @@ class DemoApp(Gtk.Application):
         )
         self.demo_screen: Optional[str] = None
         self.screenshot_path: Optional[str] = None
+        self.high_contrast = False
         self.add_options()
 
     def do_startup(self):  # pylint: disable=arguments-differ
         """Default GTK method.
 
         Loads the same CSS the production app uses, so demo screens are
-        styled identically to what real users see.
+        styled identically to what real users see. With --high-contrast, shows
+        what the app shows in high contrast: GTK's high-contrast theme without
+        the app's widget styles.
         """
         Gtk.Application.do_startup(self)
-        load_app_css(Gdk.Display.get_default())
+        display = Gdk.Display.get_default()
+        providers = load_app_css(display)
+        prefer_dark_colour_scheme()
+        if self.high_contrast:
+            HighContrastToggle(
+                display, providers[PRIMITIVES_CSS], PRIMITIVES_PRIORITY
+            ).set_high_contrast(True)
+            _show_high_contrast_theme()
 
     def do_activate(self):  # pylint: disable=arguments-differ
         """Default GTK method. Shows the requested demo screen."""
@@ -71,6 +96,8 @@ class DemoApp(Gtk.Application):
         """
         if options.contains("demo-list"):
             return self.handle_demo_list()
+
+        self.high_contrast = options.contains("high-contrast")
 
         demo = options.lookup_value("demo", GLib.VariantType.new("s"))
         if demo is not None:
@@ -113,7 +140,8 @@ class DemoApp(Gtk.Application):
         return CONTINUE_STARTUP  # Continue startup; do_activate shows the demo screen.
 
     def add_options(self):
-        """Adds the --demo, --demo-list and --screenshot command line options."""
+        """Adds the --demo, --demo-list, --screenshot and --high-contrast command line
+        options."""
         self.add_main_option(
             "demo",
             0,
@@ -138,4 +166,12 @@ class DemoApp(Gtk.Application):
             GLib.OptionArg.STRING,
             "With --demo: save a PNG of the rendered screen to PATH and exit",
             "PATH"
+        )
+
+        self.add_main_option(
+            "high-contrast",
+            0,
+            GLib.OptionFlags(0),
+            GLib.OptionArg.NONE,
+            "With --demo: show the screen as it looks in high contrast"
         )

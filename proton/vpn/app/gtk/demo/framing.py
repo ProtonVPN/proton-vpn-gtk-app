@@ -79,6 +79,7 @@ def framed_like_app(
     main_widget.set_name("main-widget")
     # Styled as if inside an app window.
     main_widget.add_css_class(PROTON_APP_CSS_CLASS)
+    main_widget.add_css_class("background")
     main_widget.append(content_layout)
 
     if state and (css_class := MainWidget.STATE_CSS_CLASSES.get(type(state))):

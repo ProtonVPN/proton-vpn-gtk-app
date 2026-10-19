@@ -104,3 +104,16 @@ def test_do_handle_local_options_routes_demo_list(demo_app, capsys):
     result = demo_app.do_handle_local_options(_options({"demo-list": True}))
 
     assert result == EXIT_SUCCESS
+
+
+@pytest.mark.parametrize("flags, expected", [
+    ({"demo": "primitives"}, False),
+    ({"demo": "primitives", "high-contrast": True}, True),
+])
+def test_do_handle_local_options_reads_high_contrast(
+    # pylint: disable-next=redefined-outer-name
+    demo_app, flags, expected
+):
+    demo_app.do_handle_local_options(_options(flags))
+
+    assert demo_app.high_contrast is expected

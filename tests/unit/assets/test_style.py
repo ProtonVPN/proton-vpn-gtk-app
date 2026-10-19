@@ -27,13 +27,14 @@ from typing import List
 import re
 
 import pytest
-from gi.repository import Gio
+from gi.repository import Gdk, Gio
 
 from proton.vpn.app.gtk import Gtk
 from proton.vpn.app.gtk.assets.style import (
     MAIN_CSS, MAIN_PRIORITY, PALETTE_CSS, PALETTE_PRIORITY, PRIMITIVES_CSS,
-    PRIMITIVES_PRIORITY, STYLE_PATH, app_css_paths,
+    PRIMITIVES_PRIORITY, STYLE_PATH, HighContrastToggle, app_css_paths,
 )
+from tests.unit.testing_utils import process_gtk_events
 
 PROTON_APP = ".proton-app"
 THEME_RESET_CSS = STYLE_PATH / "_theme_reset.css"
@@ -171,3 +172,67 @@ def test_legacy_primitives_parse_without_errors():
 
 def test_every_legacy_primitives_selector_is_scoped_to_proton_app():
     assert _unscoped_selectors(LEGACY_PRIMITIVES_CSS) == []
+
+
+@pytest.fixture
+def probe():
+    """A label, in a shown window, coloured red by its own provider."""
+    display = Gdk.Display.get_default()
+    provider = Gtk.CssProvider()
+    provider.load_from_data(b"label.high-contrast-probe { color: rgb(255, 0, 0); }")
+    Gtk.StyleContext.add_provider_for_display(display, provider, PRIMITIVES_PRIORITY)
+    label = Gtk.Label(css_classes=["high-contrast-probe"])
+    window = Gtk.Window(child=label)
+    window.present()
+    yield display, provider, label
+    window.destroy()
+    Gtk.StyleContext.remove_provider_for_display(display, provider)
+
+
+GTK_VERSION = (Gtk.get_major_version(), Gtk.get_minor_version(), Gtk.get_micro_version())
+# The first GTK version with Gtk.Widget.get_color().
+MIN_GTK_WIDGET_GET_COLOR = (4, 10)
+
+
+def _is_red(label: Gtk.Label) -> bool:
+    process_gtk_events()
+    if GTK_VERSION >= MIN_GTK_WIDGET_GET_COLOR:
+        color = label.get_color()
+    else:
+        color = label.get_style_context().get_color()
+    return (color.red, color.green, color.blue) == (1.0, 0.0, 0.0)
+
+
+# pylint: disable-next=redefined-outer-name
+def test_high_contrast_toggle_removes_the_stylesheet_while_on(probe):
+    display, provider, label = probe
+    toggle = HighContrastToggle(display, provider, PRIMITIVES_PRIORITY)
+
+    toggle.set_high_contrast(True)
+
+    assert not _is_red(label)
+
+
+# pylint: disable-next=redefined-outer-name
+def test_high_contrast_toggle_adds_the_stylesheet_back_when_off(probe):
+    display, provider, label = probe
+    toggle = HighContrastToggle(display, provider, PRIMITIVES_PRIORITY)
+    toggle.set_high_contrast(True)
+
+    toggle.set_high_contrast(False)
+
+    assert _is_red(label)
+
+
+# pylint: disable-next=redefined-outer-name
+def test_high_contrast_toggle_ignores_repeated_states(probe):
+    display, provider, label = probe
+    toggle = HighContrastToggle(display, provider, PRIMITIVES_PRIORITY)
+
+    toggle.set_high_contrast(True)
+    toggle.set_high_contrast(True)
+    assert not _is_red(label)
+
+    toggle.set_high_contrast(False)
+    toggle.set_high_contrast(False)
+    assert _is_red(label)

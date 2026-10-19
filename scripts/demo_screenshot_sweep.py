@@ -7,6 +7,9 @@ Default sweep (no --theme):
   Each unique theme is rendered once and copied to each distro subdirectory
   that uses it.
   Output: <output>/<screen>/<distro>-<version>/<screen>__<theme>.png
+  Each screen is also rendered once in the app's high contrast mode
+  (--high-contrast), with the host's GTK and theme.
+  Output: <output>/<screen>/<screen>__high-contrast.png
 
 Manual sweep (--theme):
   Captures only the specified themes. No distro context; flat output.
@@ -61,6 +64,9 @@ _THEME_ROOTS: list[Path] = [
 
 # The demo app is a standalone entry point.
 _DEMO_CMD: list[str] = [sys.executable, "-m", "proton.vpn.app.gtk.demo"]
+
+# Filename suffix of the screenshots rendered in the app's high contrast mode.
+_HIGH_CONTRAST_NAME = "high-contrast"
 
 
 def _find_installed_gtk4_dir(name: str) -> Path | None:
@@ -135,15 +141,20 @@ def _get_screen_names(cmd: list[str]) -> list[str]:
 def _capture(
     cmd: list[str],
     screen: str,
-    theme: str,
+    theme: str | None,
     out: Path,
+    extra_args: tuple[str, ...] = (),
 ) -> bool:
-    """Run one screenshot capture. Returns True on success."""
+    """Run one screenshot capture. Returns True on success.
+
+    :param theme: theme name or path, or None for the host's theme.
+    :param extra_args: further demo app options.
+    """
     out.parent.mkdir(parents=True, exist_ok=True)
-    env = {**os.environ, **_theme_env(theme)}
+    env = {**os.environ, **(_theme_env(theme) if theme else {})}
     try:
         result = subprocess.run(  # nosec B603  # noqa: E501  # pylint: disable=line-too-long  # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-audit.dangerous-subprocess-use-audit
-            cmd + [f"--demo={screen}", f"--screenshot={out}"],
+            cmd + [f"--demo={screen}", f"--screenshot={out}", *extra_args],
             env=env,
             timeout=30,
             check=False,
@@ -238,6 +249,28 @@ def _run_matrix_sweep(
                     shutil.copy2(primary, dest)
             else:
                 failed += 1
+
+    return done, failed
+
+
+def _run_high_contrast_sweep(
+    cmd: list[str],
+    screens: list[str],
+    output_root: Path,
+) -> tuple[int, int]:
+    """High contrast sweep with the host's GTK and theme: flat output, no distro subdirectory."""
+    print(f"\nSweeping {len(screens)} screen(s) in high contrast with the host's theme\n")
+
+    done = 0
+    failed = 0
+
+    for screen in screens:
+        out = output_root / screen / f"{screen}__{_HIGH_CONTRAST_NAME}.png"
+        print(f"  {screen} / {_HIGH_CONTRAST_NAME}  [host]")
+        if _capture(cmd, screen, None, out, ("--high-contrast",)):
+            done += 1
+        else:
+            failed += 1
 
     return done, failed
 
@@ -342,6 +375,9 @@ def main() -> None:
         done, failed = _run_manual_sweep(_DEMO_CMD, screens, valid, Path(args.output))
     else:
         done, failed = _run_matrix_sweep(_DEMO_CMD, screens, Path(args.output))
+        hc_done, hc_failed = _run_high_contrast_sweep(_DEMO_CMD, screens, Path(args.output))
+        done += hc_done
+        failed += hc_failed
 
     total = done + failed
     print(f"\n{done}/{total} renders written", end="")

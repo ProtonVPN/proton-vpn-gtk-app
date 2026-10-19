@@ -2083,6 +2083,10 @@ msgid "VPN connection error"
 msgstr "VPN-verbindingsfout"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Wissen"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Sluit"
 

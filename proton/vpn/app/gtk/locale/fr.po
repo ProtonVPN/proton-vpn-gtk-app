@@ -2185,6 +2185,10 @@ msgid "VPN connection error"
 msgstr "Erreurs de connexion VPN"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Effacer"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Fermer"
 

@@ -2018,6 +2018,10 @@ msgid "VPN connection error"
 msgstr "VPN 連線錯誤"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "清除"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "關閉"
 

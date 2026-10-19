@@ -2176,6 +2176,10 @@ msgid "VPN connection error"
 msgstr "Σφάλμα σύνδεσης VPN"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Εκκαθάριση"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Κλείσιμο"
 

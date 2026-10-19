@@ -2179,6 +2179,10 @@ msgid "VPN connection error"
 msgstr "VPN-Verbindungsfehler"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Leeren"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Schließen"
 

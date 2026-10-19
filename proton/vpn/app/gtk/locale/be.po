@@ -2159,6 +2159,10 @@ msgid "VPN connection error"
 msgstr "Памылка падключэння да VPN"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Ачысціць"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Закрыць"
 

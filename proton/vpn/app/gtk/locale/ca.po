@@ -9,7 +9,7 @@ msgstr ""
 
 msgctxt "button"
 msgid "Add"
-msgstr "Afegir-ho"
+msgstr "Afegeix"
 
 msgctxt "button"
 msgid "Authenticate"
@@ -89,7 +89,7 @@ msgstr "Inicia la sessió"
 
 msgctxt "button"
 msgid "Sign in again"
-msgstr "Torneu a iniciar la sessió"
+msgstr "Torna a iniciar la sessió"
 
 msgctxt "button"
 msgid "Start"
@@ -97,7 +97,7 @@ msgstr "Inicia"
 
 msgctxt "button"
 msgid "Stop"
-msgstr "Aturar"
+msgstr "Atura"
 
 msgctxt "button"
 msgid "Upgrade"
@@ -129,7 +129,7 @@ msgstr "_No"
 
 msgctxt "button"
 msgid "_Select"
-msgstr "_Seleccionar-ho"
+msgstr "_Selecciona"
 
 msgctxt "button"
 msgid "_Submit"
@@ -1462,7 +1462,7 @@ msgstr "Preferències"
 
 msgctxt "menu"
 msgid "Sign out"
-msgstr "Tancar la sessió"
+msgstr "Tanca la sessió"
 
 msgctxt "message"
 msgid ""
@@ -1554,7 +1554,7 @@ msgstr ""
 
 msgctxt "message"
 msgid "Copied!"
-msgstr "S'ha copiat!"
+msgstr "S'ha copiat"
 
 msgctxt "message"
 msgid ""
@@ -1992,7 +1992,7 @@ msgstr "Voleu activar el DNS personalitzat?"
 
 msgctxt "title"
 msgid "Enable Netshield"
-msgstr "Habilita Netshield"
+msgstr "Activa Netshield"
 
 msgctxt "title"
 msgid "Enable Netshield ?"
@@ -2048,7 +2048,7 @@ msgstr "Kill Switch està activat"
 
 msgctxt "title"
 msgid "Kill Switch enabled"
-msgstr "S'ha activat Kill Switch"
+msgstr "S'ha activat el Kill Switch"
 
 msgctxt "title"
 msgid "Kill switch"
@@ -2165,6 +2165,10 @@ msgstr "VPN Accelerator"
 msgctxt "title"
 msgid "VPN connection error"
 msgstr "S'ha produït un error de connexió a la VPN"
+
+msgctxt "tooltip"
+msgid "Clear"
+msgstr "Neteja"
 
 msgctxt "tooltip"
 msgid "Close"

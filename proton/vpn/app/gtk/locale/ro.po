@@ -2154,6 +2154,10 @@ msgid "VPN connection error"
 msgstr "Eroare conexiune VPN"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Golire"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Închidere"
 

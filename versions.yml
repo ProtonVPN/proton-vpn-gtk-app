@@ -1,3 +1,15 @@
+version: 4.19.0
+time: 2026/10/23 05:37
+author: Luke Titley
+email: luke.titley@proton.ch
+description:
+- "feat: Apply redesign styling to text fields, dropdowns, tooltips, the app bar and remaining buttons (Richard Paterson)"
+- "chore: remove handwritten version-entry (Axel Langenskiold)"
+- "feat: Sparse Settings (Luke Titley)"
+- "i18n(weekly-mr): Upgrade translations from crowdin (c1a341c2). (L10n bot)"
+- "feat: Remove styling when high contrast is enabled (behind feature flag) (Richard Paterson)"
+- "fix: Use absolute paths for privileged beta access commands (Luke Titley)"
+---
 version: 4.18.8
 time: 2026/10/12 09:34
 author: Pep Llaneras

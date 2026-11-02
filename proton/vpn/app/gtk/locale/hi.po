@@ -1,0 +1,2219 @@
+#
+msgid ""
+msgstr ""
+"Language-Team: Hindi\n"
+"Language: hi_IN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "button"
+msgid "Add"
+msgstr "जोड़ें"
+
+msgctxt "button"
+msgid "Authenticate"
+msgstr "सत्यापन करें"
+
+msgctxt "button"
+msgid "Browse..."
+msgstr "ब्राउज़ करें..."
+
+msgctxt "button"
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgctxt "button"
+msgid "Cancel Connection"
+msgstr "कनेक्शन रद्द करें"
+
+msgctxt "button"
+msgid "Change server"
+msgstr "सर्वर बदलें"
+
+msgctxt "button"
+msgid "Connect"
+msgstr "जुड़े"
+
+msgctxt "button"
+msgid "Create Account"
+msgstr "खाता बनाएँ"
+
+msgctxt "button"
+msgid "Disable"
+msgstr "अक्षम करें"
+
+msgctxt "button"
+msgid "Disconnect"
+msgstr "कनेक्शन तोड़ें"
+
+msgctxt "button"
+msgid "Done"
+msgstr "पूरा हुआ"
+
+msgctxt "button"
+msgid "Hide"
+msgstr "छिपा दें"
+
+msgctxt "button"
+msgid "Learn more"
+msgstr "और जानें"
+
+msgctxt "button"
+msgid "Manage Account"
+msgstr "खाता मैनेज करें"
+
+msgctxt "button"
+msgid "Need Help?"
+msgstr "मदद चाहिए?"
+
+msgctxt "button"
+msgid "OK"
+msgstr "ठीक है"
+
+msgctxt "button"
+msgid "Send error logs"
+msgstr "गड़बड़ी का लॉग भेजें"
+
+msgctxt "button"
+msgid "Share anonymously"
+msgstr "गुमनाम तौर पे शेयर करें"
+
+msgctxt "button"
+msgid "Show"
+msgstr "दिखाएं"
+
+msgctxt "button"
+msgid "Sign in"
+msgstr "साइन इन करें"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "वापिस साइन इन करें"
+
+msgctxt "button"
+msgid "Start"
+msgstr "शुरू करें"
+
+msgctxt "button"
+msgid "Stop"
+msgstr "रोकें"
+
+msgctxt "button"
+msgid "Upgrade"
+msgstr "अपग्रेड करें"
+
+msgctxt "button"
+msgid "Use 6-digit authentication code"
+msgstr "6-अंकों का ऑथेंटिकेशन कोड इस्तेमाल करें"
+
+msgctxt "button"
+msgid "Use recovery code"
+msgstr "रिकवरी कोड इस्तेमाल करें"
+
+msgctxt "button"
+msgid "_Cancel"
+msgstr "_रद्द करें"
+
+msgctxt "button"
+msgid "_Close"
+msgstr "_बंद करें"
+
+msgctxt "button"
+msgid "_Enable"
+msgstr "_सक्षम करें"
+
+msgctxt "button"
+msgid "_No"
+msgstr "_नहीं"
+
+msgctxt "button"
+msgid "_Select"
+msgstr "_चुनें"
+
+msgctxt "button"
+msgid "_Submit"
+msgstr "_सबमिट करें"
+
+msgctxt "button"
+msgid "_Yes"
+msgstr "_हां"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "एप्लीकेशन का वर्ज़न दिखाएं"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "सिस्टम ट्रे में छोटा करके शुरु करें"
+
+msgctxt "country"
+msgid "Afghanistan"
+msgstr "अफगानिस्तान"
+
+msgctxt "country"
+msgid "Aland Islands"
+msgstr "एलैंड आइलैंड"
+
+msgctxt "country"
+msgid "Albania"
+msgstr "अल्बेनिया"
+
+msgctxt "country"
+msgid "Algeria"
+msgstr "अल्जीरिया"
+
+msgctxt "country"
+msgid "American Samoa"
+msgstr "अमेरिकी समोआ"
+
+msgctxt "country"
+msgid "Andorra"
+msgstr "अंडोरा"
+
+msgctxt "country"
+msgid "Angola"
+msgstr "अंगोला"
+
+msgctxt "country"
+msgid "Anguilla"
+msgstr "एंगुइला"
+
+msgctxt "country"
+msgid "Antarctica"
+msgstr "अंटार्कटिका"
+
+msgctxt "country"
+msgid "Antigua and Barbuda"
+msgstr "एंटिगुआ और बरबुडा"
+
+msgctxt "country"
+msgid "Argentina"
+msgstr "अर्जेंटीना"
+
+msgctxt "country"
+msgid "Armenia"
+msgstr "अर्मेनिया"
+
+msgctxt "country"
+msgid "Aruba"
+msgstr "अरूबा"
+
+msgctxt "country"
+msgid "Australia"
+msgstr "ऑस्ट्रेलिया"
+
+msgctxt "country"
+msgid "Austria"
+msgstr "ऑस्ट्रिया"
+
+msgctxt "country"
+msgid "Azerbaijan"
+msgstr "आज़रबाइजान"
+
+msgctxt "country"
+msgid "Bahamas"
+msgstr "बहामास"
+
+msgctxt "country"
+msgid "Bahrain"
+msgstr "बहरैन"
+
+msgctxt "country"
+msgid "Bangladesh"
+msgstr "बांग्लादेश"
+
+msgctxt "country"
+msgid "Barbados"
+msgstr "बारबाडोस"
+
+msgctxt "country"
+msgid "Belarus"
+msgstr "बेलारूस"
+
+msgctxt "country"
+msgid "Belgium"
+msgstr "बेल्जियम"
+
+msgctxt "country"
+msgid "Belize"
+msgstr "बेलीज़"
+
+msgctxt "country"
+msgid "Benin"
+msgstr "बेनिन"
+
+msgctxt "country"
+msgid "Bermuda"
+msgstr "बरमूडा"
+
+msgctxt "country"
+msgid "Bhutan"
+msgstr "भूटान"
+
+msgctxt "country"
+msgid "Bolivia"
+msgstr "बोलीविया"
+
+msgctxt "country"
+msgid "Bonaire, Saint Eustatius and Saba "
+msgstr "बोनेयर, सिंट युसटेशियस और सबा "
+
+msgctxt "country"
+msgid "Bosnia and Herzegovina"
+msgstr "बोस्निया और हर्जेगोविना"
+
+msgctxt "country"
+msgid "Botswana"
+msgstr "बोत्सवाना"
+
+msgctxt "country"
+msgid "Bouvet Island"
+msgstr "बुवेत आइलैंड"
+
+msgctxt "country"
+msgid "Brazil"
+msgstr "ब्राज़ील"
+
+msgctxt "country"
+msgid "British Indian Ocean Territory"
+msgstr "ब्रिटिश हिंद महासागरीय क्षेत्र"
+
+msgctxt "country"
+msgid "British Virgin Islands"
+msgstr "ब्रिटिश वर्जिन द्वीपसमूह"
+
+msgctxt "country"
+msgid "Brunei"
+msgstr "ब्रुनेई"
+
+msgctxt "country"
+msgid "Bulgaria"
+msgstr "बुल्गारिया"
+
+msgctxt "country"
+msgid "Burkina Faso"
+msgstr "बुर्किना फासो"
+
+msgctxt "country"
+msgid "Burundi"
+msgstr "बुरुंडी"
+
+msgctxt "country"
+msgid "Cambodia"
+msgstr "कंबोडिया"
+
+msgctxt "country"
+msgid "Cameroon"
+msgstr "कैमरून"
+
+msgctxt "country"
+msgid "Canada"
+msgstr "कनाडा"
+
+msgctxt "country"
+msgid "Cape Verde"
+msgstr "केप वर्दे"
+
+msgctxt "country"
+msgid "Cayman Islands"
+msgstr "केमैन आइलैंड्स"
+
+msgctxt "country"
+msgid "Central African Republic"
+msgstr "मध्य अफ्रीकी गणराज्य"
+
+msgctxt "country"
+msgid "Chad"
+msgstr "चाड"
+
+msgctxt "country"
+msgid "Chile"
+msgstr "चिली"
+
+msgctxt "country"
+msgid "China"
+msgstr "चीन"
+
+msgctxt "country"
+msgid "Christmas Island"
+msgstr "क्रिसमस आइलैंड"
+
+msgctxt "country"
+msgid "Cocos Islands"
+msgstr "कोकोस द्वीपसमूह"
+
+msgctxt "country"
+msgid "Colombia"
+msgstr "कोलंबिया"
+
+msgctxt "country"
+msgid "Comoros"
+msgstr "कोमोरोस"
+
+msgctxt "country"
+msgid "Cook Islands"
+msgstr "कुक द्वीपसमूह"
+
+msgctxt "country"
+msgid "Costa Rica"
+msgstr "कोस्टा रिका"
+
+msgctxt "country"
+msgid "Croatia"
+msgstr "क्रोएशिया"
+
+msgctxt "country"
+msgid "Cuba"
+msgstr "क्यूबा"
+
+msgctxt "country"
+msgid "Curacao"
+msgstr "कुराकाओ"
+
+msgctxt "country"
+msgid "Cyprus"
+msgstr "साइप्रस"
+
+msgctxt "country"
+msgid "Czech Republic"
+msgstr "चेक रिपब्लिक"
+
+msgctxt "country"
+msgid "Democratic Republic of the Congo"
+msgstr "कांगो लोकतांत्रिक गणराज्य"
+
+msgctxt "country"
+msgid "Denmark"
+msgstr "डेनमार्क"
+
+msgctxt "country"
+msgid "Djibouti"
+msgstr "जिबूती"
+
+msgctxt "country"
+msgid "Dominica"
+msgstr "डोमिनिका"
+
+msgctxt "country"
+msgid "Dominican Republic"
+msgstr "डोमिनिकन रिपब्लिक"
+
+msgctxt "country"
+msgid "East Timor"
+msgstr "ईस्ट तिमोर"
+
+msgctxt "country"
+msgid "Ecuador"
+msgstr "इक्वाडोर"
+
+msgctxt "country"
+msgid "Egypt"
+msgstr "मिस्त्र"
+
+msgctxt "country"
+msgid "El Salvador"
+msgstr "एल साल्वाडोर"
+
+msgctxt "country"
+msgid "Equatorial Guinea"
+msgstr "इक्वेटोरियल गिनी"
+
+msgctxt "country"
+msgid "Eritrea"
+msgstr "इरीट्रिया"
+
+msgctxt "country"
+msgid "Estonia"
+msgstr "एस्टोनिया"
+
+msgctxt "country"
+msgid "Ethiopia"
+msgstr "इथियोपिया"
+
+msgctxt "country"
+msgid "Falkland Islands"
+msgstr "फ़ॉकलैंड आइलैंड"
+
+msgctxt "country"
+msgid "Faroe Islands"
+msgstr "फ़ेरो आइलैंड्स"
+
+msgctxt "country"
+msgid "Fiji"
+msgstr "फिजी"
+
+msgctxt "country"
+msgid "Finland"
+msgstr "फ़िनलैंड"
+
+msgctxt "country"
+msgid "France"
+msgstr "फ्रांस"
+
+msgctxt "country"
+msgid "French Guiana"
+msgstr "फ्रेंच गयाना"
+
+msgctxt "country"
+msgid "French Polynesia"
+msgstr "फ़्रानसीसी पोलिनेशिया"
+
+msgctxt "country"
+msgid "French Southern Territories"
+msgstr "फ़्रांसीसी दक्षिणी क्षेत्र"
+
+msgctxt "country"
+msgid "Gabon"
+msgstr "गैबॉन"
+
+msgctxt "country"
+msgid "Gambia"
+msgstr "गाम्बिया"
+
+msgctxt "country"
+msgid "Georgia"
+msgstr "जॉर्जिया"
+
+msgctxt "country"
+msgid "Germany"
+msgstr "जर्मनी"
+
+msgctxt "country"
+msgid "Ghana"
+msgstr "घाना"
+
+msgctxt "country"
+msgid "Gibraltar"
+msgstr "जिब्राल्टर"
+
+msgctxt "country"
+msgid "Greece"
+msgstr "यूनान"
+
+msgctxt "country"
+msgid "Greenland"
+msgstr "ग्रीनलैंड"
+
+msgctxt "country"
+msgid "Grenada"
+msgstr "ग्रेनाडा"
+
+msgctxt "country"
+msgid "Guadeloupe"
+msgstr "ग्वाडेलोप"
+
+msgctxt "country"
+msgid "Guam"
+msgstr "गुआम"
+
+msgctxt "country"
+msgid "Guatemala"
+msgstr "ग्वाटेमाला"
+
+msgctxt "country"
+msgid "Guernsey"
+msgstr "ग्वेर्नसे"
+
+msgctxt "country"
+msgid "Guinea"
+msgstr "गिनी"
+
+msgctxt "country"
+msgid "Guinea-Bissau"
+msgstr "गिनी-बिसाऊ"
+
+msgctxt "country"
+msgid "Guyana"
+msgstr "गुयाना"
+
+msgctxt "country"
+msgid "Haiti"
+msgstr "हैती"
+
+msgctxt "country"
+msgid "Heard Island and McDonald Islands"
+msgstr "हर्ड आइलैंड और मैकडोनाल्ड आइलैंड्स"
+
+msgctxt "country"
+msgid "Honduras"
+msgstr "होंडुरस"
+
+msgctxt "country"
+msgid "Hong Kong"
+msgstr "हाँग काँग"
+
+msgctxt "country"
+msgid "Hungary"
+msgstr "हंगरी"
+
+msgctxt "country"
+msgid "Iceland"
+msgstr "आइसलैंड"
+
+msgctxt "country"
+msgid "India"
+msgstr "भारत"
+
+msgctxt "country"
+msgid "Indonesia"
+msgstr "इंडोनेशिया"
+
+msgctxt "country"
+msgid "Iran"
+msgstr "ईरान"
+
+msgctxt "country"
+msgid "Iraq"
+msgstr "इराक"
+
+msgctxt "country"
+msgid "Ireland"
+msgstr "आयरलैंड"
+
+msgctxt "country"
+msgid "Isle of Man"
+msgstr "आइल ऑफ मैन"
+
+msgctxt "country"
+msgid "Israel"
+msgstr "इजराइल"
+
+msgctxt "country"
+msgid "Italy"
+msgstr "इटली"
+
+msgctxt "country"
+msgid "Ivory Coast"
+msgstr "आइवरी कोस्ट"
+
+msgctxt "country"
+msgid "Jamaica"
+msgstr "जमैका"
+
+msgctxt "country"
+msgid "Japan"
+msgstr "जापान"
+
+msgctxt "country"
+msgid "Jersey"
+msgstr "जर्सी"
+
+msgctxt "country"
+msgid "Jordan"
+msgstr "जॉर्डन"
+
+msgctxt "country"
+msgid "Kazakhstan"
+msgstr "कज़ाकिस्तान"
+
+msgctxt "country"
+msgid "Kenya"
+msgstr "केन्या"
+
+msgctxt "country"
+msgid "Kiribati"
+msgstr "किरिबाती"
+
+msgctxt "country"
+msgid "Kosovo"
+msgstr "कोसोवो"
+
+msgctxt "country"
+msgid "Kuwait"
+msgstr "कुवैत"
+
+msgctxt "country"
+msgid "Kyrgyzstan"
+msgstr "किरगिज़स्तान"
+
+msgctxt "country"
+msgid "Laos"
+msgstr "लाओस"
+
+msgctxt "country"
+msgid "Latvia"
+msgstr "लाटविया"
+
+msgctxt "country"
+msgid "Lebanon"
+msgstr "लेबनान"
+
+msgctxt "country"
+msgid "Lesotho"
+msgstr "लेसोथो"
+
+msgctxt "country"
+msgid "Liberia"
+msgstr "लाइबेरिया"
+
+msgctxt "country"
+msgid "Libya"
+msgstr "लीबिया"
+
+msgctxt "country"
+msgid "Liechtenstein"
+msgstr "लिचेंस्टीन"
+
+msgctxt "country"
+msgid "Lithuania"
+msgstr "लिथुआनिया"
+
+msgctxt "country"
+msgid "Luxembourg"
+msgstr "लक्समबर्ग"
+
+msgctxt "country"
+msgid "Macao"
+msgstr "मकाओ"
+
+msgctxt "country"
+msgid "Macedonia"
+msgstr "मैसिडोनिया"
+
+msgctxt "country"
+msgid "Madagascar"
+msgstr "मेडागास्कर"
+
+msgctxt "country"
+msgid "Malawi"
+msgstr "मलावी"
+
+msgctxt "country"
+msgid "Malaysia"
+msgstr "मलेशिया"
+
+msgctxt "country"
+msgid "Maldives"
+msgstr "मालदीव"
+
+msgctxt "country"
+msgid "Mali"
+msgstr "माली"
+
+msgctxt "country"
+msgid "Malta"
+msgstr "माल्टा"
+
+msgctxt "country"
+msgid "Marshall Islands"
+msgstr "मार्शल द्वीप समूह"
+
+msgctxt "country"
+msgid "Martinique"
+msgstr "मार्टिनिक"
+
+msgctxt "country"
+msgid "Mauritania"
+msgstr "मॉरिटानिया"
+
+msgctxt "country"
+msgid "Mauritius"
+msgstr "मॉरीशस"
+
+msgctxt "country"
+msgid "Mayotte"
+msgstr "मैयट"
+
+msgctxt "country"
+msgid "Mexico"
+msgstr "मेक्सिको"
+
+msgctxt "country"
+msgid "Micronesia"
+msgstr "माइक्रोनेशिया"
+
+msgctxt "country"
+msgid "Moldova"
+msgstr "मोल्डोवा"
+
+msgctxt "country"
+msgid "Monaco"
+msgstr "मोनाको"
+
+msgctxt "country"
+msgid "Mongolia"
+msgstr "मंगोलिया"
+
+msgctxt "country"
+msgid "Montenegro"
+msgstr "मोंटेनेग्रो"
+
+msgctxt "country"
+msgid "Montserrat"
+msgstr "मॉन्टसेराट"
+
+msgctxt "country"
+msgid "Morocco"
+msgstr "मोरक्को"
+
+msgctxt "country"
+msgid "Mozambique"
+msgstr "मोज़ांबिक"
+
+msgctxt "country"
+msgid "Myanmar"
+msgstr "म्यांमार"
+
+msgctxt "country"
+msgid "Namibia"
+msgstr "नामीबिया"
+
+msgctxt "country"
+msgid "Nauru"
+msgstr "नाउरू"
+
+msgctxt "country"
+msgid "Nepal"
+msgstr "नेपाल"
+
+msgctxt "country"
+msgid "Netherlands"
+msgstr "नेदरलैंड"
+
+msgctxt "country"
+msgid "New Caledonia"
+msgstr "न्यू कैलेडोनिया"
+
+msgctxt "country"
+msgid "New Zealand"
+msgstr "न्यूज़ीलैंड"
+
+msgctxt "country"
+msgid "Nicaragua"
+msgstr "निकारागुआ"
+
+msgctxt "country"
+msgid "Niger"
+msgstr "नाइजर"
+
+msgctxt "country"
+msgid "Nigeria"
+msgstr "नाइजीरिया"
+
+msgctxt "country"
+msgid "Niue"
+msgstr "नियू"
+
+msgctxt "country"
+msgid "Norfolk Island"
+msgstr "नॉरफोक आइलैंड"
+
+msgctxt "country"
+msgid "North Korea"
+msgstr "उत्तर कोरिया"
+
+msgctxt "country"
+msgid "Northern Mariana Islands"
+msgstr "उत्तरी मैरियाना आइलैंड्स"
+
+msgctxt "country"
+msgid "Norway"
+msgstr "नॉर्वे"
+
+msgctxt "country"
+msgid "Oman"
+msgstr "ओमान"
+
+msgctxt "country"
+msgid "Pakistan"
+msgstr "पाकिस्तान"
+
+msgctxt "country"
+msgid "Palau"
+msgstr "पलाऊ"
+
+msgctxt "country"
+msgid "Palestinian Territory"
+msgstr "फ़िलिस्तीनी क्षेत्र"
+
+msgctxt "country"
+msgid "Panama"
+msgstr "पनामा"
+
+msgctxt "country"
+msgid "Papua New Guinea"
+msgstr "पापुआ न्यू गिनी"
+
+msgctxt "country"
+msgid "Paraguay"
+msgstr "पैराग्वे"
+
+msgctxt "country"
+msgid "Peru"
+msgstr "पेरू"
+
+msgctxt "country"
+msgid "Philippines"
+msgstr "फिलीपींस"
+
+msgctxt "country"
+msgid "Pitcairn"
+msgstr "पिटकेर्न"
+
+msgctxt "country"
+msgid "Poland"
+msgstr "पौल्स्का"
+
+msgctxt "country"
+msgid "Portugal"
+msgstr "पुर्तगाल"
+
+msgctxt "country"
+msgid "Puerto Rico"
+msgstr "प्यूर्टो रिको"
+
+msgctxt "country"
+msgid "Qatar"
+msgstr "कतर"
+
+msgctxt "country"
+msgid "Republic of the Congo"
+msgstr "कांगो गणराज्य"
+
+msgctxt "country"
+msgid "Reunion"
+msgstr "रीयूनियन"
+
+msgctxt "country"
+msgid "Romania"
+msgstr "रोमानिया"
+
+msgctxt "country"
+msgid "Russia"
+msgstr "रूस"
+
+msgctxt "country"
+msgid "Rwanda"
+msgstr "रवांडा"
+
+msgctxt "country"
+msgid "Saint Barthelemy"
+msgstr "सेंट बार्थेलेमी"
+
+msgctxt "country"
+msgid "Saint Helena"
+msgstr "सेंट हेलेना"
+
+msgctxt "country"
+msgid "Saint Kitts and Nevis"
+msgstr "सेंट किट्स और नेविस"
+
+msgctxt "country"
+msgid "Saint Lucia"
+msgstr "सेंट लूसिया"
+
+msgctxt "country"
+msgid "Saint Martin"
+msgstr "सेंट मार्टिन"
+
+msgctxt "country"
+msgid "Saint Pierre and Miquelon"
+msgstr "सेंट पियरे और मिकेलॉन"
+
+msgctxt "country"
+msgid "Saint Vincent and the Grenadines"
+msgstr "संत विन्सेंट और ग्रेनेजियन्स"
+
+msgctxt "country"
+msgid "Samoa"
+msgstr "समोआ"
+
+msgctxt "country"
+msgid "San Marino"
+msgstr "सैन मैरीनो"
+
+msgctxt "country"
+msgid "Sao Tome and Principe"
+msgstr "साओ टोमे और प्रिंसिपे"
+
+msgctxt "country"
+msgid "Saudi Arabia"
+msgstr "सऊदी अरब"
+
+msgctxt "country"
+msgid "Senegal"
+msgstr "सेनेगल"
+
+msgctxt "country"
+msgid "Serbia"
+msgstr "सर्बिया"
+
+msgctxt "country"
+msgid "Seychelles"
+msgstr "सेशेल्स"
+
+msgctxt "country"
+msgid "Sierra Leone"
+msgstr "सिएरा लियोन"
+
+msgctxt "country"
+msgid "Singapore"
+msgstr "सिंगापुर"
+
+msgctxt "country"
+msgid "Sint Maarten"
+msgstr "सेंट मार्टिन"
+
+msgctxt "country"
+msgid "Slovakia"
+msgstr "स्लोवाकिया"
+
+msgctxt "country"
+msgid "Slovenia"
+msgstr "स्लोवेनिया"
+
+msgctxt "country"
+msgid "Solomon Islands"
+msgstr "सोलोमन आइलैंड्स"
+
+msgctxt "country"
+msgid "Somalia"
+msgstr "सोमालिया"
+
+msgctxt "country"
+msgid "South Africa"
+msgstr "दक्षिण अफ्रीका"
+
+msgctxt "country"
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "दक्षिण जॉर्जिया और दक्षिण सैंडविच आइलैंड"
+
+msgctxt "country"
+msgid "South Korea"
+msgstr "दक्षिण कोरिया"
+
+msgctxt "country"
+msgid "South Sudan"
+msgstr "दक्षिण सूडान"
+
+msgctxt "country"
+msgid "Spain"
+msgstr "स्पेन"
+
+msgctxt "country"
+msgid "Sri Lanka"
+msgstr "श्री लंका"
+
+msgctxt "country"
+msgid "Sudan"
+msgstr "सूडान"
+
+msgctxt "country"
+msgid "Suriname"
+msgstr "सूरीनाम"
+
+msgctxt "country"
+msgid "Svalbard and Jan Mayen"
+msgstr "स्वालबार्ड और जान मायेन"
+
+msgctxt "country"
+msgid "Swaziland"
+msgstr "स्वाजीलैंड"
+
+msgctxt "country"
+msgid "Sweden"
+msgstr "स्वीडन"
+
+msgctxt "country"
+msgid "Switzerland"
+msgstr "स्विट्ज़रलैंड"
+
+msgctxt "country"
+msgid "Syria"
+msgstr "सिरिया"
+
+msgctxt "country"
+msgid "Taiwan"
+msgstr "ताइवान"
+
+msgctxt "country"
+msgid "Tajikistan"
+msgstr "तजाकिस्तान"
+
+msgctxt "country"
+msgid "Tanzania"
+msgstr "तंज़ानिया"
+
+msgctxt "country"
+msgid "Thailand"
+msgstr "थाईलैंड"
+
+msgctxt "country"
+msgid "Togo"
+msgstr "टोगो"
+
+msgctxt "country"
+msgid "Tokelau"
+msgstr "टोकेलाऊ"
+
+msgctxt "country"
+msgid "Tonga"
+msgstr "टोंगा"
+
+msgctxt "country"
+msgid "Trinidad and Tobago"
+msgstr "त्रिनिदाद और टोबैगो"
+
+msgctxt "country"
+msgid "Tunisia"
+msgstr "ट्यूनीशिया"
+
+msgctxt "country"
+msgid "Turkey"
+msgstr "तुर्की"
+
+msgctxt "country"
+msgid "Turkmenistan"
+msgstr "तुर्कमेनिस्तान"
+
+msgctxt "country"
+msgid "Turks and Caicos Islands"
+msgstr "तुर्क्स और कैकोज़ द्वीपसमूह"
+
+msgctxt "country"
+msgid "Tuvalu"
+msgstr "तुवालु"
+
+msgctxt "country"
+msgid "U.S. Virgin Islands"
+msgstr "यू.एस. वर्जिन द्वीपसमूह"
+
+msgctxt "country"
+msgid "Uganda"
+msgstr "यूगांडा"
+
+msgctxt "country"
+msgid "Ukraine"
+msgstr "यूक्रेन"
+
+msgctxt "country"
+msgid "United Arab Emirates"
+msgstr "संयुक्त अरब अमीरात"
+
+msgctxt "country"
+msgid "United Kingdom"
+msgstr "युनाइटेड किंगडम"
+
+msgctxt "country"
+msgid "United States"
+msgstr "संयुक्त राज्य"
+
+msgctxt "country"
+msgid "United States Minor Outlying Islands"
+msgstr "युनाइटेड स्टेट्स माइनर आउटलाइंग द्वीप"
+
+msgctxt "country"
+msgid "Uruguay"
+msgstr "उरुग्वे"
+
+msgctxt "country"
+msgid "Uzbekistan"
+msgstr "उज़्बेकिस्तान"
+
+msgctxt "country"
+msgid "Vanuatu"
+msgstr "वानुअतु"
+
+msgctxt "country"
+msgid "Vatican"
+msgstr "वेटिकन"
+
+msgctxt "country"
+msgid "Venezuela"
+msgstr "वेनेज़ुएला"
+
+msgctxt "country"
+msgid "Vietnam"
+msgstr "वियतनाम"
+
+msgctxt "country"
+msgid "Wallis and Futuna"
+msgstr "वालिस और फ़्युटुना"
+
+msgctxt "country"
+msgid "Western Sahara"
+msgstr "पश्चिमी सहारा"
+
+msgctxt "country"
+msgid "Yemen"
+msgstr "यमन"
+
+msgctxt "country"
+msgid "Zambia"
+msgstr "जाम्बिया"
+
+msgctxt "country"
+msgid "Zimbabwe"
+msgstr "ज़िम्बाब्वे"
+
+msgctxt "error"
+msgid "An unknown error occurred"
+msgstr "एक अज्ञात गड़बड़ी हुई।"
+
+msgctxt "error"
+msgid "Authentication denied"
+msgstr "ऑथेंटिकेशन अस्वीकार किया गया"
+
+msgctxt "error"
+msgid "Device disconnected"
+msgstr "डिवाइस डिस्कनेक्ट हो गया"
+
+msgctxt "error"
+msgid "Enter a valid IPv4 or IPv6 address"
+msgstr "मान्य IPv4 या IPv6 पता दर्ज करें"
+
+msgctxt "error"
+msgid "Incorrect 2FA code."
+msgstr "गलत 2FA कोड।"
+
+msgctxt "error"
+msgid "Incorrect credentials."
+msgstr "गलत प्रमाण।"
+
+msgctxt "error"
+msgid "Invalid username."
+msgstr "अमान्य यूज़रनेम."
+
+msgctxt "error"
+msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"लगता है आपकी सिस्टम घड़ी सिंक में नहीं है।\n"
+"इससे VPN से कनेक्ट करते समय समस्या हो सकती है।\n"
+"अपना सिस्टम समय अपडेट करें और दोबारा कनेक्ट करने की कोशिश करें।"
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr "हमारे सर्वर उपलब्ध नहीं हैं। कृपया अपना इंटरनेट कनेक्शन जांचें।"
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN, VPN से कनेक्ट नहीं कर पाया और आपके IP की सुरक्षा के लिए इंटरनेट एक्सेस ब्लॉक कर दिया है।\n"
+"\n"
+"अपना इंटरनेट कनेक्शन रीस्टोर करने के लिए \"कनेक्शन रद्द करें\" पर क्लिक करें। अगर समस्या बनी रहे, तो कृपया साइनआउट करके दोबारा साइनइन करें।"
+
+msgctxt "error"
+msgid ""
+"Proton services could not be reached.\n"
+"Please try again."
+msgstr ""
+"Proton सेवाओं तक पहुंच नहीं बन पाई।\n"
+"कृपया फिर कोशिश करें।"
+
+msgctxt "error"
+msgid "Session limit reached"
+msgstr "सत्र सीमा तक पहुंचे"
+
+msgctxt "error"
+msgid "Something went wrong. Please try submitting your report at:\n"
+msgstr "कुछ गड़बड़ हुई। कृपया अपनी रिपोर्ट यहां से भेजने की कोशिश करें:\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "आपके डिवाइस में काफी जगह नहीं बची है।"
+
+msgctxt "error"
+msgid "Timeout"
+msgstr "टाइमआउट"
+
+msgctxt "error"
+msgid "Tunnel setup failed"
+msgstr "टनल सेटअप असफल"
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed. Security key 2FA is not enabled for your "
+"account."
+msgstr ""
+"टू-फैक्टर सत्यापन असफल। आपके खाते के लिए सुरक्षा चाबी 2FA सक्षम नहीं है।"
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Incorrect PIN"
+msgstr "टू-फैक्टर सत्यापन असफल: गलत PIN"
+
+msgctxt "error"
+msgid "Two-factor authentication failed: No security key detected"
+msgstr "टू-फैक्टर सत्यापन असफल: कोई सुरक्षा चाबी नहीं मिली"
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed: The security key you used is not linked to"
+" your Proton Account."
+msgstr ""
+"टू-फैक्टर सत्यापन असफल: आपके इस्तेमाल की गई सुरक्षा चाबी आपके Proton खाते से"
+" लिंक नहीं है।"
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Your security key has no PIN set"
+msgstr "टू-फैक्टर सत्यापन असफल: आपकी सुरक्षा चाबी में कोई PIN सेट नहीं है"
+
+msgctxt "error"
+msgid "Unable to sign out, please ensure you have internet access."
+msgstr "साइनआउट नहीं कर पा रहे, कृपया जांच लें कि आपके पास इंटरनेट एक्सेस है।"
+
+msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "माफ़ करें, एक अप्रत्याशित गड़बड़ी आ गई। कृपया फिर कोशिश करें।"
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"आप VPN से कनेक्ट हैं, लेकिन सारा ट्रैफिक ब्लॉक है।\n"
+"आपको सिक्योरिटी द्वारा दिए गए ऑथेंटिकेशन पेज पे जाकर अपनी हार्डवेयर की से ऑथेंटिकेशन करना होगा।\n"
+"उसके बाद ट्रैफिक सक्षम हो जाएगा।"
+
+msgctxt "error"
+msgid ""
+"You've reached your maximum device limit. To reconnect to VPN, please "
+"disconnect from another device."
+msgstr ""
+"आपकी अधिकतम डिवाइस सीमा पूरी हो गई है। VPN से दोबारा कनेक्ट करने के लिए "
+"कृपया किसी दूसरे डिवाइस से कनेक्शन तोड़ें।"
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 का मतलब है बहुत कम संभावना"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 का मतलब है बहुत ज़्यादा संभावना"
+
+msgctxt "label"
+msgid "6-digit authentication code"
+msgstr "6-अंकों का ऑथेंटिकेशन कोड"
+
+msgctxt "label"
+msgid "Active port:"
+msgstr "सक्रिय पोर्ट:"
+
+msgctxt "label"
+msgid "Add new server"
+msgstr "नया सर्वर जोड़ें"
+
+msgctxt "label"
+msgid "Advanced"
+msgstr "ऐडवांस"
+
+msgctxt "label"
+msgid "All countries ({count})"
+msgstr "सभी देश ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "इनमें से अपनेआप चुना"
+
+msgctxt "label"
+msgid "Auto-selected from free locations"
+msgstr "मुफ़्त स्थानों से स्वतः चुना गया"
+
+msgctxt "label"
+msgid "BETA"
+msgstr "बीटा"
+
+msgctxt "label"
+msgid "Block Malware"
+msgstr "मालवेयर ब्लॉक करें"
+
+msgctxt "label"
+msgid "Block ads, trackers and malware"
+msgstr "विज्ञापन, ट्रैकर और मालवेयर ब्लॉक करें"
+
+msgctxt "label"
+msgid "Description (minimum {count} characters)"
+msgstr "विवरण (कम से कम {count} वर्ण)"
+
+msgctxt "label"
+msgid "Email"
+msgstr "ईमेल"
+
+msgctxt "label"
+msgid "Excluded apps "
+msgstr "बहिष्कृत ऐप "
+
+msgctxt "label"
+msgid "Free"
+msgstr "Free"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Free सर्वर लोकेशन ({count})"
+
+msgctxt "label"
+msgid "Included apps "
+msgstr "शामिल ऐप "
+
+msgctxt "label"
+msgid "Off"
+msgstr "बंद"
+
+msgctxt "label"
+msgid "Optional"
+msgstr "वैकल्पिक"
+
+msgctxt "label"
+msgid "PIN code"
+msgstr "पिन कोड"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "कृपया हमें बताएं कि आपने वो रेटिंग क्यों दी"
+
+msgctxt "label"
+msgid "Proton VPN Linux Client"
+msgstr "Proton VPN Linux क्लाइंट"
+
+msgctxt "label"
+msgid "Recovery code"
+msgstr "रिकवरी कोड"
+
+msgctxt "label"
+msgid "Server load"
+msgstr "सर्वर लोड"
+
+msgctxt "label"
+msgid "Standard"
+msgstr "मानक"
+
+msgctxt "label"
+msgid "Use Proton protocols"
+msgstr "Proton प्रोटोकॉल इस्तेमाल करें"
+
+msgctxt "label"
+msgid "Username"
+msgstr "यूज़रनेम"
+
+msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
+
+msgctxt "label"
+msgid "VPN plan: {plan}"
+msgstr "VPN प्लान: {plan}"
+
+msgctxt "label"
+msgid "Via Secure Core"
+msgstr "Secure Core द्वारा"
+
+msgctxt "label"
+msgid "Via {country}"
+msgstr "{country} द्वारा"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "अभी के लिए फ्री सर्वर परिवर्तनों की अधिकतम सीमा पूरी हो गई है।"
+
+msgctxt "link"
+msgid "Learn more"
+msgstr "और जानें"
+
+msgctxt "menu"
+msgid "About"
+msgstr "हमारे बारे में"
+
+msgctxt "menu"
+msgid "Quit"
+msgstr "बंद करें"
+
+msgctxt "menu"
+msgid "Release notes"
+msgstr "रिलीज़ नोट"
+
+msgctxt "menu"
+msgid "Report an issue"
+msgstr "समस्या को रिपोर्ट करें"
+
+msgctxt "menu"
+msgid "Settings"
+msgstr "सेटिंग"
+
+msgctxt "menu"
+msgid "Sign out"
+msgstr "साइन-आउट करें"
+
+msgctxt "message"
+msgid ""
+"Access preferred connections from system tray. Enter country or server "
+"codes, separated by commas, to quickly connect (e.g.: NL#42, JP, US, IT#01)."
+msgstr ""
+"सिस्टम ट्रे से पसंदीदा कनेक्शन एक्सेस करें। तुरंत कनेक्ट होने के लिए देश या "
+"सर्वर कोड कॉमा से अलग करके दर्ज करें (जैसे: NL#42, JP, US, IT#01)।"
+
+msgctxt "message"
+msgid "Active port is {new_port}"
+msgstr "एक्टिव पोर्ट {new_port} है"
+
+msgctxt "message"
+msgid "Allow selected apps to connect without VPN protection."
+msgstr "चुने गए ऐप को VPN सुरक्षा के बिना कनेक्ट होने दें।"
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr "VPN कनेक्शन टूटने पे इंटरनेट से अपने आप डिस्कनेक्ट हो जाएं।"
+
+msgctxt "message"
+msgid ""
+"Beta access has been disabled.\n"
+"Please restart the app for changes to take effect."
+msgstr ""
+"बीटा एक्सेस अक्षम कर दिया गया है।\n"
+"बदलाव लागू होने के लिए कृपया ऐप रीस्टार्ट करें।"
+
+msgctxt "message"
+msgid ""
+"Beta access has been enabled.\n"
+"Please restart the app for changes to take effect."
+msgstr ""
+"बीटा एक्सेस सक्षम कर दिया गया है।\n"
+"बदलाव लागू होने के लिए कृपया ऐप रीस्टार्ट करें।"
+
+msgctxt "message"
+msgid ""
+"Bypass firewalls to connect to P2P servers and devices on your local "
+"network. "
+msgstr ""
+"अपने लोकल नेटवर्क पे P2P सर्वर और डिवाइस से कनेक्ट होने के लिए फायरवॉल को "
+"बायपास करें। "
+
+msgctxt "message"
+msgid ""
+"Captures a specific issue you're facing when using Proton VPN to get help from our customer support team.\n"
+"\n"
+"Warning: This file is a recording of all your internet activity during the capture session."
+msgstr ""
+"Proton VPN इस्तेमाल करते समय आपको जिस समस्या का सामना करना पड़ रहा है, उसे कैप्चर करता है, ताकि हमारी ग्राहक सहायता टीम आपकी मदद कर सके।\n"
+"\n"
+"चेतावनी: ये फाइल कैप्चर सत्र के दौरान आपकी सारी इंटरनेट गतिविधि की रिकॉर्डिंग है।"
+
+msgctxt "message"
+msgid "Connect to Proton VPN using your own domain name servers (DNS)."
+msgstr "अपने डोमेन नाम सर्वर (DNS) के साथ Proton VPN से कनेक्ट करें।"
+
+msgctxt "message"
+msgid ""
+"Connect to a Tor server to access hidden services and onion sites using any "
+"browser."
+msgstr ""
+"किसी भी ब्राउज़र से अनियन साइटों और छिपी सेवाओं तक पहुंचने के लिए Tor सर्वर "
+"से कनेक्ट करें।"
+
+msgctxt "message"
+msgid ""
+"Connect to your destination server through a second, maximum security VPN "
+"server. Slower, but more private."
+msgstr ""
+"एक दूसरे, मैक्सिमम सिक्योरिटी वाले VPN सर्वर के ज़रिए अपने डेस्टिनेशन सर्वर "
+"से कनेक्ट करें। थोड़ा धीमा, लेकिन ज़्यादा प्राइवेट।"
+
+msgctxt "message"
+msgid "Copied!"
+msgstr "कॉपी हो गया!"
+
+msgctxt "message"
+msgid ""
+"Crash reports help us fix bugs, detect firewalls, and avoid VPN blocks.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"क्रेश रिपोर्ट से हमें बग ठीक करने, फायरवॉल पहचानने और VPN ब्लॉक से बचने में मदद मिलती है।\n"
+"\n"
+"ये आंकड़े आपका आईपी पता नहीं रखते और इनका इस्तेमाल कभी भी आपको पहचानने में नहीं किया जा सकता। हम कभी भी इन्हें दूसरे लोगों से शेयर नहीं करते।"
+
+msgctxt "message"
+msgid "Customize your connection by deciding which apps are protected by VPN."
+msgstr ""
+"कनेक्शन को यह तय करके अनुकूलित करें कि कौन से ऐप VPN द्वारा सुरक्षित हैं।"
+
+msgctxt "message"
+msgid ""
+"Disables randomization of the local addresses mapping. This can slightly "
+"reduce connection security, but should allow direct connections for online "
+"gaming and similar purposes."
+msgstr ""
+"स्थानीय पतों की मैपिंग के रैंडमाइज़ेशन को अक्षम करता है। इससे कनेक्शन की "
+"सुरक्षा थोड़ी कम हो सकती है, लेकिन ऑनलाइन गेमिंग और इसी तरह के मकसदों के लिए"
+" सीधे कनेक्शन की सुविधा मिल सकती है।"
+
+msgctxt "message"
+msgid "Disabling Beta access..."
+msgstr "बीटा एक्सेस अक्षम हो रहा है..."
+
+msgctxt "message"
+msgid "Each code can only be used once"
+msgstr "हर कूटक का उपयोग केवल एक बार हो सकता है"
+
+msgctxt "message"
+msgid "Enabling Beta access..."
+msgstr "बीटा एक्सेस सक्षम हो रहा है..."
+
+msgctxt "message"
+msgid "Get early access and help us test new versions of Proton VPN."
+msgstr ""
+"जल्दी एक्सेस लें और Proton VPN के नए वर्ज़न टेस्ट करने में हमारी मदद करें।"
+
+msgctxt "message"
+msgid "If your security key has a button or a gold disc, tap it now."
+msgstr ""
+"अगर आपकी सुरक्षा चाबी पे कोई बटन या सोने का डिस्क है, तो अभी उसे टैप करें।"
+
+msgctxt "message"
+msgid ""
+"Increase your connection speed by up to 400% with performance enhancing "
+"technologies."
+msgstr ""
+"परफॉरमेंस वर्धक प्रौद्योगिकियों के साथ कनेक्शन की गति को 400% तक बढ़ाएं।"
+
+msgctxt "message"
+msgid "Insert the U2F or FIDO key linked to your Proton Account. "
+msgstr "अपने Proton खाते से जुड़ी U2F या FIDO चाबी डालें। "
+
+msgctxt "message"
+msgid "It was not possible to disable Beta access.\n"
+msgstr "बीटा एक्सेस अक्षम नहीं किया जा सका।\n"
+
+msgctxt "message"
+msgid "It was not possible to enable Beta access.\n"
+msgstr "बीटा एक्सेस सक्षम करना संभव नहीं था।\n"
+
+msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr "किल स्विच सिर्फ तब बदला जा सकता है जब VPN डिस्कनेक्ट हो।"
+
+msgctxt "message"
+msgid "Kill switch is blocking any outgoing connections."
+msgstr "किल स्विच बाहर जाने वाले किसी भी कनेक्शन को ब्लॉक कर रहा है।"
+
+msgctxt "message"
+msgid ""
+"Kill switch selection is disabled while VPN is active. Disconnect to make "
+"changes."
+msgstr ""
+"VPN चालू होने पर किल स्विच चुनना अक्षम रहता है। बदलाव करने के लिए डिस्कनेक्ट"
+" करें।"
+
+msgctxt "message"
+msgid "Loading app..."
+msgstr "ऐप लोड हो रहा है..."
+
+msgctxt "message"
+msgid "Multiple security keys were found. Tap one to select it."
+msgstr "कई सुरक्षा चाबियां मिली हैं। चुनने के लिए किसी एक को टैप करें।"
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"Proton VPN से कनेक्ट होने पे ही इंटरनेट एक्सेस की इजाज़त दें। डिवाइस को "
+"वापिस शुरु करने के बाद भी ऐडवांस किल स्विच चालू रहेगा।"
+
+msgctxt "message"
+msgid ""
+"Only selected apps connect with VPN protection. All other traffic is "
+"unprotected."
+msgstr ""
+"केवल चुने गए ऐप ही VPN सुरक्षा के साथ कनेक्ट होते हैं। बाकी सारा ट्रैफिक "
+"असुरक्षित रहता है।"
+
+msgctxt "message"
+msgid ""
+"Permanent Kill Switch is blocking any outgoing connections and preventing your IP to be exposed.\n"
+"\n"
+"Do you want to disable Kill Switch?"
+msgstr ""
+"परमानेंट किल स्विच बाहर जाने वाले किसी भी कनेक्शन को ब्लॉक कर रहा है और आपके IP के उजागर होने से रोक रहा है।\n"
+"\n"
+"क्या किल स्विच अक्षम करना है?"
+
+msgctxt "message"
+msgid "Please establish a new VPN connection for changes to take effect."
+msgstr "बदलाव लागू होने के लिए कृपया एक नया VPN कनेक्शन बनाएं।"
+
+msgctxt "message"
+msgid "Protect yourself from ads, malware, and trackers on websites and apps."
+msgstr "वेबसाइटों और ऐप पे विज्ञापनों, मालवेयर और ट्रैकर से खुद को बचाएं।"
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"अगर आपका VPN कनेक्शन टूट जाए तो आपको इंटरनेट से डिस्कनेक्ट करके आपका IP पता "
+"सुरक्षित रखता है। {learn_more}"
+
+msgctxt "message"
+msgid "Protocol can only be changed when VPN is disconnected."
+msgstr "VPN के डिस्कनेक्ट होने पर ही प्रोटोकॉल बदला जा सकता है।"
+
+msgctxt "message"
+msgid ""
+"Protocol selection is disabled while VPN is active. Disconnect to make "
+"changes."
+msgstr ""
+"VPN चालू होने पर प्रोटोकॉल चुनना अक्षम रहता है। बदलाव करने के लिए डिस्कनेक्ट"
+" करें।"
+
+msgctxt "message"
+msgid ""
+"Quitting the application will cancel the current VPN connection.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"एप्लीकेशन बंद करने से मौजूदा VPN कनेक्शन रद्द हो जाएगा।\n"
+"\n"
+"क्या जारी रखना है?"
+
+msgctxt "message"
+msgid ""
+"Quitting the application will keep the kill switch active, but your current VPN connection will be terminated.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"एप्लीकेशन बंद करने पर किल स्विच सक्रिय रहेगा, लेकिन आपका मौजूदा VPN कनेक्शन खत्म हो जाएगा।\n"
+"\n"
+"क्या जारी रखना है?"
+
+msgctxt "message"
+msgid "Reporting your issue..."
+msgstr "आपकी समस्या की रिपोर्ट की जा रही है…"
+
+msgctxt "message"
+msgid "Signing in..."
+msgstr "साइनिंग इन..."
+
+msgctxt "message"
+msgid ""
+"Signing out will cancel the current VPN connection and disable the kill switch.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"साइन-आउट करने से मौजूदा VPN कनेक्शन रद्द हो जाएगा और किल स्विच अक्षम हो जाएगा।\n"
+"\n"
+"क्या जारी रखना है?"
+
+msgctxt "message"
+msgid ""
+"Signing out will cancel the current VPN connection.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"साइन-आउट करने से मौजूदा VPN कनेक्शन रद्द हो जाएगा।\n"
+"\n"
+"क्या जारी रखना है?"
+
+msgctxt "message"
+msgid ""
+"Signing out will disable the kill switch, potentially exposing your internet traffic. \n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"साइन-आउट करने से किल स्विच अक्षम हो जाएगा और आपका इंटरनेट ट्रैफिक उजागर हो सकता है। \n"
+"\n"
+"क्या जारी रखना है?"
+
+msgctxt "message"
+msgid "Signing out..."
+msgstr "साइनआउट कर रहे हैं..."
+
+msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"आपके सिस्टम पे कुछ ज़रूरी कंपोनेंट नहीं मिले। ऐप शायद जैसा चाहिए वैसा काम न "
+"करे।"
+
+msgctxt "message"
+msgid "Split tunneling enabled. Remember to restart affected apps."
+msgstr "स्प्लिट टनलिंग सक्षम है। प्रभावित ऐप वापिस शुरु करना न भूलें।"
+
+msgctxt "message"
+msgid ""
+"These servers give the best performance for BitTorrent and file sharing."
+msgstr "ये सर्वर BitTorrent और फाइल शेयर करने के लिए सबसे अच्छे है।"
+
+msgctxt "message"
+msgid ""
+"This technology allows Proton VPN to provide higher speed and security in "
+"difficult-to-reach countries."
+msgstr ""
+"ये टेकनोलॉजी Proton VPN को मुश्किल-से-पहुंच वाले देशों में ज़्यादा रफ्तार और"
+" सुरक्षा देने में मदद करती है।"
+
+msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "इससे आपका प्रोटोकॉल अपने आप WireGuard पे सेट हो जाएगा।"
+
+msgctxt "message"
+msgid "This will disable NetShield."
+msgstr "इससे NetShield अक्षम हो जाएगा।"
+
+msgctxt "message"
+msgid "This will disable custom DNS."
+msgstr "इससे कस्टम DNS अक्षम हो जाएगा।"
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "इससे किल स्विच अक्षम हो जाएगा।"
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "इससे स्प्लिट टनलिंग अक्षम हो जाएगी।"
+
+msgctxt "message"
+msgid ""
+"Tunnels IPv6 traffic through the VPN. Can enhance compatibility with IPv6 "
+"networks."
+msgstr ""
+"VPN के ज़रिए IPv6 ट्रैफिक को टनल करता है। IPv6 नेटवर्क के साथ अनुकूलता बढ़ा "
+"सकता है।"
+
+msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"इस्तेमाल का डेटा हमें VPN ब्लॉक को पार करने और ऐप की परफॉर्मेंस बेहतर बनाने में मदद करता है।\n"
+"\n"
+"ये आंकड़े आपका आईपी पता नहीं रखते, और इनका इस्तेमाल कभी भी आपको पहचानने में नहीं किया जा सकता। हम कभी भी इन्हें दूसरे लोगों से शेयर नहीं करते।"
+
+msgctxt "message"
+msgid "When enabled, the app starts minimized to the tray."
+msgstr "सक्षम करने पर, ऐप ट्रे में छोटा होकर खुलता है।"
+
+msgctxt "message"
+msgid ""
+"You will be connected to a server as soon as Proton VPN app starts. Replace "
+"it with a country ISO code (e.g.: US for United States), a server (e.g.: "
+"NL#42) or Fastest for quick connection. Default value: Off."
+msgstr ""
+"Proton VPN ऐप शुरू होते ही आप किसी सर्वर से कनेक्ट हो जाएंगे। इसे देश के ISO"
+" कोड (जैसे: अमेरिका के लिए US), किसी सर्वर (जैसे: NL#42) या तुरंत जुड़ने के "
+"लिए Fastest से बदलें। डिफॉल्ट वैल्यू: Off।"
+
+msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "आपका सुझाव हमें Proton VPN को बेहतर बनाने में मदद करता है।"
+
+msgctxt "message"
+msgid "Your issue has been reported"
+msgstr "आपकी समस्या की रिपोर्ट कर दी गई है"
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "आपका सत्र खत्म हो गया है। कृपया वापस साइन-इन करें।"
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr ""
+"ज़रूरी शर्तों और इंस्टॉलेशन के वैकल्पिक तरीकों के बारे में {learn_more}।"
+
+msgctxt "placeholder"
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgctxt "placeholder"
+msgid "Press Ctrl+F to search"
+msgstr "खोजने के लिए Ctrl+F दबाएं"
+
+msgctxt "placeholder"
+msgid "Username"
+msgstr "यूज़रनाम"
+
+msgctxt "status"
+msgid "Connecting..."
+msgstr "जुड़ रहे..."
+
+msgctxt "status"
+msgid "Connection error"
+msgstr "कनेक्शन त्रुटि"
+
+msgctxt "status"
+msgid "Disconnecting..."
+msgstr "कनेक्शन तोड़ रहे हैं..."
+
+msgctxt "status"
+msgid "Protected"
+msgstr "सुरक्षित"
+
+msgctxt "status"
+msgid "Unprotected"
+msgstr "असुरक्षित"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "2FA ज़रूरी है"
+
+msgctxt "title"
+msgid "About"
+msgstr "हमारे बारे में"
+
+msgctxt "title"
+msgid "Account"
+msgstr "खाता"
+
+msgctxt "title"
+msgid "Active connection found"
+msgstr "सक्रिय कनेक्शन मिला"
+
+msgctxt "title"
+msgid "Add excluded apps"
+msgstr "बहिष्कृत ऐप जोड़ें"
+
+msgctxt "title"
+msgid "Add included apps"
+msgstr "शामिल ऐप जोड़ें"
+
+msgctxt "title"
+msgid "Authenticator app"
+msgstr "प्रमाणीकरण अनुप्रयोग"
+
+msgctxt "title"
+msgid "Auto connect"
+msgstr "अपनेआप-जुड़ें"
+
+msgctxt "title"
+msgid "Beta Access"
+msgstr "बीटा एक्सेस"
+
+msgctxt "title"
+msgid "Beta access"
+msgstr "बीटा एक्सेस"
+
+msgctxt "title"
+msgid "Connection"
+msgstr "कनेक्शन"
+
+msgctxt "title"
+msgid "Connection error: session limit reached"
+msgstr "कनेक्शन त्रुटि: सत्र सीमा तक पहुंचे"
+
+msgctxt "title"
+msgid "Countries"
+msgstr "देश"
+
+msgctxt "title"
+msgid "Create a troubleshooting file"
+msgstr "समस्या सुलझाने वाली फाइल बनाएं"
+
+msgctxt "title"
+msgid "Custom DNS servers"
+msgstr "कस्टम DNS सर्वर"
+
+msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "WireGuard अक्षम करें?"
+
+msgctxt "title"
+msgid "Enable Custom DNS"
+msgstr "कस्टम DNS सक्षम करें"
+
+msgctxt "title"
+msgid "Enable Custom DNS?"
+msgstr "कस्टम DNS सक्षम करें?"
+
+msgctxt "title"
+msgid "Enable Netshield"
+msgstr "NetShield सक्षम करें"
+
+msgctxt "title"
+msgid "Enable Netshield ?"
+msgstr "NetShield सक्षम करें?"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "किल स्विच सक्षम करें?"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "स्प्लिट टनलिंग सक्षम करें?"
+
+msgctxt "title"
+msgid "Exclude mode"
+msgstr "बाहर करने का मोड"
+
+msgctxt "title"
+msgid "Fastest country"
+msgstr "सबसे तेज़ देश"
+
+msgctxt "title"
+msgid "Fastest free server"
+msgstr "सबसे तेज़ फ्री सर्वर"
+
+msgctxt "title"
+msgid "Features"
+msgstr "विशेषताएं"
+
+msgctxt "title"
+msgid "Free connections"
+msgstr "फ्री कनेक्शन"
+
+msgctxt "title"
+msgid "General"
+msgstr "सामान्य"
+
+msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "किसी दोस्त को Proton VPN की सिफारिश करने की आपकी संभावना कितनी है?"
+
+msgctxt "title"
+msgid "Include mode"
+msgstr "शामिल करने का मोड"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "अमान्य सत्र"
+
+msgctxt "title"
+msgid "Kill Switch Enabled"
+msgstr "किल स्विच सक्षम है"
+
+msgctxt "title"
+msgid "Kill Switch enabled"
+msgstr "किल स्विच सक्षम है"
+
+msgctxt "title"
+msgid "Kill switch"
+msgstr "किल स्विच"
+
+msgctxt "title"
+msgid "Locations"
+msgstr "स्थान"
+
+msgctxt "title"
+msgid "Moderate NAT"
+msgstr "मध्यम एनएटी"
+
+msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
+msgid "No space left on device"
+msgstr "डिवाइस में जगह नहीं है"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
+
+msgctxt "title"
+msgid "Pinned tray connections"
+msgstr "पिन किए गए ट्रे कनेक्शन"
+
+msgctxt "title"
+msgid "Port forwarding"
+msgstr "पोर्ट फॉरवर्ड"
+
+msgctxt "title"
+msgid "Protocol"
+msgstr "प्रोटोकॉल"
+
+msgctxt "title"
+msgid "Release notes"
+msgstr "रिलीज़ नोट"
+
+msgctxt "title"
+msgid "Report an Issue"
+msgstr "समस्या की रिपोर्ट करें"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
+
+msgctxt "title"
+msgid "Security key"
+msgstr "सुरक्षा चाबी"
+
+msgctxt "title"
+msgid "Select packet capture directory"
+msgstr "पैकेट कैप्चर डायरेक्टरी चुनें"
+
+msgctxt "title"
+msgid "Servers"
+msgstr "सर्वर"
+
+msgctxt "title"
+msgid "Settings"
+msgstr "सेटिंग"
+
+msgctxt "title"
+msgid "Share anonymous crash reports"
+msgstr "अज्ञात क्रैश रिपोर्ट शेयर करें"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "अज्ञात इस्तेमाल आंकड़े शेयर करें"
+
+msgctxt "title"
+msgid "Smart routing"
+msgstr "स्मार्ट रूटिंग"
+
+msgctxt "title"
+msgid "Something went wrong"
+msgstr "कोई गड़बड़ हो गई"
+
+msgctxt "title"
+msgid "Split tunneling"
+msgstr "स्प्लिट टनलिंग"
+
+msgctxt "title"
+msgid "Start app minimized"
+msgstr "ऐप छोटा करके शुरू करें"
+
+msgctxt "title"
+msgid "Thanks for your feedback"
+msgstr "आपके सुझाव के लिए शुक्रिया"
+
+msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
+msgid "Two-factor authentication"
+msgstr "टू-फैक्टर सत्यापन"
+
+msgctxt "title"
+msgid "Unable to find server"
+msgstr "सर्वर नहीं मिल पा रहा"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "सिस्टम की घड़ी अपडेट करें"
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "VPN कनेक्शन गड़बड़ी"
+
+msgctxt "tooltip"
+msgid "Clear"
+msgstr "साफ़ करें"
+
+msgctxt "tooltip"
+msgid "Close"
+msgstr "बंद करें"
+
+msgctxt "tooltip"
+msgid "Connect to {country_name}"
+msgstr "{country_name} से कनेक्ट करें"
+
+msgctxt "tooltip"
+msgid "Connect to {country} via Secure Core"
+msgstr "{country} से Secure Core के ज़रिए कनेक्ट करें"
+
+msgctxt "tooltip"
+msgid "Connect to {exit_country} via {entry_country}"
+msgstr "{entry_country} के ज़रिए {exit_country} से जुड़ें"
+
+msgctxt "tooltip"
+msgid "Connect to {name}"
+msgstr "{name} से कनेक्ट करें"
+
+msgctxt "tooltip"
+msgid "Copy port number"
+msgstr "पोर्ट नंबर कॉपी करें"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Free सर्वर स्थान"
+
+msgctxt "tooltip"
+msgid ""
+"Hide all Secure Core servers\n"
+"to connect to {country}"
+msgstr ""
+"{country} से जुड़ने के लिए\n"
+"सभी Secure Core सर्वर छिपा दें"
+
+msgctxt "tooltip"
+msgid "Hide all locations from {country_name}"
+msgstr "{country_name} के सभी स्थान छिपा दें"
+
+msgctxt "tooltip"
+msgid "Hide all servers from {name}"
+msgstr "{name} के सभी सर्वर छिपा दें"
+
+msgctxt "tooltip"
+msgid "P2P/BitTorrent supported"
+msgstr "P2P/BitTorrent सपोर्ट है"
+
+msgctxt "tooltip"
+msgid ""
+"Secure Core server that connects to {exit_country} through {entry_country}."
+msgstr ""
+"Secure Core सर्वर, जो {entry_country} के रास्ते {exit_country} से कनेक्ट "
+"होता है।"
+
+msgctxt "tooltip"
+msgid "Secure Core supported"
+msgstr "Secure Core सपोर्ट है"
+
+msgctxt "tooltip"
+msgid "Server load is at {load}%"
+msgstr "सर्वर लोड {load}% पर है"
+
+msgctxt "tooltip"
+msgid ""
+"Show all Secure Core servers\n"
+"to connect to {country}"
+msgstr ""
+"Secure Core के सभी सर्वर दिखाएं\n"
+"{country} से कनेक्ट होने के लिए"
+
+msgctxt "tooltip"
+msgid "Show all locations from {country_name}"
+msgstr "{country_name} के सभी स्थान दिखाएं"
+
+msgctxt "tooltip"
+msgid "Show all servers from {name}"
+msgstr "{name} के सभी सर्वर दिखाएं"
+
+msgctxt "tooltip"
+msgid "Smart routing is used"
+msgstr "स्मार्ट रूटिंग इस्तेमाल होती है"
+
+msgctxt "tooltip"
+msgid "Streaming supported"
+msgstr "स्ट्रीमिंग की सुविधा है"
+
+msgctxt "tooltip"
+msgid "To change split tunneling settings, please disconnect the VPN first."
+msgstr "स्प्लिट टनलिंग सेटिंग बदलने के लिए, कृपया पहले VPN डिस्कनेक्ट करें।"
+
+msgctxt "tooltip"
+msgid "Tor supported"
+msgstr "Tor समर्थित"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {country_name}"
+msgstr "{country_name} से कनेक्ट होने के लिए अपग्रेड करें"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {country} via Secure Core"
+msgstr "Secure Core के ज़रिए {country} से कनेक्ट करने के लिए अपग्रेड करें"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {exit_country} via {entry_country}"
+msgstr ""
+"{entry_country} के ज़रिए {exit_country} से कनेक्ट करने के लिए अपग्रेड करें"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {name}"
+msgstr "{name} से कनेक्ट करने के लिए अपग्रेड करें"
+
+msgctxt "tooltip"
+msgid "{name} is under maintenance"
+msgstr "{name} रखरखाव में है"

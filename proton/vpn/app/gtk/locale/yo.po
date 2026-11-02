@@ -1,0 +1,2217 @@
+#
+msgid ""
+msgstr ""
+"Language-Team: Yoruba\n"
+"Language: yo_NG\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "button"
+msgid "Add"
+msgstr "Fi kún"
+
+msgctxt "button"
+msgid "Authenticate"
+msgstr "Jẹ́rìísí"
+
+msgctxt "button"
+msgid "Browse..."
+msgstr "Ṣàwárí..."
+
+msgctxt "button"
+msgid "Cancel"
+msgstr "Fagi lé e"
+
+msgctxt "button"
+msgid "Cancel Connection"
+msgstr "Fagi lé àsopọ̀"
+
+msgctxt "button"
+msgid "Change server"
+msgstr "Yí sáfà padà"
+
+msgctxt "button"
+msgid "Connect"
+msgstr "So ó pọ̀"
+
+msgctxt "button"
+msgid "Create Account"
+msgstr "Ẹ ṣẹ̀dá àkántì"
+
+msgctxt "button"
+msgid "Disable"
+msgstr "Paná rẹ̀"
+
+msgctxt "button"
+msgid "Disconnect"
+msgstr "Tú ìsopọ̀"
+
+msgctxt "button"
+msgid "Done"
+msgstr "Tán"
+
+msgctxt "button"
+msgid "Hide"
+msgstr "Fi pamọ́"
+
+msgctxt "button"
+msgid "Learn more"
+msgstr "Mọ̀ síi"
+
+msgctxt "button"
+msgid "Manage Account"
+msgstr "Bójú tó àkántì"
+
+msgctxt "button"
+msgid "Need Help?"
+msgstr "Ṣé ẹ nílò ìrànlọ́wọ́?"
+
+msgctxt "button"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "button"
+msgid "Send error logs"
+msgstr "Fi àwọn àkọsílẹ̀ àṣìṣe ránṣẹ́"
+
+msgctxt "button"
+msgid "Share anonymously"
+msgstr "Ṣe alábàápín láìsàfihàn orúkọ"
+
+msgctxt "button"
+msgid "Show"
+msgstr "Fi hàn"
+
+msgctxt "button"
+msgid "Sign in"
+msgstr "Kó wọlé"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "Ẹ wọlé padà"
+
+msgctxt "button"
+msgid "Start"
+msgstr "Bẹ̀rẹ̀"
+
+msgctxt "button"
+msgid "Stop"
+msgstr "Dẹ́kùn"
+
+msgctxt "button"
+msgid "Upgrade"
+msgstr "Gbé e ga"
+
+msgctxt "button"
+msgid "Use 6-digit authentication code"
+msgstr "Lo kóòdù ìjẹ́rìísí díjákìítì 6"
+
+msgctxt "button"
+msgid "Use recovery code"
+msgstr "Lo kóòdù ìmúbọ̀sípò"
+
+msgctxt "button"
+msgid "_Cancel"
+msgstr "_Fagi lé e"
+
+msgctxt "button"
+msgid "_Close"
+msgstr "_Pa á dé"
+
+msgctxt "button"
+msgid "_Enable"
+msgstr "_Fi ààyè gbà á"
+
+msgctxt "button"
+msgid "_No"
+msgstr "_Rárá"
+
+msgctxt "button"
+msgid "_Select"
+msgstr "_Yan"
+
+msgctxt "button"
+msgid "_Submit"
+msgstr "_Fìránṣẹ́"
+
+msgctxt "button"
+msgid "_Yes"
+msgstr "_Bẹ́ẹ̀ni"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "Fi ẹ̀yà aplikéṣàn náà hàn"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "Bẹ̀rẹ̀ ní ipò tí a ti sọ ọ́ di kékeré sínú Tráy Ètò"
+
+msgctxt "country"
+msgid "Afghanistan"
+msgstr "Afiganistánì"
+
+msgctxt "country"
+msgid "Aland Islands"
+msgstr "Àwọn Erékùsù Álandì"
+
+msgctxt "country"
+msgid "Albania"
+msgstr "Albania"
+
+msgctxt "country"
+msgid "Algeria"
+msgstr "Algeria"
+
+msgctxt "country"
+msgid "American Samoa"
+msgstr "Sámóà ti Amẹ́ríkà"
+
+msgctxt "country"
+msgid "Andorra"
+msgstr "Àndórà"
+
+msgctxt "country"
+msgid "Angola"
+msgstr "Àngólà"
+
+msgctxt "country"
+msgid "Anguilla"
+msgstr "Àngílá"
+
+msgctxt "country"
+msgid "Antarctica"
+msgstr "Áńtárkítíkà"
+
+msgctxt "country"
+msgid "Antigua and Barbuda"
+msgstr "Àntíguà àti Bàrbúdà"
+
+msgctxt "country"
+msgid "Argentina"
+msgstr "Arjentínà"
+
+msgctxt "country"
+msgid "Armenia"
+msgstr "Àméníà"
+
+msgctxt "country"
+msgid "Aruba"
+msgstr "Aruba"
+
+msgctxt "country"
+msgid "Australia"
+msgstr "Austrálíà"
+
+msgctxt "country"
+msgid "Austria"
+msgstr "Austria"
+
+msgctxt "country"
+msgid "Azerbaijan"
+msgstr "Asɛ́rbájánì"
+
+msgctxt "country"
+msgid "Bahamas"
+msgstr "Bánámásì"
+
+msgctxt "country"
+msgid "Bahrain"
+msgstr "Báhráìn"
+
+msgctxt "country"
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+msgctxt "country"
+msgid "Barbados"
+msgstr "Bárbádós"
+
+msgctxt "country"
+msgid "Belarus"
+msgstr "Bẹ̀lárúsì"
+
+msgctxt "country"
+msgid "Belgium"
+msgstr "Bɛ́lịọ́mù"
+
+msgctxt "country"
+msgid "Belize"
+msgstr "Bèlísì"
+
+msgctxt "country"
+msgid "Benin"
+msgstr "Benin"
+
+msgctxt "country"
+msgid "Bermuda"
+msgstr "Bermuda"
+
+msgctxt "country"
+msgid "Bhutan"
+msgstr "Bùtánì"
+
+msgctxt "country"
+msgid "Bolivia"
+msgstr "Bòlífíà"
+
+msgctxt "country"
+msgid "Bonaire, Saint Eustatius and Saba "
+msgstr "Bonaire, Sẹ́ntì Eustatius àti Saba "
+
+msgctxt "country"
+msgid "Bosnia and Herzegovina"
+msgstr "Bọ̀síníà àti Hẹ́rísègòfínà"
+
+msgctxt "country"
+msgid "Botswana"
+msgstr "Bòtíswánà"
+
+msgctxt "country"
+msgid "Bouvet Island"
+msgstr "Erékùṣù Bouvet"
+
+msgctxt "country"
+msgid "Brazil"
+msgstr "Brazil"
+
+msgctxt "country"
+msgid "British Indian Ocean Territory"
+msgstr "Àgbègbè Òkun India ti Bírítìkétì"
+
+msgctxt "country"
+msgid "British Virgin Islands"
+msgstr "Àwọn Erékùṣù Fájìn ti Brítánì"
+
+msgctxt "country"
+msgid "Brunei"
+msgstr "Bùrúnéì"
+
+msgctxt "country"
+msgid "Bulgaria"
+msgstr "Bùlgáríà"
+
+msgctxt "country"
+msgid "Burkina Faso"
+msgstr "Bùrkínà Fásò"
+
+msgctxt "country"
+msgid "Burundi"
+msgstr "Burundi"
+
+msgctxt "country"
+msgid "Cambodia"
+msgstr "Kámbódíà"
+
+msgctxt "country"
+msgid "Cameroon"
+msgstr "Kàmárúùn"
+
+msgctxt "country"
+msgid "Canada"
+msgstr "Kánádà"
+
+msgctxt "country"
+msgid "Cape Verde"
+msgstr "Kápé Vẹ́rẹ̀dè"
+
+msgctxt "country"
+msgid "Cayman Islands"
+msgstr "Àwọn Erékùṣù Káýmàn"
+
+msgctxt "country"
+msgid "Central African Republic"
+msgstr "Orílẹ̀-èdè Áfíríkà Árin"
+
+msgctxt "country"
+msgid "Chad"
+msgstr "Chad"
+
+msgctxt "country"
+msgid "Chile"
+msgstr "Ṣílì"
+
+msgctxt "country"
+msgid "China"
+msgstr "China"
+
+msgctxt "country"
+msgid "Christmas Island"
+msgstr "Erékùṣù Kírísìmásì"
+
+msgctxt "country"
+msgid "Cocos Islands"
+msgstr "Àwọn Erékùṣù Kòkòsù"
+
+msgctxt "country"
+msgid "Colombia"
+msgstr "Kòlómíbìà"
+
+msgctxt "country"
+msgid "Comoros"
+msgstr "Kòmóròsù"
+
+msgctxt "country"
+msgid "Cook Islands"
+msgstr "Àwọn Erékùṣù Kúùkù"
+
+msgctxt "country"
+msgid "Costa Rica"
+msgstr "Kosto Ríkà"
+
+msgctxt "country"
+msgid "Croatia"
+msgstr "Króátíà"
+
+msgctxt "country"
+msgid "Cuba"
+msgstr "Kúbà"
+
+msgctxt "country"
+msgid "Curacao"
+msgstr "Kúrásáo"
+
+msgctxt "country"
+msgid "Cyprus"
+msgstr "Sáìprásì"
+
+msgctxt "country"
+msgid "Czech Republic"
+msgstr "Orílẹ̀-èdè Ṣẹ́ẹ́kì"
+
+msgctxt "country"
+msgid "Democratic Republic of the Congo"
+msgstr "Orílẹ̀-èdè Olómìnira Ará Kóngò"
+
+msgctxt "country"
+msgid "Denmark"
+msgstr "Dɛ̀nìmáàkì"
+
+msgctxt "country"
+msgid "Djibouti"
+msgstr "Jibútì"
+
+msgctxt "country"
+msgid "Dominica"
+msgstr "Dọ̀míníkà"
+
+msgctxt "country"
+msgid "Dominican Republic"
+msgstr "Orílẹ̀-èdè Olómìnira Dómíníkánù"
+
+msgctxt "country"
+msgid "East Timor"
+msgstr "Ìlà oòrùn Tímór"
+
+msgctxt "country"
+msgid "Ecuador"
+msgstr "Ekuádọ̀"
+
+msgctxt "country"
+msgid "Egypt"
+msgstr "Egíptì"
+
+msgctxt "country"
+msgid "El Salvador"
+msgstr "El Sàlífádọ̀"
+
+msgctxt "country"
+msgid "Equatorial Guinea"
+msgstr "Gíní Ẹ̀kúàtóríà"
+
+msgctxt "country"
+msgid "Eritrea"
+msgstr "Eritíráà"
+
+msgctxt "country"
+msgid "Estonia"
+msgstr "Estóníà"
+
+msgctxt "country"
+msgid "Ethiopia"
+msgstr "Ètíópíà"
+
+msgctxt "country"
+msgid "Falkland Islands"
+msgstr "Àwọn Erékùsù Falkland"
+
+msgctxt "country"
+msgid "Faroe Islands"
+msgstr "Àwọn Erékùṣù Fàáróò"
+
+msgctxt "country"
+msgid "Fiji"
+msgstr "Fíjì"
+
+msgctxt "country"
+msgid "Finland"
+msgstr "Fínlándì"
+
+msgctxt "country"
+msgid "France"
+msgstr "Faransé"
+
+msgctxt "country"
+msgid "French Guiana"
+msgstr "Gàyánà ti Faransé"
+
+msgctxt "country"
+msgid "French Polynesia"
+msgstr "Polinésíà ti Faransé"
+
+msgctxt "country"
+msgid "French Southern Territories"
+msgstr "Àwọn Àgbègbè Gúúsù Faransé"
+
+msgctxt "country"
+msgid "Gabon"
+msgstr "Gabon"
+
+msgctxt "country"
+msgid "Gambia"
+msgstr "Gámìbìà"
+
+msgctxt "country"
+msgid "Georgia"
+msgstr "Gẹ́ọ́gíà"
+
+msgctxt "country"
+msgid "Germany"
+msgstr "Jámánì"
+
+msgctxt "country"
+msgid "Ghana"
+msgstr "Ghana"
+
+msgctxt "country"
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+msgctxt "country"
+msgid "Greece"
+msgstr "Greece"
+
+msgctxt "country"
+msgid "Greenland"
+msgstr "Grínlandì"
+
+msgctxt "country"
+msgid "Grenada"
+msgstr "Gùrɛnádà"
+
+msgctxt "country"
+msgid "Guadeloupe"
+msgstr "Gùàdɛlúpù"
+
+msgctxt "country"
+msgid "Guam"
+msgstr "Guámù"
+
+msgctxt "country"
+msgid "Guatemala"
+msgstr "Guatẹ́málà"
+
+msgctxt "country"
+msgid "Guernsey"
+msgstr "Gɜ̀nsì"
+
+msgctxt "country"
+msgid "Guinea"
+msgstr "Gíní"
+
+msgctxt "country"
+msgid "Guinea-Bissau"
+msgstr "Gíní-Bìsáù"
+
+msgctxt "country"
+msgid "Guyana"
+msgstr "Gáyánà"
+
+msgctxt "country"
+msgid "Haiti"
+msgstr "Háìtì"
+
+msgctxt "country"
+msgid "Heard Island and McDonald Islands"
+msgstr "Erékùṣù Híìdì àti MàkDónálè"
+
+msgctxt "country"
+msgid "Honduras"
+msgstr "Hòndúràs"
+
+msgctxt "country"
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+msgctxt "country"
+msgid "Hungary"
+msgstr "Hungarí"
+
+msgctxt "country"
+msgid "Iceland"
+msgstr "Ìsìlándì"
+
+msgctxt "country"
+msgid "India"
+msgstr "Índíà"
+
+msgctxt "country"
+msgid "Indonesia"
+msgstr "Indonésíà"
+
+msgctxt "country"
+msgid "Iran"
+msgstr "Iran"
+
+msgctxt "country"
+msgid "Iraq"
+msgstr "Iraq"
+
+msgctxt "country"
+msgid "Ireland"
+msgstr "Ayálándì"
+
+msgctxt "country"
+msgid "Isle of Man"
+msgstr "Erékùṣù Man"
+
+msgctxt "country"
+msgid "Israel"
+msgstr "Ísírẹ́lì"
+
+msgctxt "country"
+msgid "Italy"
+msgstr "Itáli"
+
+msgctxt "country"
+msgid "Ivory Coast"
+msgstr "Orílẹ̀-èdè Côte d'Ivoire"
+
+msgctxt "country"
+msgid "Jamaica"
+msgstr "Jámaíkà"
+
+msgctxt "country"
+msgid "Japan"
+msgstr "Japan"
+
+msgctxt "country"
+msgid "Jersey"
+msgstr "Jősì"
+
+msgctxt "country"
+msgid "Jordan"
+msgstr "Jọdánì"
+
+msgctxt "country"
+msgid "Kazakhstan"
+msgstr "Kàsákìsítánì"
+
+msgctxt "country"
+msgid "Kenya"
+msgstr "Kéńyà"
+
+msgctxt "country"
+msgid "Kiribati"
+msgstr "Kiríbátì"
+
+msgctxt "country"
+msgid "Kosovo"
+msgstr "Kòsófò"
+
+msgctxt "country"
+msgid "Kuwait"
+msgstr "Kùwáítì"
+
+msgctxt "country"
+msgid "Kyrgyzstan"
+msgstr "Kyrgyzstan"
+
+msgctxt "country"
+msgid "Laos"
+msgstr "Laos"
+
+msgctxt "country"
+msgid "Latvia"
+msgstr "Latvia"
+
+msgctxt "country"
+msgid "Lebanon"
+msgstr "Lɛ́bánọ́nù"
+
+msgctxt "country"
+msgid "Lesotho"
+msgstr "Lɛ̀sótò"
+
+msgctxt "country"
+msgid "Liberia"
+msgstr "Lìbéríà"
+
+msgctxt "country"
+msgid "Libya"
+msgstr "Líbíyà"
+
+msgctxt "country"
+msgid "Liechtenstein"
+msgstr "Líṣítẹ́nṣítáìnì"
+
+msgctxt "country"
+msgid "Lithuania"
+msgstr "Lítùánìà"
+
+msgctxt "country"
+msgid "Luxembourg"
+msgstr "Luxembourg"
+
+msgctxt "country"
+msgid "Macao"
+msgstr "Macao"
+
+msgctxt "country"
+msgid "Macedonia"
+msgstr "Masẹdoníà"
+
+msgctxt "country"
+msgid "Madagascar"
+msgstr "Màdàgásíkà"
+
+msgctxt "country"
+msgid "Malawi"
+msgstr "Máláwì"
+
+msgctxt "country"
+msgid "Malaysia"
+msgstr "Máláysíà"
+
+msgctxt "country"
+msgid "Maldives"
+msgstr "Maladíìfì"
+
+msgctxt "country"
+msgid "Mali"
+msgstr "Málì"
+
+msgctxt "country"
+msgid "Malta"
+msgstr "Málítà"
+
+msgctxt "country"
+msgid "Marshall Islands"
+msgstr "Àwọn Erékùṣù Marshall"
+
+msgctxt "country"
+msgid "Martinique"
+msgstr "Mátíníkì"
+
+msgctxt "country"
+msgid "Mauritania"
+msgstr "Mọrítáníà"
+
+msgctxt "country"
+msgid "Mauritius"
+msgstr "Mọ́rítíọ́sù"
+
+msgctxt "country"
+msgid "Mayotte"
+msgstr "Mayọ̀tì"
+
+msgctxt "country"
+msgid "Mexico"
+msgstr "Meksiko"
+
+msgctxt "country"
+msgid "Micronesia"
+msgstr "Míkòrónésíà"
+
+msgctxt "country"
+msgid "Moldova"
+msgstr "Mọldófà"
+
+msgctxt "country"
+msgid "Monaco"
+msgstr "Monaco"
+
+msgctxt "country"
+msgid "Mongolia"
+msgstr "Móngólíà"
+
+msgctxt "country"
+msgid "Montenegro"
+msgstr "Montenegro"
+
+msgctxt "country"
+msgid "Montserrat"
+msgstr "Mọ́ntsèrátì"
+
+msgctxt "country"
+msgid "Morocco"
+msgstr "Mòrókò"
+
+msgctxt "country"
+msgid "Mozambique"
+msgstr "Mozámbíìkì"
+
+msgctxt "country"
+msgid "Myanmar"
+msgstr "Miánmáà"
+
+msgctxt "country"
+msgid "Namibia"
+msgstr "Nàmíbíà"
+
+msgctxt "country"
+msgid "Nauru"
+msgstr "Náúrù"
+
+msgctxt "country"
+msgid "Nepal"
+msgstr "Nepal"
+
+msgctxt "country"
+msgid "Netherlands"
+msgstr "Netherlandì"
+
+msgctxt "country"
+msgid "New Caledonia"
+msgstr "Kàlèdóníà Tuntun"
+
+msgctxt "country"
+msgid "New Zealand"
+msgstr "New Zealand"
+
+msgctxt "country"
+msgid "Nicaragua"
+msgstr "Nikaragua"
+
+msgctxt "country"
+msgid "Niger"
+msgstr "Nàìjìrà"
+
+msgctxt "country"
+msgid "Nigeria"
+msgstr "Nàìjíríà"
+
+msgctxt "country"
+msgid "Niue"
+msgstr "Níúẹ̀"
+
+msgctxt "country"
+msgid "Norfolk Island"
+msgstr "Erékùsù Norfolk"
+
+msgctxt "country"
+msgid "North Korea"
+msgstr "Àríwá Kòréà"
+
+msgctxt "country"
+msgid "Northern Mariana Islands"
+msgstr "Àwọn Erékùṣù Marian ti Àríwá"
+
+msgctxt "country"
+msgid "Norway"
+msgstr "Norway"
+
+msgctxt "country"
+msgid "Oman"
+msgstr "Omán"
+
+msgctxt "country"
+msgid "Pakistan"
+msgstr "Pàkísítánì"
+
+msgctxt "country"
+msgid "Palau"
+msgstr "Páláù"
+
+msgctxt "country"
+msgid "Palestinian Territory"
+msgstr "Agbègbè Palesítíníà"
+
+msgctxt "country"
+msgid "Panama"
+msgstr "Pánámà"
+
+msgctxt "country"
+msgid "Papua New Guinea"
+msgstr "Pápúà Gíní Tuntun"
+
+msgctxt "country"
+msgid "Paraguay"
+msgstr "Párágúàyì"
+
+msgctxt "country"
+msgid "Peru"
+msgstr "Pɛ̀rú"
+
+msgctxt "country"
+msgid "Philippines"
+msgstr "Fìlìpíníì"
+
+msgctxt "country"
+msgid "Pitcairn"
+msgstr "Pìtkáìnì"
+
+msgctxt "country"
+msgid "Poland"
+msgstr "Poland"
+
+msgctxt "country"
+msgid "Portugal"
+msgstr "Portúgálì"
+
+msgctxt "country"
+msgid "Puerto Rico"
+msgstr "Puẹ́rtò Ríkò"
+
+msgctxt "country"
+msgid "Qatar"
+msgstr "Qatar"
+
+msgctxt "country"
+msgid "Republic of the Congo"
+msgstr "Orílẹ̀-èdè Olómìnira Kóngò"
+
+msgctxt "country"
+msgid "Reunion"
+msgstr "Rɛ̀úníyọ̀nì"
+
+msgctxt "country"
+msgid "Romania"
+msgstr "Róméníà"
+
+msgctxt "country"
+msgid "Russia"
+msgstr "Rọ́síà"
+
+msgctxt "country"
+msgid "Rwanda"
+msgstr "Rúwándà"
+
+msgctxt "country"
+msgid "Saint Barthelemy"
+msgstr "Sẹ́ntì Bátélémi"
+
+msgctxt "country"
+msgid "Saint Helena"
+msgstr "St. Helena"
+
+msgctxt "country"
+msgid "Saint Kitts and Nevis"
+msgstr "Sẹ́ntì Kítsì àti Nífísì"
+
+msgctxt "country"
+msgid "Saint Lucia"
+msgstr "Sáínì Lúṣíà"
+
+msgctxt "country"
+msgid "Saint Martin"
+msgstr "Sáínì Mátínì"
+
+msgctxt "country"
+msgid "Saint Pierre and Miquelon"
+msgstr "Sàntí Piérí àti Mìkẹlọ̀n"
+
+msgctxt "country"
+msgid "Saint Vincent and the Grenadines"
+msgstr "St. Vincent àti Gírínádínì"
+
+msgctxt "country"
+msgid "Samoa"
+msgstr "Samoa"
+
+msgctxt "country"
+msgid "San Marino"
+msgstr "Sán Márínó"
+
+msgctxt "country"
+msgid "Sao Tome and Principe"
+msgstr "Sáótómé àti Príńsípè"
+
+msgctxt "country"
+msgid "Saudi Arabia"
+msgstr "Árábíà Sáúdì"
+
+msgctxt "country"
+msgid "Senegal"
+msgstr "Sɛ́nɛ̀gál"
+
+msgctxt "country"
+msgid "Serbia"
+msgstr "Serbia"
+
+msgctxt "country"
+msgid "Seychelles"
+msgstr "Seṣẹ́lìsì"
+
+msgctxt "country"
+msgid "Sierra Leone"
+msgstr "Síyérà Léónè"
+
+msgctxt "country"
+msgid "Singapore"
+msgstr "Singápórù"
+
+msgctxt "country"
+msgid "Sint Maarten"
+msgstr "Síntì Máátènì"
+
+msgctxt "country"
+msgid "Slovakia"
+msgstr "Sìlọ́fákíà"
+
+msgctxt "country"
+msgid "Slovenia"
+msgstr "Sìlọ́féníà"
+
+msgctxt "country"
+msgid "Solomon Islands"
+msgstr "Àwọn Erékùṣù Solómọ́nù"
+
+msgctxt "country"
+msgid "Somalia"
+msgstr "Sómálíà"
+
+msgctxt "country"
+msgid "South Africa"
+msgstr "Gúúsù Afíríkà"
+
+msgctxt "country"
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "Gẹ́ọ́gíà Gúúsù àti Àwọn Erékùṣù Sandwich Gúúsù"
+
+msgctxt "country"
+msgid "South Korea"
+msgstr "Gúúsù Kɔ̀ríà"
+
+msgctxt "country"
+msgid "South Sudan"
+msgstr "Gúúsù Súdàn"
+
+msgctxt "country"
+msgid "Spain"
+msgstr "Spáìn"
+
+msgctxt "country"
+msgid "Sri Lanka"
+msgstr "Srí Lánkà"
+
+msgctxt "country"
+msgid "Sudan"
+msgstr "Sudan"
+
+msgctxt "country"
+msgid "Suriname"
+msgstr "Surinámì"
+
+msgctxt "country"
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbádì àti Ján Mayen"
+
+msgctxt "country"
+msgid "Swaziland"
+msgstr "Swàsílándì"
+
+msgctxt "country"
+msgid "Sweden"
+msgstr "Swidin"
+
+msgctxt "country"
+msgid "Switzerland"
+msgstr "Sáwítìsàlandì"
+
+msgctxt "country"
+msgid "Syria"
+msgstr "Síríà"
+
+msgctxt "country"
+msgid "Taiwan"
+msgstr "Táìwánì"
+
+msgctxt "country"
+msgid "Tajikistan"
+msgstr "Tajíkísítánì"
+
+msgctxt "country"
+msgid "Tanzania"
+msgstr "Tànsáníà"
+
+msgctxt "country"
+msgid "Thailand"
+msgstr "Tàílandì"
+
+msgctxt "country"
+msgid "Togo"
+msgstr "Togo"
+
+msgctxt "country"
+msgid "Tokelau"
+msgstr "Tòkéláù"
+
+msgctxt "country"
+msgid "Tonga"
+msgstr "Tóngà"
+
+msgctxt "country"
+msgid "Trinidad and Tobago"
+msgstr "Trìnídádì àti Tòbágò"
+
+msgctxt "country"
+msgid "Tunisia"
+msgstr "Tùnísíà"
+
+msgctxt "country"
+msgid "Turkey"
+msgstr "Tọ́kì"
+
+msgctxt "country"
+msgid "Turkmenistan"
+msgstr "Turkmenistan"
+
+msgctxt "country"
+msgid "Turks and Caicos Islands"
+msgstr "Àwọn Erékùṣù Tọ́ọ̀kù àti Káíkòsì"
+
+msgctxt "country"
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+msgctxt "country"
+msgid "U.S. Virgin Islands"
+msgstr "Àwọn Erékùṣù Virgin ti Amẹ́ríkà"
+
+msgctxt "country"
+msgid "Uganda"
+msgstr "Uganda"
+
+msgctxt "country"
+msgid "Ukraine"
+msgstr "Ukraine"
+
+msgctxt "country"
+msgid "United Arab Emirates"
+msgstr "Àwọn Árábù Ìṣọ̀kan"
+
+msgctxt "country"
+msgid "United Kingdom"
+msgstr "Ilẹ̀ ọba Aṣọ̀kan"
+
+msgctxt "country"
+msgid "United States"
+msgstr "Àwọn Orílẹ̀-èdè Amẹ́ríkà"
+
+msgctxt "country"
+msgid "United States Minor Outlying Islands"
+msgstr "Àwọn Erékùṣù Kéréké ti Amẹ́ríkà"
+
+msgctxt "country"
+msgid "Uruguay"
+msgstr "Urugwáyì"
+
+msgctxt "country"
+msgid "Uzbekistan"
+msgstr "Usibékísítánì"
+
+msgctxt "country"
+msgid "Vanuatu"
+msgstr "Fánúátù"
+
+msgctxt "country"
+msgid "Vatican"
+msgstr "Fátíkánì"
+
+msgctxt "country"
+msgid "Venezuela"
+msgstr "Venezuela"
+
+msgctxt "country"
+msgid "Vietnam"
+msgstr "Vietnam"
+
+msgctxt "country"
+msgid "Wallis and Futuna"
+msgstr "Wallis àti Futuna"
+
+msgctxt "country"
+msgid "Western Sahara"
+msgstr "Ìwọ̀-oòrùn Sàhárà"
+
+msgctxt "country"
+msgid "Yemen"
+msgstr "Yemen"
+
+msgctxt "country"
+msgid "Zambia"
+msgstr "Sàmbíà"
+
+msgctxt "country"
+msgid "Zimbabwe"
+msgstr "Zimbábwè"
+
+msgctxt "error"
+msgid "An unknown error occurred"
+msgstr "Àṣìṣe àìmọ̀ kan wáyé."
+
+msgctxt "error"
+msgid "Authentication denied"
+msgstr "Ìjẹ́rìísí kọ̀ ààyè."
+
+msgctxt "error"
+msgid "Device disconnected"
+msgstr "Irin iṣẹ́ ti tú ìsopọ̀."
+
+msgctxt "error"
+msgid "Enter a valid IPv4 or IPv6 address"
+msgstr "Ẹ tẹ̀ àdírẹ́sì IPv4 tàbí IPv6 tó tọ́ sínú."
+
+msgctxt "error"
+msgid "Incorrect 2FA code."
+msgstr "Kóòdù 2FA kò tọ́."
+
+msgctxt "error"
+msgid "Incorrect credentials."
+msgstr "Àwọn ohun ìdánimọ̀ yín kò tọ́."
+
+msgctxt "error"
+msgid "Invalid username."
+msgstr "Orúkọ olùmúlò yín kò tọ́."
+
+msgctxt "error"
+msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"Ó dà bíi pé aago ẹ̀rọ yín kò bá àkókò mu mọ́.\n"
+"Èyí lè fa ìṣòro nígbà tí ẹ bá ń so pọ̀ mọ́ VPN.\n"
+"Ẹ mú àkókò ẹ̀rọ yín dé ojú ìwọ̀n, kí ẹ sì gbìyànjú láti so pọ̀ lẹ́ẹ̀kan sí i."
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr "A kò lè dé àwọn sáfà wa. Ẹ ṣàyẹ̀wò àsopọ̀ ayélujára yín."
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN kò lè so pọ̀ mọ́ VPN, ó sì dí ìráàyèsí sí ayélujára láti dáàbò bo IP yín.\n"
+"\n"
+"Ẹ tẹ \"Fagi lé àsopọ̀\" láti mú àsopọ̀ ayélujára yín padà. Tí ìṣòro yìí bá ń bá a lọ, ẹ gbìyànjú láti jáde kí ẹ sì wọlé padà."
+
+msgctxt "error"
+msgid ""
+"Proton services could not be reached.\n"
+"Please try again."
+msgstr ""
+"A kò lè dé àwọn iṣẹ́ Proton.\n"
+"Ẹ tún gbìyànjú."
+
+msgctxt "error"
+msgid "Session limit reached"
+msgstr "Opó sáà ti dé"
+
+msgctxt "error"
+msgid "Something went wrong. Please try submitting your report at:\n"
+msgstr "Àṣìṣe kan wáyé. Ẹ gbìyànjú láti fi ìròyìn yín ránṣẹ́ ní:\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "Kò sí ààyà tó pọ̀ tó ṣẹ́yìà sílẹ̀ ní irin iṣẹ́ yín."
+
+msgctxt "error"
+msgid "Timeout"
+msgstr "Àkókò ìsomọ́ ti kọjá"
+
+msgctxt "error"
+msgid "Tunnel setup failed"
+msgstr "A kò lè ṣe ìṣètò tunnel náà."
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed. Security key 2FA is not enabled for your "
+"account."
+msgstr ""
+"A kò lè ṣe ìjẹ́rìísí oníbejì. A kò tíì fi ààyè gba 2FA bọtìnnì ààbò fún "
+"àkántì yín."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Incorrect PIN"
+msgstr "A kò lè ṣe ìjẹ́rìísí oníbejì: PIN kò tọ́."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: No security key detected"
+msgstr "A kò lè ṣe ìjẹ́rìísí oníbejì: A kò rí bọtìnnì ààbò kan."
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed: The security key you used is not linked to"
+" your Proton Account."
+msgstr ""
+"A kò lè ṣe ìjẹ́rìísí oníbejì: Bọtìnnì ààbò tí ẹ lo kò so mọ́ Àkántì Proton "
+"yín."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Your security key has no PIN set"
+msgstr "A kò lè ṣe ìjẹ́rìísí oníbejì: A kò tíì fi PIN sí bọtìnnì ààbò yín."
+
+msgctxt "error"
+msgid "Unable to sign out, please ensure you have internet access."
+msgstr "A kò lè jáde. Ẹ jọ̀wọ́ ṣàyẹ̀wò pé ẹ lè ní ìráàyèsí sí ayélujára."
+
+msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "À dáàbọ̀, àṣìṣe kan wáyé tí a kò bá a rò. Ẹ tún gbìyànjú."
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"A ti so yín mọ́ sí VPN, ṣùgbọ́n gbogbo lílọ bíbọ̀ wà ní ìdẹ̀.\n"
+"Ó yẹ kí ẹ lọ sí ojú-ewé ìjẹ́rìísí tí ẹgbẹ́ ààbò pèsè, kí ẹ sì jẹ́rìí pẹ̀lú kọ́kọ́rọ́ ohun èlò yín.\n"
+"Lẹ́yìn èyí, a ó fi ààyè gba lílọ bíbọ̀ náà."
+
+msgctxt "error"
+msgid ""
+"You've reached your maximum device limit. To reconnect to VPN, please "
+"disconnect from another device."
+msgstr ""
+"Ẹ ti dé opó irin iṣẹ́ tí ẹ lè so mọ́ jù. Láti tún so mọ́ VPN, jọ̀wọ́ tú "
+"ìsopọ̀ irin iṣẹ́ kan mìíràn."
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 túmọ̀ sí kò ṣeéṣe rárá"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 túmọ̀ sí ó ṣeéṣe púpọ̀"
+
+msgctxt "label"
+msgid "6-digit authentication code"
+msgstr "Kóòdù ìjẹ́rìísí díjákìítì 6"
+
+msgctxt "label"
+msgid "Active port:"
+msgstr "Ihò ìtẹ̀bọ̀ tí ó ṣiṣẹ́:"
+
+msgctxt "label"
+msgid "Add new server"
+msgstr "Fi sáfà tuntun kún"
+
+msgctxt "label"
+msgid "Advanced"
+msgstr "Ilọ́síwájú"
+
+msgctxt "label"
+msgid "All countries ({count})"
+msgstr "Gbogbo orílẹ̀-èdè ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "A yàn án láìfọwọ́ láti"
+
+msgctxt "label"
+msgid "Auto-selected from free locations"
+msgstr "A yàn án láìfọwọ́ láti àwọn ibùdó ọ̀fẹ́"
+
+msgctxt "label"
+msgid "BETA"
+msgstr "BẸ́TÀ"
+
+msgctxt "label"
+msgid "Block Malware"
+msgstr "Dénì máálweà"
+
+msgctxt "label"
+msgid "Block ads, trackers and malware"
+msgstr "Dénì ìpolówó, àwọn olùtọpa àti máálweà"
+
+msgctxt "label"
+msgid "Description (minimum {count} characters)"
+msgstr "Àpèjúwe (o kéré tán {count} àmìọ̀rọ̀)"
+
+msgctxt "label"
+msgid "Email"
+msgstr "Ímeèlì"
+
+msgctxt "label"
+msgid "Excluded apps "
+msgstr "Àwọn áàpù tí a ṣe ìsẹ̀dẹ̀lẹ̀ "
+
+msgctxt "label"
+msgid "Free"
+msgstr "Ọ̀fẹ́"
+
+msgctxt "label"
+msgid "Included apps "
+msgstr "Àwọn áàpù tí a fi kún "
+
+msgctxt "label"
+msgid "Off"
+msgstr "Pa"
+
+msgctxt "label"
+msgid "Optional"
+msgstr "Kì í ṣe dandan"
+
+msgctxt "label"
+msgid "PIN code"
+msgstr "Kóòdù PIN"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "Jọ̀wọ́, kí ẹ fi hàn fún wa ìdí tí ẹ fi fún àmì ìdíwọ̀n yìí"
+
+msgctxt "label"
+msgid "Proton VPN Linux Client"
+msgstr "Proton VPN fún Linux"
+
+msgctxt "label"
+msgid "Recovery code"
+msgstr "Kóòdù ìmúbọ̀sípò"
+
+msgctxt "label"
+msgid "Server load"
+msgstr "Ìbú ìṣiṣẹ́ sáfà"
+
+msgctxt "label"
+msgid "Standard"
+msgstr "Ìwọ̀nsòní"
+
+msgctxt "label"
+msgid "Use Proton protocols"
+msgstr "Lìlo àwọn pọ́rọ̀tọ́kọ́lù Proton"
+
+msgctxt "label"
+msgid "Username"
+msgstr "Orúkọ olùmúlò"
+
+msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
+
+msgctxt "label"
+msgid "VPN plan: {plan}"
+msgstr "Ètò VPN: {plan}"
+
+msgctxt "label"
+msgid "Via Secure Core"
+msgstr "Nípasẹ̀ Secure Core"
+
+msgctxt "label"
+msgid "Via {country}"
+msgstr "Nípasẹ̀ {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "Ẹ ti dé iye àlà yíyí sáfà ọ̀fẹ́ fún ìgbà yìí."
+
+msgctxt "link"
+msgid "Learn more"
+msgstr "Mọ̀ síi"
+
+msgctxt "menu"
+msgid "About"
+msgstr "Nípa"
+
+msgctxt "menu"
+msgid "Quit"
+msgstr "Kúrò"
+
+msgctxt "menu"
+msgid "Release notes"
+msgstr "Àwọn àkọsílẹ̀ ìtúsílẹ̀"
+
+msgctxt "menu"
+msgid "Report an issue"
+msgstr "Fi ìṣòro ránṣẹ́"
+
+msgctxt "menu"
+msgid "Settings"
+msgstr "Àwọn ààtò"
+
+msgctxt "menu"
+msgid "Sign out"
+msgstr "Jáde"
+
+msgctxt "message"
+msgid ""
+"Access preferred connections from system tray. Enter country or server "
+"codes, separated by commas, to quickly connect (e.g.: NL#42, JP, US, IT#01)."
+msgstr ""
+"Ẹ lè ní ìráàyèsí sí àwọn àsopọ̀ tí ẹ fẹ́ràn jùlọ láti tẹ́rí ètò. Ẹ tẹ̀ àwọn "
+"kóòdù orílẹ̀-èdè tàbí sáfà sínú, tí ẹ fi kọ́mà yà sọ́tọ̀, kí ẹ lè so pọ̀ ní "
+"kíákíá (àpẹẹrẹ: NL#42, JP, US, IT#01)."
+
+msgctxt "message"
+msgid "Active port is {new_port}"
+msgstr "Ihò ìtẹ̀bọ̀ tí ó ń ṣiṣẹ́ ni {new_port}"
+
+msgctxt "message"
+msgid "Allow selected apps to connect without VPN protection."
+msgstr "Jẹ́ kí àwọn áàpù tí a yàn lè so pọ̀ láìní ààbò VPN."
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr "Yóò tú ìsopọ̀ kúrò ní ayélujára nípa àìsọ̀rí tí àsopọ̀ VPN bá sọ́nù."
+
+msgctxt "message"
+msgid ""
+"Beta access has been disabled.\n"
+"Please restart the app for changes to take effect."
+msgstr ""
+"A ti paná Beta Access.\n"
+"Ẹ tún áàpù náà bẹ̀rẹ̀ kí àwọn ayípadà lè bá ṣiṣẹ́."
+
+msgctxt "message"
+msgid ""
+"Beta access has been enabled.\n"
+"Please restart the app for changes to take effect."
+msgstr ""
+"A ti fi ààyè gba Beta Access.\n"
+"Ẹ tún áàpù náà bẹ̀rẹ̀ kí àwọn ayípadà lè bá ṣiṣẹ́."
+
+msgctxt "message"
+msgid ""
+"Bypass firewalls to connect to P2P servers and devices on your local "
+"network. "
+msgstr ""
+"Ẹ kọjá àwọn ààbò orí kọ̀mpútà kí ẹ lè so pọ̀ mọ́ àwọn sáfà P2P àti àwọn irin"
+" iṣẹ́ lórí nẹ́tíwọ́ọ̀kì agbègbè yín. "
+
+msgctxt "message"
+msgid ""
+"Captures a specific issue you're facing when using Proton VPN to get help from our customer support team.\n"
+"\n"
+"Warning: This file is a recording of all your internet activity during the capture session."
+msgstr ""
+"Ó ń gba ìṣòro pàtàkì kan tí ẹ ń pàdé nígbà lílo Proton VPN, kí ẹ lè gba ìrànlọ́wọ́ láti ọ̀dọ̀ ẹ̀ka àtìlẹ́yìn oníbàárà wa.\n"
+"\n"
+"Ìkìlọ̀: Fáìlì yìí jẹ́ àkọsílẹ̀ gbogbo ìṣe ayélujára yín nígbà sáà gígba náà."
+
+msgctxt "message"
+msgid "Connect to Proton VPN using your own domain name servers (DNS)."
+msgstr "Ẹ so pọ̀ mọ́ Proton VPN nípa lílo àwọn sáfà orúkọ ojú òpó yín (DNS)."
+
+msgctxt "message"
+msgid ""
+"Connect to a Tor server to access hidden services and onion sites using any "
+"browser."
+msgstr ""
+"So pọ̀ mọ́ sáfà Tor kan láti lè ní ìráàyèsí sí àwọn iṣẹ́ àpamọ̀ àti àwọn "
+"ojú-ewé ìráàyèsí mọ níwọ̀nba nípa lílo bráósà èyíkéyìí."
+
+msgctxt "message"
+msgid ""
+"Connect to your destination server through a second, maximum security VPN "
+"server. Slower, but more private."
+msgstr ""
+"Ẹ so pọ̀ mọ́ sáfà ìríkàn yín nípasẹ̀ sáfà VPN kejì tí ó ní ààbò gíga. Ó máa "
+"ń dínkù nínú yíyára, ṣùgbọ́n ó ní ìkọ̀kọ̀ síwájú."
+
+msgctxt "message"
+msgid "Copied!"
+msgstr "A ti ṣàdàkọ!"
+
+msgctxt "message"
+msgid ""
+"Crash reports help us fix bugs, detect firewalls, and avoid VPN blocks.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Ìjábọ̀ àìṣiṣẹ́ ń ran wa lọ́wọ́ láti tún àwọn àṣìṣe ẹ̀rọ ṣe, láti mọ àwọn ààbò orí kọ̀mpútà, àti láti yè ìdènà VPN kúrò.\n"
+"\n"
+"Àwọn ìṣirò yìí kò ní àdírẹ́sì IP yín, wọn kò sì lè fi ṣe ìdánimọ̀ yín. A kò níí ṣe alábàápín wọn pẹ̀lú àwọn ẹgbẹ́ kẹta nígbàkùgbà."
+
+msgctxt "message"
+msgid "Customize your connection by deciding which apps are protected by VPN."
+msgstr "Ṣètò àsopọ̀ yín fúnra yín nípa dídíyàn àwọn áàpù tí VPN yóò dábò bọ̀."
+
+msgctxt "message"
+msgid ""
+"Disables randomization of the local addresses mapping. This can slightly "
+"reduce connection security, but should allow direct connections for online "
+"gaming and similar purposes."
+msgstr ""
+"Ó paná ìyípadà àgbékalẹ̀ àwọn àdírẹ́sì agbègbè. Èyí lè dín ààbò àsopọ̀ kù "
+"díẹ̀, ṣùgbọ́n ó yẹ kí ó jẹ́ kí àsopọ̀ tààrà ṣeéṣe fún eré lórí ayélujára àti"
+" àwọn ohun mìíràn bẹ́ẹ̀."
+
+msgctxt "message"
+msgid "Disabling Beta access..."
+msgstr "Ó ń pa Beta Access..."
+
+msgctxt "message"
+msgid "Each code can only be used once"
+msgstr "A lè lo kóòdù kọ̀ọ̀kan ní ẹ̀ẹ̀kan ṣoṣo."
+
+msgctxt "message"
+msgid "Enabling Beta access..."
+msgstr "Ó ń ṣí Beta Access..."
+
+msgctxt "message"
+msgid "Get early access and help us test new versions of Proton VPN."
+msgstr ""
+"Ẹ gba ìtètè ráàyèsí kí ẹ sì ran wa lọ́wọ́ láti dánwò àwọn ẹ̀yà tuntun ti "
+"Proton VPN."
+
+msgctxt "message"
+msgid "If your security key has a button or a gold disc, tap it now."
+msgstr "Tí bọtìnnì ààbò yín bá ní bọ́tìnnì tàbí dáìsí wúrà, ẹ fi ọwọ́ tọ́ ọ."
+
+msgctxt "message"
+msgid ""
+"Increase your connection speed by up to 400% with performance enhancing "
+"technologies."
+msgstr "Ló ìmọ̀-ẹ̀rọ ìdàgbàsókè iṣẹ́ láti pọ̀ sí i ìyára àsopọ̀ yín dé 400%."
+
+msgctxt "message"
+msgid "Insert the U2F or FIDO key linked to your Proton Account. "
+msgstr "Fi bọtìnnì U2F tàbí FIDO tí a so mọ́ Àkántì Proton yín sínú. "
+
+msgctxt "message"
+msgid "It was not possible to disable Beta access.\n"
+msgstr "A kò lè paná Beta Access.\n"
+
+msgctxt "message"
+msgid "It was not possible to enable Beta access.\n"
+msgstr "A kò lè fi ààyè gba Beta Access.\n"
+
+msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr ""
+"A lè yí olùdá ààbò bo àdírẹ́sì IP padà nígbà tí a bá ti tú ìsopọ̀ VPN nìkan."
+
+msgctxt "message"
+msgid "Kill switch is blocking any outgoing connections."
+msgstr "Olùdá ààbò bo àdírẹ́sì IP ń dẹ́kùn gbogbo àsopọ̀ tí ń jáde."
+
+msgctxt "message"
+msgid ""
+"Kill switch selection is disabled while VPN is active. Disconnect to make "
+"changes."
+msgstr ""
+"A ti paná àyàn olùdá ààbò bo àdírẹ́sì IP nígbà tí VPN ń ṣiṣẹ́. Ẹ tú ìsopọ̀ "
+"kí ẹ lè ṣe àwọn àyípadà."
+
+msgctxt "message"
+msgid "Loading app..."
+msgstr "Ó ń gbé áàpù kalẹ̀..."
+
+msgctxt "message"
+msgid "Multiple security keys were found. Tap one to select it."
+msgstr "A rí àwọn kọ́kọ́rọ́ ààbò púpọ̀. Ẹ tẹ̀ ọ̀kan láti yàn án."
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"A ó fi ayè sílẹ̀ fún ìráàyèsí sí ayélujára nígbà tí ẹ bá so pọ̀ mọ́ Proton "
+"VPN nìkan. Olùdá ààbò bo àdírẹ́sì IP tó síwájú yóò máa ṣiṣẹ́ síbẹ̀ bí ẹ bá "
+"tilẹ̀ tún irin iṣẹ́ yín bẹ̀rẹ̀."
+
+msgctxt "message"
+msgid ""
+"Only selected apps connect with VPN protection. All other traffic is "
+"unprotected."
+msgstr ""
+"Àwọn áàpù tí a yan nìkan ni ń so pọ̀ pẹ̀lú ààbò VPN. Gbogbo lílọ bíbọ̀ "
+"mìíràn kò ní ààbò."
+
+msgctxt "message"
+msgid ""
+"Permanent Kill Switch is blocking any outgoing connections and preventing your IP to be exposed.\n"
+"\n"
+"Do you want to disable Kill Switch?"
+msgstr ""
+"Olùdá ààbò bo àdírẹ́sì IP títí ń dẹ́kùn gbogbo àsopọ̀ tí ń jáde, ó sì ń dẹ̀kun kí IP yín má fihàn.\n"
+"\n"
+"Ṣé ẹ fẹ́ paná olùdá ààbò bo àdírẹ́sì IP náà?"
+
+msgctxt "message"
+msgid "Please establish a new VPN connection for changes to take effect."
+msgstr "Ẹ ṣe àsopọ̀ VPN tuntun kí àwọn àyípadà lè bẹ̀rẹ̀ láti ṣiṣẹ́."
+
+msgctxt "message"
+msgid "Protect yourself from ads, malware, and trackers on websites and apps."
+msgstr ""
+"Ẹ dá ara yín bọ̀ láti ọwọ́ àwọn ìpolówó, máálweà, àti àwọn olùtọpa lórí àwọn"
+" wẹ́bsáìtì àti àwọn áàpù."
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"Ó ń dáàbò bo àdírẹ́sì IP yín nípa dídì yín kúrò ní ayélujára tí àsopọ̀ VPN "
+"yín bá sọ́nù. {learn_more}"
+
+msgctxt "message"
+msgid "Protocol can only be changed when VPN is disconnected."
+msgstr "A lè yí protókọ̀lù padà nígbà tí VPN bá ti tú ìsopọ̀."
+
+msgctxt "message"
+msgid ""
+"Protocol selection is disabled while VPN is active. Disconnect to make "
+"changes."
+msgstr ""
+"A ti paná ìyàn pọ́rọ̀tọ́kọ́lù nígbà tí VPN ń ṣiṣẹ́. Ẹ tú ìsopọ̀ kí ẹ lè ṣe "
+"àyípadà."
+
+msgctxt "message"
+msgid ""
+"Quitting the application will cancel the current VPN connection.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Bí ẹ bá kúrò nínú aplikéṣàn náà, yóò fagi lé àsopọ̀ VPN yín lọ́wọ́lọ́wọ́.\n"
+"\n"
+"Ṣé ẹ fẹ́ tẹ̀síwájú?"
+
+msgctxt "message"
+msgid ""
+"Quitting the application will keep the kill switch active, but your current VPN connection will be terminated.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Bí ẹ bá kúrò nínú aplikéṣàn náà, olùdá ààbò bo àdírẹ́sì IP yóò máa bá ti ṣiṣẹ́, àmọ́ àsopọ̀ VPN yín lọ́wọ́lọ́wọ́ yóò wá parun.\n"
+"\n"
+"Ṣé ẹ fẹ́ tẹ̀síwájú?"
+
+msgctxt "message"
+msgid "Reporting your issue..."
+msgstr "Ó ń fi ìṣòro yín ránṣẹ́..."
+
+msgctxt "message"
+msgid "Signing in..."
+msgstr "Ó ń kó wọlé..."
+
+msgctxt "message"
+msgid ""
+"Signing out will cancel the current VPN connection and disable the kill switch.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Bí ẹ bá jáde, yóò fagi lé àsopọ̀ VPN yín lọ́wọ́lọ́wọ́, yóò sì paná olùdá ààbò bo àdírẹ́sì IP.\n"
+"\n"
+"Ṣé ẹ fẹ́ tẹ̀síwájú?"
+
+msgctxt "message"
+msgid ""
+"Signing out will cancel the current VPN connection.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Bí ẹ bá jáde, yóò fagi lé àsopọ̀ VPN yín lọ́wọ́lọ́wọ́.\n"
+"\n"
+"Ṣé ẹ fẹ́ tẹ̀síwájú?"
+
+msgctxt "message"
+msgid ""
+"Signing out will disable the kill switch, potentially exposing your internet traffic. \n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Bí ẹ bá jáde, yóò paná olùdá ààbò bo àdírẹ́sì IP, èyí tí ó lè há lílọ bíbọ̀ ayélujára yín lẹ́rù. \n"
+"\n"
+"Ṣé ẹ fẹ́ tẹ̀síwájú?"
+
+msgctxt "message"
+msgid "Signing out..."
+msgstr "Ó ń jáde..."
+
+msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"A kò rí àwọn apá kan tí a nílò sí ní etí ọ̀gbìn yín. Áàpù náà lè kì í ṣiṣẹ́ "
+"bí a ti ń rò."
+
+msgctxt "message"
+msgid "Split tunneling enabled. Remember to restart affected apps."
+msgstr ""
+"A ti fi ààyè gba ìkáàkiri tí a pín. Ẹ rántí láti tún àwọn áàpù tí ọ̀rọ̀ náà "
+"kàn bẹ̀rẹ̀."
+
+msgctxt "message"
+msgid ""
+"These servers give the best performance for BitTorrent and file sharing."
+msgstr "Àwọn sáfà yìí ló dára jùlọ fún BitTorrent àti ṣíṣe alábàápín fáìlì."
+
+msgctxt "message"
+msgid ""
+"This technology allows Proton VPN to provide higher speed and security in "
+"difficult-to-reach countries."
+msgstr ""
+"Ìmọ̀-ẹ̀rọ yìí jẹ́ kí Proton VPN lè pèsè ìyára àti àbò tó ga jù ní àwọn "
+"orílẹ̀ èdè tí ó ṣòrò láti dé."
+
+msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "Èyí yóò fi protókọ́lì yín sí WireGuard nípa àìsọ̀rí."
+
+msgctxt "message"
+msgid "This will disable NetShield."
+msgstr "Èyí yóò paná NetShield."
+
+msgctxt "message"
+msgid "This will disable custom DNS."
+msgstr "Èyí yóò paná DNS àkànṣe."
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "Èyí yóò paná olùdá ààbò bo àdírẹ́sì IP."
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "Èyí yóò paná ìkáàkiri tí a pín náà."
+
+msgctxt "message"
+msgid ""
+"Tunnels IPv6 traffic through the VPN. Can enhance compatibility with IPv6 "
+"networks."
+msgstr ""
+"Ó ń kó lílọ bíbọ̀ IPv6 kọjá láàrín VPN. Ó lè mú ìbámu pọ̀ pẹ̀lú àwọn "
+"nẹ́tíwọ́ọ̀kì IPv6."
+
+msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Dátà ìlò ń ràn wá lọ́wọ́ láti bori àwọn ìdènà VPN àti láti jẹ́ kí áàpù ń ṣiṣẹ́ dáadáa.\n"
+"\n"
+"Àwọn ìṣirò yìí kò ní àdírẹ́sì IP yín, a kò sì leè fi mọ ẹnyín mọ́. A kò ní ṣe alábàápín wọn pẹ̀lú àwọn ẹgbẹ́ kẹta kankan."
+
+msgctxt "message"
+msgid "When enabled, the app starts minimized to the tray."
+msgstr ""
+"Nígbà tí a bá fi ààyè gbà á, áàpù náà máa ń bẹ̀rẹ̀ tí a ti sọ ọ́ di kékeré "
+"sí tẹ́rí."
+
+msgctxt "message"
+msgid ""
+"You will be connected to a server as soon as Proton VPN app starts. Replace "
+"it with a country ISO code (e.g.: US for United States), a server (e.g.: "
+"NL#42) or Fastest for quick connection. Default value: Off."
+msgstr ""
+"Wọ́n yóò so yín mọ́ sáfà lẹ́sẹ̀kẹsẹ̀ tí áàpù Proton VPN bá bẹ̀rẹ̀ síṣẹ́. Ẹ "
+"rọ́pọ̀ ọ́ pẹ̀lú kóòdù ISO orílẹ̀-èdè (àpẹẹrẹ: US fún Amẹ́ríkà), sáfà kan "
+"(àpẹẹrẹ: NL#42) tàbí Fastest fún àsopọ̀ kíákíá. Iye bí ó ti wà: Pa."
+
+msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "Ìfèsí yín ń ràn wa lọ́wọ́ láti mú Proton VPN dàrá sí i."
+
+msgctxt "message"
+msgid "Your issue has been reported"
+msgstr "A ti fi ìṣòro yín ránṣẹ́."
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "Sáà yín ti wá sí òpin. Jọ̀wọ́, ẹ wọlé padà."
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr ""
+"{learn_more} nípa àwọn ohun tí a nílò àti àwọn ọnà mìíràn láti fi sí ẹ̀rọ."
+
+msgctxt "placeholder"
+msgid "Password"
+msgstr "Ọ̀rọ̀ ìgbaniwọlé"
+
+msgctxt "placeholder"
+msgid "Press Ctrl+F to search"
+msgstr "Tẹ Ctrl+F láti wá nǹkan"
+
+msgctxt "placeholder"
+msgid "Username"
+msgstr "Orúkọ olùmúlò"
+
+msgctxt "status"
+msgid "Connecting..."
+msgstr "Ó ń so pọ̀..."
+
+msgctxt "status"
+msgid "Connection error"
+msgstr "Àṣìṣe àsopọ̀"
+
+msgctxt "status"
+msgid "Disconnecting..."
+msgstr "Ó ń tú ìsopọ̀..."
+
+msgctxt "status"
+msgid "Protected"
+msgstr "Ó ní àbò"
+
+msgctxt "status"
+msgid "Unprotected"
+msgstr "Kò ní àbò"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "A nílò 2FA"
+
+msgctxt "title"
+msgid "About"
+msgstr "Nípa"
+
+msgctxt "title"
+msgid "Account"
+msgstr "Àkántì"
+
+msgctxt "title"
+msgid "Active connection found"
+msgstr "A rí àsopọ̀ tí ó ń ṣiṣẹ́"
+
+msgctxt "title"
+msgid "Add excluded apps"
+msgstr "Fi àwọn áàpù ìsẹ̀dẹ̀lẹ̀ kún"
+
+msgctxt "title"
+msgid "Add included apps"
+msgstr "Fi àwọn áàpù tí a fi kún"
+
+msgctxt "title"
+msgid "Authenticator app"
+msgstr "Áàpù ìjẹ́rìísí"
+
+msgctxt "title"
+msgid "Auto connect"
+msgstr "Ìsomọ́ àìṣedéde"
+
+msgctxt "title"
+msgid "Beta Access"
+msgstr "Beta Access"
+
+msgctxt "title"
+msgid "Beta access"
+msgstr "Beta Access"
+
+msgctxt "title"
+msgid "Connection"
+msgstr "Àsopọ̀"
+
+msgctxt "title"
+msgid "Connection error: session limit reached"
+msgstr "Àṣìṣe àsopọ̀: opó sáà ti dé"
+
+msgctxt "title"
+msgid "Countries"
+msgstr "Àwọn orílẹ̀ èdè"
+
+msgctxt "title"
+msgid "Create a troubleshooting file"
+msgstr "Ṣẹ̀dá fáìlì yíyanjú ìṣòro"
+
+msgctxt "title"
+msgid "Custom DNS servers"
+msgstr "Àwọn sáfà DNS àkànṣe"
+
+msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "Paná WireGuard?"
+
+msgctxt "title"
+msgid "Enable Custom DNS"
+msgstr "Fi ààyè gba DNS àkànṣe"
+
+msgctxt "title"
+msgid "Enable Custom DNS?"
+msgstr "Fi ààyè gba DNS àkànṣe?"
+
+msgctxt "title"
+msgid "Enable Netshield"
+msgstr "Fi ààyè gba NetShield"
+
+msgctxt "title"
+msgid "Enable Netshield ?"
+msgstr "Fi ààyè gba NetShield?"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "Fi ààyè gba olùdá ààbò bo àdírẹ́sì IP?"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "Fi ààyè gba ìkáàkiri tí a pín?"
+
+msgctxt "title"
+msgid "Exclude mode"
+msgstr "Ipò ìsẹ̀dẹ̀lẹ̀"
+
+msgctxt "title"
+msgid "Fastest country"
+msgstr "Orílẹ̀ èdè tó yára jù"
+
+msgctxt "title"
+msgid "Fastest free server"
+msgstr "Sáfà ọ̀fẹ́ tí ó yára jùlọ"
+
+msgctxt "title"
+msgid "Features"
+msgstr "Àwọn àbùdá"
+
+msgctxt "title"
+msgid "Free connections"
+msgstr "Àwọn àsopọ̀ ọ̀fẹ́"
+
+msgctxt "title"
+msgid "General"
+msgstr "Gbogbogbo"
+
+msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "Èló ló ṣeéṣe pé ẹ máa kí ọ̀rẹ́ kan lò ní Proton VPN?"
+
+msgctxt "title"
+msgid "Include mode"
+msgstr "Ipò ìfikún"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "Sáà tí kò tọ́"
+
+msgctxt "title"
+msgid "Kill Switch Enabled"
+msgstr "A ti fi ààyè gba olùdá ààbò bo àdírẹ́sì IP"
+
+msgctxt "title"
+msgid "Kill Switch enabled"
+msgstr "A ti fi ààyè gba olùdá ààbò bo àdírẹ́sì IP"
+
+msgctxt "title"
+msgid "Kill switch"
+msgstr "Olùdá ààbò bo àdírẹ́sì IP"
+
+msgctxt "title"
+msgid "Locations"
+msgstr "Àwọn ibùdó"
+
+msgctxt "title"
+msgid "Moderate NAT"
+msgstr "NAT àárín"
+
+msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
+msgid "No space left on device"
+msgstr "Ààyà ti tán ní irin iṣẹ́"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
+
+msgctxt "title"
+msgid "Pinned tray connections"
+msgstr "Àwọn àsopọ̀ tí a fi mọ́ tẹ́rí ètò"
+
+msgctxt "title"
+msgid "Port forwarding"
+msgstr "Fífi ihò ìtẹ̀bọ̀ ránṣẹ́"
+
+msgctxt "title"
+msgid "Protocol"
+msgstr "Pọ́rọ̀tọ́kọ́lù"
+
+msgctxt "title"
+msgid "Release notes"
+msgstr "Àwọn àkọsílẹ̀ ìtúsílẹ̀"
+
+msgctxt "title"
+msgid "Report an Issue"
+msgstr "Fi ìṣòro ránṣẹ́"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
+
+msgctxt "title"
+msgid "Security key"
+msgstr "Bọtìnnì ààbò"
+
+msgctxt "title"
+msgid "Select packet capture directory"
+msgstr "Yan fọ́ldà fún ìkọ́ àwọn pákìtì"
+
+msgctxt "title"
+msgid "Servers"
+msgstr "Àwọn sáfà"
+
+msgctxt "title"
+msgid "Settings"
+msgstr "Àwọn ààtò"
+
+msgctxt "title"
+msgid "Share anonymous crash reports"
+msgstr "Ṣe alábàápín ìjábọ̀ àìṣiṣẹ́ láìní orúkọ"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Ṣe alábàápín àwọn ìṣirò ìlò ní àìrímọ̀"
+
+msgctxt "title"
+msgid "Smart routing"
+msgstr "Rírán iṣẹ́ láti orí kọ̀mpútà kan sí òmíràn lọ́nà ọlọ́gbọ́n"
+
+msgctxt "title"
+msgid "Something went wrong"
+msgstr "Àṣìṣe kan wáyé"
+
+msgctxt "title"
+msgid "Split tunneling"
+msgstr "Ìkáàkiri tí a pín"
+
+msgctxt "title"
+msgid "Start app minimized"
+msgstr "Bẹ̀rẹ̀ áàpù tí a ti sọ ọ́ di kékeré"
+
+msgctxt "title"
+msgid "Thanks for your feedback"
+msgstr "Ẹ ṣeún fún ìfèsí yín"
+
+msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
+msgid "Two-factor authentication"
+msgstr "Ìjẹ́rìísí oníbejì"
+
+msgctxt "title"
+msgid "Unable to find server"
+msgstr "A kò lè rí sáfà kan"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "Mú aago ẹ̀rọ dé ojú ìwọ̀n"
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "Àṣìṣe àsopọ̀ VPN"
+
+msgctxt "tooltip"
+msgid "Clear"
+msgstr "Kó ọ̀rọ̀ náà kúrò"
+
+msgctxt "tooltip"
+msgid "Close"
+msgstr "Pa á dé"
+
+msgctxt "tooltip"
+msgid "Connect to {country_name}"
+msgstr "So pọ̀ mọ́ {country_name}"
+
+msgctxt "tooltip"
+msgid "Connect to {country} via Secure Core"
+msgstr "So pọ̀ mọ́ {country} nípasẹ̀ Secure Core"
+
+msgctxt "tooltip"
+msgid "Connect to {exit_country} via {entry_country}"
+msgstr "So pọ̀ mọ́ {exit_country} nípasẹ̀ {entry_country}"
+
+msgctxt "tooltip"
+msgid "Connect to {name}"
+msgstr "So pọ̀ mọ́ {name}"
+
+msgctxt "tooltip"
+msgid "Copy port number"
+msgstr "Ṣàdàkọ nọ́mbà ihò ìtẹ̀bọ̀"
+
+msgctxt "tooltip"
+msgid ""
+"Hide all Secure Core servers\n"
+"to connect to {country}"
+msgstr ""
+"Fi gbogbo àwọn sáfà Secure Core pamọ́\n"
+"láti so pọ̀ mọ́ {country}"
+
+msgctxt "tooltip"
+msgid "Hide all locations from {country_name}"
+msgstr "Fi pamọ́ gbogbo àwọn ibùdó láti {country_name}"
+
+msgctxt "tooltip"
+msgid "Hide all servers from {name}"
+msgstr "Fi gbogbo àwọn sáfà ní {name} pamọ́"
+
+msgctxt "tooltip"
+msgid "P2P/BitTorrent supported"
+msgstr "Ó pèsè àtìlẹ́yìn fún P2P/BitTorrent"
+
+msgctxt "tooltip"
+msgid ""
+"Secure Core server that connects to {exit_country} through {entry_country}."
+msgstr ""
+"Sáfà Secure Core tí ó ń so pọ̀ mọ́ {exit_country} nípasẹ̀ {entry_country}."
+
+msgctxt "tooltip"
+msgid "Secure Core supported"
+msgstr "Ó pèsè àtìlẹ́yìn fún Secure Core"
+
+msgctxt "tooltip"
+msgid "Server load is at {load}%"
+msgstr "Ìgbájọ sáfà wà ní {load}%"
+
+msgctxt "tooltip"
+msgid ""
+"Show all Secure Core servers\n"
+"to connect to {country}"
+msgstr ""
+"Fi gbogbo àwọn sáfà Secure Core hàn\n"
+"láti so pọ̀ mọ́ {country}"
+
+msgctxt "tooltip"
+msgid "Show all locations from {country_name}"
+msgstr "Fi hàn gbogbo àwọn ibùdó láti {country_name}"
+
+msgctxt "tooltip"
+msgid "Show all servers from {name}"
+msgstr "Fi gbogbo àwọn sáfà láti {name} hàn"
+
+msgctxt "tooltip"
+msgid "Smart routing is used"
+msgstr "Rírán iṣẹ́ láti orí kọ̀mpútà kan sí òmíràn lọ́nà ọlọ́gbọ́n ni a ń lò."
+
+msgctxt "tooltip"
+msgid "Streaming supported"
+msgstr "Gbígbé sórí afẹ́fẹ́ ní àtìlẹ́yìn"
+
+msgctxt "tooltip"
+msgid "To change split tunneling settings, please disconnect the VPN first."
+msgstr "Láti ṣàtúnṣe àwọn ààtò ìkáàkiri tí a pín, ẹ tú ìsopọ̀ VPN kọ́kọ́."
+
+msgctxt "tooltip"
+msgid "Tor supported"
+msgstr "Àtìlẹ́yìn Tor"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {country_name}"
+msgstr "Gbé e ga láti lè so pọ̀ mọ́ {country_name}"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {country} via Secure Core"
+msgstr "Gbé e ga láti so pọ̀ mọ́ {country} nípasẹ̀ Secure Core"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {exit_country} via {entry_country}"
+msgstr "Gbé e ga láti so pọ̀ mọ́ {exit_country} nípasẹ̀ {entry_country}"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {name}"
+msgstr "Gbé e ga láti so pọ̀ mọ́ {name}"
+
+msgctxt "tooltip"
+msgid "{name} is under maintenance"
+msgstr "{name} wà lábẹ́ àtúnṣe"

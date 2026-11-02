@@ -1,0 +1,2219 @@
+#
+msgid ""
+msgstr ""
+"Language-Team: Malay\n"
+"Language: ms_MY\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "button"
+msgid "Add"
+msgstr "Tambah"
+
+msgctxt "button"
+msgid "Authenticate"
+msgstr "Sahkan"
+
+msgctxt "button"
+msgid "Browse..."
+msgstr "Layari..."
+
+msgctxt "button"
+msgid "Cancel"
+msgstr "Batal"
+
+msgctxt "button"
+msgid "Cancel Connection"
+msgstr "Batalkan sambungan"
+
+msgctxt "button"
+msgid "Change server"
+msgstr "Tukar pelayan"
+
+msgctxt "button"
+msgid "Connect"
+msgstr "Sambung"
+
+msgctxt "button"
+msgid "Create Account"
+msgstr "Cipta akaun"
+
+msgctxt "button"
+msgid "Disable"
+msgstr "Lumpuhkan"
+
+msgctxt "button"
+msgid "Disconnect"
+msgstr "Putuskan sambungan"
+
+msgctxt "button"
+msgid "Done"
+msgstr "Selesai"
+
+msgctxt "button"
+msgid "Hide"
+msgstr "Sembunyikan"
+
+msgctxt "button"
+msgid "Learn more"
+msgstr "Ketahui lebih lanjut"
+
+msgctxt "button"
+msgid "Manage Account"
+msgstr "Urus akaun"
+
+msgctxt "button"
+msgid "Need Help?"
+msgstr "Perlukan bantuan?"
+
+msgctxt "button"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "button"
+msgid "Send error logs"
+msgstr "Hantar log ralat"
+
+msgctxt "button"
+msgid "Share anonymously"
+msgstr "Kongsi secara awanama"
+
+msgctxt "button"
+msgid "Show"
+msgstr "Papar"
+
+msgctxt "button"
+msgid "Sign in"
+msgstr "Log masuk"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "Log masuk semula"
+
+msgctxt "button"
+msgid "Start"
+msgstr "Mula"
+
+msgctxt "button"
+msgid "Stop"
+msgstr "Henti"
+
+msgctxt "button"
+msgid "Upgrade"
+msgstr "Naik taraf"
+
+msgctxt "button"
+msgid "Use 6-digit authentication code"
+msgstr "Guna kod pengesahan 6 digit"
+
+msgctxt "button"
+msgid "Use recovery code"
+msgstr "Guna kod pemulihan"
+
+msgctxt "button"
+msgid "_Cancel"
+msgstr "_Batal"
+
+msgctxt "button"
+msgid "_Close"
+msgstr "_Tutup"
+
+msgctxt "button"
+msgid "_Enable"
+msgstr "_Dayakan"
+
+msgctxt "button"
+msgid "_No"
+msgstr "_Tidak"
+
+msgctxt "button"
+msgid "_Select"
+msgstr "_Pilih"
+
+msgctxt "button"
+msgid "_Submit"
+msgstr "_Hantar"
+
+msgctxt "button"
+msgid "_Yes"
+msgstr "_Ya"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "Paparkan versi aplikasi"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "Mula aplikasi dalam keadaan diminimumkan dalam tray sistem"
+
+msgctxt "country"
+msgid "Afghanistan"
+msgstr "Afghanistan"
+
+msgctxt "country"
+msgid "Aland Islands"
+msgstr "Kepulauan Aland"
+
+msgctxt "country"
+msgid "Albania"
+msgstr "Albania"
+
+msgctxt "country"
+msgid "Algeria"
+msgstr "Algeria"
+
+msgctxt "country"
+msgid "American Samoa"
+msgstr "Samoa Amerika"
+
+msgctxt "country"
+msgid "Andorra"
+msgstr "Andorra"
+
+msgctxt "country"
+msgid "Angola"
+msgstr "Angola"
+
+msgctxt "country"
+msgid "Anguilla"
+msgstr "Anguilla"
+
+msgctxt "country"
+msgid "Antarctica"
+msgstr "Antartika"
+
+msgctxt "country"
+msgid "Antigua and Barbuda"
+msgstr "Antigua dan Barbuda"
+
+msgctxt "country"
+msgid "Argentina"
+msgstr "Argentina"
+
+msgctxt "country"
+msgid "Armenia"
+msgstr "Armenia"
+
+msgctxt "country"
+msgid "Aruba"
+msgstr "Aruba"
+
+msgctxt "country"
+msgid "Australia"
+msgstr "Australia"
+
+msgctxt "country"
+msgid "Austria"
+msgstr "Austria"
+
+msgctxt "country"
+msgid "Azerbaijan"
+msgstr "Azerbaijan"
+
+msgctxt "country"
+msgid "Bahamas"
+msgstr "Bahamas"
+
+msgctxt "country"
+msgid "Bahrain"
+msgstr "Bahrain"
+
+msgctxt "country"
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+msgctxt "country"
+msgid "Barbados"
+msgstr "Barbados"
+
+msgctxt "country"
+msgid "Belarus"
+msgstr "Belarus"
+
+msgctxt "country"
+msgid "Belgium"
+msgstr "Belgium"
+
+msgctxt "country"
+msgid "Belize"
+msgstr "Belize"
+
+msgctxt "country"
+msgid "Benin"
+msgstr "Benin"
+
+msgctxt "country"
+msgid "Bermuda"
+msgstr "Bermuda"
+
+msgctxt "country"
+msgid "Bhutan"
+msgstr "Bhutan"
+
+msgctxt "country"
+msgid "Bolivia"
+msgstr "Bolivia"
+
+msgctxt "country"
+msgid "Bonaire, Saint Eustatius and Saba "
+msgstr "Bonaire, Saint Eustatius dan Saba "
+
+msgctxt "country"
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnia dan Herzegovina"
+
+msgctxt "country"
+msgid "Botswana"
+msgstr "Botswana"
+
+msgctxt "country"
+msgid "Bouvet Island"
+msgstr "Pulau Bouvet"
+
+msgctxt "country"
+msgid "Brazil"
+msgstr "Brazil"
+
+msgctxt "country"
+msgid "British Indian Ocean Territory"
+msgstr "Wilayah Lautan Hindi British"
+
+msgctxt "country"
+msgid "British Virgin Islands"
+msgstr "Kepulauan Virgin British"
+
+msgctxt "country"
+msgid "Brunei"
+msgstr "Brunei"
+
+msgctxt "country"
+msgid "Bulgaria"
+msgstr "Bulgaria"
+
+msgctxt "country"
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+msgctxt "country"
+msgid "Burundi"
+msgstr "Burundi"
+
+msgctxt "country"
+msgid "Cambodia"
+msgstr "Kemboja"
+
+msgctxt "country"
+msgid "Cameroon"
+msgstr "Cameroon"
+
+msgctxt "country"
+msgid "Canada"
+msgstr "Kanada"
+
+msgctxt "country"
+msgid "Cape Verde"
+msgstr "Tanjung Verde"
+
+msgctxt "country"
+msgid "Cayman Islands"
+msgstr "Kepulauan Cayman"
+
+msgctxt "country"
+msgid "Central African Republic"
+msgstr "Republik Afrika Tengah"
+
+msgctxt "country"
+msgid "Chad"
+msgstr "Chad"
+
+msgctxt "country"
+msgid "Chile"
+msgstr "Chile"
+
+msgctxt "country"
+msgid "China"
+msgstr "China"
+
+msgctxt "country"
+msgid "Christmas Island"
+msgstr "Pulau Krismas"
+
+msgctxt "country"
+msgid "Cocos Islands"
+msgstr "Kepulauan Cocos"
+
+msgctxt "country"
+msgid "Colombia"
+msgstr "Colombia"
+
+msgctxt "country"
+msgid "Comoros"
+msgstr "Komoro"
+
+msgctxt "country"
+msgid "Cook Islands"
+msgstr "Kepulauan Cook"
+
+msgctxt "country"
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+msgctxt "country"
+msgid "Croatia"
+msgstr "Croatia"
+
+msgctxt "country"
+msgid "Cuba"
+msgstr "Cuba"
+
+msgctxt "country"
+msgid "Curacao"
+msgstr "Curaçao"
+
+msgctxt "country"
+msgid "Cyprus"
+msgstr "Cyprus"
+
+msgctxt "country"
+msgid "Czech Republic"
+msgstr "Republik Czech"
+
+msgctxt "country"
+msgid "Democratic Republic of the Congo"
+msgstr "Republik Demokratik Congo"
+
+msgctxt "country"
+msgid "Denmark"
+msgstr "Denmark"
+
+msgctxt "country"
+msgid "Djibouti"
+msgstr "Djibouti"
+
+msgctxt "country"
+msgid "Dominica"
+msgstr "Dominica"
+
+msgctxt "country"
+msgid "Dominican Republic"
+msgstr "Republik Dominica"
+
+msgctxt "country"
+msgid "East Timor"
+msgstr "Timor Leste"
+
+msgctxt "country"
+msgid "Ecuador"
+msgstr "Ecuador"
+
+msgctxt "country"
+msgid "Egypt"
+msgstr "Mesir"
+
+msgctxt "country"
+msgid "El Salvador"
+msgstr "El Salvador"
+
+msgctxt "country"
+msgid "Equatorial Guinea"
+msgstr "Guinea Khatulistiwa"
+
+msgctxt "country"
+msgid "Eritrea"
+msgstr "Eritrea"
+
+msgctxt "country"
+msgid "Estonia"
+msgstr "Estonia"
+
+msgctxt "country"
+msgid "Ethiopia"
+msgstr "Habsyah"
+
+msgctxt "country"
+msgid "Falkland Islands"
+msgstr "Kepulauan Falkland"
+
+msgctxt "country"
+msgid "Faroe Islands"
+msgstr "Kepulauan Faroe"
+
+msgctxt "country"
+msgid "Fiji"
+msgstr "Fiji"
+
+msgctxt "country"
+msgid "Finland"
+msgstr "Finland"
+
+msgctxt "country"
+msgid "France"
+msgstr "Perancis"
+
+msgctxt "country"
+msgid "French Guiana"
+msgstr "Guiana Perancis"
+
+msgctxt "country"
+msgid "French Polynesia"
+msgstr "Polinesia Perancis"
+
+msgctxt "country"
+msgid "French Southern Territories"
+msgstr "Wilayah Selatan Perancis"
+
+msgctxt "country"
+msgid "Gabon"
+msgstr "Gabon"
+
+msgctxt "country"
+msgid "Gambia"
+msgstr "Gambia"
+
+msgctxt "country"
+msgid "Georgia"
+msgstr "Georgia"
+
+msgctxt "country"
+msgid "Germany"
+msgstr "Jerman"
+
+msgctxt "country"
+msgid "Ghana"
+msgstr "Ghana"
+
+msgctxt "country"
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+msgctxt "country"
+msgid "Greece"
+msgstr "Greece"
+
+msgctxt "country"
+msgid "Greenland"
+msgstr "Greenland"
+
+msgctxt "country"
+msgid "Grenada"
+msgstr "Grenada"
+
+msgctxt "country"
+msgid "Guadeloupe"
+msgstr "Guadeloupe"
+
+msgctxt "country"
+msgid "Guam"
+msgstr "Guam"
+
+msgctxt "country"
+msgid "Guatemala"
+msgstr "Guatemala"
+
+msgctxt "country"
+msgid "Guernsey"
+msgstr "Guernsey"
+
+msgctxt "country"
+msgid "Guinea"
+msgstr "Guinea"
+
+msgctxt "country"
+msgid "Guinea-Bissau"
+msgstr "Guinea-Bissau"
+
+msgctxt "country"
+msgid "Guyana"
+msgstr "Guyana"
+
+msgctxt "country"
+msgid "Haiti"
+msgstr "Haiti"
+
+msgctxt "country"
+msgid "Heard Island and McDonald Islands"
+msgstr "Pulau Heard dan Kepulauan McDonald"
+
+msgctxt "country"
+msgid "Honduras"
+msgstr "Honduras"
+
+msgctxt "country"
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+msgctxt "country"
+msgid "Hungary"
+msgstr "Hungary"
+
+msgctxt "country"
+msgid "Iceland"
+msgstr "Iceland"
+
+msgctxt "country"
+msgid "India"
+msgstr "India"
+
+msgctxt "country"
+msgid "Indonesia"
+msgstr "Indonesia"
+
+msgctxt "country"
+msgid "Iran"
+msgstr "Iran"
+
+msgctxt "country"
+msgid "Iraq"
+msgstr "Iraq"
+
+msgctxt "country"
+msgid "Ireland"
+msgstr "Ireland"
+
+msgctxt "country"
+msgid "Isle of Man"
+msgstr "Isle of Man"
+
+msgctxt "country"
+msgid "Israel"
+msgstr "Israel"
+
+msgctxt "country"
+msgid "Italy"
+msgstr "Itali"
+
+msgctxt "country"
+msgid "Ivory Coast"
+msgstr "Pantai Gading"
+
+msgctxt "country"
+msgid "Jamaica"
+msgstr "Jamaica"
+
+msgctxt "country"
+msgid "Japan"
+msgstr "Jepun"
+
+msgctxt "country"
+msgid "Jersey"
+msgstr "Jersey"
+
+msgctxt "country"
+msgid "Jordan"
+msgstr "Jordan"
+
+msgctxt "country"
+msgid "Kazakhstan"
+msgstr "Kazakhstan"
+
+msgctxt "country"
+msgid "Kenya"
+msgstr "Kenya"
+
+msgctxt "country"
+msgid "Kiribati"
+msgstr "Kiribati"
+
+msgctxt "country"
+msgid "Kosovo"
+msgstr "Kosovo"
+
+msgctxt "country"
+msgid "Kuwait"
+msgstr "Kuwait"
+
+msgctxt "country"
+msgid "Kyrgyzstan"
+msgstr "Kyrgyzstan"
+
+msgctxt "country"
+msgid "Laos"
+msgstr "Laos"
+
+msgctxt "country"
+msgid "Latvia"
+msgstr "Latvia"
+
+msgctxt "country"
+msgid "Lebanon"
+msgstr "Lubnan"
+
+msgctxt "country"
+msgid "Lesotho"
+msgstr "Lesotho"
+
+msgctxt "country"
+msgid "Liberia"
+msgstr "Liberia"
+
+msgctxt "country"
+msgid "Libya"
+msgstr "Libya"
+
+msgctxt "country"
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+msgctxt "country"
+msgid "Lithuania"
+msgstr "Lithuania"
+
+msgctxt "country"
+msgid "Luxembourg"
+msgstr "Luxembourg"
+
+msgctxt "country"
+msgid "Macao"
+msgstr "Macau"
+
+msgctxt "country"
+msgid "Macedonia"
+msgstr "Macedonia"
+
+msgctxt "country"
+msgid "Madagascar"
+msgstr "Madagaskar"
+
+msgctxt "country"
+msgid "Malawi"
+msgstr "Malawi"
+
+msgctxt "country"
+msgid "Malaysia"
+msgstr "Malaysia"
+
+msgctxt "country"
+msgid "Maldives"
+msgstr "Maladewa"
+
+msgctxt "country"
+msgid "Mali"
+msgstr "Mali"
+
+msgctxt "country"
+msgid "Malta"
+msgstr "Malta"
+
+msgctxt "country"
+msgid "Marshall Islands"
+msgstr "Kepulauan Marshall"
+
+msgctxt "country"
+msgid "Martinique"
+msgstr "Martinique"
+
+msgctxt "country"
+msgid "Mauritania"
+msgstr "Mauritania"
+
+msgctxt "country"
+msgid "Mauritius"
+msgstr "Mauritius"
+
+msgctxt "country"
+msgid "Mayotte"
+msgstr "Mayotte"
+
+msgctxt "country"
+msgid "Mexico"
+msgstr "Mexico"
+
+msgctxt "country"
+msgid "Micronesia"
+msgstr "Micronesia"
+
+msgctxt "country"
+msgid "Moldova"
+msgstr "Moldova"
+
+msgctxt "country"
+msgid "Monaco"
+msgstr "Monaco"
+
+msgctxt "country"
+msgid "Mongolia"
+msgstr "Mongolia"
+
+msgctxt "country"
+msgid "Montenegro"
+msgstr "Montenegro"
+
+msgctxt "country"
+msgid "Montserrat"
+msgstr "Montserrat"
+
+msgctxt "country"
+msgid "Morocco"
+msgstr "Maghribi"
+
+msgctxt "country"
+msgid "Mozambique"
+msgstr "Mozambik"
+
+msgctxt "country"
+msgid "Myanmar"
+msgstr "Myanmar"
+
+msgctxt "country"
+msgid "Namibia"
+msgstr "Namibia"
+
+msgctxt "country"
+msgid "Nauru"
+msgstr "Nauru"
+
+msgctxt "country"
+msgid "Nepal"
+msgstr "Nepal"
+
+msgctxt "country"
+msgid "Netherlands"
+msgstr "Belanda"
+
+msgctxt "country"
+msgid "New Caledonia"
+msgstr "Kaledonia Baharu"
+
+msgctxt "country"
+msgid "New Zealand"
+msgstr "New Zealand"
+
+msgctxt "country"
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+msgctxt "country"
+msgid "Niger"
+msgstr "Niger"
+
+msgctxt "country"
+msgid "Nigeria"
+msgstr "Nigeria"
+
+msgctxt "country"
+msgid "Niue"
+msgstr "Niue"
+
+msgctxt "country"
+msgid "Norfolk Island"
+msgstr "Pulau Norfolk"
+
+msgctxt "country"
+msgid "North Korea"
+msgstr "Korea Utara"
+
+msgctxt "country"
+msgid "Northern Mariana Islands"
+msgstr "Kepulauan Mariana Utara"
+
+msgctxt "country"
+msgid "Norway"
+msgstr "Norway"
+
+msgctxt "country"
+msgid "Oman"
+msgstr "Oman"
+
+msgctxt "country"
+msgid "Pakistan"
+msgstr "Pakistan"
+
+msgctxt "country"
+msgid "Palau"
+msgstr "Palau"
+
+msgctxt "country"
+msgid "Palestinian Territory"
+msgstr "Wilayah Palestin"
+
+msgctxt "country"
+msgid "Panama"
+msgstr "Panama"
+
+msgctxt "country"
+msgid "Papua New Guinea"
+msgstr "Papua New Guinea"
+
+msgctxt "country"
+msgid "Paraguay"
+msgstr "Paraguay"
+
+msgctxt "country"
+msgid "Peru"
+msgstr "Peru"
+
+msgctxt "country"
+msgid "Philippines"
+msgstr "Filipina"
+
+msgctxt "country"
+msgid "Pitcairn"
+msgstr "Pitcairn"
+
+msgctxt "country"
+msgid "Poland"
+msgstr "Poland"
+
+msgctxt "country"
+msgid "Portugal"
+msgstr "Portugal"
+
+msgctxt "country"
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+msgctxt "country"
+msgid "Qatar"
+msgstr "Qatar"
+
+msgctxt "country"
+msgid "Republic of the Congo"
+msgstr "Republik Congo"
+
+msgctxt "country"
+msgid "Reunion"
+msgstr "Reunion"
+
+msgctxt "country"
+msgid "Romania"
+msgstr "Romania"
+
+msgctxt "country"
+msgid "Russia"
+msgstr "Rusia"
+
+msgctxt "country"
+msgid "Rwanda"
+msgstr "Rwanda"
+
+msgctxt "country"
+msgid "Saint Barthelemy"
+msgstr "Saint Barthelemy"
+
+msgctxt "country"
+msgid "Saint Helena"
+msgstr "Saint Helena"
+
+msgctxt "country"
+msgid "Saint Kitts and Nevis"
+msgstr "Saint Kitts dan Nevis"
+
+msgctxt "country"
+msgid "Saint Lucia"
+msgstr "Saint Lucia"
+
+msgctxt "country"
+msgid "Saint Martin"
+msgstr "Saint Martin"
+
+msgctxt "country"
+msgid "Saint Pierre and Miquelon"
+msgstr "Saint Pierre dan Miquelon"
+
+msgctxt "country"
+msgid "Saint Vincent and the Grenadines"
+msgstr "Saint Vincent dan Grenadines"
+
+msgctxt "country"
+msgid "Samoa"
+msgstr "Samoa"
+
+msgctxt "country"
+msgid "San Marino"
+msgstr "San Marino"
+
+msgctxt "country"
+msgid "Sao Tome and Principe"
+msgstr "São Tomé dan Príncipe"
+
+msgctxt "country"
+msgid "Saudi Arabia"
+msgstr "Arab Saudi"
+
+msgctxt "country"
+msgid "Senegal"
+msgstr "Senegal"
+
+msgctxt "country"
+msgid "Serbia"
+msgstr "Serbia"
+
+msgctxt "country"
+msgid "Seychelles"
+msgstr "Seychelles"
+
+msgctxt "country"
+msgid "Sierra Leone"
+msgstr "Sierra Leone"
+
+msgctxt "country"
+msgid "Singapore"
+msgstr "Singapura"
+
+msgctxt "country"
+msgid "Sint Maarten"
+msgstr "Sint Maarten"
+
+msgctxt "country"
+msgid "Slovakia"
+msgstr "Slovakia"
+
+msgctxt "country"
+msgid "Slovenia"
+msgstr "Slovenia"
+
+msgctxt "country"
+msgid "Solomon Islands"
+msgstr "Kepulauan Solomon"
+
+msgctxt "country"
+msgid "Somalia"
+msgstr "Somalia"
+
+msgctxt "country"
+msgid "South Africa"
+msgstr "Afrika Selatan"
+
+msgctxt "country"
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "Georgia Selatan dan Kepulauan Sandwich Selatan"
+
+msgctxt "country"
+msgid "South Korea"
+msgstr "Korea Selatan"
+
+msgctxt "country"
+msgid "South Sudan"
+msgstr "Sudan Selatan"
+
+msgctxt "country"
+msgid "Spain"
+msgstr "Sepanyol"
+
+msgctxt "country"
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+msgctxt "country"
+msgid "Sudan"
+msgstr "Sudan"
+
+msgctxt "country"
+msgid "Suriname"
+msgstr "Surinam"
+
+msgctxt "country"
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbard dan Jan Mayen"
+
+msgctxt "country"
+msgid "Swaziland"
+msgstr "Swaziland"
+
+msgctxt "country"
+msgid "Sweden"
+msgstr "Sweden"
+
+msgctxt "country"
+msgid "Switzerland"
+msgstr "Switzerland"
+
+msgctxt "country"
+msgid "Syria"
+msgstr "Syria"
+
+msgctxt "country"
+msgid "Taiwan"
+msgstr "Taiwan"
+
+msgctxt "country"
+msgid "Tajikistan"
+msgstr "Tajikistan"
+
+msgctxt "country"
+msgid "Tanzania"
+msgstr "Tanzania"
+
+msgctxt "country"
+msgid "Thailand"
+msgstr "Thailand"
+
+msgctxt "country"
+msgid "Togo"
+msgstr "Togo"
+
+msgctxt "country"
+msgid "Tokelau"
+msgstr "Tokelau"
+
+msgctxt "country"
+msgid "Tonga"
+msgstr "Tonga"
+
+msgctxt "country"
+msgid "Trinidad and Tobago"
+msgstr "Trinidad dan Tobago"
+
+msgctxt "country"
+msgid "Tunisia"
+msgstr "Tunisia"
+
+msgctxt "country"
+msgid "Turkey"
+msgstr "Turki"
+
+msgctxt "country"
+msgid "Turkmenistan"
+msgstr "Turkmenistan"
+
+msgctxt "country"
+msgid "Turks and Caicos Islands"
+msgstr "Kepulauan Turks dan Caicos"
+
+msgctxt "country"
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+msgctxt "country"
+msgid "U.S. Virgin Islands"
+msgstr "Kepulauan Virgin Amerika Syarikat"
+
+msgctxt "country"
+msgid "Uganda"
+msgstr "Uganda"
+
+msgctxt "country"
+msgid "Ukraine"
+msgstr "Ukraine"
+
+msgctxt "country"
+msgid "United Arab Emirates"
+msgstr "Emiriah Arab Bersatu"
+
+msgctxt "country"
+msgid "United Kingdom"
+msgstr "United Kingdom"
+
+msgctxt "country"
+msgid "United States"
+msgstr "Amerika Syarikat"
+
+msgctxt "country"
+msgid "United States Minor Outlying Islands"
+msgstr "Kepulauan Kecil Terpencil Amerika Syarikat"
+
+msgctxt "country"
+msgid "Uruguay"
+msgstr "Uruguay"
+
+msgctxt "country"
+msgid "Uzbekistan"
+msgstr "Uzbekistan"
+
+msgctxt "country"
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+msgctxt "country"
+msgid "Vatican"
+msgstr "Vatican"
+
+msgctxt "country"
+msgid "Venezuela"
+msgstr "Venezuela"
+
+msgctxt "country"
+msgid "Vietnam"
+msgstr "Vietnam"
+
+msgctxt "country"
+msgid "Wallis and Futuna"
+msgstr "Wallis dan Futuna"
+
+msgctxt "country"
+msgid "Western Sahara"
+msgstr "Sahara Barat"
+
+msgctxt "country"
+msgid "Yemen"
+msgstr "Yaman"
+
+msgctxt "country"
+msgid "Zambia"
+msgstr "Zambia"
+
+msgctxt "country"
+msgid "Zimbabwe"
+msgstr "Zimbabwe"
+
+msgctxt "error"
+msgid "An unknown error occurred"
+msgstr "Ralat tidak diketahui telah berlaku"
+
+msgctxt "error"
+msgid "Authentication denied"
+msgstr "Pengesahan dinafikan"
+
+msgctxt "error"
+msgid "Device disconnected"
+msgstr "Peranti telah terputus sambungan"
+
+msgctxt "error"
+msgid "Enter a valid IPv4 or IPv6 address"
+msgstr "Masukkan alamat IPv4 atau IPv6 yang sah"
+
+msgctxt "error"
+msgid "Incorrect 2FA code."
+msgstr "Kod 2FA tidak betul."
+
+msgctxt "error"
+msgid "Incorrect credentials."
+msgstr "Bukti kelayakan tidak betul."
+
+msgctxt "error"
+msgid "Invalid username."
+msgstr "Nama pengguna tidak sah."
+
+msgctxt "error"
+msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"Jam sistem anda nampaknya tidak segerak.\n"
+"Ini mungkin menyebabkan masalah semasa menyambung ke VPN.\n"
+"Kemas kini masa sistem anda dan cuba sambung semula."
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr ""
+"Pelayan kami tidak dapat dihubungi. Sila semak sambungan internet anda."
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN tidak dapat menyambung ke VPN dan telah menyekat akses internet untuk melindungi IP anda.\n"
+"\n"
+"Klik \"Batal Sambungan\" untuk mengembalikan sambungan internet anda. Jika masalah berterusan, sila cuba log keluar dan log masuk semula."
+
+msgctxt "error"
+msgid ""
+"Proton services could not be reached.\n"
+"Please try again."
+msgstr ""
+"Perkhidmatan Proton tidak dapat dihubungi.\n"
+"Sila cuba lagi."
+
+msgctxt "error"
+msgid "Session limit reached"
+msgstr "Had sesi telah dicapai"
+
+msgctxt "error"
+msgid "Something went wrong. Please try submitting your report at:\n"
+msgstr "Sesuatu ralat telah berlaku. Sila cuba hantar laporan anda di:\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "Ruang pada peranti anda tidak mencukupi."
+
+msgctxt "error"
+msgid "Timeout"
+msgstr "Tamat masa"
+
+msgctxt "error"
+msgid "Tunnel setup failed"
+msgstr "Persediaan terowong gagal"
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed. Security key 2FA is not enabled for your "
+"account."
+msgstr ""
+"Pengesahan dua faktor gagal. Kunci keselamatan 2FA tidak didayakan untuk "
+"akaun anda."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Incorrect PIN"
+msgstr "Pengesahan dua faktor gagal: PIN tidak betul"
+
+msgctxt "error"
+msgid "Two-factor authentication failed: No security key detected"
+msgstr "Pengesahan dua faktor gagal: Tiada kunci keselamatan dikesan"
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed: The security key you used is not linked to"
+" your Proton Account."
+msgstr ""
+"Pengesahan dua faktor gagal: Kunci keselamatan yang digunakan tidak "
+"dipautkan dengan Akaun Proton anda."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Your security key has no PIN set"
+msgstr ""
+"Pengesahan dua faktor gagal: Tiada PIN ditetapkan pada kunci keselamatan "
+"anda"
+
+msgctxt "error"
+msgid "Unable to sign out, please ensure you have internet access."
+msgstr "Tidak dapat log keluar, sila pastikan anda mempunyai akses internet."
+
+msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "Maaf, ralat tidak dijangka telah berlaku. Sila cuba lagi."
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"Anda disambungkan ke VPN, tetapi semua trafik disekat.\n"
+"Anda perlu pergi ke halaman pengesahan yang disediakan oleh pihak keselamatan dan mengesahkan dengan kunci perkakasan anda.\n"
+"Selepas itu, trafik akan didayakan."
+
+msgctxt "error"
+msgid ""
+"You've reached your maximum device limit. To reconnect to VPN, please "
+"disconnect from another device."
+msgstr ""
+"Anda telah mencapai had peranti maksimum. Untuk menyambung semula ke VPN, "
+"sila putuskan sambungan daripada peranti lain."
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 sangat tidak berkemungkinan"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 sangat berkemungkinan"
+
+msgctxt "label"
+msgid "6-digit authentication code"
+msgstr "Kod pengesahan 6 digit"
+
+msgctxt "label"
+msgid "Active port:"
+msgstr "Port aktif:"
+
+msgctxt "label"
+msgid "Add new server"
+msgstr "Tambah pelayan baharu"
+
+msgctxt "label"
+msgid "Advanced"
+msgstr "Termaju"
+
+msgctxt "label"
+msgid "All countries ({count})"
+msgstr "Semua negara ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from free locations"
+msgstr "Dipilih secara automatik daripada lokasi percuma"
+
+msgctxt "label"
+msgid "BETA"
+msgstr "BETA"
+
+msgctxt "label"
+msgid "Block Malware"
+msgstr "Sekat perisian hasad"
+
+msgctxt "label"
+msgid "Block ads, trackers and malware"
+msgstr "Sekat iklan, penjejak dan perisian hasad"
+
+msgctxt "label"
+msgid "Description (minimum {count} characters)"
+msgstr "Perihalan (minimum {count} aksara)"
+
+msgctxt "label"
+msgid "Email"
+msgstr "E-mel"
+
+msgctxt "label"
+msgid "Excluded apps "
+msgstr "Apl yang dikecualikan "
+
+msgctxt "label"
+msgid "Free"
+msgstr "Percuma"
+
+msgctxt "label"
+msgid "Included apps "
+msgstr "Apl yang disertakan "
+
+msgctxt "label"
+msgid "Off"
+msgstr "Mati"
+
+msgctxt "label"
+msgid "Optional"
+msgstr "Pilihan"
+
+msgctxt "label"
+msgid "PIN code"
+msgstr "Kod PIN"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "Sila beritahu kami sebab anda memberi penilaian tersebut"
+
+msgctxt "label"
+msgid "Proton VPN Linux Client"
+msgstr "Klien Linux Proton VPN"
+
+msgctxt "label"
+msgid "Recovery code"
+msgstr "Kod pemulihan"
+
+msgctxt "label"
+msgid "Server load"
+msgstr "Beban pelayan"
+
+msgctxt "label"
+msgid "Standard"
+msgstr "Standard"
+
+msgctxt "label"
+msgid "Use Proton protocols"
+msgstr "Guna protokol Proton"
+
+msgctxt "label"
+msgid "Username"
+msgstr "Nama pengguna"
+
+msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
+
+msgctxt "label"
+msgid "VPN plan: {plan}"
+msgstr "Pelan VPN: {plan}"
+
+msgctxt "label"
+msgid "Via Secure Core"
+msgstr "Melalui Secure Core"
+
+msgctxt "label"
+msgid "Via {country}"
+msgstr "Melalui {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr ""
+"Anda telah mencapai bilangan maksimum perubahan pelayan percuma buat masa "
+"ini"
+
+msgctxt "link"
+msgid "Learn more"
+msgstr "Ketahui lebih lanjut"
+
+msgctxt "menu"
+msgid "About"
+msgstr "Perihal"
+
+msgctxt "menu"
+msgid "Quit"
+msgstr "Keluar"
+
+msgctxt "menu"
+msgid "Release notes"
+msgstr "Nota keluaran"
+
+msgctxt "menu"
+msgid "Report an issue"
+msgstr "Laporkan masalah"
+
+msgctxt "menu"
+msgid "Settings"
+msgstr "Tetapan"
+
+msgctxt "menu"
+msgid "Sign out"
+msgstr "Log keluar"
+
+msgctxt "message"
+msgid ""
+"Access preferred connections from system tray. Enter country or server "
+"codes, separated by commas, to quickly connect (e.g.: NL#42, JP, US, IT#01)."
+msgstr ""
+"Akses sambungan pilihan daripada tray sistem. Masukkan kod negara atau "
+"pelayan, dipisahkan dengan koma, untuk sambung dengan pantas (cth.: NL#42, "
+"JP, US, IT#01)."
+
+msgctxt "message"
+msgid "Active port is {new_port}"
+msgstr "Port aktif ialah {new_port}"
+
+msgctxt "message"
+msgid "Allow selected apps to connect without VPN protection."
+msgstr "Benarkan apl terpilih untuk menyambung tanpa perlindungan VPN."
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr ""
+"Putuskan sambungan internet secara automatik jika sambungan VPN terputus."
+
+msgctxt "message"
+msgid ""
+"Beta access has been disabled.\n"
+"Please restart the app for changes to take effect."
+msgstr ""
+"Akses Beta telah dilumpuhkan.\n"
+"Mula semula apl untuk perubahan berkuat kuasa."
+
+msgctxt "message"
+msgid ""
+"Beta access has been enabled.\n"
+"Please restart the app for changes to take effect."
+msgstr ""
+"Akses Beta telah didayakan.\n"
+"Mula semula apl untuk perubahan berkuat kuasa."
+
+msgctxt "message"
+msgid ""
+"Bypass firewalls to connect to P2P servers and devices on your local "
+"network. "
+msgstr ""
+"Langkau tembok api untuk bersambung ke pelayan P2P dan peranti pada "
+"rangkaian setempat anda. "
+
+msgctxt "message"
+msgid ""
+"Captures a specific issue you're facing when using Proton VPN to get help from our customer support team.\n"
+"\n"
+"Warning: This file is a recording of all your internet activity during the capture session."
+msgstr ""
+"Merakam masalah khusus yang anda hadapi semasa menggunakan Proton VPN untuk mendapatkan bantuan daripada pasukan sokongan pelanggan kami.\n"
+"\n"
+"Amaran: Fail ini ialah rakaman semua aktiviti internet anda semasa sesi rakaman."
+
+msgctxt "message"
+msgid "Connect to Proton VPN using your own domain name servers (DNS)."
+msgstr ""
+"Sambung ke Proton VPN menggunakan pelayan nama domain (DNS) anda sendiri."
+
+msgctxt "message"
+msgid ""
+"Connect to a Tor server to access hidden services and onion sites using any "
+"browser."
+msgstr ""
+"Sambung ke pelayan Tor untuk mengakses perkhidmatan tersembunyi dan laman "
+"onion menggunakan mana-mana pelayar."
+
+msgctxt "message"
+msgid ""
+"Connect to your destination server through a second, maximum security VPN "
+"server. Slower, but more private."
+msgstr ""
+"Sambung ke pelayan destinasi anda melalui pelayan VPN kedua yang mempunyai "
+"keselamatan maksimum. Lebih perlahan, tetapi lebih peribadi."
+
+msgctxt "message"
+msgid "Copied!"
+msgstr "Disalin"
+
+msgctxt "message"
+msgid ""
+"Crash reports help us fix bugs, detect firewalls, and avoid VPN blocks.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Laporan ranap membantu kami membaiki pepijat, mengesan tembok api, dan mengelakkan sekatan VPN.\n"
+"\n"
+"Statistik ini tidak mengandungi alamat IP anda dan tidak boleh digunakan untuk mengenal pasti anda. Kami tidak akan berkongsi statistik ini dengan pihak ketiga."
+
+msgctxt "message"
+msgid "Customize your connection by deciding which apps are protected by VPN."
+msgstr ""
+"Sesuaikan sambungan anda dengan menentukan apl yang dilindungi oleh VPN."
+
+msgctxt "message"
+msgid ""
+"Disables randomization of the local addresses mapping. This can slightly "
+"reduce connection security, but should allow direct connections for online "
+"gaming and similar purposes."
+msgstr ""
+"Melumpuhkan pengrawakan pemetaan alamat setempat. Ini boleh mengurangkan "
+"keselamatan sambungan sedikit, tetapi sepatutnya membolehkan sambungan terus"
+" untuk permainan dalam talian dan tujuan yang serupa."
+
+msgctxt "message"
+msgid "Disabling Beta access..."
+msgstr "Melumpuhkan akses beta..."
+
+msgctxt "message"
+msgid "Each code can only be used once"
+msgstr "Setiap kod hanya boleh digunakan sekali"
+
+msgctxt "message"
+msgid "Enabling Beta access..."
+msgstr "Mendayakan akses beta..."
+
+msgctxt "message"
+msgid "Get early access and help us test new versions of Proton VPN."
+msgstr "Dapatkan akses awal dan bantu kami menguji versi baharu Proton VPN."
+
+msgctxt "message"
+msgid "If your security key has a button or a gold disc, tap it now."
+msgstr ""
+"Jika kunci keselamatan anda mempunyai butang atau cakera emas, ketik "
+"sekarang."
+
+msgctxt "message"
+msgid ""
+"Increase your connection speed by up to 400% with performance enhancing "
+"technologies."
+msgstr ""
+"Tingkatkan kelajuan sambungan anda sehingga 400% dengan teknologi penambah "
+"prestasi."
+
+msgctxt "message"
+msgid "Insert the U2F or FIDO key linked to your Proton Account. "
+msgstr ""
+"Sisipkan kunci U2F atau FIDO yang dipautkan dengan Akaun Proton anda. "
+
+msgctxt "message"
+msgid "It was not possible to disable Beta access.\n"
+msgstr "Akses Beta tidak dapat dilumpuhkan.\n"
+
+msgctxt "message"
+msgid "It was not possible to enable Beta access.\n"
+msgstr "Akses Beta tidak dapat didayakan.\n"
+
+msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr "Suis pemutus hanya boleh ditukar apabila sambungan VPN diputuskan."
+
+msgctxt "message"
+msgid "Kill switch is blocking any outgoing connections."
+msgstr "Suis pemutus menyekat semua sambungan keluar."
+
+msgctxt "message"
+msgid ""
+"Kill switch selection is disabled while VPN is active. Disconnect to make "
+"changes."
+msgstr ""
+"Pemilihan suis pemutus dilumpuhkan semasa VPN aktif. Putuskan sambungan "
+"untuk membuat perubahan."
+
+msgctxt "message"
+msgid "Loading app..."
+msgstr "Memuatkan apl..."
+
+msgctxt "message"
+msgid "Multiple security keys were found. Tap one to select it."
+msgstr "Beberapa kunci keselamatan ditemui. Ketik satu untuk memilihnya."
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"Akses internet hanya dibenarkan apabila disambungkan ke Proton VPN. Suis "
+"pemutus termaju akan kekal aktif walaupun anda memulakan semula peranti "
+"anda."
+
+msgctxt "message"
+msgid ""
+"Only selected apps connect with VPN protection. All other traffic is "
+"unprotected."
+msgstr ""
+"Hanya apl terpilih bersambung dengan perlindungan VPN. Semua trafik lain "
+"tidak dilindungi."
+
+msgctxt "message"
+msgid ""
+"Permanent Kill Switch is blocking any outgoing connections and preventing your IP to be exposed.\n"
+"\n"
+"Do you want to disable Kill Switch?"
+msgstr ""
+"Suis pemutus kekal menyekat semua sambungan keluar dan menghalang IP anda daripada didedahkan.\n"
+"\n"
+"Adakah anda mahu melumpuhkan suis pemutus?"
+
+msgctxt "message"
+msgid "Please establish a new VPN connection for changes to take effect."
+msgstr "Sila wujudkan sambungan VPN baharu supaya perubahan berkuat kuasa."
+
+msgctxt "message"
+msgid "Protect yourself from ads, malware, and trackers on websites and apps."
+msgstr ""
+"Lindungi diri anda daripada iklan, perisian hasad dan penjejak pada tapak "
+"web dan apl."
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"Melindungi alamat IP anda dengan memutuskan sambungan internet anda jika "
+"sambungan VPN anda terputus. {learn_more}"
+
+msgctxt "message"
+msgid "Protocol can only be changed when VPN is disconnected."
+msgstr "Protokol hanya boleh diubah apabila VPN terputus sambungan."
+
+msgctxt "message"
+msgid ""
+"Protocol selection is disabled while VPN is active. Disconnect to make "
+"changes."
+msgstr ""
+"Pemilihan protokol dilumpuhkan semasa VPN aktif. Putuskan sambungan untuk "
+"membuat perubahan."
+
+msgctxt "message"
+msgid ""
+"Quitting the application will cancel the current VPN connection.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Mengeluarkan aplikasi akan membatalkan sambungan VPN semasa.\n"
+"\n"
+"Adakah anda ingin teruskan?"
+
+msgctxt "message"
+msgid ""
+"Quitting the application will keep the kill switch active, but your current VPN connection will be terminated.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Mengeluarkan aplikasi akan mengekalkan suis pemutus aktif, tetapi sambungan VPN semasa akan ditamatkan.\n"
+"\n"
+"Adakah anda ingin teruskan?"
+
+msgctxt "message"
+msgid "Reporting your issue..."
+msgstr "Melaporkan masalah anda..."
+
+msgctxt "message"
+msgid "Signing in..."
+msgstr "Sedang log masuk..."
+
+msgctxt "message"
+msgid ""
+"Signing out will cancel the current VPN connection and disable the kill switch.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Log keluar akan membatalkan sambungan VPN semasa dan melumpuhkan suis pemutus.\n"
+"\n"
+"Adakah anda ingin teruskan?"
+
+msgctxt "message"
+msgid ""
+"Signing out will cancel the current VPN connection.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Log keluar akan membatalkan sambungan VPN semasa.\n"
+"\n"
+"Adakah anda ingin teruskan?"
+
+msgctxt "message"
+msgid ""
+"Signing out will disable the kill switch, potentially exposing your internet traffic. \n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Log keluar akan melumpuhkan suis pemutus dan berpotensi mendedahkan trafik internet anda. \n"
+"\n"
+"Adakah anda ingin teruskan?"
+
+msgctxt "message"
+msgid "Signing out..."
+msgstr "Sedang log keluar..."
+
+msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"Beberapa komponen yang diperlukan tidak dikesan pada sistem anda. Apl "
+"mungkin tidak berfungsi seperti yang dijangkakan."
+
+msgctxt "message"
+msgid "Split tunneling enabled. Remember to restart affected apps."
+msgstr ""
+"Pemisahan terowong telah didayakan. Ingat untuk memulakan semula apl yang "
+"terjejas."
+
+msgctxt "message"
+msgid ""
+"These servers give the best performance for BitTorrent and file sharing."
+msgstr ""
+"Pelayan ini memberikan prestasi terbaik untuk BitTorrent dan perkongsian "
+"fail."
+
+msgctxt "message"
+msgid ""
+"This technology allows Proton VPN to provide higher speed and security in "
+"difficult-to-reach countries."
+msgstr ""
+"Teknologi ini membolehkan Proton VPN menyediakan kelajuan dan keselamatan "
+"yang lebih tinggi di negara yang sukar dijangkau."
+
+msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr ""
+"Tindakan ini akan menetapkan protokol anda kepada WireGuard secara "
+"automatik."
+
+msgctxt "message"
+msgid "This will disable NetShield."
+msgstr "Tindakan ini akan melumpuhkan NetShield."
+
+msgctxt "message"
+msgid "This will disable custom DNS."
+msgstr "Tindakan ini akan melumpuhkan DNS tersuai."
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "Tindakan ini akan melumpuhkan suis pemutus."
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "Tindakan ini akan melumpuhkan pemisahan terowong."
+
+msgctxt "message"
+msgid ""
+"Tunnels IPv6 traffic through the VPN. Can enhance compatibility with IPv6 "
+"networks."
+msgstr ""
+"Menyalurkan trafik IPv6 melalui VPN. Boleh meningkatkan keserasian dengan "
+"rangkaian IPv6."
+
+msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Data penggunaan membantu kami mengatasi sekatan VPN dan meningkatkan prestasi apl.\n"
+"\n"
+"Statistik ini tidak mengandungi alamat IP anda dan tidak boleh digunakan untuk mengenal pasti anda. Kami tidak akan sekali-kali berkongsi statistik ini dengan pihak ketiga."
+
+msgctxt "message"
+msgid "When enabled, the app starts minimized to the tray."
+msgstr "Apabila didayakan, apl dimulakan dalam keadaan diminimumkan ke tray."
+
+msgctxt "message"
+msgid ""
+"You will be connected to a server as soon as Proton VPN app starts. Replace "
+"it with a country ISO code (e.g.: US for United States), a server (e.g.: "
+"NL#42) or Fastest for quick connection. Default value: Off."
+msgstr ""
+"Anda akan disambungkan ke pelayan sebaik sahaja apl Proton VPN dimulakan. "
+"Gantikannya dengan kod ISO negara (cth.: US untuk Amerika Syarikat), pelayan"
+" (cth.: NL#42) atau Fastest untuk sambungan pantas. Nilai lalai: Mati."
+
+msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "Maklum balas anda membantu kami menambah baik Proton VPN."
+
+msgctxt "message"
+msgid "Your issue has been reported"
+msgstr "Masalah anda telah dilaporkan"
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "Sesi anda telah luput. Sila log masuk semula."
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr "{learn_more} tentang keperluan dan kaedah pemasangan alternatif."
+
+msgctxt "placeholder"
+msgid "Password"
+msgstr "Kata laluan"
+
+msgctxt "placeholder"
+msgid "Press Ctrl+F to search"
+msgstr "Tekan Ctrl+F untuk mencari"
+
+msgctxt "placeholder"
+msgid "Username"
+msgstr "Nama pengguna"
+
+msgctxt "status"
+msgid "Connecting..."
+msgstr "Menyambung..."
+
+msgctxt "status"
+msgid "Connection error"
+msgstr "Ralat sambungan"
+
+msgctxt "status"
+msgid "Disconnecting..."
+msgstr "Sedang memutuskan sambungan..."
+
+msgctxt "status"
+msgid "Protected"
+msgstr "Dilindungi"
+
+msgctxt "status"
+msgid "Unprotected"
+msgstr "Tidak dilindungi"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "2FA diperlukan"
+
+msgctxt "title"
+msgid "About"
+msgstr "Perihal"
+
+msgctxt "title"
+msgid "Account"
+msgstr "Akaun"
+
+msgctxt "title"
+msgid "Active connection found"
+msgstr "Sambungan aktif ditemui"
+
+msgctxt "title"
+msgid "Add excluded apps"
+msgstr "Tambah apl yang dikecualikan"
+
+msgctxt "title"
+msgid "Add included apps"
+msgstr "Tambah apl yang disertakan"
+
+msgctxt "title"
+msgid "Authenticator app"
+msgstr "Apl pengesah"
+
+msgctxt "title"
+msgid "Auto connect"
+msgstr "Sambung automatik"
+
+msgctxt "title"
+msgid "Beta Access"
+msgstr "Akses Beta"
+
+msgctxt "title"
+msgid "Beta access"
+msgstr "Akses Beta"
+
+msgctxt "title"
+msgid "Connection"
+msgstr "Sambungan"
+
+msgctxt "title"
+msgid "Connection error: session limit reached"
+msgstr "Ralat sambungan: had sesi telah dicapai"
+
+msgctxt "title"
+msgid "Countries"
+msgstr "Negara"
+
+msgctxt "title"
+msgid "Create a troubleshooting file"
+msgstr "Cipta fail penyelesaian masalah"
+
+msgctxt "title"
+msgid "Custom DNS servers"
+msgstr "Pelayan DNS tersuai"
+
+msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "Lumpuhkan WireGuard?"
+
+msgctxt "title"
+msgid "Enable Custom DNS"
+msgstr "Dayakan DNS Tersuai"
+
+msgctxt "title"
+msgid "Enable Custom DNS?"
+msgstr "Dayakan DNS tersuai?"
+
+msgctxt "title"
+msgid "Enable Netshield"
+msgstr "Dayakan NetShield"
+
+msgctxt "title"
+msgid "Enable Netshield ?"
+msgstr "Dayakan NetShield?"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "Dayakan suis pemutus?"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "Dayakan pemisahan terowong?"
+
+msgctxt "title"
+msgid "Exclude mode"
+msgstr "Mod pengecualian"
+
+msgctxt "title"
+msgid "Fastest country"
+msgstr "Negara terpantas"
+
+msgctxt "title"
+msgid "Fastest free server"
+msgstr "Pelayan percuma terpantas"
+
+msgctxt "title"
+msgid "Features"
+msgstr "Ciri-ciri"
+
+msgctxt "title"
+msgid "General"
+msgstr "Umum"
+
+msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "Seberapa berkemungkinan anda mengesyorkan Proton VPN kepada rakan?"
+
+msgctxt "title"
+msgid "Include mode"
+msgstr "Mod penyertaan"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "Sesi tidak sah"
+
+msgctxt "title"
+msgid "Kill Switch Enabled"
+msgstr "Suis pemutus didayakan"
+
+msgctxt "title"
+msgid "Kill Switch enabled"
+msgstr "Suis pemutus didayakan"
+
+msgctxt "title"
+msgid "Kill switch"
+msgstr "Suis pemutus"
+
+msgctxt "title"
+msgid "Locations"
+msgstr "Lokasi"
+
+msgctxt "title"
+msgid "Moderate NAT"
+msgstr "NAT Sederhana"
+
+msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
+msgid "No space left on device"
+msgstr "Tiada ruang tersisa pada peranti"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
+
+msgctxt "title"
+msgid "Pinned tray connections"
+msgstr "Sambungan tray yang disemat"
+
+msgctxt "title"
+msgid "Port forwarding"
+msgstr "Pemajuan port"
+
+msgctxt "title"
+msgid "Protocol"
+msgstr "Protokol"
+
+msgctxt "title"
+msgid "Release notes"
+msgstr "Nota keluaran"
+
+msgctxt "title"
+msgid "Report an Issue"
+msgstr "Laporkan masalah"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
+
+msgctxt "title"
+msgid "Security key"
+msgstr "Kunci keselamatan"
+
+msgctxt "title"
+msgid "Select packet capture directory"
+msgstr "Pilih direktori tangkapan paket"
+
+msgctxt "title"
+msgid "Servers"
+msgstr "Pelayan"
+
+msgctxt "title"
+msgid "Settings"
+msgstr "Tetapan"
+
+msgctxt "title"
+msgid "Share anonymous crash reports"
+msgstr "Kongsi laporan ranap tanpa nama"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Kongsi statistik penggunaan tanpa nama"
+
+msgctxt "title"
+msgid "Smart routing"
+msgstr "Penghalaan pintar"
+
+msgctxt "title"
+msgid "Something went wrong"
+msgstr "Sesuatu telah berlaku"
+
+msgctxt "title"
+msgid "Split tunneling"
+msgstr "Pemisahan terowong"
+
+msgctxt "title"
+msgid "Start app minimized"
+msgstr "Mula apl dalam keadaan diminimumkan"
+
+msgctxt "title"
+msgid "Thanks for your feedback"
+msgstr "Terima kasih atas maklum balas anda"
+
+msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
+msgid "Two-factor authentication"
+msgstr "Pengesahan dua faktor"
+
+msgctxt "title"
+msgid "Unable to find server"
+msgstr "Pelayan tidak dapat dijumpai"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "Kemas kini jam sistem"
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "Ralat sambungan VPN"
+
+msgctxt "tooltip"
+msgid "Close"
+msgstr "Tutup"
+
+msgctxt "tooltip"
+msgid "Connect to {country_name}"
+msgstr "Sambung ke {country_name}"
+
+msgctxt "tooltip"
+msgid "Connect to {country} via Secure Core"
+msgstr "Sambung ke {country} melalui Secure Core"
+
+msgctxt "tooltip"
+msgid "Connect to {exit_country} via {entry_country}"
+msgstr "Sambung ke {exit_country} melalui {entry_country}"
+
+msgctxt "tooltip"
+msgid "Connect to {name}"
+msgstr "Sambung ke {name}"
+
+msgctxt "tooltip"
+msgid "Copy port number"
+msgstr "Salin nombor port"
+
+msgctxt "tooltip"
+msgid ""
+"Hide all Secure Core servers\n"
+"to connect to {country}"
+msgstr ""
+"Sembunyikan semua pelayan Secure Core\n"
+"untuk menyambung ke {country}"
+
+msgctxt "tooltip"
+msgid "Hide all locations from {country_name}"
+msgstr "Sembunyikan semua lokasi dari {country_name}"
+
+msgctxt "tooltip"
+msgid "Hide all servers from {name}"
+msgstr "Sembunyikan semua pelayan dari {name}"
+
+msgctxt "tooltip"
+msgid "P2P/BitTorrent supported"
+msgstr "Menyokong P2P/BitTorrent"
+
+msgctxt "tooltip"
+msgid ""
+"Secure Core server that connects to {exit_country} through {entry_country}."
+msgstr ""
+"Pelayan Secure Core yang bersambung ke {exit_country} melalui "
+"{entry_country}."
+
+msgctxt "tooltip"
+msgid "Secure Core supported"
+msgstr "Menyokong Secure Core"
+
+msgctxt "tooltip"
+msgid "Server load is at {load}%"
+msgstr "Beban pelayan ialah {load}%"
+
+msgctxt "tooltip"
+msgid ""
+"Show all Secure Core servers\n"
+"to connect to {country}"
+msgstr ""
+"Papar semua pelayan Secure Core\n"
+"untuk menyambung ke {country}"
+
+msgctxt "tooltip"
+msgid "Show all locations from {country_name}"
+msgstr "Papar semua lokasi dari {country_name}"
+
+msgctxt "tooltip"
+msgid "Show all servers from {name}"
+msgstr "Papar semua pelayan dari {name}"
+
+msgctxt "tooltip"
+msgid "Smart routing is used"
+msgstr "Penghalaan pintar digunakan"
+
+msgctxt "tooltip"
+msgid "Streaming supported"
+msgstr "Penstriman disokong"
+
+msgctxt "tooltip"
+msgid "To change split tunneling settings, please disconnect the VPN first."
+msgstr ""
+"Untuk menukar tetapan pemisahan terowong, sila putuskan sambungan VPN "
+"terlebih dahulu."
+
+msgctxt "tooltip"
+msgid "Tor supported"
+msgstr "Menyokong Tor"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {country_name}"
+msgstr "Naik taraf untuk menyambung ke {country_name}"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {country} via Secure Core"
+msgstr "Naik taraf untuk menyambung ke {country} melalui Secure Core"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {exit_country} via {entry_country}"
+msgstr "Naik taraf untuk menyambung ke {exit_country} melalui {entry_country}"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {name}"
+msgstr "Naik taraf untuk menyambung ke {name}"
+
+msgctxt "tooltip"
+msgid "{name} is under maintenance"
+msgstr "{name} sedang diselenggara"

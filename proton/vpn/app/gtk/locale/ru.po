@@ -24,6 +24,10 @@ msgid "Cancel Connection"
 msgstr "Отменить подключение"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "Сменить сервер"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "Подключиться"
 
@@ -1308,6 +1312,10 @@ msgid "All countries ({count})"
 msgstr "Все страны ({count})"
 
 msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Автоматически выбрано из"
+
+msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "Автоматически выбрано из бесплатных местоположений"
 
@@ -1338,6 +1346,14 @@ msgstr "Исключенные приложения "
 msgctxt "label"
 msgid "Free"
 msgstr "Free"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Месторасположение серверов Free ({count})"
+
+msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Получите неограниченное количество изменений сервера с VPN Plus."
 
 msgctxt "label"
 msgid "Included apps "
@@ -1398,6 +1414,12 @@ msgstr "Через Secure Core"
 msgctxt "label"
 msgid "Via {country}"
 msgstr "Используется {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr ""
+"Вы достигли максимального количества бесплатных изменений сервера на данный "
+"момент"
 
 msgctxt "link"
 msgid "Learn more"
@@ -1932,6 +1954,10 @@ msgid "Features"
 msgstr "Функции"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Бесплатные подключения"
+
+msgctxt "title"
 msgid "General"
 msgstr "Общие"
 
@@ -2024,6 +2050,10 @@ msgid "Share anonymous crash reports"
 msgstr "Делиться анонимными сообщениями о сбоях"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Делиться анонимной статистикой использования"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "Smart Routing"
 
@@ -2068,6 +2098,10 @@ msgid "VPN connection error"
 msgstr "Ошибка подключения к VPN"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Очистить"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Закрыть"
 
@@ -2090,6 +2124,10 @@ msgstr "Подключиться к {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Копировать номер порта"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Месторасположение серверов Free"
 
 msgctxt "tooltip"
 msgid ""

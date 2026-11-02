@@ -16,12 +16,20 @@ msgid "Authenticate"
 msgstr "Preverjanje pristnosti"
 
 msgctxt "button"
+msgid "Browse..."
+msgstr "Prebrskaj ..."
+
+msgctxt "button"
 msgid "Cancel"
 msgstr "Prekliči"
 
 msgctxt "button"
 msgid "Cancel Connection"
 msgstr "Prekliči povezavo"
+
+msgctxt "button"
+msgid "Change server"
+msgstr "Spremeni strežnik"
 
 msgctxt "button"
 msgid "Connect"
@@ -1140,6 +1148,12 @@ msgid "Zimbabwe"
 msgstr "Zimbabve"
 
 msgctxt "error"
+msgid "Account info refresh failed, check your connection and try again"
+msgstr ""
+"Posodobitev informacij o računu ni uspela, preverite vašo povezavo in "
+"poskusite znova."
+
+msgctxt "error"
 msgid "An unknown error occurred"
 msgstr "Prišlo je do neznane napake"
 
@@ -1277,6 +1291,10 @@ msgstr ""
 "prekinite povezavo z drugo napravo."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "+{count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0 je zelo malo verjetno"
 
@@ -1303,6 +1321,10 @@ msgstr "Napredno"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Vse države ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Samodejno izbrano med"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1335,6 +1357,10 @@ msgstr "Izključene aplikacije "
 msgctxt "label"
 msgid "Free"
 msgstr "Brezplačno"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Lokacije brezplačnega strežnika ({count})"
 
 msgctxt "label"
 msgid "Get unlimited server changes with VPN Plus."
@@ -1442,6 +1468,12 @@ msgstr ""
 "NL#42, JP, US, IT#01)."
 
 msgctxt "message"
+msgid "Account info refreshed, restart the app to see changes"
+msgstr ""
+"Podatki o računu so posodobljeni, znova zaženite aplikacijo, da bodo "
+"spremembe vidne."
+
+msgctxt "message"
 msgid "Active port is {new_port}"
 msgstr "Aktivna vrata {new_port}"
 
@@ -1487,6 +1519,10 @@ msgstr ""
 "Zabeleži konkretno težavo, s katero se soočate pri uporabi Proton VPN, da lahko zaprosite našo ekipo za podporo strankam za pomoč.\n"
 "\n"
 "Opozorilo: Ta datoteka vsebuje posnetek vse vaše spletne aktivnosti med snemanjem."
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "Zamenjava strežnika je sedaj na voljo"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1674,6 +1710,14 @@ msgstr ""
 
 msgctxt "message"
 msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr ""
+"Proton Free vas samodejno poveže z najhitrejšim brezplačnim strežnikom, ki "
+"je na voljo. To je običajno vaši lokaciji najbližji strežnik."
+
+msgctxt "message"
+msgid ""
 "Quitting the application will cancel the current VPN connection.\n"
 "\n"
 "Do you want to continue?"
@@ -1735,6 +1779,14 @@ msgid "Signing out..."
 msgstr "Odjavljanje ..."
 
 msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"Na vašem sistemu ni zaznati nekaterih zahtevanih komponent. Aplikacija morda"
+" ne bo delovala, kot bi morala."
+
+msgctxt "message"
 msgid "Split tunneling enabled. Remember to restart affected apps."
 msgstr ""
 "Deljeno tuneliranje je vklopljeno. Ne pozabite ponovno zagnati prizadete "
@@ -1784,6 +1836,16 @@ msgstr ""
 "IPv6."
 
 msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Poročila o uporabi nam pomagajo pri izogibanju blokiranja VPN in pri izboljšanju delovanja aplikacije.\n"
+"\n"
+"Ti statistični podatki ne vsebujejo vašega IP naslova in jih ni mogoče uporabiti za identifikacijo uporabnika. Teh informacij nikoli ne delimo s tretjimi osebami."
+
+msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
 msgstr ""
 "Ko je ta možnost omogočena, se aplikacija zažene pomanjšana v sistemski "
@@ -1811,6 +1873,10 @@ msgstr "Vaša težava je bila prijavljena"
 msgctxt "message"
 msgid "Your session has expired. Please sign in again."
 msgstr "Vaša seja se je iztekla. Ponovno se prijavite."
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr "{learn_more} o zahtevah in drugih načinih namestitve."
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1949,6 +2015,10 @@ msgid "Features"
 msgstr "Funkcije"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Brezplačne povezave"
+
+msgctxt "title"
 msgid "General"
 msgstr "Splošno"
 
@@ -2041,6 +2111,10 @@ msgid "Share anonymous crash reports"
 msgstr "Delite anonimna poročila o zrušitvah"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Delite anonimne podatke o uporabi"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "Pametno usmerjanje"
 
@@ -2085,6 +2159,10 @@ msgid "VPN connection error"
 msgstr "Napaka povezave VPN"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Počisti"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Zapri"
 
@@ -2109,6 +2187,10 @@ msgid "Copy port number"
 msgstr "Kopiraj številko vrat"
 
 msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Lokacije brezplačnega strežnika"
+
+msgctxt "tooltip"
 msgid ""
 "Hide all Secure Core servers\n"
 "to connect to {country}"
@@ -2127,6 +2209,10 @@ msgstr "Skrij vse strežnike iz {name}"
 msgctxt "tooltip"
 msgid "P2P/BitTorrent supported"
 msgstr "Podpora za P2P/BitTorrent"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "Posodobitev podrobnosti računa"
 
 msgctxt "tooltip"
 msgid ""

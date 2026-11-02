@@ -1300,6 +1300,10 @@ msgid "All countries ({count})"
 msgstr "全部國家 ({count})"
 
 msgctxt "label"
+msgid "Auto-selected from"
+msgstr "自動選擇自"
+
+msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "已從免費位置自動選取"
 
@@ -1330,6 +1334,14 @@ msgstr "排除所有應用程式 "
 msgctxt "label"
 msgid "Free"
 msgstr "免費"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "免費伺服器位置 ({count})"
+
+msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "升級到 VPN Plus 方案，享有無限次數切換伺服器"
 
 msgctxt "label"
 msgid "Included apps "
@@ -1390,6 +1402,10 @@ msgstr "經由 Secure Core"
 msgctxt "label"
 msgid "Via {country}"
 msgstr "透過 {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "您已達到免費版切換伺服器的次數上限"
 
 msgctxt "link"
 msgid "Learn more"
@@ -1878,6 +1894,10 @@ msgid "Features"
 msgstr "功能"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "免費連線"
+
+msgctxt "title"
 msgid "General"
 msgstr "一般"
 
@@ -2044,6 +2064,10 @@ msgstr "已連線到 {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "複製通訊埠號碼"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "免費伺服器位置"
 
 msgctxt "tooltip"
 msgid ""

@@ -16,6 +16,10 @@ msgid "Authenticate"
 msgstr "Ověřit"
 
 msgctxt "button"
+msgid "Browse..."
+msgstr "Procházet..."
+
+msgctxt "button"
 msgid "Cancel"
 msgstr "Zrušit"
 
@@ -1144,6 +1148,11 @@ msgid "Zimbabwe"
 msgstr "Zimbabwe"
 
 msgctxt "error"
+msgid "Account info refresh failed, check your connection and try again"
+msgstr ""
+"Aktualizace údajů o účtu selhala. Zkontrolujte připojení a zkuste to znovu."
+
+msgctxt "error"
 msgid "An unknown error occurred"
 msgstr "Došlo k neznámé chybě"
 
@@ -1281,6 +1290,10 @@ msgstr ""
 "k VPN, odpojte nejprve jiné zařízení."
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "+{count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0 je velmi nepravděpodobně"
 
@@ -1307,6 +1320,10 @@ msgstr "Pokročilé"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "Všechny země ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Automaticky vybráno z"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1339,6 +1356,14 @@ msgstr "Vyloučené aplikace "
 msgctxt "label"
 msgid "Free"
 msgstr "Free"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Umístění serverů Free ({count})"
+
+msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Získejte neomezený počet změn serverů s VPN Plus."
 
 msgctxt "label"
 msgid "Included apps "
@@ -1442,6 +1467,11 @@ msgstr ""
 "US, IT#01)."
 
 msgctxt "message"
+msgid "Account info refreshed, restart the app to see changes"
+msgstr ""
+"Údaje o účtu aktualizovány. Restartujte aplikaci, aby se změny projevily."
+
+msgctxt "message"
 msgid "Active port is {new_port}"
 msgstr "Aktivní port je {new_port}"
 
@@ -1486,6 +1516,10 @@ msgstr ""
 "Zaznamená konkrétní problém, se kterým se při používání Proton VPN potýkáte, aby vám náš tým zákaznické podpory mohl pomoci.\n"
 "\n"
 "Varování: Tento soubor obsahuje záznam veškeré vaší internetové aktivity během nahrávání."
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "Funkce Změnit server je nyní k dispozici"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1674,6 +1708,14 @@ msgstr ""
 
 msgctxt "message"
 msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr ""
+"Proton Free vás automaticky připojí k nejrychlejšímu dostupnému bezplatnému "
+"serveru. Obvykle se jedná o server, který je nejblíže vaší poloze."
+
+msgctxt "message"
+msgid ""
 "Quitting the application will cancel the current VPN connection.\n"
 "\n"
 "Do you want to continue?"
@@ -1735,6 +1777,14 @@ msgid "Signing out..."
 msgstr "Odhlašování..."
 
 msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"Ve vašem systému nebyly zjištěny některé požadované součásti. Aplikace "
+"nemusí fungovat tak, jak by měla."
+
+msgctxt "message"
 msgid "Split tunneling enabled. Remember to restart affected apps."
 msgstr "Split tunneling je aktivní. Nezapomeňte restartovat dotčené aplikace."
 
@@ -1780,6 +1830,16 @@ msgstr ""
 "Tuneluje přenos IPv6 skrze VPN. Může zvýšit kompatibilitu se sítěmi IPv6."
 
 msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Údaje o používání nám pomáhají překonávat blokování VPN a zlepšovat výkon aplikace.\n"
+"\n"
+"Tyto statistiky neobsahují vaši IP adresu a nelze je použít k vaší identifikaci. Nikdy je nebudeme sdílet s třetími stranami."
+
+msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
 msgstr "Při zapnutí se aplikace spouští minimalizovaná do oznamovací oblasti."
 
@@ -1805,6 +1865,10 @@ msgstr "Hlášení o problému bylo odesláno"
 msgctxt "message"
 msgid "Your session has expired. Please sign in again."
 msgstr "Vaše relace vypršela, musíte se znovu přihlásit."
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr "{learn_more} o požadavcích a alternativních způsobech instalace."
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1943,6 +2007,10 @@ msgid "Features"
 msgstr "Funkce"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Připojení Free"
+
+msgctxt "title"
 msgid "General"
 msgstr "Obecné"
 
@@ -2035,6 +2103,10 @@ msgid "Share anonymous crash reports"
 msgstr "Sdílejte anonymní hlášení o pádech"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Sdílet anonymní statistiky o používání"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "Chytré směrování"
 
@@ -2079,6 +2151,10 @@ msgid "VPN connection error"
 msgstr "Chyba připojení k VPN"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Vyčistit"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Zavřít"
 
@@ -2103,6 +2179,10 @@ msgid "Copy port number"
 msgstr "Kopírovat číslo portu"
 
 msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Umístění serverů Free"
+
+msgctxt "tooltip"
 msgid ""
 "Hide all Secure Core servers\n"
 "to connect to {country}"
@@ -2121,6 +2201,10 @@ msgstr "Skrýt všechny servery z {name}"
 msgctxt "tooltip"
 msgid "P2P/BitTorrent supported"
 msgstr "Podpora P2P/BitTorrent"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "Aktualizovat údaje o účtu"
 
 msgctxt "tooltip"
 msgid ""

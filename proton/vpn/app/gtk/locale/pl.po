@@ -24,6 +24,10 @@ msgid "Cancel Connection"
 msgstr "Anuluj połączenie"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "Zmień serwer"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "Połącz"
 
@@ -1306,6 +1310,10 @@ msgid "All countries ({count})"
 msgstr "Wszystkie kraje ({count})"
 
 msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Automatycznie wybrany z"
+
+msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "Automatycznie wybrano z darmowych lokalizacji"
 
@@ -1336,6 +1344,14 @@ msgstr "Wykluczone aplikacje "
 msgctxt "label"
 msgid "Free"
 msgstr "Free"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Lokalizacje planu Free ({count})"
+
+msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Uzyskaj nieograniczoną liczbę zmian serwerów w planie VPN Plus."
 
 msgctxt "label"
 msgid "Included apps "
@@ -1396,6 +1412,10 @@ msgstr "Przez Secure Core"
 msgctxt "label"
 msgid "Via {country}"
 msgstr "Przez {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "Osiągnięto maksymalną liczbę darmowych zmian serwerów"
 
 msgctxt "link"
 msgid "Learn more"
@@ -1933,6 +1953,10 @@ msgid "Features"
 msgstr "Funkcje"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Darmowe połączenia"
+
+msgctxt "title"
 msgid "General"
 msgstr "Ogólne"
 
@@ -2025,6 +2049,10 @@ msgid "Share anonymous crash reports"
 msgstr "Udostępnij anonimowe raporty o awariach"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Udostępnij anonimowe statystyki użytkowania"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "Smart Routing"
 
@@ -2069,6 +2097,10 @@ msgid "VPN connection error"
 msgstr "Błąd połączenia VPN"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "Wyczyść"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "Zamknij"
 
@@ -2091,6 +2123,10 @@ msgstr "Połączyć się z {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Kopiuj numer portu"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Lokalizacje planu Free"
 
 msgctxt "tooltip"
 msgid ""

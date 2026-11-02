@@ -1,0 +1,2251 @@
+#
+msgid ""
+msgstr ""
+"Language-Team: Swahili\n"
+"Language: sw_KE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "button"
+msgid "Add"
+msgstr "Ongeza"
+
+msgctxt "button"
+msgid "Authenticate"
+msgstr "Thibitisha"
+
+msgctxt "button"
+msgid "Browse..."
+msgstr "Vinjari..."
+
+msgctxt "button"
+msgid "Cancel"
+msgstr "Ghairi"
+
+msgctxt "button"
+msgid "Cancel Connection"
+msgstr "Ghairi muunganisho"
+
+msgctxt "button"
+msgid "Change server"
+msgstr "Badilisha seva"
+
+msgctxt "button"
+msgid "Connect"
+msgstr "Unganisha"
+
+msgctxt "button"
+msgid "Create Account"
+msgstr "Fungua akaunti"
+
+msgctxt "button"
+msgid "Disable"
+msgstr "Zima"
+
+msgctxt "button"
+msgid "Disconnect"
+msgstr "Tenganisha"
+
+msgctxt "button"
+msgid "Done"
+msgstr "Nimemaliza"
+
+msgctxt "button"
+msgid "Hide"
+msgstr "Ficha"
+
+msgctxt "button"
+msgid "Learn more"
+msgstr "Pata maelezo zaidi"
+
+msgctxt "button"
+msgid "Manage Account"
+msgstr "Dhibiti Akaunti"
+
+msgctxt "button"
+msgid "Need Help?"
+msgstr "Unahitaji msaada?"
+
+msgctxt "button"
+msgid "OK"
+msgstr "Sawa"
+
+msgctxt "button"
+msgid "Send error logs"
+msgstr "Tuma kumbukumbu za hitilafu"
+
+msgctxt "button"
+msgid "Share anonymously"
+msgstr "Shiriki bila kujitambulisha"
+
+msgctxt "button"
+msgid "Show"
+msgstr "Onyesha"
+
+msgctxt "button"
+msgid "Sign in"
+msgstr "Ingia"
+
+msgctxt "button"
+msgid "Sign in again"
+msgstr "Ingia tena"
+
+msgctxt "button"
+msgid "Start"
+msgstr "Anza"
+
+msgctxt "button"
+msgid "Stop"
+msgstr "Simamisha"
+
+msgctxt "button"
+msgid "Upgrade"
+msgstr "Pandisha daraja"
+
+msgctxt "button"
+msgid "Use 6-digit authentication code"
+msgstr "Tumia msimbo wa uthibitishaji wa tarakimu 6"
+
+msgctxt "button"
+msgid "Use recovery code"
+msgstr "Tumia msimbo wa urejeshaji"
+
+msgctxt "button"
+msgid "_Cancel"
+msgstr "_Ghairi"
+
+msgctxt "button"
+msgid "_Close"
+msgstr "_Funga"
+
+msgctxt "button"
+msgid "_Enable"
+msgstr "_Washa"
+
+msgctxt "button"
+msgid "_No"
+msgstr "_Hapana"
+
+msgctxt "button"
+msgid "_Select"
+msgstr "_Teua"
+
+msgctxt "button"
+msgid "_Submit"
+msgstr "_Tuma"
+
+msgctxt "button"
+msgid "_Yes"
+msgstr "_Ndiyo"
+
+msgctxt "cli"
+msgid "Display the application's version"
+msgstr "Onyesha toleo la programu tumizi"
+
+msgctxt "cli"
+msgid "Start minimized in the system tray"
+msgstr "Anza ikiwa imepunguzwa kwenye trei ya mfumo"
+
+msgctxt "country"
+msgid "Afghanistan"
+msgstr "Afghanistan"
+
+msgctxt "country"
+msgid "Aland Islands"
+msgstr "Visiwa vya Aland"
+
+msgctxt "country"
+msgid "Albania"
+msgstr "Albania"
+
+msgctxt "country"
+msgid "Algeria"
+msgstr "Aljeria"
+
+msgctxt "country"
+msgid "American Samoa"
+msgstr "Samoa ya Marekani"
+
+msgctxt "country"
+msgid "Andorra"
+msgstr "Andorra"
+
+msgctxt "country"
+msgid "Angola"
+msgstr "Angola"
+
+msgctxt "country"
+msgid "Anguilla"
+msgstr "Anguilla"
+
+msgctxt "country"
+msgid "Antarctica"
+msgstr "Antaktiki"
+
+msgctxt "country"
+msgid "Antigua and Barbuda"
+msgstr "Antigua na Barbuda"
+
+msgctxt "country"
+msgid "Argentina"
+msgstr "Ajentina"
+
+msgctxt "country"
+msgid "Armenia"
+msgstr "Armenia"
+
+msgctxt "country"
+msgid "Aruba"
+msgstr "Aruba"
+
+msgctxt "country"
+msgid "Australia"
+msgstr "Australia"
+
+msgctxt "country"
+msgid "Austria"
+msgstr "Austria"
+
+msgctxt "country"
+msgid "Azerbaijan"
+msgstr "Azerbaijani"
+
+msgctxt "country"
+msgid "Bahamas"
+msgstr "Bahamas"
+
+msgctxt "country"
+msgid "Bahrain"
+msgstr "Bahraini"
+
+msgctxt "country"
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+msgctxt "country"
+msgid "Barbados"
+msgstr "Barbados"
+
+msgctxt "country"
+msgid "Belarus"
+msgstr "Belarus"
+
+msgctxt "country"
+msgid "Belgium"
+msgstr "Ubelgiji"
+
+msgctxt "country"
+msgid "Belize"
+msgstr "Belize"
+
+msgctxt "country"
+msgid "Benin"
+msgstr "Benini"
+
+msgctxt "country"
+msgid "Bermuda"
+msgstr "Bermuda"
+
+msgctxt "country"
+msgid "Bhutan"
+msgstr "Bhutan"
+
+msgctxt "country"
+msgid "Bolivia"
+msgstr "Bolivia"
+
+msgctxt "country"
+msgid "Bonaire, Saint Eustatius and Saba "
+msgstr "Bonaire, Saint Eustatius na Saba "
+
+msgctxt "country"
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnia na Herzegovina"
+
+msgctxt "country"
+msgid "Botswana"
+msgstr "Botswana"
+
+msgctxt "country"
+msgid "Bouvet Island"
+msgstr "Kisiwa cha Bouvet"
+
+msgctxt "country"
+msgid "Brazil"
+msgstr "Brazil"
+
+msgctxt "country"
+msgid "British Indian Ocean Territory"
+msgstr "Eneo la Britania katika Bahari ya Hindi"
+
+msgctxt "country"
+msgid "British Virgin Islands"
+msgstr "Visiwa vya Virgin vya Uingereza"
+
+msgctxt "country"
+msgid "Brunei"
+msgstr "Brunei"
+
+msgctxt "country"
+msgid "Bulgaria"
+msgstr "Bulgaria"
+
+msgctxt "country"
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+msgctxt "country"
+msgid "Burundi"
+msgstr "Burundi"
+
+msgctxt "country"
+msgid "Cambodia"
+msgstr "Kambodia"
+
+msgctxt "country"
+msgid "Cameroon"
+msgstr "Kamerun"
+
+msgctxt "country"
+msgid "Canada"
+msgstr "Kanada"
+
+msgctxt "country"
+msgid "Cape Verde"
+msgstr "Kabo Verde"
+
+msgctxt "country"
+msgid "Cayman Islands"
+msgstr "Visiwa vya Cayman"
+
+msgctxt "country"
+msgid "Central African Republic"
+msgstr "Jamhuri ya Afrika ya Kati"
+
+msgctxt "country"
+msgid "Chad"
+msgstr "Chad"
+
+msgctxt "country"
+msgid "Chile"
+msgstr "Chile"
+
+msgctxt "country"
+msgid "China"
+msgstr "China"
+
+msgctxt "country"
+msgid "Christmas Island"
+msgstr "Kisiwa cha Christmas"
+
+msgctxt "country"
+msgid "Cocos Islands"
+msgstr "Visiwa vya Cocos"
+
+msgctxt "country"
+msgid "Colombia"
+msgstr "Kolombia"
+
+msgctxt "country"
+msgid "Comoros"
+msgstr "Komori"
+
+msgctxt "country"
+msgid "Cook Islands"
+msgstr "Visiwa vya Cook"
+
+msgctxt "country"
+msgid "Costa Rica"
+msgstr "Kosta Rika"
+
+msgctxt "country"
+msgid "Croatia"
+msgstr "Korasia"
+
+msgctxt "country"
+msgid "Cuba"
+msgstr "Kuba"
+
+msgctxt "country"
+msgid "Curacao"
+msgstr "Curaçao"
+
+msgctxt "country"
+msgid "Cyprus"
+msgstr "Kuprosi"
+
+msgctxt "country"
+msgid "Czech Republic"
+msgstr "Jamhuri ya Cheki"
+
+msgctxt "country"
+msgid "Democratic Republic of the Congo"
+msgstr "Jamhuri ya Kidemokrasia ya Kongo"
+
+msgctxt "country"
+msgid "Denmark"
+msgstr "Denmaki"
+
+msgctxt "country"
+msgid "Djibouti"
+msgstr "Jibuti"
+
+msgctxt "country"
+msgid "Dominica"
+msgstr "Dominika"
+
+msgctxt "country"
+msgid "Dominican Republic"
+msgstr "Jamhuri ya Dominika"
+
+msgctxt "country"
+msgid "East Timor"
+msgstr "Timori ya Mashariki"
+
+msgctxt "country"
+msgid "Ecuador"
+msgstr "Ekwado"
+
+msgctxt "country"
+msgid "Egypt"
+msgstr "Misri"
+
+msgctxt "country"
+msgid "El Salvador"
+msgstr "El Salvador"
+
+msgctxt "country"
+msgid "Equatorial Guinea"
+msgstr "Guinea ya Ikwadori"
+
+msgctxt "country"
+msgid "Eritrea"
+msgstr "Eritrea"
+
+msgctxt "country"
+msgid "Estonia"
+msgstr "Estonia"
+
+msgctxt "country"
+msgid "Ethiopia"
+msgstr "Ethiopia"
+
+msgctxt "country"
+msgid "Falkland Islands"
+msgstr "Visiwa vya Falkland"
+
+msgctxt "country"
+msgid "Faroe Islands"
+msgstr "Visiwa vya Faroe"
+
+msgctxt "country"
+msgid "Fiji"
+msgstr "Fiji"
+
+msgctxt "country"
+msgid "Finland"
+msgstr "Finland"
+
+msgctxt "country"
+msgid "France"
+msgstr "Ufaransa"
+
+msgctxt "country"
+msgid "French Guiana"
+msgstr "Guiana ya Kifaransa"
+
+msgctxt "country"
+msgid "French Polynesia"
+msgstr "Polynesia ya Kifaransa"
+
+msgctxt "country"
+msgid "French Southern Territories"
+msgstr "Maeneo ya Kusini mwa Ufaransa"
+
+msgctxt "country"
+msgid "Gabon"
+msgstr "Gabon"
+
+msgctxt "country"
+msgid "Gambia"
+msgstr "Gambia"
+
+msgctxt "country"
+msgid "Georgia"
+msgstr "Jojia"
+
+msgctxt "country"
+msgid "Germany"
+msgstr "Ujerumani"
+
+msgctxt "country"
+msgid "Ghana"
+msgstr "Ghana"
+
+msgctxt "country"
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+msgctxt "country"
+msgid "Greece"
+msgstr "Ugiriki"
+
+msgctxt "country"
+msgid "Greenland"
+msgstr "Greenland"
+
+msgctxt "country"
+msgid "Grenada"
+msgstr "Grenada"
+
+msgctxt "country"
+msgid "Guadeloupe"
+msgstr "Guadeloupe"
+
+msgctxt "country"
+msgid "Guam"
+msgstr "Guam"
+
+msgctxt "country"
+msgid "Guatemala"
+msgstr "Guatemala"
+
+msgctxt "country"
+msgid "Guernsey"
+msgstr "Guernsey"
+
+msgctxt "country"
+msgid "Guinea"
+msgstr "Gine"
+
+msgctxt "country"
+msgid "Guinea-Bissau"
+msgstr "Guinea-Bissau"
+
+msgctxt "country"
+msgid "Guyana"
+msgstr "Guyana"
+
+msgctxt "country"
+msgid "Haiti"
+msgstr "Haiti"
+
+msgctxt "country"
+msgid "Heard Island and McDonald Islands"
+msgstr "Kisiwa cha Heard na Visiwa vya McDonald"
+
+msgctxt "country"
+msgid "Honduras"
+msgstr "Hondurasi"
+
+msgctxt "country"
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+msgctxt "country"
+msgid "Hungary"
+msgstr "Hungaria"
+
+msgctxt "country"
+msgid "Iceland"
+msgstr "Aislandi"
+
+msgctxt "country"
+msgid "India"
+msgstr "India"
+
+msgctxt "country"
+msgid "Indonesia"
+msgstr "Indonesia"
+
+msgctxt "country"
+msgid "Iran"
+msgstr "Irani"
+
+msgctxt "country"
+msgid "Iraq"
+msgstr "Iraki"
+
+msgctxt "country"
+msgid "Ireland"
+msgstr "Ayalandi"
+
+msgctxt "country"
+msgid "Isle of Man"
+msgstr "Kisiwa cha Man"
+
+msgctxt "country"
+msgid "Israel"
+msgstr "Israeli"
+
+msgctxt "country"
+msgid "Italy"
+msgstr "Italia"
+
+msgctxt "country"
+msgid "Ivory Coast"
+msgstr "Ivory Coast"
+
+msgctxt "country"
+msgid "Jamaica"
+msgstr "Jamaika"
+
+msgctxt "country"
+msgid "Japan"
+msgstr "Japani"
+
+msgctxt "country"
+msgid "Jersey"
+msgstr "Jersey"
+
+msgctxt "country"
+msgid "Jordan"
+msgstr "Yordani"
+
+msgctxt "country"
+msgid "Kazakhstan"
+msgstr "Kazakhstan"
+
+msgctxt "country"
+msgid "Kenya"
+msgstr "Kenya"
+
+msgctxt "country"
+msgid "Kiribati"
+msgstr "Kiribati"
+
+msgctxt "country"
+msgid "Kosovo"
+msgstr "Kosova"
+
+msgctxt "country"
+msgid "Kuwait"
+msgstr "Kuwait"
+
+msgctxt "country"
+msgid "Kyrgyzstan"
+msgstr "Kyrgyzstan"
+
+msgctxt "country"
+msgid "Laos"
+msgstr "Laos"
+
+msgctxt "country"
+msgid "Latvia"
+msgstr "Latvia"
+
+msgctxt "country"
+msgid "Lebanon"
+msgstr "Lebanoni"
+
+msgctxt "country"
+msgid "Lesotho"
+msgstr "Lesoto"
+
+msgctxt "country"
+msgid "Liberia"
+msgstr "Liberia"
+
+msgctxt "country"
+msgid "Libya"
+msgstr "Libya"
+
+msgctxt "country"
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+msgctxt "country"
+msgid "Lithuania"
+msgstr "Litwania"
+
+msgctxt "country"
+msgid "Luxembourg"
+msgstr "Luxembourg"
+
+msgctxt "country"
+msgid "Macao"
+msgstr "Macao"
+
+msgctxt "country"
+msgid "Macedonia"
+msgstr "Makedonia"
+
+msgctxt "country"
+msgid "Madagascar"
+msgstr "Madagaska"
+
+msgctxt "country"
+msgid "Malawi"
+msgstr "Malawi"
+
+msgctxt "country"
+msgid "Malaysia"
+msgstr "Malaysia"
+
+msgctxt "country"
+msgid "Maldives"
+msgstr "Maldivu"
+
+msgctxt "country"
+msgid "Mali"
+msgstr "Mali"
+
+msgctxt "country"
+msgid "Malta"
+msgstr "Malta"
+
+msgctxt "country"
+msgid "Marshall Islands"
+msgstr "Visiwa vya Marshall"
+
+msgctxt "country"
+msgid "Martinique"
+msgstr "Martinique"
+
+msgctxt "country"
+msgid "Mauritania"
+msgstr "Moritania"
+
+msgctxt "country"
+msgid "Mauritius"
+msgstr "Morisi"
+
+msgctxt "country"
+msgid "Mayotte"
+msgstr "Mayotte"
+
+msgctxt "country"
+msgid "Mexico"
+msgstr "Meksiko"
+
+msgctxt "country"
+msgid "Micronesia"
+msgstr "Mikronesia"
+
+msgctxt "country"
+msgid "Moldova"
+msgstr "Moldova"
+
+msgctxt "country"
+msgid "Monaco"
+msgstr "Monaco"
+
+msgctxt "country"
+msgid "Mongolia"
+msgstr "Mongolia"
+
+msgctxt "country"
+msgid "Montenegro"
+msgstr "Montenegro"
+
+msgctxt "country"
+msgid "Montserrat"
+msgstr "Montserrat"
+
+msgctxt "country"
+msgid "Morocco"
+msgstr "Moroko"
+
+msgctxt "country"
+msgid "Mozambique"
+msgstr "Msumbiji"
+
+msgctxt "country"
+msgid "Myanmar"
+msgstr "Myanmar"
+
+msgctxt "country"
+msgid "Namibia"
+msgstr "Namibia"
+
+msgctxt "country"
+msgid "Nauru"
+msgstr "Nauru"
+
+msgctxt "country"
+msgid "Nepal"
+msgstr "Nepal"
+
+msgctxt "country"
+msgid "Netherlands"
+msgstr "Uholanzi"
+
+msgctxt "country"
+msgid "New Caledonia"
+msgstr "New Caledonia"
+
+msgctxt "country"
+msgid "New Zealand"
+msgstr "Nyuzilandi"
+
+msgctxt "country"
+msgid "Nicaragua"
+msgstr "Nikaragua"
+
+msgctxt "country"
+msgid "Niger"
+msgstr "Niger"
+
+msgctxt "country"
+msgid "Nigeria"
+msgstr "Nigeria"
+
+msgctxt "country"
+msgid "Niue"
+msgstr "Niue"
+
+msgctxt "country"
+msgid "Norfolk Island"
+msgstr "Kisiwa cha Norfolk"
+
+msgctxt "country"
+msgid "North Korea"
+msgstr "Korea Kaskazini"
+
+msgctxt "country"
+msgid "Northern Mariana Islands"
+msgstr "Visiwa vya Mariana vya Kaskazini"
+
+msgctxt "country"
+msgid "Norway"
+msgstr "Norwe"
+
+msgctxt "country"
+msgid "Oman"
+msgstr "Omani"
+
+msgctxt "country"
+msgid "Pakistan"
+msgstr "Pakistan"
+
+msgctxt "country"
+msgid "Palau"
+msgstr "Palau"
+
+msgctxt "country"
+msgid "Palestinian Territory"
+msgstr "Palestina"
+
+msgctxt "country"
+msgid "Panama"
+msgstr "Panama"
+
+msgctxt "country"
+msgid "Papua New Guinea"
+msgstr "Papua Guinea Mpya"
+
+msgctxt "country"
+msgid "Paraguay"
+msgstr "Paragwai"
+
+msgctxt "country"
+msgid "Peru"
+msgstr "Peru"
+
+msgctxt "country"
+msgid "Philippines"
+msgstr "Ufilipino"
+
+msgctxt "country"
+msgid "Pitcairn"
+msgstr "Pitcairn"
+
+msgctxt "country"
+msgid "Poland"
+msgstr "Poland"
+
+msgctxt "country"
+msgid "Portugal"
+msgstr "Ureno"
+
+msgctxt "country"
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+msgctxt "country"
+msgid "Qatar"
+msgstr "Katari"
+
+msgctxt "country"
+msgid "Republic of the Congo"
+msgstr "Jamhuri ya Kongo"
+
+msgctxt "country"
+msgid "Reunion"
+msgstr "Reunion"
+
+msgctxt "country"
+msgid "Romania"
+msgstr "Romania"
+
+msgctxt "country"
+msgid "Russia"
+msgstr "Urusi"
+
+msgctxt "country"
+msgid "Rwanda"
+msgstr "Rwanda"
+
+msgctxt "country"
+msgid "Saint Barthelemy"
+msgstr "Saint Barthelemy"
+
+msgctxt "country"
+msgid "Saint Helena"
+msgstr "Sant Helena"
+
+msgctxt "country"
+msgid "Saint Kitts and Nevis"
+msgstr "Saint Kitts na Nevis"
+
+msgctxt "country"
+msgid "Saint Lucia"
+msgstr "Saint Lucia"
+
+msgctxt "country"
+msgid "Saint Martin"
+msgstr "Saint Martin"
+
+msgctxt "country"
+msgid "Saint Pierre and Miquelon"
+msgstr "Saint Pierre na Miquelon"
+
+msgctxt "country"
+msgid "Saint Vincent and the Grenadines"
+msgstr "Sant Vincenti na Grenadini"
+
+msgctxt "country"
+msgid "Samoa"
+msgstr "Samoa"
+
+msgctxt "country"
+msgid "San Marino"
+msgstr "San Marino"
+
+msgctxt "country"
+msgid "Sao Tome and Principe"
+msgstr "Sao Tome na Principe"
+
+msgctxt "country"
+msgid "Saudi Arabia"
+msgstr "Saudi Arabia"
+
+msgctxt "country"
+msgid "Senegal"
+msgstr "Senegali"
+
+msgctxt "country"
+msgid "Serbia"
+msgstr "Serbia"
+
+msgctxt "country"
+msgid "Seychelles"
+msgstr "Shelisheli"
+
+msgctxt "country"
+msgid "Sierra Leone"
+msgstr "Sierra Leone"
+
+msgctxt "country"
+msgid "Singapore"
+msgstr "Singapore"
+
+msgctxt "country"
+msgid "Sint Maarten"
+msgstr "Sint Maarten"
+
+msgctxt "country"
+msgid "Slovakia"
+msgstr "Slovakia"
+
+msgctxt "country"
+msgid "Slovenia"
+msgstr "Slovenia"
+
+msgctxt "country"
+msgid "Solomon Islands"
+msgstr "Visiwa vya Solomon"
+
+msgctxt "country"
+msgid "Somalia"
+msgstr "Somalia"
+
+msgctxt "country"
+msgid "South Africa"
+msgstr "Afrika Kusini"
+
+msgctxt "country"
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "Georgia Kusini na Visiwa vya Sandwich Kusini"
+
+msgctxt "country"
+msgid "South Korea"
+msgstr "Korea Kusini"
+
+msgctxt "country"
+msgid "South Sudan"
+msgstr "Sudan Kusini"
+
+msgctxt "country"
+msgid "Spain"
+msgstr "Uhispania"
+
+msgctxt "country"
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+msgctxt "country"
+msgid "Sudan"
+msgstr "Sudani"
+
+msgctxt "country"
+msgid "Suriname"
+msgstr "Surinamu"
+
+msgctxt "country"
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbard na Jan Mayen"
+
+msgctxt "country"
+msgid "Swaziland"
+msgstr "Uswazi"
+
+msgctxt "country"
+msgid "Sweden"
+msgstr "Uswidi"
+
+msgctxt "country"
+msgid "Switzerland"
+msgstr "Uswisi"
+
+msgctxt "country"
+msgid "Syria"
+msgstr "Syria"
+
+msgctxt "country"
+msgid "Taiwan"
+msgstr "Taiwani"
+
+msgctxt "country"
+msgid "Tajikistan"
+msgstr "Tajikistan"
+
+msgctxt "country"
+msgid "Tanzania"
+msgstr "Tanzania"
+
+msgctxt "country"
+msgid "Thailand"
+msgstr "Tailandi"
+
+msgctxt "country"
+msgid "Togo"
+msgstr "Togo"
+
+msgctxt "country"
+msgid "Tokelau"
+msgstr "Tokelau"
+
+msgctxt "country"
+msgid "Tonga"
+msgstr "Tonga"
+
+msgctxt "country"
+msgid "Trinidad and Tobago"
+msgstr "Trinidad na Tobago"
+
+msgctxt "country"
+msgid "Tunisia"
+msgstr "Tunisia"
+
+msgctxt "country"
+msgid "Turkey"
+msgstr "Uturuki"
+
+msgctxt "country"
+msgid "Turkmenistan"
+msgstr "Turkmenistan"
+
+msgctxt "country"
+msgid "Turks and Caicos Islands"
+msgstr "Visiwa vya Turks na Caicos"
+
+msgctxt "country"
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+msgctxt "country"
+msgid "U.S. Virgin Islands"
+msgstr "Visiwa vya Virgin vya Marekani"
+
+msgctxt "country"
+msgid "Uganda"
+msgstr "Uganda"
+
+msgctxt "country"
+msgid "Ukraine"
+msgstr "Ukraine"
+
+msgctxt "country"
+msgid "United Arab Emirates"
+msgstr "Falme za Kiarabu"
+
+msgctxt "country"
+msgid "United Kingdom"
+msgstr "Uingereza"
+
+msgctxt "country"
+msgid "United States"
+msgstr "Marekani"
+
+msgctxt "country"
+msgid "United States Minor Outlying Islands"
+msgstr "Visiwa Vidogo vya Nje vya Marekani"
+
+msgctxt "country"
+msgid "Uruguay"
+msgstr "Urugwai"
+
+msgctxt "country"
+msgid "Uzbekistan"
+msgstr "Uzbekistan"
+
+msgctxt "country"
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+msgctxt "country"
+msgid "Vatican"
+msgstr "Vatikani"
+
+msgctxt "country"
+msgid "Venezuela"
+msgstr "Venezuela"
+
+msgctxt "country"
+msgid "Vietnam"
+msgstr "Vietnam"
+
+msgctxt "country"
+msgid "Wallis and Futuna"
+msgstr "Wallis na Futuna"
+
+msgctxt "country"
+msgid "Western Sahara"
+msgstr "Sahara Magharibi"
+
+msgctxt "country"
+msgid "Yemen"
+msgstr "Yemeni"
+
+msgctxt "country"
+msgid "Zambia"
+msgstr "Zambia"
+
+msgctxt "country"
+msgid "Zimbabwe"
+msgstr "Zimbabwe"
+
+msgctxt "error"
+msgid "Account info refresh failed, check your connection and try again"
+msgstr ""
+"Usasishaji wa taarifa za akaunti umeshindikana. Angalia muunganisho wako na "
+"ujaribu tena"
+
+msgctxt "error"
+msgid "An unknown error occurred"
+msgstr "Hitilafu isiyojulikana imetokea."
+
+msgctxt "error"
+msgid "Authentication denied"
+msgstr "Uthibitishaji umenyimwa"
+
+msgctxt "error"
+msgid "Device disconnected"
+msgstr "Kifaa kimetenganishwa"
+
+msgctxt "error"
+msgid "Enter a valid IPv4 or IPv6 address"
+msgstr "Weka anwani sahihi ya IPv4 au IPv6"
+
+msgctxt "error"
+msgid "Incorrect 2FA code."
+msgstr "Msimbo wa Uthibitishaji wa Hatua Mbili si sahihi."
+
+msgctxt "error"
+msgid "Incorrect credentials."
+msgstr "Vitambulisho vya kuingia si sahihi."
+
+msgctxt "error"
+msgid "Invalid username."
+msgstr "Jina la mtumiaji si sahihi."
+
+msgctxt "error"
+msgid ""
+"Looks like your system clock is out of sync.\n"
+"This may cause issues when connecting to VPN.\n"
+"Update your system time and try to connect again."
+msgstr ""
+"Inaonekana saa ya mfumo wako haijapangwa ipasavyo.\n"
+"Hii inaweza kusababisha matatizo wakati wa kuunganishwa kwa VPN.\n"
+"Sasisha muda wa mfumo wako kisha ujaribu tena kuunganisha."
+
+msgctxt "error"
+msgid "Our servers are not reachable. Please check your internet connection."
+msgstr ""
+"Seva zetu hazipatikani kwa sasa. Tafadhali angalia muunganisho wako wa "
+"intaneti."
+
+msgctxt "error"
+msgid ""
+"Proton VPN could not connect to the VPN and blocked access to Internet to protect your IP.\n"
+"\n"
+"Click \"Cancel Connection\" to restore your Internet connection. If the issue persists please try to sign out and in."
+msgstr ""
+"Proton VPN haikuweza kuunganishwa kwa VPN na imezuia ufikiaji wa intaneti kulinda IP yako.\n"
+"\n"
+"Bonyeza \"Ghairi Muunganisho\" ili kurudisha muunganisho wako wa intaneti. Ikiwa tatizo linaendelea, jaribu kuondoka na kuingia tena."
+
+msgctxt "error"
+msgid ""
+"Proton services could not be reached.\n"
+"Please try again."
+msgstr ""
+"Huduma za Proton hazikuweza kufikiwa.\n"
+"Tafadhali jaribu tena."
+
+msgctxt "error"
+msgid "Session limit reached"
+msgstr "Kikomo cha kipindi kimefikiwa"
+
+msgctxt "error"
+msgid "Something went wrong. Please try submitting your report at:\n"
+msgstr ""
+"Kuna kilichokwenda vibaya. Tafadhali jaribu kutuma taarifa yako kwenye:\n"
+
+msgctxt "error"
+msgid "There is not enough space left on your device."
+msgstr "Hakuna nafasi ya kutosha iliyobaki kwenye kifaa chako."
+
+msgctxt "error"
+msgid "Timeout"
+msgstr "Muda umeisha."
+
+msgctxt "error"
+msgid "Tunnel setup failed"
+msgstr "Usanidi wa tuneli haukuweza kukamilika"
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed. Security key 2FA is not enabled for your "
+"account."
+msgstr ""
+"Uthibitishaji wa vipengele viwili haukufanikiwa. Uthibitishaji wa Hatua "
+"Mbili wa ufunguo wa usalama haujawashwa kwa akaunti yako."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Incorrect PIN"
+msgstr "Uthibitishaji wa vipengele viwili haukufanikiwa: PIN si sahihi."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: No security key detected"
+msgstr ""
+"Uthibitishaji wa vipengele viwili haukufanikiwa: Ufunguo wa usalama "
+"haujagundulika."
+
+msgctxt "error"
+msgid ""
+"Two-factor authentication failed: The security key you used is not linked to"
+" your Proton Account."
+msgstr ""
+"Uthibitishaji wa vipengele viwili haukufanikiwa: Ufunguo wa usalama "
+"uliotumia haujaunganishwa na Akaunti yako ya Proton."
+
+msgctxt "error"
+msgid "Two-factor authentication failed: Your security key has no PIN set"
+msgstr ""
+"Uthibitishaji wa vipengele viwili haukufanikiwa: Ufunguo wako wa usalama "
+"haujawekewa PIN."
+
+msgctxt "error"
+msgid "Unable to sign out, please ensure you have internet access."
+msgstr "Hukuweza kuondoka, tafadhali hakikisha una upatikanaji wa intaneti."
+
+msgctxt "error"
+msgid "We're sorry, an unexpected error occurred. Please try again."
+msgstr "Samahani, hitilafu isiyotarajiwa imetokea. Tafadhali jaribu tena."
+
+msgctxt "error"
+msgid ""
+"You are connected to the VPN, but all traffic is blocked.\n"
+"You need to go to the authentication page provided by security and authenticate with your hardware key.\n"
+"After that, the traffic will be enabled."
+msgstr ""
+"Umeunganishwa kwa VPN, lakini trafiki yote imezuiwa.\n"
+"Unahitaji kwenda kwenye ukurasa wa uthibitishaji unaotolewa na usalama na kuthibitisha kwa ufunguo wako wa maunzi.\n"
+"Baada ya hapo, trafiki itawashwa."
+
+msgctxt "error"
+msgid ""
+"You've reached your maximum device limit. To reconnect to VPN, please "
+"disconnect from another device."
+msgstr ""
+"Umefikia kikomo chako cha juu cha vifaa. Ili kuunganisha tena kwenye VPN, "
+"tafadhali tenganisha kifaa kingine."
+
+msgctxt "label"
+msgid "0 is very unlikely"
+msgstr "0 ni uwezekano mdogo sana"
+
+msgctxt "label"
+msgid "10 is very likely"
+msgstr "10 ni uwezekano mkubwa sana"
+
+msgctxt "label"
+msgid "6-digit authentication code"
+msgstr "Msimbo wa uthibitishaji wa tarakimu 6"
+
+msgctxt "label"
+msgid "Active port:"
+msgstr "Mlango unaotumika:"
+
+msgctxt "label"
+msgid "Add new server"
+msgstr "Ongeza seva mpya"
+
+msgctxt "label"
+msgid "Advanced"
+msgstr "Imeboreshwa"
+
+msgctxt "label"
+msgid "All countries ({count})"
+msgstr "Nchi zote ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from free locations"
+msgstr "Imechaguliwa kiotomatiki kutoka maeneo ya bure"
+
+msgctxt "label"
+msgid "BETA"
+msgstr "BETA"
+
+msgctxt "label"
+msgid "Block Malware"
+msgstr "Zuia programu hasidi"
+
+msgctxt "label"
+msgid "Block ads, trackers and malware"
+msgstr "Zuia matangazo, vifuatiliaji na programu hasidi"
+
+msgctxt "label"
+msgid "Description (minimum {count} characters)"
+msgstr "Maelezo (angalau herufi {count})"
+
+msgctxt "label"
+msgid "Email"
+msgstr "Barua pepe"
+
+msgctxt "label"
+msgid "Excluded apps "
+msgstr "Programu zilizotengwa "
+
+msgctxt "label"
+msgid "Free"
+msgstr "Bila malipo"
+
+msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Pata mabadiliko ya seva bila kikomo kwa kutumia VPN Plus."
+
+msgctxt "label"
+msgid "Included apps "
+msgstr "Programu zilizojumuishwa "
+
+msgctxt "label"
+msgid "Off"
+msgstr "Imezimwa"
+
+msgctxt "label"
+msgid "Optional"
+msgstr "Hiari"
+
+msgctxt "label"
+msgid "PIN code"
+msgstr "Msimbo wa PIN"
+
+msgctxt "label"
+msgid "Please let us know why you gave that rating"
+msgstr "Tafadhali tuambie kwa nini ulitoa ukadiriaji huo"
+
+msgctxt "label"
+msgid "Proton VPN Linux Client"
+msgstr "Mteja wa Proton VPN kwa Linux"
+
+msgctxt "label"
+msgid "Recovery code"
+msgstr "Msimbo wa urejeshaji"
+
+msgctxt "label"
+msgid "Server load"
+msgstr "Mzigo wa seva"
+
+msgctxt "label"
+msgid "Standard"
+msgstr "Kawaida"
+
+msgctxt "label"
+msgid "Use Proton protocols"
+msgstr "Tumia itifaki za Proton"
+
+msgctxt "label"
+msgid "Username"
+msgstr "Jina la mtumiaji"
+
+msgctxt "label"
+msgid "VPN Plus"
+msgstr "VPN Plus"
+
+msgctxt "label"
+msgid "VPN plan: {plan}"
+msgstr "Mpango wa VPN: {plan}"
+
+msgctxt "label"
+msgid "Via Secure Core"
+msgstr "Kupitia Secure Core"
+
+msgctxt "label"
+msgid "Via {country}"
+msgstr "Kupitia {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "Umefikia kikomo cha juu cha mabadiliko ya seva ya bure kwa sasa"
+
+msgctxt "link"
+msgid "Learn more"
+msgstr "Pata maelezo zaidi"
+
+msgctxt "menu"
+msgid "About"
+msgstr "Kuhusu"
+
+msgctxt "menu"
+msgid "Quit"
+msgstr "Funga programu"
+
+msgctxt "menu"
+msgid "Release notes"
+msgstr "Maelezo ya toleo"
+
+msgctxt "menu"
+msgid "Report an issue"
+msgstr "Ripoti tatizo"
+
+msgctxt "menu"
+msgid "Settings"
+msgstr "Mipangilio"
+
+msgctxt "menu"
+msgid "Sign out"
+msgstr "Ondoka"
+
+msgctxt "message"
+msgid ""
+"Access preferred connections from system tray. Enter country or server "
+"codes, separated by commas, to quickly connect (e.g.: NL#42, JP, US, IT#01)."
+msgstr ""
+"Fikia miunganisho unayopendelea kutoka kwenye trei ya mfumo. Weka misimbo ya"
+" nchi au seva, zikitenganishwa na koma, ili kuunganisha haraka (kwa mfano: "
+"NL#42, JP, US, IT#01)."
+
+msgctxt "message"
+msgid "Account info refreshed, restart the app to see changes"
+msgstr ""
+"Taarifa za akaunti zimesasishwa. Anzisha upya programu ili kuona mabadiliko."
+
+msgctxt "message"
+msgid "Active port is {new_port}"
+msgstr "Mlango unaotumika ni {new_port}"
+
+msgctxt "message"
+msgid "Allow selected apps to connect without VPN protection."
+msgstr "Ruhusu programu zilizochaguliwa kuunganishwa bila ulinzi wa VPN."
+
+msgctxt "message"
+msgid "Automatically disconnect from the internet if VPN connection is lost."
+msgstr ""
+"Kata muunganisho wa intaneti moja kwa moja ikiwa muunganisho wa VPN "
+"umepotea."
+
+msgctxt "message"
+msgid ""
+"Beta access has been disabled.\n"
+"Please restart the app for changes to take effect."
+msgstr ""
+"Ufikiaji wa Beta umezimwa.\n"
+"Tafadhali anzisha upya programu ili mabadiliko yaanze kutumika."
+
+msgctxt "message"
+msgid ""
+"Beta access has been enabled.\n"
+"Please restart the app for changes to take effect."
+msgstr ""
+"Ufikiaji wa Beta umewashwa.\n"
+"Tafadhali anzisha upya programu ili mabadiliko yaanze kutumika."
+
+msgctxt "message"
+msgid ""
+"Bypass firewalls to connect to P2P servers and devices on your local "
+"network. "
+msgstr ""
+"Pita ngome ili kuunganisha kwa seva za P2P na vifaa kwenye mtandao wako wa "
+"ndani. "
+
+msgctxt "message"
+msgid ""
+"Captures a specific issue you're facing when using Proton VPN to get help from our customer support team.\n"
+"\n"
+"Warning: This file is a recording of all your internet activity during the capture session."
+msgstr ""
+"Hurekodi tatizo mahususi unalokumbana nalo unapotumia Proton VPN ili kupata usaidizi kutoka kwa timu yetu ya huduma kwa wateja.\n"
+"\n"
+"Onyo: Faili hii ni rekodi ya shughuli zako zote za mtandao wakati wa kipindi cha kurekodi."
+
+msgctxt "message"
+msgid "Connect to Proton VPN using your own domain name servers (DNS)."
+msgstr "Unganisha kwa Proton VPN ukitumia seva zako za majina ya kikoa (DNS)."
+
+msgctxt "message"
+msgid ""
+"Connect to a Tor server to access hidden services and onion sites using any "
+"browser."
+msgstr ""
+"Unganisha kwenye seva ya Tor ili kufikia huduma zilizofichwa na tovuti za "
+"onion kwa kutumia kivinjari chochote."
+
+msgctxt "message"
+msgid ""
+"Connect to your destination server through a second, maximum security VPN "
+"server. Slower, but more private."
+msgstr ""
+"Unganisha kwenye seva yako ya marudio kupitia seva ya pili ya VPN yenye "
+"usalama wa hali ya juu kabisa. Ni polepole zaidi, lakini ya faragha zaidi."
+
+msgctxt "message"
+msgid "Copied!"
+msgstr "Imenakiliwa!"
+
+msgctxt "message"
+msgid ""
+"Crash reports help us fix bugs, detect firewalls, and avoid VPN blocks.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Ripoti za hitilafu za programu hutusaidia kurekebisha kasoro, kugundua ngome, na kuepuka vizuizi vya VPN.\n"
+"\n"
+"Takwimu hizi hazina anwani yako ya IP, na haziwezi kutumika kukutambua. Hatuzishiriki kamwe na wahusika wengine."
+
+msgctxt "message"
+msgid "Customize your connection by deciding which apps are protected by VPN."
+msgstr ""
+"Sanidi muunganisho wako kwa kubaini ni programu zipi zinalindwa na VPN."
+
+msgctxt "message"
+msgid ""
+"Disables randomization of the local addresses mapping. This can slightly "
+"reduce connection security, but should allow direct connections for online "
+"gaming and similar purposes."
+msgstr ""
+"Inazima nasibu wa ramani ya anwani za ndani. Hii inaweza kupunguza kidogo "
+"usalama wa muunganisho, lakini inapaswa kuruhusu miunganisho ya moja kwa "
+"moja kwa michezo ya mtandaoni na madhumuni mengine kama hayo."
+
+msgctxt "message"
+msgid "Disabling Beta access..."
+msgstr "Inazima Ufikiaji wa Beta..."
+
+msgctxt "message"
+msgid "Each code can only be used once"
+msgstr "Kila msimbo unaweza kutumika mara moja tu."
+
+msgctxt "message"
+msgid "Enabling Beta access..."
+msgstr "Inawasha Ufikiaji wa Beta..."
+
+msgctxt "message"
+msgid ""
+"Free-tier launches default to a Proton protocol. Any WireGuard or OpenVPN "
+"selection lasts only until the next application restart."
+msgstr ""
+"Vianzisho vya kiwango cha bure hutumia itifaki ya Proton kwa chaguo-msingi. "
+"Uchaguzi wowote wa WireGuard au OpenVPN hudumu hadi tu programu inapowashwa "
+"upya."
+
+msgctxt "message"
+msgid "Get early access and help us test new versions of Proton VPN."
+msgstr ""
+"Pata ufikiaji wa mapema na utusaidie kujaribu matoleo mapya ya Proton VPN."
+
+msgctxt "message"
+msgid "If your security key has a button or a gold disc, tap it now."
+msgstr "Ikiwa ufunguo wako wa usalama una kitufe au diski ya dhahabu, uguse."
+
+msgctxt "message"
+msgid ""
+"Increase your connection speed by up to 400% with performance enhancing "
+"technologies."
+msgstr ""
+"Ongeza kasi ya muunganisho wako kwa hadi 400% kwa kutumia teknolojia "
+"zinazoimarisha utendaji."
+
+msgctxt "message"
+msgid "Insert the U2F or FIDO key linked to your Proton Account. "
+msgstr ""
+"Ongeza ufunguo wa U2F au FIDO uliounganishwa na Akaunti yako ya Proton. "
+
+msgctxt "message"
+msgid "It was not possible to disable Beta access.\n"
+msgstr "Haikuwezekana kuzima Ufikiaji wa Beta.\n"
+
+msgctxt "message"
+msgid "It was not possible to enable Beta access.\n"
+msgstr "Haikuwezekana kuwasha Ufikiaji wa Beta.\n"
+
+msgctxt "message"
+msgid "Kill switch can only be changed when VPN is disconnected."
+msgstr "Kizima cha dharura kinaweza kubadilishwa tu VPN ikiwa imetenganishwa."
+
+msgctxt "message"
+msgid "Kill switch is blocking any outgoing connections."
+msgstr "Kizima cha dharura kinauzuia miunganisho yote ya kutoka nje."
+
+msgctxt "message"
+msgid ""
+"Kill switch selection is disabled while VPN is active. Disconnect to make "
+"changes."
+msgstr ""
+"Haiwezi kuchagua kizima cha dharura wakati VPN inatumika. Tenganisha ili "
+"kufanya mabadiliko."
+
+msgctxt "message"
+msgid "Loading app..."
+msgstr "Inapakia programu..."
+
+msgctxt "message"
+msgid "Multiple security keys were found. Tap one to select it."
+msgstr "Vifunguo vingi vya usalama vilipatikana. Gusa kimoja uchague."
+
+msgctxt "message"
+msgid ""
+"Only allow internet access when connected to Proton VPN. Advanced kill "
+"switch will remain active even when you restart your device."
+msgstr ""
+"Ruhusu ufikiaji wa intaneti ukiwa umeunganishwa kwa Proton VPN pekee. Kizima"
+" cha dharura cha hali ya juu kitaendelea kuwaka hata ukianzisha upya kifaa "
+"chako."
+
+msgctxt "message"
+msgid ""
+"Only selected apps connect with VPN protection. All other traffic is "
+"unprotected."
+msgstr ""
+"Programu zilizochaguliwa pekee ndizo zinazounganishwa kwa ulinzi wa VPN. "
+"Trafiki yote mingine haikalindwi."
+
+msgctxt "message"
+msgid ""
+"Permanent Kill Switch is blocking any outgoing connections and preventing your IP to be exposed.\n"
+"\n"
+"Do you want to disable Kill Switch?"
+msgstr ""
+"Kizima cha dharura cha kudumu kinauzuia miunganisho yote ya kutoka nje na kuzuia IP yako kufichuliwa.\n"
+"\n"
+"Je, unataka kuzima kizima cha dharura?"
+
+msgctxt "message"
+msgid "Please establish a new VPN connection for changes to take effect."
+msgstr ""
+"Tafadhali anza muunganisho mpya wa VPN ili mabadiliko yaanze kutumika."
+
+msgctxt "message"
+msgid "Protect yourself from ads, malware, and trackers on websites and apps."
+msgstr ""
+"Jilinde kutokana na matangazo, programu hasidi, na vifuatiliaji kwenye "
+"tovuti na programu."
+
+msgctxt "message"
+msgid ""
+"Protects your IP address by disconnecting you from the internet if you lose "
+"your VPN connection. {learn_more}"
+msgstr ""
+"Inalinda anwani yako ya IP kwa kukutenganisha na intaneti ukipoteza "
+"muunganisho wako wa VPN. {learn_more}"
+
+msgctxt "message"
+msgid "Protocol can only be changed when VPN is disconnected."
+msgstr "Itifaki inaweza kubadilishwa tu wakati VPN haijaunganishwa."
+
+msgctxt "message"
+msgid ""
+"Protocol selection is disabled while VPN is active. Disconnect to make "
+"changes."
+msgstr ""
+"Kuchagua itifaki kimezimwa wakati VPN inafanya kazi. Tenganisha ili kufanya "
+"mabadiliko."
+
+msgctxt "message"
+msgid ""
+"Quitting the application will cancel the current VPN connection.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Kufunga programu kutaghairi muunganisho wa sasa wa VPN.\n"
+"\n"
+"Je, ungependa kuendelea?"
+
+msgctxt "message"
+msgid ""
+"Quitting the application will keep the kill switch active, but your current VPN connection will be terminated.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Kizima cha dharura kitaendelea kufanya kazi unapofunga programu, lakini muunganisho wako wa sasa wa VPN utakatizwa.\n"
+"\n"
+"Je, ungependa kuendelea?"
+
+msgctxt "message"
+msgid "Reporting your issue..."
+msgstr "Inaripoti tatizo lako..."
+
+msgctxt "message"
+msgid "Signing in..."
+msgstr "Inaingia..."
+
+msgctxt "message"
+msgid ""
+"Signing out will cancel the current VPN connection and disable the kill switch.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Kutoka kutaghairi muunganisho wa sasa wa VPN na kuzima kizima cha dharura.\n"
+"\n"
+"Je, ungependa kuendelea?"
+
+msgctxt "message"
+msgid ""
+"Signing out will cancel the current VPN connection.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Kutoka kutaghairi muunganisho wa sasa wa VPN.\n"
+"\n"
+"Je, ungependa kuendelea?"
+
+msgctxt "message"
+msgid ""
+"Signing out will disable the kill switch, potentially exposing your internet traffic. \n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Kutoka kutasababisha kizima cha dharura kuzimwa, na hivyo kuweza kufichua trafiki yako ya mtandao. \n"
+"\n"
+"Je, ungependa kuendelea?"
+
+msgctxt "message"
+msgid "Signing out..."
+msgstr "Inatoka..."
+
+msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr ""
+"Baadhi ya vipengele vinavyohitajika havikutambuliwa kwenye mfumo wako. "
+"Huenda programu isifanye kazi inavyotarajiwa."
+
+msgctxt "message"
+msgid "Split tunneling enabled. Remember to restart affected apps."
+msgstr ""
+"Mgawanyo wa trafiki umewashwa. Kumbuka kuanzisha upya programu "
+"zilizoathiriwa."
+
+msgctxt "message"
+msgid ""
+"These servers give the best performance for BitTorrent and file sharing."
+msgstr "Seva hizi hutoa utendaji bora kwa BitTorrent na kushiriki faili."
+
+msgctxt "message"
+msgid ""
+"This technology allows Proton VPN to provide higher speed and security in "
+"difficult-to-reach countries."
+msgstr ""
+"Teknolojia hii huwezesha Proton VPN kutoa kasi zaidi na usalama katika nchi "
+"ngumu kufikia."
+
+msgctxt "message"
+msgid "This will automatically set your protocol to WireGuard."
+msgstr "Hii itaweka itifaki yako kuwa WireGuard moja kwa moja."
+
+msgctxt "message"
+msgid "This will disable NetShield."
+msgstr "Hii itazima NetShield."
+
+msgctxt "message"
+msgid "This will disable custom DNS."
+msgstr "Hii itazima DNS maalum."
+
+msgctxt "message"
+msgid "This will disable kill switch."
+msgstr "Hii itazima kizima cha dharura."
+
+msgctxt "message"
+msgid "This will disable split tunneling."
+msgstr "Hii itazima mgawanyo wa trafiki."
+
+msgctxt "message"
+msgid ""
+"Tunnels IPv6 traffic through the VPN. Can enhance compatibility with IPv6 "
+"networks."
+msgstr ""
+"Inapitisha trafiki ya IPv6 kupitia VPN. Inaweza kuboresha utangamano na "
+"mitandao ya IPv6."
+
+msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"Takwimu za matumizi hutusaidia kuvuka vizuizi vya VPN na kuboresha utendaji wa programu.\n"
+"\n"
+"Takwimu haziwei anwani yako ya IP, na haziwezi kutumika kukutambua. Hatushawahi kuzishirikisha na wahusika wengine."
+
+msgctxt "message"
+msgid "When enabled, the app starts minimized to the tray."
+msgstr "Inapowashwa, programu inaanza ikiwa imepunguzwa kwenye trei."
+
+msgctxt "message"
+msgid ""
+"You will be connected to a server as soon as Proton VPN app starts. Replace "
+"it with a country ISO code (e.g.: US for United States), a server (e.g.: "
+"NL#42) or Fastest for quick connection. Default value: Off."
+msgstr ""
+"Utaunganishwa kwenye seva mara programu ya Proton VPN inapoanza. Badilisha "
+"na msimbo wa ISO wa nchi (kwa mfano: US kwa Marekani), seva (kwa mfano: "
+"NL#42) au Fastest kwa muunganisho wa haraka. Thamani ya chaguo-msingi: "
+"Imezimwa."
+
+msgctxt "message"
+msgid "Your feedback helps us improve Proton VPN."
+msgstr "Maoni yako hutusaidia kuboresha Proton VPN."
+
+msgctxt "message"
+msgid "Your issue has been reported"
+msgstr "Tatizo lako limeripotiwa."
+
+msgctxt "message"
+msgid "Your session has expired. Please sign in again."
+msgstr "Kipindi chako kimeisha. Tafadhali ingia tena."
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr "{learn_more} kuhusu mahitaji na njia mbadala za kusakinisha."
+
+msgctxt "placeholder"
+msgid "Password"
+msgstr "Nenosiri"
+
+msgctxt "placeholder"
+msgid "Press Ctrl+F to search"
+msgstr "Bonyeza Ctrl+F kutafuta"
+
+msgctxt "placeholder"
+msgid "Username"
+msgstr "Jina la mtumiaji"
+
+msgctxt "status"
+msgid "Connecting..."
+msgstr "Inaunganisha..."
+
+msgctxt "status"
+msgid "Connection error"
+msgstr "Hitilafu ya muunganisho"
+
+msgctxt "status"
+msgid "Disconnecting..."
+msgstr "Inatenganisha..."
+
+msgctxt "status"
+msgid "Protected"
+msgstr "Umelindwa"
+
+msgctxt "status"
+msgid "Unprotected"
+msgstr "Haijalindwa"
+
+msgctxt "title"
+msgid "2FA Required"
+msgstr "Uthibitishaji wa Hatua Mbili unahitajika"
+
+msgctxt "title"
+msgid "About"
+msgstr "Kuhusu"
+
+msgctxt "title"
+msgid "Account"
+msgstr "Akaunti"
+
+msgctxt "title"
+msgid "Active connection found"
+msgstr "Muunganisho hai umepatikana"
+
+msgctxt "title"
+msgid "Add excluded apps"
+msgstr "Ongeza programu zilizotengwa"
+
+msgctxt "title"
+msgid "Add included apps"
+msgstr "Ongeza programu zilizojumuishwa"
+
+msgctxt "title"
+msgid "Authenticator app"
+msgstr "Programu ya uthibitishaji"
+
+msgctxt "title"
+msgid "Auto connect"
+msgstr "Unganisha kiotomatiki"
+
+msgctxt "title"
+msgid "Beta Access"
+msgstr "Ufikiaji wa Beta"
+
+msgctxt "title"
+msgid "Beta access"
+msgstr "Ufikiaji wa Beta"
+
+msgctxt "title"
+msgid "Connection"
+msgstr "Muunganisho"
+
+msgctxt "title"
+msgid "Connection error: session limit reached"
+msgstr "Hitilafu ya muunganisho: kikomo cha kipindi kimefikiwa"
+
+msgctxt "title"
+msgid "Countries"
+msgstr "Nchi"
+
+msgctxt "title"
+msgid "Create a troubleshooting file"
+msgstr "Tengeneza faili ya utatuzi wa matatizo"
+
+msgctxt "title"
+msgid "Custom DNS servers"
+msgstr "Seva za DNS maalum"
+
+msgctxt "title"
+msgid "Disable WireGuard?"
+msgstr "Zima WireGuard?"
+
+msgctxt "title"
+msgid "Enable Custom DNS"
+msgstr "Washa DNS maalum"
+
+msgctxt "title"
+msgid "Enable Custom DNS?"
+msgstr "Uwashe DNS maalum?"
+
+msgctxt "title"
+msgid "Enable Netshield"
+msgstr "Washa NetShield"
+
+msgctxt "title"
+msgid "Enable Netshield ?"
+msgstr "Uwashe NetShield?"
+
+msgctxt "title"
+msgid "Enable kill switch?"
+msgstr "Washa kizima cha dharura?"
+
+msgctxt "title"
+msgid "Enable split tunneling?"
+msgstr "Washa mgawanyo wa trafiki?"
+
+msgctxt "title"
+msgid "Exclude mode"
+msgstr "Hali ya kutengwa"
+
+msgctxt "title"
+msgid "Fastest country"
+msgstr "Nchi yenye kasi zaidi"
+
+msgctxt "title"
+msgid "Fastest free server"
+msgstr "Seva ya bure ya haraka zaidi"
+
+msgctxt "title"
+msgid "Features"
+msgstr "Vipengele"
+
+msgctxt "title"
+msgid "General"
+msgstr "Kuu"
+
+msgctxt "title"
+msgid "How likely are you to recommend Proton VPN to a friend?"
+msgstr "Kwa kiwango gani ungeweza kupendekeza Proton VPN kwa rafiki?"
+
+msgctxt "title"
+msgid "Include mode"
+msgstr "Hali ya kujumuisha"
+
+msgctxt "title"
+msgid "Invalid Session"
+msgstr "Kipindi Batili"
+
+msgctxt "title"
+msgid "Kill Switch Enabled"
+msgstr "Kizima cha Dharura Kimewashwa"
+
+msgctxt "title"
+msgid "Kill Switch enabled"
+msgstr "Kizima cha dharura kimewashwa"
+
+msgctxt "title"
+msgid "Kill switch"
+msgstr "Kizima cha dharura"
+
+msgctxt "title"
+msgid "Locations"
+msgstr "Maeneo"
+
+msgctxt "title"
+msgid "Moderate NAT"
+msgstr "Moderate NAT"
+
+msgctxt "title"
+msgid "NetShield"
+msgstr "NetShield"
+
+msgctxt "title"
+msgid "No space left on device"
+msgstr "Hakuna nafasi iliyobaki kwenye kifaa"
+
+msgctxt "title"
+msgid "P2P/BitTorrent"
+msgstr "P2P/BitTorrent"
+
+msgctxt "title"
+msgid "Pinned tray connections"
+msgstr "Miunganisho yaliyobandikwa kwenye trei"
+
+msgctxt "title"
+msgid "Port forwarding"
+msgstr "Usambazaji wa mlango"
+
+msgctxt "title"
+msgid "Protocol"
+msgstr "Itifaki"
+
+msgctxt "title"
+msgid "Release notes"
+msgstr "Maelezo ya toleo"
+
+msgctxt "title"
+msgid "Report an Issue"
+msgstr "Ripoti Tatizo"
+
+msgctxt "title"
+msgid "Secure Core"
+msgstr "Secure Core"
+
+msgctxt "title"
+msgid "Security key"
+msgstr "Ufunguo wa usalama"
+
+msgctxt "title"
+msgid "Select packet capture directory"
+msgstr "Teua saraka ya kukamata pakiti"
+
+msgctxt "title"
+msgid "Servers"
+msgstr "Seva"
+
+msgctxt "title"
+msgid "Settings"
+msgstr "Mipangilio"
+
+msgctxt "title"
+msgid "Share anonymous crash reports"
+msgstr "Shiriki ripoti za hitilafu za programu bila kufichua utambulisho"
+
+msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Shiriki takwimu za matumizi bila kujitambulisha"
+
+msgctxt "title"
+msgid "Smart routing"
+msgstr "Uelekezaji mahiri"
+
+msgctxt "title"
+msgid "Something went wrong"
+msgstr "Kuna kilichokwenda mrama"
+
+msgctxt "title"
+msgid "Split tunneling"
+msgstr "Mgawanyo wa trafiki"
+
+msgctxt "title"
+msgid "Start app minimized"
+msgstr "Anzisha programu ikiwa imepunguzwa"
+
+msgctxt "title"
+msgid "Thanks for your feedback"
+msgstr "Asante kwa maoni yako"
+
+msgctxt "title"
+msgid "Tor"
+msgstr "Tor"
+
+msgctxt "title"
+msgid "Two-factor authentication"
+msgstr "Uthibitishaji wa vipengele viwili"
+
+msgctxt "title"
+msgid "Unable to find server"
+msgstr "Seva haikupatikana"
+
+msgctxt "title"
+msgid "Update system clock"
+msgstr "Sasisha saa ya mfumo"
+
+msgctxt "title"
+msgid "VPN Accelerator"
+msgstr "VPN Accelerator"
+
+msgctxt "title"
+msgid "VPN connection error"
+msgstr "Hitilafu ya muunganisho wa VPN"
+
+msgctxt "tooltip"
+msgid "Clear"
+msgstr "Futa"
+
+msgctxt "tooltip"
+msgid "Close"
+msgstr "Funga"
+
+msgctxt "tooltip"
+msgid "Connect to {country_name}"
+msgstr "Unganisha kwenye {country_name}"
+
+msgctxt "tooltip"
+msgid "Connect to {country} via Secure Core"
+msgstr "Unganisha kwenye {country} kupitia Secure Core"
+
+msgctxt "tooltip"
+msgid "Connect to {exit_country} via {entry_country}"
+msgstr "Unganisha kwenye {exit_country} kupitia {entry_country}"
+
+msgctxt "tooltip"
+msgid "Connect to {name}"
+msgstr "Unganisha kwenye {name}"
+
+msgctxt "tooltip"
+msgid "Copy port number"
+msgstr "Nakili namba ya mlango"
+
+msgctxt "tooltip"
+msgid ""
+"Hide all Secure Core servers\n"
+"to connect to {country}"
+msgstr ""
+"Ficha seva zote za Secure Core\n"
+"ili kuunganisha na {country}"
+
+msgctxt "tooltip"
+msgid "Hide all locations from {country_name}"
+msgstr "Ficha maeneo yote kutoka {country_name}"
+
+msgctxt "tooltip"
+msgid "Hide all servers from {name}"
+msgstr "Ficha seva zote kutoka {name}"
+
+msgctxt "tooltip"
+msgid "P2P/BitTorrent supported"
+msgstr "Inaunga mkono P2P/BitTorrent"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "Sasisha maelezo ya akaunti"
+
+msgctxt "tooltip"
+msgid ""
+"Secure Core server that connects to {exit_country} through {entry_country}."
+msgstr ""
+"Seva ya Secure Core inayounganisha hadi {exit_country} kupitia "
+"{entry_country}."
+
+msgctxt "tooltip"
+msgid "Secure Core supported"
+msgstr "Inaunga mkono Secure Core"
+
+msgctxt "tooltip"
+msgid "Server load is at {load}%"
+msgstr "Mzigo wa seva uko kwa {load}%"
+
+msgctxt "tooltip"
+msgid ""
+"Show all Secure Core servers\n"
+"to connect to {country}"
+msgstr ""
+"Onyesha seva zote za Secure Core\n"
+"ili kuunganisha na {country}"
+
+msgctxt "tooltip"
+msgid "Show all locations from {country_name}"
+msgstr "Onyesha maeneo yote kutoka {country_name}"
+
+msgctxt "tooltip"
+msgid "Show all servers from {name}"
+msgstr "Onyesha seva zote kutoka {name}"
+
+msgctxt "tooltip"
+msgid "Smart routing is used"
+msgstr "Uelekezaji mahiri unatumika"
+
+msgctxt "tooltip"
+msgid "Streaming supported"
+msgstr "Inaunga mkono utiririshaji"
+
+msgctxt "tooltip"
+msgid "To change split tunneling settings, please disconnect the VPN first."
+msgstr ""
+"Ili kubadilisha mipangilio ya mgawanyo wa trafiki, tafadhali tenganisha VPN "
+"kwanza."
+
+msgctxt "tooltip"
+msgid "Tor supported"
+msgstr "Inaunga mkono Tor"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {country_name}"
+msgstr "Pandisha daraja ili kuunganishwa kwa {country_name}"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {country} via Secure Core"
+msgstr "Pandisha daraja ili kuunganisha na {country} kupitia Secure Core"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {exit_country} via {entry_country}"
+msgstr ""
+"Pandisha daraja ili kuunganisha na {exit_country} kupitia {entry_country}"
+
+msgctxt "tooltip"
+msgid "Upgrade to connect to {name}"
+msgstr "Pandisha daraja ili kuunganisha na {name}"
+
+msgctxt "tooltip"
+msgid "{name} is under maintenance"
+msgstr "{name} inafanyiwa matunzo"

@@ -2098,6 +2098,10 @@ msgid "VPN connection error"
 msgstr "VPN 연결 오류"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "삭제"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "닫기"
 

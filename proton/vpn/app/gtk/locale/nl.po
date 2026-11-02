@@ -1311,6 +1311,10 @@ msgid "All countries ({count})"
 msgstr "Alle landen ({count})"
 
 msgctxt "label"
+msgid "Auto-selected from"
+msgstr "Automatisch geselecteerd uit"
+
+msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "Automatisch geselecteerd uit vrije locaties"
 
@@ -1341,6 +1345,14 @@ msgstr "Uitgesloten apps "
 msgctxt "label"
 msgid "Free"
 msgstr "Gratis"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "Gratis serverlocaties ({count})"
+
+msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "Profiteer van onbeperkte serverwijzigingen met VPN Plus."
 
 msgctxt "label"
 msgid "Included apps "
@@ -1401,6 +1413,10 @@ msgstr "Via Secure Core"
 msgctxt "label"
 msgid "Via {country}"
 msgstr "Via {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "U heeft het maximum aantal gratis serverwijzigingen bereikt voor nu"
 
 msgctxt "link"
 msgid "Learn more"
@@ -1946,6 +1962,10 @@ msgid "Features"
 msgstr "Functies"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "Gratis verbindingen"
+
+msgctxt "title"
 msgid "General"
 msgstr "Algemeen"
 
@@ -2039,6 +2059,10 @@ msgid "Share anonymous crash reports"
 msgstr "Deel anonieme crashrapporten"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "Anonieme gebruiksstatistieken delen"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "Slimme routering"
 
@@ -2109,6 +2133,10 @@ msgstr "Verbinden met {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "Poortnummer kopiëren"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "Gratis serverlocaties"
 
 msgctxt "tooltip"
 msgid ""

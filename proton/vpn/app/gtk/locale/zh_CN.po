@@ -24,6 +24,10 @@ msgid "Cancel Connection"
 msgstr "取消连接"
 
 msgctxt "button"
+msgid "Change server"
+msgstr "切换服务器"
+
+msgctxt "button"
 msgid "Connect"
 msgstr "连接"
 
@@ -1296,6 +1300,10 @@ msgid "All countries ({count})"
 msgstr "所有国家/地区 ({count})"
 
 msgctxt "label"
+msgid "Auto-selected from"
+msgstr "自动选择"
+
+msgctxt "label"
 msgid "Auto-selected from free locations"
 msgstr "从免费位置自动选择"
 
@@ -1326,6 +1334,14 @@ msgstr "排除的应用"
 msgctxt "label"
 msgid "Free"
 msgstr "免费"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "免费服务器位置 ({count})"
+
+msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "使用 VPN Plus 获得无限制的服务器更改。"
 
 msgctxt "label"
 msgid "Included apps "
@@ -1386,6 +1402,10 @@ msgstr "经由 Secure Core"
 msgctxt "label"
 msgid "Via {country}"
 msgstr "经由 {country}"
+
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "目前您已达到免费服务器更改的最大数量"
 
 msgctxt "link"
 msgid "Learn more"
@@ -1877,6 +1897,10 @@ msgid "Features"
 msgstr "功能"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "免费连接"
+
+msgctxt "title"
 msgid "General"
 msgstr "常规​​​​​"
 
@@ -1969,6 +1993,10 @@ msgid "Share anonymous crash reports"
 msgstr "分享匿名崩溃报告"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "分享匿名的使用统计数据"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "智能路由"
 
@@ -2013,6 +2041,10 @@ msgid "VPN connection error"
 msgstr "VPN 连接错误"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "清空"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "关闭"
 
@@ -2035,6 +2067,10 @@ msgstr "连接到 {name}"
 msgctxt "tooltip"
 msgid "Copy port number"
 msgstr "复制端口号"
+
+msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "免费服务器位置"
 
 msgctxt "tooltip"
 msgid ""

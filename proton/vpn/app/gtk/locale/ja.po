@@ -16,12 +16,20 @@ msgid "Authenticate"
 msgstr "認証"
 
 msgctxt "button"
+msgid "Browse..."
+msgstr "参照..."
+
+msgctxt "button"
 msgid "Cancel"
 msgstr "キャンセル"
 
 msgctxt "button"
 msgid "Cancel Connection"
 msgstr "接続をキャンセル"
+
+msgctxt "button"
+msgid "Change server"
+msgstr "サーバーを変更する"
 
 msgctxt "button"
 msgid "Connect"
@@ -1140,6 +1148,10 @@ msgid "Zimbabwe"
 msgstr "ジンバブエ"
 
 msgctxt "error"
+msgid "Account info refresh failed, check your connection and try again"
+msgstr "アカウント情報の更新に失敗しました。接続を確認してから、もう一度お試しください"
+
+msgctxt "error"
 msgid "An unknown error occurred"
 msgstr "予期せぬエラー"
 
@@ -1268,6 +1280,10 @@ msgid ""
 msgstr "最大のデバイス数に達しました。VPNに再接続するには、他のデバイスで切断してください。"
 
 msgctxt "label"
+msgid "+{count}"
+msgstr "+{count}"
+
+msgctxt "label"
 msgid "0 is very unlikely"
 msgstr "0は「とても低い」"
 
@@ -1294,6 +1310,10 @@ msgstr "拡張"
 msgctxt "label"
 msgid "All countries ({count})"
 msgstr "すべての国 ({count})"
+
+msgctxt "label"
+msgid "Auto-selected from"
+msgstr "から自動選択"
 
 msgctxt "label"
 msgid "Auto-selected from free locations"
@@ -1326,6 +1346,14 @@ msgstr "除外するアプリ "
 msgctxt "label"
 msgid "Free"
 msgstr "無料"
+
+msgctxt "label"
+msgid "Free server locations ({count})"
+msgstr "無料のサーバーの場所 ({count})"
+
+msgctxt "label"
+msgid "Get unlimited server changes with VPN Plus."
+msgstr "VPN Plusで無制限にサーバーを変更できます。"
 
 msgctxt "label"
 msgid "Included apps "
@@ -1387,6 +1415,10 @@ msgctxt "label"
 msgid "Via {country}"
 msgstr "{country} 経由"
 
+msgctxt "label"
+msgid "You've reached the maximum number of free server changes for now"
+msgstr "無料サーバーの変更回数が上限に達しました。"
+
 msgctxt "link"
 msgid "Learn more"
 msgstr "詳細"
@@ -1422,6 +1454,10 @@ msgid ""
 msgstr ""
 "システムトレイから、よく使う接続にアクセスします。カンマで区切った国またはサーバーのコードを入力すると、すばやく接続できます（例：NL#42, JP, "
 "US, IT#01）。"
+
+msgctxt "message"
+msgid "Account info refreshed, restart the app to see changes"
+msgstr "アカウント情報を更新しました。変更を反映するにはアプリを再起動してください"
 
 msgctxt "message"
 msgid "Active port is {new_port}"
@@ -1466,6 +1502,10 @@ msgstr ""
 "Proton VPNの使用時にお客様が直面している特定の問題を記録し、当社のカスタマーサポートチームからサポートを受けることができます。\n"
 "\n"
 "警告：このファイルには、記録セッション中のお客様のすべてのインターネットアクティビティが記録されます。"
+
+msgctxt "message"
+msgid "Change server is now available"
+msgstr "サーバーの変更が可能になりました"
 
 msgctxt "message"
 msgid "Connect to Proton VPN using your own domain name servers (DNS)."
@@ -1521,6 +1561,14 @@ msgstr "各コードは1度のみ使用可能です"
 msgctxt "message"
 msgid "Enabling Beta access..."
 msgstr "ベータアクセスを有効にしています..."
+
+msgctxt "message"
+msgid ""
+"Free-tier launches default to a Proton protocol. Any WireGuard or OpenVPN "
+"selection lasts only until the next application restart."
+msgstr ""
+"無料プランでは、起動時にデフォルトで Proton プロトコルが選択されます。WireGuard または OpenVPN "
+"を選択した場合でも、その設定は次回のアプリ再起動時までしか維持されません。"
 
 msgctxt "message"
 msgid "Get early access and help us test new versions of Proton VPN."
@@ -1619,6 +1667,12 @@ msgstr "VPNが有効な間はプロトコルの選択が無効になります。
 
 msgctxt "message"
 msgid ""
+"Proton Free automatically connects you to the fastest free server available."
+" This is usually the closest server to your location."
+msgstr "Proton 無料プランでは、利用可能な最も高速な無料サーバーに自動的に接続されます。これは通常、現在地に最も近いサーバーです。"
+
+msgctxt "message"
+msgid ""
 "Quitting the application will cancel the current VPN connection.\n"
 "\n"
 "Do you want to continue?"
@@ -1680,6 +1734,12 @@ msgid "Signing out..."
 msgstr "サインアウト中..."
 
 msgctxt "message"
+msgid ""
+"Some required components were not detected on your system. The app may not "
+"work as expected."
+msgstr "必要なコンポーネントの一部がシステム上で検出されませんでした。アプリが正常に動作しない可能性があります。"
+
+msgctxt "message"
 msgid "Split tunneling enabled. Remember to restart affected apps."
 msgstr "スプリットトンネルが有効になりました。影響を受けるアプリを再起動してください。"
 
@@ -1721,6 +1781,16 @@ msgid ""
 msgstr "IPv6トラフィックをVPN経由にします。 IPv6ネットワークとのより良い互換性が期待できます。"
 
 msgctxt "message"
+msgid ""
+"Usage data helps us overcome VPN blocks and improve app performance.\n"
+"\n"
+"These statistics do not contain your IP address, and they cannot be used to identify you. We'll never share them with third parties."
+msgstr ""
+"利用統計データは、VPN の接続制限（検閲ブロック）を回避し、アプリのパフォーマンスを向上させるために役立てられます。\n"
+"\n"
+"これらの統計情報にお客様の IP アドレスは含まれず、個人を特定するために使用されることもありません。このデータを第三者に共有することは一切ありません。"
+
+msgctxt "message"
 msgid "When enabled, the app starts minimized to the tray."
 msgstr "有効にすると、アプリはシステムトレイに最小化された状態で起動します。"
 
@@ -1744,6 +1814,10 @@ msgstr "問題が報告されました"
 msgctxt "message"
 msgid "Your session has expired. Please sign in again."
 msgstr "セッションの有効期限が切れました。再度サインインしてください。"
+
+msgctxt "message"
+msgid "{learn_more} about requirements and alternative installation methods."
+msgstr "動作要件や代替のインストール方法については、{learn_more} をご覧ください。"
 
 msgctxt "placeholder"
 msgid "Password"
@@ -1882,6 +1956,10 @@ msgid "Features"
 msgstr "機能"
 
 msgctxt "title"
+msgid "Free connections"
+msgstr "無料接続"
+
+msgctxt "title"
 msgid "General"
 msgstr "一般"
 
@@ -1974,6 +2052,10 @@ msgid "Share anonymous crash reports"
 msgstr "匿名のクラッシュレポートを共有"
 
 msgctxt "title"
+msgid "Share anonymous usage statistics"
+msgstr "匿名の使用統計を共有"
+
+msgctxt "title"
 msgid "Smart routing"
 msgstr "スマートルーティング"
 
@@ -2018,6 +2100,10 @@ msgid "VPN connection error"
 msgstr "VPN接続エラー"
 
 msgctxt "tooltip"
+msgid "Clear"
+msgstr "クリア"
+
+msgctxt "tooltip"
 msgid "Close"
 msgstr "閉じる"
 
@@ -2042,6 +2128,10 @@ msgid "Copy port number"
 msgstr "ポート番号をコピー"
 
 msgctxt "tooltip"
+msgid "Free server locations"
+msgstr "無料のサーバーの場所"
+
+msgctxt "tooltip"
 msgid ""
 "Hide all Secure Core servers\n"
 "to connect to {country}"
@@ -2060,6 +2150,10 @@ msgstr "{name}のすべてのサーバーを非表示にする"
 msgctxt "tooltip"
 msgid "P2P/BitTorrent supported"
 msgstr "P2P/BitTorrent対応"
+
+msgctxt "tooltip"
+msgid "Refresh account details"
+msgstr "アカウント情報を更新"
 
 msgctxt "tooltip"
 msgid ""

@@ -157,6 +157,36 @@ def test_vpn_widget_notifies_child_widgets_on_connection_status_update():
     quick_connect.connection_status_update.assert_called_once_with(state)
 
 
+def test_vpn_widget_shows_the_server_list_by_default_and_the_map_on_request():
+    vpn_widget = VPNWidget(controller=Mock(), main_window=Mock())
+
+    assert vpn_widget._server_views.get_visible_child_name() == "list"
+
+    vpn_widget._view_buttons["map"].set_active(True)
+
+    assert vpn_widget._server_views.get_visible_child_name() == "map"
+
+
+def test_vpn_widget_shows_the_server_list_when_a_search_result_is_chosen():
+    vpn_widget = VPNWidget(controller=Mock(), main_window=Mock())
+    vpn_widget._view_buttons["map"].set_active(True)
+
+    vpn_widget.search_results_widget.emit("result-chosen", "Switzerland")
+
+    assert vpn_widget._server_views.get_visible_child_name() == "list"
+
+
+def test_vpn_widget_notifies_the_world_map_on_connection_status_update():
+    vpn_widget = VPNWidget(controller=Mock(), main_window=Mock(), notifications=Mock())
+    vpn_widget.world_map.connection_status_update = Mock()
+    state = Connected()
+
+    vpn_widget.status_update(state)
+    process_gtk_events()
+
+    vpn_widget.world_map.connection_status_update.assert_called_once_with(state)
+
+
 def test_unload_resets_widget_state():
     """
     The `unload()` method is called on the "unrealize" event and its goal

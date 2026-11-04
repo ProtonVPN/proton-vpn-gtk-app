@@ -32,12 +32,14 @@ from proton.vpn import logging
 from proton.vpn.connection.states import State
 from proton.vpn.app.gtk.controller import Controller
 from proton.vpn.app.gtk import Gtk
+from proton.vpn.app.gtk.translator import C_
 from proton.vpn.app.gtk.utils.safe_signal_connect import safe_signal_connect
 from proton.vpn.app.gtk.widgets.vpn.quick_connect_widget import QuickConnectWidget
 from proton.vpn.app.gtk.widgets.vpn.search_results import SearchResults
 from proton.vpn.app.gtk.widgets.vpn.search_entry import SearchEntry
 from proton.vpn.app.gtk.widgets.vpn.serverlist.city_view.serverlist import ServerListWidget
 from proton.vpn.app.gtk.widgets.vpn.connection_status_widget import VPNConnectionStatusWidget
+from proton.vpn.app.gtk.widgets.vpn.world_map import WorldMap
 from proton.vpn.app.gtk.widgets.main.notifications import Notifications
 from proton.vpn.session.servers import ServerList
 
@@ -93,7 +95,12 @@ class VPNWidget(Gtk.Box):
 
         self.search_widget = SearchEntry()
         self.server_list_widget = ServerListWidget(self._controller, self.search_widget)
-        self.append(self.server_list_widget)
+        self.world_map = WorldMap(self._controller)
+        self._server_views = Gtk.Stack()
+        self._server_views.set_vexpand(True)
+        self._server_views.add_named(self.server_list_widget, "list")
+        self._server_views.add_named(self.world_map, "map")
+        self.append(self._server_views)
         self._connected_signals.append((
             safe_signal_connect(
                 self.server_list_widget, "ui-updated", self._on_server_list_updated
@@ -130,12 +137,21 @@ class VPNWidget(Gtk.Box):
             safe_signal_connect(
                 self.search_results_widget,
                 "result-chosen",
+                self._show_server_list
+            ),
+            self.search_results_widget
+        ))
+        self._connected_signals.append((
+            safe_signal_connect(
+                self.search_results_widget,
+                "result-chosen",
                 self._reset_search_on_result_chosen
             ),
             self.search_results_widget
         ))
         self.insert_child_after(self.search_widget, self.quick_connect_widget)
         self.insert_child_after(revealer, self.search_widget)
+        self.insert_child_after(self._build_view_switcher(), revealer)
 
         signal_id = safe_signal_connect(
             self,
@@ -148,6 +164,37 @@ class VPNWidget(Gtk.Box):
 
         safe_signal_connect(self, "unrealize", self._on_unrealize)
 
+    def _build_view_switcher(self) -> Gtk.Box:
+        """Buttons to switch between the server list and the world map."""
+        switcher = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        switcher.add_css_class("linked")
+        switcher.set_halign(Gtk.Align.START)
+        list_button = Gtk.ToggleButton(label=C_("button", "List"))
+        list_button.set_active(True)
+        map_button = Gtk.ToggleButton(label=C_("button", "Map"))
+        map_button.set_group(list_button)
+        self._view_buttons = {"list": list_button, "map": map_button}
+        for button, handler in (
+            (list_button, self._on_list_view_toggled), (map_button, self._on_map_view_toggled)
+        ):
+            self._connected_signals.append(
+                (safe_signal_connect(button, "toggled", handler), button)
+            )
+            switcher.append(button)
+        return switcher
+
+    def _on_list_view_toggled(self, button: Gtk.ToggleButton):
+        if button.get_active():
+            self._server_views.set_visible_child_name("list")
+
+    def _on_map_view_toggled(self, button: Gtk.ToggleButton):
+        if button.get_active():
+            self._server_views.set_visible_child_name("map")
+
+    def _show_server_list(self, *_) -> None:
+        """Shows the server list, where the search results are located."""
+        self._view_buttons["list"].set_active(True)
+
     def _reset_search_on_result_chosen(self, *_) -> None:
         self.search_widget.reset()
 
@@ -159,6 +206,7 @@ class VPNWidget(Gtk.Box):
             self.connection_status_widget.accessible_details
         )
         self.quick_connect_widget.connection_status_update(state)
+        self.world_map.connection_status_update(state)
         self.connection_status_widget.announce_state_change(state)
 
     @GObject.Signal
@@ -220,6 +268,7 @@ class VPNWidget(Gtk.Box):
         self.server_list_widget.display(user_tier=user_tier, server_list=server_list)
 
     def _on_server_list_updated(self, *_):
+        self.world_map.display(self._state.user_tier, self._controller.server_list)
         if not self._state.is_widget_ready:  # noqa: E501 # pylint: disable=line-too-long # nosemgrep: python.lang.maintainability.is-function-without-parentheses.is-function-without-parentheses
             # Only update the status at this point as widgets are already generated
             self.status_update(self._controller.current_connection_status)
@@ -244,7 +293,7 @@ class VPNWidget(Gtk.Box):
 
         for widget in [
             self.connection_status_widget,
-            self.quick_connect_widget, self.server_list_widget
+            self.quick_connect_widget, self._server_views
         ]:
             widget.set_visible(False)
 

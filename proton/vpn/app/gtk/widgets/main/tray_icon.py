@@ -268,43 +268,14 @@ class _StatusNotifierItem(dbus.service.Object):
                 event="STATUS_NOTIFIER_WATCHER_REGISTRATION_FAILED",
             )
 
-    @dbus.service.method(
-        dbus_interface="org.freedesktop.DBus.Properties",
-        in_signature="ss", out_signature="v"
-    )
-    def Get(self, interface: str, prop: str):  # pylint: disable=invalid-name
-        """Get property"""
-        if interface != SNI_INTERFACE:
-            # Return an empty DBus string variant instead of None so the
-            # dbus library can encode a valid value (None cannot be encoded).
-            return dbus.String("")
-
-        available_options = {
-            StatusNotifierItemProperty.STATUS.value: dbus.String(self.tray.status),
-            StatusNotifierItemProperty.CATEGORY.value: dbus.String("ApplicationStatus"),
-            StatusNotifierItemProperty.ID.value: dbus.String(self.tray.app_id),
-            StatusNotifierItemProperty.TITLE.value: dbus.String(self.tray.title),
-            StatusNotifierItemProperty.ICON_NAME.value: dbus.String(self.tray.icon_name),
-            StatusNotifierItemProperty.MENU.value: dbus.ObjectPath(DBUSMENU_PATH),
-            StatusNotifierItemProperty.ITEM_IS_MENU.value: dbus.Boolean(True),
-            StatusNotifierItemProperty.ICON_ACCESSIBLE_DESCRIPTION.value: dbus.String(
-                self.tray.icon_desc
-            ),
-        }
-
-        # Unknown property: return empty DBus string variant to avoid
-        # "Don't know which D-Bus type to use to encode type NoneType" errors.
-        return available_options.get(prop, "")
-
-    @dbus.service.method(
-        dbus_interface="org.freedesktop.DBus.Properties",
-        in_signature="s",
-        out_signature="a{sv}"
-    )
-    def GetAll(self, interface: str) -> dbus.Dictionary:  # pylint: disable=invalid-name
-        """Get all properties"""
-        if interface != SNI_INTERFACE:
-            return {}
+    def _get_sni_properties(self):
+        """Return all standard SNI properties with correctly-typed D-Bus values."""
+        empty_pixmap = dbus.Array([], signature="(iiay)")
+        empty_tooltip = dbus.Struct(
+            (dbus.String(""), dbus.Array([], signature="(iiay)"),
+             dbus.String(""), dbus.String("")),
+            signature=None
+        )
 
         return {
             StatusNotifierItemProperty.STATUS.value: dbus.String(self.tray.status),
@@ -316,8 +287,45 @@ class _StatusNotifierItem(dbus.service.Object):
             StatusNotifierItemProperty.ITEM_IS_MENU.value: dbus.Boolean(True),
             StatusNotifierItemProperty.ICON_ACCESSIBLE_DESCRIPTION.value: dbus.String(
                 self.tray.icon_desc
-            )
+            ),
+            "IconPixmap": empty_pixmap,
+            "OverlayIconName": dbus.String(""),
+            "OverlayIconPixmap": empty_pixmap,
+            "AttentionIconName": dbus.String(""),
+            "AttentionIconPixmap": empty_pixmap,
+            "AttentionMovieName": dbus.String(""),
+            "ToolTip": empty_tooltip,
+            "WindowId": dbus.UInt32(0),
         }
+
+    @dbus.service.method(
+        dbus_interface="org.freedesktop.DBus.Properties",
+        in_signature="ss", out_signature="v"
+    )
+    def Get(self, interface: str, prop: str):  # pylint: disable=invalid-name
+        """Get property"""
+        if interface != SNI_INTERFACE:
+            # Return an empty DBus string variant instead of None so the
+            # dbus library can encode a valid value (None cannot be encoded).
+            return dbus.String("")
+
+        available_options = self._get_sni_properties()
+
+        # Unknown property: return empty DBus string variant to avoid
+        # "Don't know which D-Bus type to use to encode type NoneType" errors.
+        return available_options.get(prop, dbus.String(""))
+
+    @dbus.service.method(
+        dbus_interface="org.freedesktop.DBus.Properties",
+        in_signature="s",
+        out_signature="a{sv}"
+    )
+    def GetAll(self, interface: str) -> dbus.Dictionary:  # pylint: disable=invalid-name
+        """Get all properties"""
+        if interface != SNI_INTERFACE:
+            return {}
+
+        return self._get_sni_properties()
 
     @dbus.service.method(dbus_interface=SNI_INTERFACE, in_signature="ii", out_signature="")
     def Activate(self, _x_pos, _y_pos):  # pylint: disable=unused-argument, invalid-name, line-too-long # noqa: E501

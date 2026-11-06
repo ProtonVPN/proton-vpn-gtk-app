@@ -1,4 +1,7 @@
-## What's new (4.19.0)
+## What's new (4.19.1)
+- Bug fixes.
+
+## 4.19.0
 - Minor improvements.
 
 ## 4.18.8

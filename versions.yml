@@ -1,3 +1,11 @@
+version: 4.19.1
+time: 2026/11/06 08:03
+author: Axel Langenskiold
+email: axel.langenskiold@proton.ch
+description:
+- "i18n(weekly-mr): Upgrade translations from crowdin (c48d5072). (L10n bot)"
+- "chore: bump devtools (Axel Langenskiold)"
+---
 version: 4.19.0
 time: 2026/10/23 05:37
 author: Luke Titley

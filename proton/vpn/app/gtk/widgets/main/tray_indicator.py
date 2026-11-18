@@ -117,8 +117,10 @@ class TrayIndicator:
         self._tray = tray_icon
         self._main_window: Optional[MainWindow] = None
         self.display_disconnect_entry = None
+        self.display_cancel_connection_entry = None
         self.display_connect_entry = None
         self.enable_disconnect_entry = None
+        self.enable_cancel_connection_entry = None
         self.enable_connect_entry = None
         self.display_pinned_servers = None
         self._tray_availability_detection = tray_availability_detection
@@ -217,6 +219,12 @@ class TrayIndicator:
                 self._on_connect_entry_clicked,
                 self.enable_connect_entry,
             )
+        if self.display_cancel_connection_entry:
+            self._tray.add_menu_item(
+                C_("button", "Cancel Connection"),
+                self._on_disconnect_entry_clicked,
+                self.enable_cancel_connection_entry,
+            )
         if self.display_disconnect_entry:
             self._tray.add_menu_item(
                 C_("button", "Disconnect"),
@@ -267,18 +275,21 @@ class TrayIndicator:
 
     def _on_user_logged_in(self, *_):
         self.display_disconnect_entry = False
+        self.display_cancel_connection_entry = False
         self.display_connect_entry = True
         self.display_pinned_servers = True
         self.reload_pinned_servers()
 
     def _on_user_logged_out(self, *_):
         self.display_disconnect_entry = False
+        self.display_cancel_connection_entry = False
         self.display_connect_entry = False
         self.display_pinned_servers = False
         self._update()
 
     def _on_connection_disconnected(self):
         self.enable_connect_entry = True
+        self.display_cancel_connection_entry = False
         self._tray.change_icon(self.DISCONNECTED_ICON,
                                self.DISCONNECTED_ICON_DESCRIPTION)
         if not self._controller.user_logged_in:
@@ -290,13 +301,16 @@ class TrayIndicator:
         self._update()
 
     def _on_connection_connecting(self):
-        self.enable_connect_entry = False
-        self.enable_disconnect_entry = True
+        self.display_connect_entry = False
+        self.display_disconnect_entry = False
+        self.display_cancel_connection_entry = True
+        self.enable_cancel_connection_entry = True
         self._update()
 
     def _on_connection_connected(self):
         self.enable_disconnect_entry = True
         self.display_disconnect_entry = True
+        self.display_cancel_connection_entry = False
         self.display_connect_entry = False
         self._tray.change_icon(self.CONNECTED_ICON,
                                self.CONNECTED_ICON_DESCRIPTION)
@@ -304,12 +318,15 @@ class TrayIndicator:
 
     def _on_connection_disconnecting(self):
         self.enable_disconnect_entry = False
+        self.enable_cancel_connection_entry = False
         self.enable_connect_entry = True
         self._update()
 
     def _on_connection_error(self):
         self.display_disconnect_entry = False
-        self.display_connect_entry = True
+        self.display_cancel_connection_entry = True
+        self.display_connect_entry = False
+        self.enable_cancel_connection_entry = True
         self._tray.change_icon(self.ERROR_ICON,
                                self.ERROR_ICON_DESCRIPTION)
         self._update()

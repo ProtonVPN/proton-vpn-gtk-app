@@ -105,12 +105,18 @@ class MenuObject:
 
     def to_dbus(self) -> dbus.Dictionary:
         """Converts and returns the object to dbus friendly format."""
-        return dbus.Dictionary({
+        data = {
             "type": dbus.String(self.type.value),
-            "label": dbus.String(self.label),
-            "enabled": dbus.Boolean(self.enabled),
-            "visible": dbus.Boolean(self.visible)
-        }, signature="sv")
+            "visible": dbus.Boolean(self.visible),
+        }
+
+        if self.type == MenuType.ITEM:
+            data.update({
+                "label": dbus.String(self.label),
+                "enabled": dbus.Boolean(self.enabled),
+            })
+
+        return dbus.Dictionary(data, signature="sv")
 
 
 class _DBusMenuService(dbus.service.Object):
@@ -139,11 +145,20 @@ class _DBusMenuService(dbus.service.Object):
 
         return structure
 
-    def _build_layout(
-        self, parent_id, properties, menu: Optional[list[dict[int, dbus.Dictionary]]] = None
-    ):
-        """Build layout for GetLayout."""
+    def _empty_layout_children(self) -> dbus.Array:
+        return dbus.Array([], signature="v")
 
+    def _layout_item_properties(self, item) -> dbus.Dictionary:
+        if not item:
+            return dbus.Dictionary({}, signature="sv")
+
+        return dbus.Dictionary(
+            {key: value for key, value in item.items() if key != "children"},
+            signature="sv"
+        )
+
+    def _build_layout(self, parent_id, properties, menu=None):  # pylint: disable=unused-argument
+        """Build a correctly-typed DBusMenu layout tree for GetLayout."""
         if menu is None:
             menu = self._build_menu_structure()
 
@@ -151,28 +166,21 @@ class _DBusMenuService(dbus.service.Object):
             return (
                 dbus.Int32(parent_id),
                 dbus.Dictionary({}, signature="sv"),
-                dbus.Array([], signature="(ia{sv}av)")
+                self._empty_layout_children(),
             )
 
-        item: dbus.Dictionary = menu[parent_id]
+        item = menu[parent_id]
+        children = self._empty_layout_children()
 
-        children = dbus.Array([], signature="(ia{sv}av)")
-        if "children" in item:
-            for child_id in item["children"]:
-                child_layout = self._build_layout(child_id, properties, menu)
-                child_id_dbus = child_layout[0]
-                child_props = child_layout[1] \
-                    if child_layout[1] else dbus.Dictionary({}, signature="sv")
-                child_children = child_layout[2] \
-                    if child_layout[2] else dbus.Array([], signature="(ia{sv}av)")
-                children.append(
-                    dbus.Struct(
-                        (child_id_dbus, child_props, child_children),
-                        signature="(ia{sv}av)"
-                    )
-                )
+        for child_id in item.get("children", []):
+            child_layout = self._build_layout(child_id, properties, menu)
+            children.append(dbus.Struct(child_layout))
 
-        return (dbus.Int32(parent_id), item, children)
+        return (
+            dbus.Int32(parent_id),
+            self._layout_item_properties(item),
+            children,
+        )
 
     @dbus.service.method(
         dbus_interface=DBUSMENU_INTERFACE,
@@ -215,7 +223,7 @@ class _DBusMenuService(dbus.service.Object):
         item = [
             item for item in self.menu_items
             if item.id == item_id
-            and item.type != MenuType.SEPARATOR.value
+            and item.type != MenuType.SEPARATOR
             and item.callback
         ]
 
@@ -279,32 +287,22 @@ class _StatusNotifierItem(dbus.service.Object):
             # dbus library can encode a valid value (None cannot be encoded).
             return dbus.String("")
 
-        available_options = {
-            StatusNotifierItemProperty.STATUS.value: dbus.String(self.tray.status),
-            StatusNotifierItemProperty.CATEGORY.value: dbus.String("ApplicationStatus"),
-            StatusNotifierItemProperty.ID.value: dbus.String(self.tray.app_id),
-            StatusNotifierItemProperty.TITLE.value: dbus.String(self.tray.title),
-            StatusNotifierItemProperty.ICON_NAME.value: dbus.String(self.tray.icon_name),
-            StatusNotifierItemProperty.MENU.value: dbus.ObjectPath(DBUSMENU_PATH),
-            StatusNotifierItemProperty.ITEM_IS_MENU.value: dbus.Boolean(True),
-            StatusNotifierItemProperty.ICON_ACCESSIBLE_DESCRIPTION.value: dbus.String(
-                self.tray.icon_desc
-            ),
-        }
+        available_options = self._get_sni_properties()
 
-        # Unknown property: return empty DBus string variant to avoid
-        # "Don't know which D-Bus type to use to encode type NoneType" errors.
-        return available_options.get(prop, "")
+        # Unknown property: return a valid D-Bus string variant instead of None.
+        return available_options.get(prop, dbus.String(""))
 
-    @dbus.service.method(
-        dbus_interface="org.freedesktop.DBus.Properties",
-        in_signature="s",
-        out_signature="a{sv}"
-    )
-    def GetAll(self, interface: str) -> dbus.Dictionary:  # pylint: disable=invalid-name
-        """Get all properties"""
-        if interface != SNI_INTERFACE:
-            return {}
+    def _get_sni_properties(self):
+        """Return all standard SNI properties with correctly-typed D-Bus values."""
+        empty_pixmap = dbus.Array([], signature="(iiay)")
+        empty_tooltip = dbus.Struct(
+            (
+                dbus.String(""),
+                dbus.Array([], signature="(iiay)"),
+                dbus.String(""),
+                dbus.String(""),
+            )
+        )
 
         return {
             StatusNotifierItemProperty.STATUS.value: dbus.String(self.tray.status),
@@ -316,8 +314,28 @@ class _StatusNotifierItem(dbus.service.Object):
             StatusNotifierItemProperty.ITEM_IS_MENU.value: dbus.Boolean(True),
             StatusNotifierItemProperty.ICON_ACCESSIBLE_DESCRIPTION.value: dbus.String(
                 self.tray.icon_desc
-            )
+            ),
+            "IconPixmap": empty_pixmap,
+            "OverlayIconName": dbus.String(""),
+            "OverlayIconPixmap": empty_pixmap,
+            "AttentionIconName": dbus.String(""),
+            "AttentionIconPixmap": empty_pixmap,
+            "AttentionMovieName": dbus.String(""),
+            "ToolTip": empty_tooltip,
+            "WindowId": dbus.UInt32(0),
         }
+
+    @dbus.service.method(
+        dbus_interface="org.freedesktop.DBus.Properties",
+        in_signature="s",
+        out_signature="a{sv}"
+    )
+    def GetAll(self, interface: str) -> dbus.Dictionary:  # pylint: disable=invalid-name
+        """Get all properties"""
+        if interface != SNI_INTERFACE:
+            return {}
+
+        return self._get_sni_properties()
 
     @dbus.service.method(dbus_interface=SNI_INTERFACE, in_signature="ii", out_signature="")
     def Activate(self, _x_pos, _y_pos):  # pylint: disable=unused-argument, invalid-name, line-too-long # noqa: E501

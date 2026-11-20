@@ -151,12 +151,12 @@ class _DBusMenuService(dbus.service.Object):
             return (
                 dbus.Int32(parent_id),
                 dbus.Dictionary({}, signature="sv"),
-                dbus.Array([], signature="(ia{sv}av)")
+                dbus.Array([], signature="v")
             )
 
         item: dbus.Dictionary = menu[parent_id]
 
-        children = dbus.Array([], signature="(ia{sv}av)")
+        children = dbus.Array([], signature="v")
         if "children" in item:
             for child_id in item["children"]:
                 child_layout = self._build_layout(child_id, properties, menu)
@@ -164,7 +164,7 @@ class _DBusMenuService(dbus.service.Object):
                 child_props = child_layout[1] \
                     if child_layout[1] else dbus.Dictionary({}, signature="sv")
                 child_children = child_layout[2] \
-                    if child_layout[2] else dbus.Array([], signature="(ia{sv}av)")
+                    if child_layout[2] else dbus.Array([], signature="v")
                 children.append(
                     dbus.Struct(
                         (child_id_dbus, child_props, child_children),
@@ -172,7 +172,11 @@ class _DBusMenuService(dbus.service.Object):
                     )
                 )
 
-        return (dbus.Int32(parent_id), item, children)
+        props = dbus.Dictionary(
+            {k: v for k, v in item.items() if k != "children"}, signature="sv")
+        if "children" in item:
+            props["children-display"] = dbus.String("submenu")
+        return (dbus.Int32(parent_id), props, children)
 
     @dbus.service.method(
         dbus_interface=DBUSMENU_INTERFACE,
